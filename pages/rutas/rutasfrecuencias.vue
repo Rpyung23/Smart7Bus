@@ -4,7 +4,7 @@
       <div class="row align-items-center py-4">
         <div class="col">
           <tabs tabNavClasses="nav-fill flex-column flex-sm-row">
-            <tab-pane title="Unidades">
+            <tab-pane title="Rutas">
               <br>
               <card
                 class="no-border-card"
@@ -140,10 +140,8 @@
                 </div>
               </card>
             </tab-pane>
-            <tab-pane title="Grupos"></tab-pane>
-            <tab-pane title="Propietarios"></tab-pane>
-            <tab-pane title="Usuarios Admin.."></tab-pane>
-            <tab-pane title="Choferes"></tab-pane>
+            <tab-pane title="Frecuencias"></tab-pane>
+            <tab-pane title="Controles"></tab-pane>
           </tabs>
         </div>
       </div>
@@ -163,7 +161,7 @@ import TabPane from "@/components/argon-core/Tabs/Tab";
 
 export default {
   mixins: [clientPaginationMixin],
-  layout: "DashboardLayout",
+  layout: "EditRutasDashboardLayout",
   components: {
     Tabs,
     TabPane,

@@ -6,9 +6,9 @@
 
         <sidebar-item
           :link="{
-            name: 'Rastreo Satelital',
+            name: 'Monitoreo',
             icon: 'ni ni-world text-success',
-            path: '/rastreo'
+            path: './monitoreo'
           }">
         </sidebar-item>
 
@@ -20,19 +20,43 @@
           }">
         </sidebar-item>
 
+        <sidebar-item
+          :link="{
+            name: 'Historial',
+            icon: 'ni ni-pin-3 text-info',
+            path: './historial'
+          }">
+        </sidebar-item>
+
+        <sidebar-item
+          :link="{
+            name: 'Recaudo',
+            icon: 'ni ni-money-coins text-green',
+            path: './recaudo/tablero'
+          }">
+        </sidebar-item>
+        
         <sidebar-item :link="{
-                  name: 'Examples',
+                  name: 'Reportes',
                   icon: 'ni ni-ungroup text-orange'
                   }">
-          <sidebar-item :link="{ name: 'Pricing', path: '/pricing' }"/>
-          <sidebar-item :link="{ name: 'Login', path: '/login' }"/>
-          <sidebar-item :link="{ name: 'Register', path: '/register' }"/>
-          <sidebar-item :link="{ name: 'Lock', path: '/lock' }"/>
-          <sidebar-item :link="{ name: 'Timeline', path: '/pages/timeline' }"/>
-          <sidebar-item :link="{ name: 'Profile', path: '/pages/user' }"/>
+          <sidebar-item :link="{ name: 'Recorrido', path: '/pricing' }"/>
+          <sidebar-item :link="{ name: 'Indicador Incumplimiento', path: '/login' }"/>
+          <sidebar-item :link="{ name: 'Rutas - Unidad', path: '/register' }"/>
 
 
         </sidebar-item>
+
+        <sidebar-item
+          :link="{
+            name: 'Editor de Rutas',
+            icon: 'ni ni-vector text-danger',
+            path: './rutas/controles'
+          }">
+        </sidebar-item>
+
+
+
 
         <sidebar-item :link="{
                   name: 'Components',
