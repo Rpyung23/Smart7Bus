@@ -22,7 +22,8 @@ const pkg = require('./package')
 module.exports = {
   router: {
     base: '/',
-    linkExactActiveClass: 'active'
+    linkExactActiveClass: 'active',
+    middleware: ['redirect']
   },
   /*
   ** Headers of the page
@@ -34,8 +35,15 @@ module.exports = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'Smart7Bus rastreo satelital de transporte urbano.' }
     ],
+    script:[{
+      src:"https://rawgit.com/anhr/resizer/master/Common.js"
+    },{
+      src:"https://rawgit.com/anhr/resizer/master/resizer.js"
+    }]
+    ,
     link: [
       { rel: 'icon', type: 'image/png', href: 'favicon.png' },
+      { rel:'stylesheet', href: 'https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'},
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'},
       { rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.6.3/css/all.css', integrity: "sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/", crossorigin: "anonymous"}
     ]
@@ -44,7 +52,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+
 
   /*
   ** Global CSS
@@ -72,6 +80,7 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    'cookie-universal-nuxt'
   ],
   /*
   ** Axios module configuration
@@ -105,5 +114,16 @@ module.exports = {
         ]
       ]
     }
-  }
+  },
+  env: {
+    /*baseUrl: 'https://urbanorest.smart7bus.com/v2/',
+    baseUrlPanel: 'https://urbanorest.smart7bus.com/v2/system',
+    baseUrlPanelRecaudo:'https://urbanorest.smart7bus.com/v2/system/recaudo'*/
+    /*baseUrl: 'https://api-flota.herokuapp.com/v2/',
+    baseUrlPanel: 'https://api-flota.herokuapp.com/v2/system',
+    baseUrlPanelRecaudo:'https://api-flota.herokuapp.com/v2/system/recaudo'*/
+    baseUrl: process.env.baseUrl || 'http://localhost:3001/v2/',
+    baseUrlPanel: process.env.baseUrlPanel || 'http://localhost:3001/v2/system',
+    baseUrlPanelRecaudo: process.env.baseUrlPanelRecaudo || 'http://localhost:3001/v2/system/recaudo'
+}
 }

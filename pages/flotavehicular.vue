@@ -5,7 +5,7 @@
         <div class="col">
           <tabs tabNavClasses="nav-fill flex-column flex-sm-row">
             <tab-pane title="Unidades">
-              <br>
+              <br />
               <card
                 class="no-border-card"
                 body-classes="px-0 pb-1"
@@ -140,10 +140,550 @@
                 </div>
               </card>
             </tab-pane>
-            <tab-pane title="Grupos"></tab-pane>
-            <tab-pane title="Propietarios"></tab-pane>
-            <tab-pane title="Usuarios Admin.."></tab-pane>
-            <tab-pane title="Choferes"></tab-pane>
+            <tab-pane title="Grupos">
+              <br />
+              <card
+                class="no-border-card"
+                body-classes="px-0 pb-1"
+                footer-classes="pb-2"
+              >
+                <div>
+                  <div
+                    class="
+                      col-12
+                      d-flex
+                      justify-content-center justify-content-sm-between
+                      flex-wrap
+                    "
+                  >
+                    <el-select
+                      class="select-primary pagination-select"
+                      v-model="pagination.perPage"
+                      placeholder="Per page"
+                    >
+                      <el-option
+                        class="select-primary"
+                        v-for="item in pagination.perPageOptions"
+                        :key="item"
+                        :label="item"
+                        :value="item"
+                      >
+                      </el-option>
+                    </el-select>
+
+                    <div>
+                      <base-input
+                        v-model="searchQuery"
+                        prepend-icon="fas fa-search"
+                        placeholder="Buscando..."
+                      >
+                      </base-input>
+                    </div>
+                  </div>
+                  <el-table
+                    :data="queriedData"
+                    row-key="id"
+                    header-row-class-name="thead-dark"
+                  >
+                    <el-table-column
+                      v-for="column in tableColumns"
+                      :key="column.label"
+                      v-bind="column"
+                    >
+                    </el-table-column>
+
+                    <el-table-column
+                      label="Estado"
+                      min-width="150px"
+                      prop="status"
+                      sortable
+                    >
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.statusType}`"></i>
+                          <span class="status">{{ row.status }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column
+                      label="Informate"
+                      min-width="150px"
+                      prop="status"
+                      sortable
+                    >
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.statusType}`"></i>
+                          <span class="status">{{ row.status }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column
+                      min-width="180px"
+                      align="right"
+                      label="Actions"
+                    >
+                      <div slot-scope="{ $index, row }" class="d-flex">
+                        <base-button
+                          @click.native="handleEdit($index, row)"
+                          class="edit"
+                          type="success"
+                          size="sm"
+                          icon
+                        >
+                          <i class="text-white ni ni-ruler-pencil"></i>
+                        </base-button>
+                        <base-button
+                          @click.native="handleDelete($index, row)"
+                          class="remove btn-link"
+                          type="danger"
+                          size="sm"
+                          icon
+                        >
+                          <i class="text-white ni ni-fat-remove"></i>
+                        </base-button>
+                      </div>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div
+                  slot="footer"
+                  class="
+                    col-12
+                    d-flex
+                    justify-content-center justify-content-sm-between
+                    flex-wrap
+                  "
+                >
+                  <div class="">
+                    <p class="card-category">
+                      Showing {{ from + 1 }} to {{ to }} of {{ total }} entries
+
+                      <span v-if="selectedRows.length">
+                        &nbsp; &nbsp; {{ selectedRows.length }} rows selected
+                      </span>
+                    </p>
+                  </div>
+                  <base-pagination
+                    class="pagination-no-border"
+                    v-model="pagination.currentPage"
+                    :per-page="pagination.perPage"
+                    :total="total"
+                  >
+                  </base-pagination>
+                </div>
+              </card>
+            </tab-pane>
+            <tab-pane title="Propietarios">
+              <br />
+              <card
+                class="no-border-card"
+                body-classes="px-0 pb-1"
+                footer-classes="pb-2"
+              >
+                <div>
+                  <div
+                    class="
+                      col-12
+                      d-flex
+                      justify-content-center justify-content-sm-between
+                      flex-wrap
+                    "
+                  >
+                    <el-select
+                      class="select-primary pagination-select"
+                      v-model="pagination.perPage"
+                      placeholder="Per page"
+                    >
+                      <el-option
+                        class="select-primary"
+                        v-for="item in pagination.perPageOptions"
+                        :key="item"
+                        :label="item"
+                        :value="item"
+                      >
+                      </el-option>
+                    </el-select>
+
+                    <div>
+                      <base-input
+                        v-model="searchQuery"
+                        prepend-icon="fas fa-search"
+                        placeholder="Buscando..."
+                      >
+                      </base-input>
+                    </div>
+                  </div>
+                  <el-table
+                    :data="queriedData"
+                    row-key="id"
+                    header-row-class-name="thead-dark"
+                  >
+                    <el-table-column
+                      v-for="column in tableColumns"
+                      :key="column.label"
+                      v-bind="column"
+                    >
+                    </el-table-column>
+
+                    <el-table-column
+                      label="Estado"
+                      min-width="150px"
+                      prop="status"
+                      sortable
+                    >
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.statusType}`"></i>
+                          <span class="status">{{ row.status }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column
+                      label="Informate"
+                      min-width="150px"
+                      prop="status"
+                      sortable
+                    >
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.statusType}`"></i>
+                          <span class="status">{{ row.status }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column
+                      min-width="180px"
+                      align="right"
+                      label="Actions"
+                    >
+                      <div slot-scope="{ $index, row }" class="d-flex">
+                        <base-button
+                          @click.native="handleEdit($index, row)"
+                          class="edit"
+                          type="success"
+                          size="sm"
+                          icon
+                        >
+                          <i class="text-white ni ni-ruler-pencil"></i>
+                        </base-button>
+                        <base-button
+                          @click.native="handleDelete($index, row)"
+                          class="remove btn-link"
+                          type="danger"
+                          size="sm"
+                          icon
+                        >
+                          <i class="text-white ni ni-fat-remove"></i>
+                        </base-button>
+                      </div>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div
+                  slot="footer"
+                  class="
+                    col-12
+                    d-flex
+                    justify-content-center justify-content-sm-between
+                    flex-wrap
+                  "
+                >
+                  <div class="">
+                    <p class="card-category">
+                      Showing {{ from + 1 }} to {{ to }} of {{ total }} entries
+
+                      <span v-if="selectedRows.length">
+                        &nbsp; &nbsp; {{ selectedRows.length }} rows selected
+                      </span>
+                    </p>
+                  </div>
+                  <base-pagination
+                    class="pagination-no-border"
+                    v-model="pagination.currentPage"
+                    :per-page="pagination.perPage"
+                    :total="total"
+                  >
+                  </base-pagination>
+                </div>
+              </card>
+            </tab-pane>
+            <tab-pane title="Usuarios Admin..">
+              <br />
+              <card
+                class="no-border-card"
+                body-classes="px-0 pb-1"
+                footer-classes="pb-2"
+              >
+                <div>
+                  <div
+                    class="
+                      col-12
+                      d-flex
+                      justify-content-center justify-content-sm-between
+                      flex-wrap
+                    "
+                  >
+                    <el-select
+                      class="select-primary pagination-select"
+                      v-model="pagination.perPage"
+                      placeholder="Per page"
+                    >
+                      <el-option
+                        class="select-primary"
+                        v-for="item in pagination.perPageOptions"
+                        :key="item"
+                        :label="item"
+                        :value="item"
+                      >
+                      </el-option>
+                    </el-select>
+
+                    <div>
+                      <base-input
+                        v-model="searchQuery"
+                        prepend-icon="fas fa-search"
+                        placeholder="Buscando..."
+                      >
+                      </base-input>
+                    </div>
+                  </div>
+                  <el-table
+                    :data="queriedData"
+                    row-key="id"
+                    header-row-class-name="thead-dark"
+                  >
+                    <el-table-column
+                      v-for="column in tableColumns"
+                      :key="column.label"
+                      v-bind="column"
+                    >
+                    </el-table-column>
+
+                    <el-table-column
+                      label="Estado"
+                      min-width="150px"
+                      prop="status"
+                      sortable
+                    >
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.statusType}`"></i>
+                          <span class="status">{{ row.status }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column
+                      label="Informate"
+                      min-width="150px"
+                      prop="status"
+                      sortable
+                    >
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.statusType}`"></i>
+                          <span class="status">{{ row.status }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column
+                      min-width="180px"
+                      align="right"
+                      label="Actions"
+                    >
+                      <div slot-scope="{ $index, row }" class="d-flex">
+                        <base-button
+                          @click.native="handleEdit($index, row)"
+                          class="edit"
+                          type="success"
+                          size="sm"
+                          icon
+                        >
+                          <i class="text-white ni ni-ruler-pencil"></i>
+                        </base-button>
+                        <base-button
+                          @click.native="handleDelete($index, row)"
+                          class="remove btn-link"
+                          type="danger"
+                          size="sm"
+                          icon
+                        >
+                          <i class="text-white ni ni-fat-remove"></i>
+                        </base-button>
+                      </div>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div
+                  slot="footer"
+                  class="
+                    col-12
+                    d-flex
+                    justify-content-center justify-content-sm-between
+                    flex-wrap
+                  "
+                >
+                  <div class="">
+                    <p class="card-category">
+                      Showing {{ from + 1 }} to {{ to }} of {{ total }} entries
+
+                      <span v-if="selectedRows.length">
+                        &nbsp; &nbsp; {{ selectedRows.length }} rows selected
+                      </span>
+                    </p>
+                  </div>
+                  <base-pagination
+                    class="pagination-no-border"
+                    v-model="pagination.currentPage"
+                    :per-page="pagination.perPage"
+                    :total="total"
+                  >
+                  </base-pagination>
+                </div>
+              </card>
+            </tab-pane>
+            <tab-pane title="Choferes">
+              <br />
+              <card
+                class="no-border-card"
+                body-classes="px-0 pb-1"
+                footer-classes="pb-2"
+              >
+                <div>
+                  <div
+                    class="
+                      col-12
+                      d-flex
+                      justify-content-center justify-content-sm-between
+                      flex-wrap
+                    "
+                  >
+                    <el-select
+                      class="select-primary pagination-select"
+                      v-model="pagination.perPage"
+                      placeholder="Per page"
+                    >
+                      <el-option
+                        class="select-primary"
+                        v-for="item in pagination.perPageOptions"
+                        :key="item"
+                        :label="item"
+                        :value="item"
+                      >
+                      </el-option>
+                    </el-select>
+
+                    <div>
+                      <base-input
+                        v-model="searchQuery"
+                        prepend-icon="fas fa-search"
+                        placeholder="Buscando..."
+                      >
+                      </base-input>
+                    </div>
+                  </div>
+                  <el-table
+                    :data="queriedData"
+                    row-key="id"
+                    header-row-class-name="thead-dark"
+                  >
+                    <el-table-column
+                      v-for="column in tableColumns"
+                      :key="column.label"
+                      v-bind="column"
+                    >
+                    </el-table-column>
+
+                    <el-table-column
+                      label="Estado"
+                      min-width="150px"
+                      prop="status"
+                      sortable
+                    >
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.statusType}`"></i>
+                          <span class="status">{{ row.status }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column
+                      label="Informate"
+                      min-width="150px"
+                      prop="status"
+                      sortable
+                    >
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.statusType}`"></i>
+                          <span class="status">{{ row.status }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column
+                      min-width="180px"
+                      align="right"
+                      label="Actions"
+                    >
+                      <div slot-scope="{ $index, row }" class="d-flex">
+                        <base-button
+                          @click.native="handleEdit($index, row)"
+                          class="edit"
+                          type="success"
+                          size="sm"
+                          icon
+                        >
+                          <i class="text-white ni ni-ruler-pencil"></i>
+                        </base-button>
+                        <base-button
+                          @click.native="handleDelete($index, row)"
+                          class="remove btn-link"
+                          type="danger"
+                          size="sm"
+                          icon
+                        >
+                          <i class="text-white ni ni-fat-remove"></i>
+                        </base-button>
+                      </div>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div
+                  slot="footer"
+                  class="
+                    col-12
+                    d-flex
+                    justify-content-center justify-content-sm-between
+                    flex-wrap
+                  "
+                >
+                  <div class="">
+                    <p class="card-category">
+                      Showing {{ from + 1 }} to {{ to }} of {{ total }} entries
+
+                      <span v-if="selectedRows.length">
+                        &nbsp; &nbsp; {{ selectedRows.length }} rows selected
+                      </span>
+                    </p>
+                  </div>
+                  <base-pagination
+                    class="pagination-no-border"
+                    v-model="pagination.currentPage"
+                    :per-page="pagination.perPage"
+                    :total="total"
+                  >
+                  </base-pagination>
+                </div>
+              </card>
+            </tab-pane>
           </tabs>
         </div>
       </div>
@@ -268,4 +808,9 @@ export default {
 .no-border-card .card-footer {
   border-top: 0;
 }
+
+body{
+  overflow: auto !important;
+}
+
 </style>

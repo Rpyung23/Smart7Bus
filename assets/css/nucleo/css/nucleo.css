@@ -570,3 +570,16 @@ License - nucleoapp.com/license/
 
 
 /* all icon font classes list here */
+/**********CSS INCORPPORADOS POR NELSON P YUNGA G************/
+::-webkit-scrollbar {
+    display: none;
+}
+
+
+.label_marker {
+    background-color: black;
+    padding: 0.1rem;
+    border-style: solid;
+    border-radius: 0.1rem;
+    margin-bottom: 4rem;
+  }
