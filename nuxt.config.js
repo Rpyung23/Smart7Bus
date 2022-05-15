@@ -39,6 +39,10 @@ module.exports = {
       src:"https://rawgit.com/anhr/resizer/master/Common.js"
     },{
       src:"https://rawgit.com/anhr/resizer/master/resizer.js"
+    },{
+      src:"https://code.jquery.com/jquery-3.6.0.js"
+    },{
+      src:"https://unpkg.com/boxicons@2.1.2/dist/boxicons.js"
     }]
     ,
     link: [
@@ -57,6 +61,7 @@ module.exports = {
   /*
   ** Global CSS
   */
+
   css: [
     'assets/css/nucleo/css/nucleo.css',
     'assets/sass/argon.scss'
@@ -72,7 +77,7 @@ module.exports = {
     {src: '~/plugins/map/vue2-google-maps.js', ssr: false },
   ],
 
-  
+  loading: false,
   /*
   ** Nuxt.js modules
   */
