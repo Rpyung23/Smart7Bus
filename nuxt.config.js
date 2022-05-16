@@ -48,8 +48,8 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/png', href: 'favicon.png' },
       { rel:'stylesheet', href: 'https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'},
+      { rel:'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'},
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'},
-      { rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.6.3/css/all.css', integrity: "sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/", crossorigin: "anonymous"}
     ]
   },
 
@@ -85,8 +85,10 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    'cookie-universal-nuxt'
+    'cookie-universal-nuxt',
   ],
+
+
   /*
   ** Axios module configuration
   */

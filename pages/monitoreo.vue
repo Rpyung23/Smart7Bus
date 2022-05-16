@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div id="rezizeArea">
     <GmapMap
       :center="oCenter"
       :zoom="oZoom"
       map-type-id="roadmap"
-      style="width: 100%; height: 100vh"
+      class="mapa"
       :options="{
         zoomControl: false,
         scaleControl: false,
@@ -12,7 +12,7 @@
         streetViewControl: false,
         rotateControl: false,
         fullscreenControl: false,
-        disableDefaultUi: false,
+        disableDefaultUi: true,
       }"
     >
       <GmapMarker
@@ -45,24 +45,203 @@
       </GmapInfoWindow>
     </GmapMap>
 
-    <!--<div class="container_unidades_monitoreo">
-      <div id="resizerXY">
+    <div id="element2" class="container_unidades_monitoreo">
+      <div id="resizerXY"></div>
+      <div class="searchInput">
+        <i class="bx bx-search"></i>
+        <input
+          type="text"
+          class="inputSearchTexto"
+          name=""
+          id=""
+          placeholder="Unidad"
+        />
       </div>
-    </div>-->
+      <div class="ListadoUnidades">
+        <div
+          class="itemMonitoreoUnidad"
+          :key="unidad.CodiVehiMoni"
+          v-for="unidad in mListUnidades"
+          @click="ubicarUnidad(unidad)"
+        >
+          <div class="itemContainerMonitoreo">
+            <div class="imagenitem">
+              <img :src="unidad.icono.imagenLista" />
+            </div>
+            <div class="detalle">
+              <strong>Unidad : </strong>{{ unidad.CodiVehiMoni }} ({{
+                unidad.PlacVehiMoni
+              }})<br />
+              <strong>Ruta : </strong>
+              {{
+                unidad.DescRuta == null || unidad.DescRuta == ""
+                  ? "SIN RUTA"
+                  : unidad.DescRuta.substring(0, 23)
+              }}<br />
+              <strong>Estado : </strong>{{ unidad.icono.detalle }}<br />
+              <strong>Fecha : </strong>{{ unidad.UltiFechMoni }}<br />
+              <span class="dispositivo">{{ unidad.DescDispTipo }} {{ unidad.VersDispMoni }}</span><br />
+            </div>
+          </div>
+
+          <div class="detalleIconos">
+            <div class="iconosEventos">
+              <i class="bx bx-tachometer" style="color: green"></i>
+              <strong style="color:green;">{{ unidad.UltiVeloMoni }} KM/H</strong>
+            </div>
+            <div class="iconosEventos">
+              <i
+                class="bx bx-time"
+                :style="
+                  unidad.CtrlCounMoni >= 0
+                    ? 'color:midnightblue;'
+                    : 'color:red;'
+                "
+              ></i>
+              <strong
+                :style="
+                  unidad.CtrlCounMoni >= 0
+                    ? 'color:midnightblue;'
+                    : 'color:red;'
+                "
+                >{{
+                  unidad.CtrlCounMoni > 0 ? unidad.CtrlCounMoni : "E.C"
+                }}</strong
+              >
+            </div>
+            <div class="iconosEventos">
+              <i
+                class="bx bx-wifi"
+                :style="
+                  unidad.AlarAnteGPSDescMoni == 1
+                    ? 'color:red;'
+                    : 'color:green;'
+                "
+              ></i>
+              <strong style="color: red">{{
+                unidad.AlarAnteGPSDescMoni == 1 ? "GPS" : ""
+              }}</strong>
+            </div>
+            <div class="iconosEventos">
+              <i class='bx bxs-car-battery' :style="
+                  unidad.AlarCortAlimBateExteMoni == 1
+                    ? 'color:red;'
+                    : 'color:darkblue;'
+                "></i>
+              <strong style="color: red">{{
+                unidad.AlarCortAlimBateExteMoni == 1 ? "BAT" : ""
+              }}</strong>
+            </div>
+            <div class="iconosEventos">
+              <i
+                class="bx bx-key"
+                :style="
+                  unidad.AlarEnceChapMoni == 1 ? 'color:green;' : 'color:dark;'
+                "
+              ></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="tabOptionsMonitoreo">
-        <div class="itemOptionMonitoreo itemOptionMonitoreoActive"><i class='bx bx-time-five'></i></div>
-        <div class="itemOptionMonitoreo"><i class='bx bx-bus' ></i></div>
-        <div class="itemOptionMonitoreo"><i class='bx bx-git-repo-forked'></i></div>
+      <div class="itemOptionMonitoreo itemOptionMonitoreoActive">
+        <i class="bx bx-bus"></i>
+      </div>
+            <div class="itemOptionMonitoreo"><i class="bx bx-time-five"></i></div>
+      <div class="itemOptionMonitoreo">
+        <i class="bx bx-git-repo-forked"></i>
+      </div>
+      <div class="itemOptionMonitoreo"><i class="bx bx-cog"></i></div>
     </div>
+    <script src="../js/resizerdiv.js"></script>
   </div>
 </template>
 <style>
+
+.dispositivo{
+  color: rgba(56, 54, 54, 0.76);
+  font-size: 00.7rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.iconosEventos{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.itemContainerMonitoreo{
+  display: flex;
+
+  align-items: center;
+  justify-items: center;
+}
+.inputSearchTexto {
+  border-width: 0rem;
+  outline: none;
+  border-color: transparent;
+  caret-color: #172b4d;
+}
+.searchInput {
+  height: 2.5rem;
+  width: 15rem;
+  background-color: white;
+  margin-left: 1rem;
+  margin-bottom: 0.7rem;
+  border-radius: 1rem;
+  margin-left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid whitesmoke;
+  box-shadow: -1px 1px whitesmoke, -1px 2px whitesmoke, -1px 2px whitesmoke,
+    -1px 2px whitesmoke, -1px 2px whitesmoke;
+}
+.ListadoUnidades {
+  height: 100%;
+  width: calc(100%);
+  margin-left: 0.5rem;
+  overflow: scroll;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 16rem);
+  justify-content: center;
+}
+.itemMonitoreoUnidad {
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  color: black;
+  height: 6rem;
+  font-size: 0.78rem;
+  line-height: 1.05;
+  width: 15.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+}
+.imagenitem {
+  margin-right: 0.2rem;
+  margin-left: 0.2rem;
+}
+#rezizeArea {
+  width: 100%;
+  overflow: auto;
+  position: relative;
+}
+.bx {
+  font-size: 1.2rem;
+}
+.mapa {
+  width: 100%;
+  height: calc(100vh - 3.56rem);
+}
 .tabOptionsMonitoreo {
   height: 3.3rem;
   width: 11rem;
   margin-right: 1rem;
-  margin-top: 4.5rem;
+  margin-top: 0.5rem;
   position: absolute;
   top: 0;
   right: 0;
@@ -72,8 +251,7 @@
   padding: 0.4rem;
 }
 
-
-.itemOptionMonitoreo{
+.itemOptionMonitoreo {
   color: white;
   flex-basis: calc(33.33%);
   display: flex;
@@ -84,44 +262,59 @@
   font-size: 1.7rem;
 }
 
-.itemOptionMonitoreoActive{
+.itemOptionMonitoreoActive {
   background-color: #172b4d;
   color: whitesmoke;
-  
 }
-
-
 
 .paddingLabel {
   margin-bottom: 2.9rem;
   font-weight: bold;
 }
 #resizerXY {
-  height: 50%;
+  height: 97%;
   width: 0.4rem;
   background-color: #32325d;
+  position: absolute;
+  left: 0;
 }
 
 .container_unidades_monitoreo {
   position: absolute;
-  height: 100%;
-  width: 20rem;
+  height: calc(100vh - 9em);
+  min-width: 17rem !important;
+  max-width: 85vw;
   right: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   top: 0px;
+  margin-top: 4.5rem;
+  margin-right: 1rem;
   background-color: white;
   display: flex;
+  flex-direction: column;
+  /*align-items: center;*/
+  justify-content: center;
   align-items: center;
-  border-top-left-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
+  border-radius: 0.5rem;
 }
 .strongLetrasInfoWindows {
   font-weight: bold;
   color: black;
 }
+
+.bx-search {
+  color: #172b4d;
+  font-size: 1.5rem;
+}
+.detalleIconos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 0.2rem;
+  margin-left: 0.2rem;
+}
 </style>
-
-
-
 <script>
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
@@ -205,12 +398,16 @@ export default {
 
       //console.log("minutos trascurridos " + convert_diferencia_from_minutes);
       var imagen = "img/monitoreo/online.png#" + unidad.CodiVehiMoni;
+      var imagenLista = "img/monitoreo/online_lista.png";
       var color = "";
+      var detalle = "";
 
       if (unidad.AlarAnteGPSDescMoni == 1) {
         imagen = "img/monitoreo/alerta.png#" + unidad.CodiVehiMoni;
         color = "#D50303";
-        return { imagen, color };
+        imagenLista = "img/monitoreo/alerta_lista.png";
+        detalle = "ALERTA GPS";
+        return { imagen, color, imagenLista, detalle };
       }
 
       if (
@@ -218,14 +415,16 @@ export default {
         convert_diferencia_from_minutes <= 5
       ) {
         /**esta transmitiendo**/ /**IMAGEN ONLINE CON DESPACHO**/
-        if (unidad.LetrRutaMoni != "" && unidad.LetrRutaMoni != null) 
-        {
+        if (unidad.LetrRutaMoni != "" && unidad.LetrRutaMoni != null) {
           color = "#157347";
           imagen =
             unidad.UltiVeloMoni == 0
               ? "img/monitoreo/stop_online.png#" + unidad.CodiVehiMoni
               : "img/monitoreo/online.png#" + unidad.CodiVehiMoni;
-          return { imagen, color };
+
+          detalle = "EN LINEA CON DESPACHO";
+          imagenLista = "img/monitoreo/online_lista.png";
+          return { imagen, color, imagenLista, detalle };
         } else {
           /**ONLINE SIN DESPACHO**/
           color = "#060C92";
@@ -233,7 +432,11 @@ export default {
             unidad.UltiVeloMoni == 0
               ? "img/monitoreo/online_sin_ruta_stop.png#" + unidad.CodiVehiMoni
               : "img/monitoreo/online_sin_ruta.png#" + unidad.CodiVehiMoni;
-          return { imagen, color };
+          imagenLista = "img/monitoreo/online_sin_ruta_lista.png";
+
+          detalle = "EN LINEA SIN DESPACHO";
+
+          return { imagen, color, imagenLista, detalle };
         }
       } else if (
         convert_diferencia_from_minutes > 5 &&
@@ -243,14 +446,19 @@ export default {
         imagen =
           "img/monitoreo/sin_gps_now.png#" +
           unidad.CodiVehiMoni; /**recientemente dejo de transmitir**/
+        imagenLista = "img/monitoreo/sin_gps_now_lista.png";
+
+        detalle = "SIN TRANSMISION GPS RECIENTE";
       } else {
         color = "#9B9999";
         imagen =
           "img/monitoreo/sin_gps_full.png#" +
           unidad.CodiVehiMoni; /** no  atransmitiendo en mucho tiempo**/
+        imagenLista = "img/monitoreo/sin_gps_full_lista.png";
+        detalle = "SIN TRANSMISION GPS";
       }
 
-      return { imagen, color };
+      return { imagen, color, imagenLista, detalle };
     },
     async getInfoWindowContent(unidad) {
       var dir = await this.$axios.get(
@@ -386,6 +594,13 @@ export default {
       /*$('img[src*="' + unidad.icono.imagen + '"]')
         .parent()
         .css("transform", "rotate(" + unidad.UltiRumbMoni + "deg)");*/
+    },
+    ubicarUnidad(unidad) {
+      this.oCenter = {
+        lat: parseFloat(unidad.UltiLatiMoni),
+        lng: parseFloat(unidad.UltiLongMoni),
+      };
+      this.oZoom = 18;
     },
   },
   mounted() {
