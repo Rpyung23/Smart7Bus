@@ -48,7 +48,6 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/png', href: 'favicon.png' },
       { rel:'stylesheet', href: 'https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'},
-      { rel:'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'},
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'},
     ]
   },

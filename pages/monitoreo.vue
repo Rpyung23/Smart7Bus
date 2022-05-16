@@ -45,7 +45,7 @@
       </GmapInfoWindow>
     </GmapMap>
 
-    <div id="element2" class="container_unidades_monitoreo">
+    <div id="element2" class="container_unidades_monitoreo" v-if="false">
       <div id="resizerXY"></div>
       <div class="searchInput">
         <i class="bx bx-search"></i>
@@ -80,14 +80,18 @@
               }}<br />
               <strong>Estado : </strong>{{ unidad.icono.detalle }}<br />
               <strong>Fecha : </strong>{{ unidad.UltiFechMoni }}<br />
-              <span class="dispositivo">{{ unidad.DescDispTipo }} {{ unidad.VersDispMoni }}</span><br />
+              <span class="dispositivo"
+                >{{ unidad.DescDispTipo }} {{ unidad.VersDispMoni }}</span
+              ><br />
             </div>
           </div>
 
           <div class="detalleIconos">
             <div class="iconosEventos">
               <i class="bx bx-tachometer" style="color: green"></i>
-              <strong style="color:green;">{{ unidad.UltiVeloMoni }} KM/H</strong>
+              <strong style="color: green"
+                >{{ unidad.UltiVeloMoni }} KM/H</strong
+              >
             </div>
             <div class="iconosEventos">
               <i
@@ -123,11 +127,14 @@
               }}</strong>
             </div>
             <div class="iconosEventos">
-              <i class='bx bxs-car-battery' :style="
+              <i
+                class="bx bxs-car-battery"
+                :style="
                   unidad.AlarCortAlimBateExteMoni == 1
                     ? 'color:red;'
                     : 'color:darkblue;'
-                "></i>
+                "
+              ></i>
               <strong style="color: red">{{
                 unidad.AlarCortAlimBateExteMoni == 1 ? "BAT" : ""
               }}</strong>
@@ -145,32 +152,66 @@
       </div>
     </div>
 
-    <div class="tabOptionsMonitoreo">
-      <div class="itemOptionMonitoreo itemOptionMonitoreoActive">
+    <div class="container_unidades_monitoreo">
+      <div class="searchInput">
+        <i class="bx bx-search"></i>
+        <input
+          type="text"
+          class="inputSearchTexto"
+          name=""
+          id=""
+          placeholder="Unidad"
+        />
+      </div>
+      <div class="cardRuta"  v-for="(ruta) in mListRutas" :key="ruta.LetrRuta">
+        <div><input type="checkbox" name="" id="" />{{ruta.DescRuta}}</div>
+        <div><i class="bx bx-time"></i>{{ruta.controles}} <i class="bx bx-git-merge"></i></div>
+      </div>
+    </div>
+
+    <div id="tabOptionsMonitoreo" class="tabOptionsMonitoreo">
+      <div
+        id="itemMonitoreo"
+        class="itemOptionMonitoreo itemOptionMonitoreoActive"
+      >
         <i class="bx bx-bus"></i>
       </div>
-            <div class="itemOptionMonitoreo"><i class="bx bx-time-five"></i></div>
-      <div class="itemOptionMonitoreo">
+      <div id="itemControles" class="itemOptionMonitoreo">
+        <i class="bx bx-time-five"></i>
+      </div>
+      <div id="itemRutas" class="itemOptionMonitoreo">
         <i class="bx bx-git-repo-forked"></i>
       </div>
-      <div class="itemOptionMonitoreo"><i class="bx bx-cog"></i></div>
+      <div id="itemConfig" class="itemOptionMonitoreo">
+        <i class="bx bx-cog"></i>
+      </div>
     </div>
-    <script src="../js/resizerdiv.js"></script>
+
+    <!--<script src="../js/resizerdiv.js"></script>-->
+    <script src="../js/tabButtonsMonitoreo.js"></script>
   </div>
 </template>
 <style>
+.cardRuta {
+  width: 100%;
+  background-color: #172b4d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+}
 
-.dispositivo{
+.dispositivo {
   color: rgba(56, 54, 54, 0.76);
   font-size: 00.7rem;
   font-family: Arial, Helvetica, sans-serif;
 }
-.iconosEventos{
+.iconosEventos {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.itemContainerMonitoreo{
+.itemContainerMonitoreo {
   display: flex;
 
   align-items: center;
@@ -193,9 +234,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid whitesmoke;
-  box-shadow: -1px 1px whitesmoke, -1px 2px whitesmoke, -1px 2px whitesmoke,
-    -1px 2px whitesmoke, -1px 2px whitesmoke;
+  border: 1px solid rgb(117, 111, 111);
 }
 .ListadoUnidades {
   height: 100%;
@@ -260,6 +299,7 @@
   border-radius: 4rem;
   color: #212529c4;
   font-size: 1.7rem;
+  cursor: pointer;
 }
 
 .itemOptionMonitoreoActive {
@@ -315,16 +355,16 @@
   margin-left: 0.2rem;
 }
 </style>
+
+
 <script>
-import Tabs from "@/components/argon-core/Tabs/Tabs";
-import TabPane from "@/components/argon-core/Tabs/Tab";
+import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
 import axios from "@nuxtjs/axios";
 import { th } from "date-fns/locale";
 export default {
   layout: "DashboardLayout",
   components: {
-    Tabs,
-    TabPane,
+    BaseCheckbox,
   },
   data() {
     return {
@@ -333,6 +373,7 @@ export default {
       oZoom: 7,
       banderaCenter: true,
       mListUnidades: [],
+      mListRutas: [],
       infoContent: "",
       infoWindowPos: {
         lat: 0,
@@ -380,6 +421,27 @@ export default {
             this.updatemListaUnidades(mListUnidadesAux);
           }
           //this.girarMarcador()
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async initRutas() {
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/readRutasMonitoreo",
+          {
+            token: this.token,
+          }
+        );
+        console.log(datos.data)
+        if (datos.data.status_code == 200) 
+        {
+          for(var i=0;i<datos.data.datos.length;i++)
+          {
+            this.mListRutas[i] = datos.data.datos[i]
+          }
+          
         }
       } catch (error) {
         console.log(error);
@@ -604,6 +666,7 @@ export default {
     },
   },
   mounted() {
+    this.initRutas()
     this.initRastreo();
     setInterval(() => {
       this.initRastreo();
