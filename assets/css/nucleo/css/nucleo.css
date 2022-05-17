@@ -583,3 +583,9 @@ License - nucleoapp.com/license/
     border-radius: 0.1rem;
     margin-bottom: 4rem;
   }
+.gmnoprint{
+    display: none !important;
+}
+.gm-style-cc{
+    display: none !important;
+}

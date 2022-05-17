@@ -43,9 +43,62 @@
       >
         <div v-html="infoContent"></div>
       </GmapInfoWindow>
+
+      <GmapPolygon
+        v-for="control in mListControlesAux"
+        :key="control.CodiCtrl"
+        :options="{
+          strokeColor: '#F71313',
+          fillColor: '#F7131380',
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        }"
+        :strokeOpacity="0.5"
+        :strokeWeight="1"
+        :paths="control.calculator.coordinates"
+      />
+
+      <GmapPolyline
+        v-for="(control, index) in mListControlesAux"
+        :key="index"
+        :path="[
+          {
+            lat: parseFloat(control.Lati1Ctrl),
+            lng: parseFloat(control.Long1Ctrl),
+          },
+          {
+            lat: parseFloat(control.Lati2Ctrl),
+            lng: parseFloat(control.Long2Ctrl),
+          },
+        ]"
+        :options="{
+          geodesic: true,
+          strokeColor: '#FF0000',
+          fillColor: '#000000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        }"
+      />
+      <GmapMarker
+        v-for="(control, index) in mListControlesAux"
+        :key="index"
+        :position="{
+          lat: parseFloat(control.Lati1Ctrl),
+          lng: parseFloat(control.Long1Ctrl),
+        }"
+        :optimized="true"
+        icon="static/img/control/control.png"
+        :options="{
+          label: {
+            text: control.DescCtrl,
+            color: '#F71313',
+            className: 'paddingLabelControl',
+          },
+        }"
+      />
     </GmapMap>
 
-    <div id="element2" class="container_unidades_monitoreo" v-if="false">
+    <div id="element2" class="container_unidades_monitoreo">
       <div id="resizerXY"></div>
       <div class="searchInput">
         <i class="bx bx-search"></i>
@@ -152,7 +205,7 @@
       </div>
     </div>
 
-    <div class="container_unidades_monitoreo">
+    <div id="PanelRutas" class="container_otrosPaneles">
       <div class="searchInput">
         <i class="bx bx-search"></i>
         <input
@@ -160,12 +213,90 @@
           class="inputSearchTexto"
           name=""
           id=""
-          placeholder="Unidad"
+          placeholder="Ruta"
         />
       </div>
-      <div class="cardRuta"  v-for="(ruta) in mListRutas" :key="ruta.LetrRuta">
-        <div><input type="checkbox" name="" id="" />{{ruta.DescRuta}}</div>
-        <div><i class="bx bx-time"></i>{{ruta.controles}} <i class="bx bx-git-merge"></i></div>
+      <div class="itemsRuta">
+        <div class="cardRuta" v-for="ruta in mListRutas" :key="ruta.LetrRuta">
+          <div class="checkboxRuta">
+            <input
+              type="checkbox"
+              :value="ruta.LetrRuta"
+              v-model="mListRutasMonitoreo"
+              @change="llenarListaRutasMonitoreo()"
+            />
+          </div>
+          <div class="DetalleRuta">
+            <div class="titleRuta">
+              <span class="spanTitle">{{
+                ruta.DescRuta.substring(0, 17)
+              }}</span>
+              <div class="btn-iconos">
+                <i class="bx bx-time" style="color: green"></i>
+                <strong
+                  ><span
+                    style="
+                      color: green;
+                      margin-right: 0.5rem;
+                      font-size: 0.8rem;
+                    "
+                    >{{ ruta.controles }}</span
+                  ></strong
+                >
+                <i class="bx bx-git-merge"></i>
+              </div>
+            </div>
+
+            <div class="footerRuta">
+              <div>
+                <strong class="spanHoras">Hora Inicio : </strong
+                ><span class="spanHoras">{{ ruta.HoraInicSaliProgRuta }}</span>
+              </div>
+              <div>
+                <strong class="spanHoras">Hora Final : </strong
+                ><span class="spanHoras">{{ ruta.HoraFinaSaliProgRuta }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="PanelControles" class="container_otrosPaneles">
+      <div class="searchInput" style="margin-bottom: 0.5rem">
+        <i class="bx bx-search"></i>
+        <input
+          type="text"
+          class="inputSearchTexto"
+          name=""
+          id=""
+          placeholder="Control"
+        />
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          style="margin-bottom: 0.7rem"
+          checked="true"
+          @change="showControles($event)"
+        />
+        Visualizar Controles
+      </div>
+      <div class="itemsRuta">
+        <div
+          class="cardRuta"
+          v-for="control in mListControles"
+          :key="control.CodiCtrl"
+          @click="centrarControl(control)"
+        >
+          <div class="DetalleRuta">
+            <div class="titleControl">
+              <span class="spanTitle"
+                >({{ control.CodiCtrl }}) {{ control.DescCtrl }}</span
+              >
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -187,18 +318,66 @@
       </div>
     </div>
 
-    <!--<script src="../js/resizerdiv.js"></script>-->
+    <script src="../js/resizerdiv.js"></script>
     <script src="../js/tabButtonsMonitoreo.js"></script>
   </div>
 </template>
 <style>
 .cardRuta {
-  width: 100%;
-  background-color: #172b4d;
+  width: 15.5rem;
+  border-radius: 0.5rem;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  display: flex;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.checkboxRuta {
+  flex-basis: calc(10%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.DetalleRuta {
+  flex-basis: calc(90%);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.titleRuta {
   display: flex;
   justify-content: space-between;
+}
+.titleControl {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+.spanTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: black;
+}
+
+.spanHoras {
+  font-size: 0.77rem;
+  color: black;
+}
+
+.footerRuta {
+  display: flex;
+  flex-direction: column;
+  line-height: 0.85rem;
+}
+
+.btn-iconos {
+  display: flex;
   align-items: center;
-  font-size: 1.1rem;
+  align-content: center;
 }
 
 .dispositivo {
@@ -224,8 +403,9 @@
   caret-color: #172b4d;
 }
 .searchInput {
-  height: 2.5rem;
-  width: 15rem;
+  height: 2.5rem !important;
+  min-height: 2.5rem !important;
+  width: 15.5rem;
   background-color: white;
   margin-left: 1rem;
   margin-bottom: 0.7rem;
@@ -311,6 +491,16 @@
   margin-bottom: 2.9rem;
   font-weight: bold;
 }
+.paddingLabelControl {
+  margin-bottom: 2.9rem;
+  font-weight: bold;
+  border-color: #f71313;
+  border-width: 1px;
+  background-color: white;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+  border-radius: 1rem;
+}
 #resizerXY {
   height: 97%;
   width: 0.4rem;
@@ -319,6 +509,27 @@
   left: 0;
 }
 
+.container_otrosPaneles {
+  position: absolute;
+  height: calc(100vh - 9em);
+  min-width: 17rem;
+  max-width: 17rem;
+  right: 0px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  top: 0px;
+  margin-top: 4.5rem;
+  margin-right: 1rem;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  /*align-items: center;*/
+  align-items: center;
+  border-radius: 0.5rem;
+}
+.itemsRuta {
+  overflow: auto;
+}
 .container_unidades_monitoreo {
   position: absolute;
   height: calc(100vh - 9em);
@@ -371,6 +582,9 @@ export default {
       token: this.$cookies.get("token"),
       oCenter: { lat: -1.249546, lng: -78.585376 },
       oZoom: 7,
+      mListRutasMonitoreo: [],
+      mListControles: [],
+      mListControlesAux: [],
       banderaCenter: true,
       mListUnidades: [],
       mListRutas: [],
@@ -382,6 +596,8 @@ export default {
       infoWinOpen: false,
       currentMidx: null,
       fullscreenControl: false,
+      intervaloMonitoreoGeneral :null,
+      intervaloMonitoreoRuta :null,
       infoOptions: {
         pixelOffset: {
           width: 0,
@@ -391,41 +607,68 @@ export default {
     };
   },
   methods: {
+  procedimientoMonitoreo(datos) {
+      if (datos.data.status_code == 200) {
+        if (this.mListUnidades.length == 0) {
+          for (var i = 0; i < datos.data.data.length; i++) {
+            this.mListUnidades[i] = datos.data.data[i];
+            this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+            if (i == 0 && this.banderaCenter) {
+              this.oCenter = {
+                lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
+                lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
+              };
+              this.oZoom = 12.5;
+              this.banderaCenter = false;
+            }
+          }
+        } else {
+          this.updatemListaUnidades(datos.data.data);
+        }
+        //this.girarMarcador()
+      }
+    },
     async initRastreo() {
       try {
-        var datos = await this.$axios.post(
-          process.env.baseUrlPanel + "/monitoring",
-          {
+        var datos = null;
+        var rutaApi = "/monitoring";
+        var bodyApi = {
             token: this.token,
-          }
-        );
-
-        if (datos.data.status_code == 200) {
-          if (this.mListUnidades.length == 0) {
-            for (var i = 0; i < datos.data.data.length; i++) {
-              this.mListUnidades[i] = datos.data.data[i];
-              this.mListUnidades[i].icono = this.getIcono(
-                this.mListUnidades[i]
-              );
-              if (i == 0 && this.banderaCenter) {
-                this.oCenter = {
-                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
-                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
-                };
-                this.oZoom = 12.5;
-                this.banderaCenter = false;
-              }
-            }
-          } else {
-            var mListUnidadesAux = datos.data.data;
-            this.updatemListaUnidades(mListUnidadesAux);
-          }
-          //this.girarMarcador()
-        }
+          },
+          datos = await this.$axios.post(
+            process.env.baseUrlPanel + rutaApi,
+            bodyApi
+          );
+        this.procedimientoMonitoreo(datos);
       } catch (error) {
         console.log(error);
       }
     },
+    async initRastreoRuta() {
+      try {
+        var datos = null;
+        var rutaApi = "/monitoringRuta";
+        var bodyApi = {
+            token: this.token,
+            rutas:"'JC','PI'"
+          },
+          datos = await this.$axios.post(
+            process.env.baseUrlPanel + rutaApi,
+            bodyApi
+          );
+        this.procedimientoMonitoreo(datos);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    initIntervalMonitoreoGeneral : function() {
+      this.intervaloMonitoreoGeneral = setInterval(() => {
+      this.initRastreo()
+    }, 10000)},
+    initIntervaloMonitoreoRuta : function(){
+    this.intervaloMonitoreoRuta = setInterval(() => {
+      this.initRastreoRuta()
+    },10000)},
     async initRutas() {
       try {
         var datos = await this.$axios.post(
@@ -434,14 +677,29 @@ export default {
             token: this.token,
           }
         );
-        console.log(datos.data)
-        if (datos.data.status_code == 200) 
-        {
-          for(var i=0;i<datos.data.datos.length;i++)
-          {
-            this.mListRutas[i] = datos.data.datos[i]
+        console.log(datos.data);
+        if (datos.data.status_code == 200) {
+          for (var i = 0; i < datos.data.datos.length; i++) {
+            this.mListRutas[i] = datos.data.datos[i];
           }
-          
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async initControles() {
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/checkpoints",
+          {
+            token: this.token,
+          }
+        );
+        if (datos.data.status_code == 200) {
+          for (var i = 0; i < datos.data.data.length; i++) {
+            this.mListControles[i] = datos.data.data[i];
+            this.mListControlesAux[i] = datos.data.data[i];
+          }
         }
       } catch (error) {
         console.log(error);
@@ -522,6 +780,13 @@ export default {
 
       return { imagen, color, imagenLista, detalle };
     },
+    showControles(event) {
+      if (event.target.checked) {
+        this.mListControlesAux = this.mListControles;
+      } else {
+        this.mListControlesAux = [];
+      }
+    },
     async getInfoWindowContent(unidad) {
       var dir = await this.$axios.get(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
@@ -574,7 +839,7 @@ export default {
               mListUnidadesAux[j].CodiVehiMoni
             ) {
               this.updateInformationMarker(i, mListUnidadesAux[j]);
-              mListUnidadesAux(j, 0);
+              mListUnidadesAux.splice(j, 0);
             }
           }
         }
@@ -609,7 +874,7 @@ export default {
       }
     },
     updateInformationMarker(position, oUnidadAux) {
-      console.log("UPDATE INFO MARKER");
+      //console.log("UPDATE INFO MARKER");
       this.mListUnidades[position].EstaSaliMoni = oUnidadAux.EstaSaliMoni;
       this.mListUnidades[position].idSali_mMoni = oUnidadAux.idSali_mMoni;
       this.mListUnidades[position].UltiVeloMoni = oUnidadAux.UltiVeloMoni;
@@ -664,25 +929,29 @@ export default {
       };
       this.oZoom = 18;
     },
+    centrarControl(control) {
+      this.oCenter = {
+        lat: parseFloat(control.Lati1Ctrl),
+        lng: parseFloat(control.Long1Ctrl),
+      };
+      this.oZoom = 19;
+    },
+    llenarListaRutasMonitoreo() {
+      if (this.mListRutasMonitoreo.length > 0) 
+      {
+        clearInterval(this.initIntervalMonitoreoGeneral)
+        this.initIntervaloMonitoreoRuta()
+      } else {
+        clearInterval(this.initIntervaloMonitoreoRuta)
+        this.initIntervalMonitoreoGeneral()
+      }
+    },
   },
   mounted() {
-    this.initRutas()
-    this.initRastreo();
-    setInterval(() => {
-      this.initRastreo();
-    }, 10000);
-
-    /*setInterval(() => {
-      this.girarMarcador();
-    }, 5000);*/
-
-    /*let i = 0;
-    setInterval(() => {
-      $('img[src*="img/monitoreo/online.png#14"]')
-        .parent()
-        .css("transform", "rotate(" + i + "deg)");
-      i += 15;
-    }, 5000);*/
+    this.initRutas();
+    //this.initControles();
+    //this.initRastreo();
+    this.initIntervalMonitoreoGeneral()
   },
 };
 </script>
