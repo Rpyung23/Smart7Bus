@@ -22,12 +22,12 @@
         </sidebar-item>
 
 
-                <sidebar-item :link="{
+        <sidebar-item :link="{
             name: 'Historial',
             icon: 'ni ni-pin-3 text-info',
             path: './historial'
                   }">
-          <sidebar-item :link="{ name: 'Trazado de Ruta - Recorrido', path: '/pricing' }"/>
+          <sidebar-item :link="{ name: 'Trazado de Ruta - Recorrido', path: '/recorrido' }"/>
           <sidebar-item :link="{ name: 'Simulador', path: '/login' }"/>
 
 

@@ -58,30 +58,9 @@
         :paths="control.calculator.coordinates"
       />
 
-      <GmapPolyline
-        v-for="(control, index) in mListControlesAux"
-        :key="index"
-        :path="[
-          {
-            lat: parseFloat(control.Lati1Ctrl),
-            lng: parseFloat(control.Long1Ctrl),
-          },
-          {
-            lat: parseFloat(control.Lati2Ctrl),
-            lng: parseFloat(control.Long2Ctrl),
-          },
-        ]"
-        :options="{
-          geodesic: true,
-          strokeColor: '#FF0000',
-          fillColor: '#000000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2,
-        }"
-      />
       <GmapMarker
-        v-for="(control, index) in mListControlesAux"
-        :key="index"
+        v-for="(control,index) in mListControlesAux"
+        :key="control.DescCtrl+index"
         :position="{
           lat: parseFloat(control.Lati1Ctrl),
           lng: parseFloat(control.Long1Ctrl),
@@ -107,7 +86,9 @@
           class="inputSearchTexto"
           name=""
           id=""
+          v-model="unidadInput"
           placeholder="Unidad"
+          @keypress.enter="centrarUnidadInput()"
         />
       </div>
       <div class="ListadoUnidades">
@@ -582,6 +563,7 @@ export default {
       token: this.$cookies.get("token"),
       oCenter: { lat: -1.249546, lng: -78.585376 },
       oZoom: 7,
+      unidadInput:"",
       mListRutasMonitoreo: [],
       mListControles: [],
       mListControlesAux: [],
@@ -607,10 +589,17 @@ export default {
     };
   },
   methods: {
-  procedimientoMonitoreo(datos) {
-      if (datos.data.status_code == 200) {
-        if (this.mListUnidades.length == 0) {
-          for (var i = 0; i < datos.data.data.length; i++) {
+  procedimientoMonitoreo(datos) 
+  {
+    console.log("TAMANIO : "+ datos.data.data.length)
+    console.log("TAMANIO LISTA UNIDADES : "+this.mListUnidades.length)
+      if (datos.data.status_code == 200) 
+      {
+        if (this.mListUnidades.length == 0) 
+        {
+          for (var i = 0; i < datos.data.data.length; i++) 
+          {
+            
             this.mListUnidades[i] = datos.data.data[i];
             this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
             if (i == 0 && this.banderaCenter) {
@@ -656,6 +645,7 @@ export default {
             process.env.baseUrlPanel + rutaApi,
             bodyApi
           );
+          console.log(datos.data)
         this.procedimientoMonitoreo(datos);
       } catch (error) {
         console.log(error);
@@ -666,7 +656,9 @@ export default {
       this.initRastreo()
     }, 10000)},
     initIntervaloMonitoreoRuta : function(){
-    this.intervaloMonitoreoRuta = setInterval(() => {
+    this.intervaloMonitoreoRuta = setInterval(() => 
+    {
+      console.log("MONITOREO POR RUTA")
       this.initRastreoRuta()
     },10000)},
     async initRutas() {
@@ -830,10 +822,14 @@ export default {
         this.currentMidx = idx;
       }
     },
-    updatemListaUnidades(mListUnidadesAux) {
-      if (this.mListUnidades.length > mListUnidadesAux.length) {
-        for (var i = 0; i < this.mListUnidades.length; i++) {
-          for (var j = 0; j < mListUnidadesAux.length; j++) {
+    updatemListaUnidades(mListUnidadesAux) 
+    {
+      if (this.mListUnidades.length > mListUnidadesAux.length) 
+      {
+        for (var i = 0; i < this.mListUnidades.length; i++) 
+        {
+          for (var j = 0; j < mListUnidadesAux.length; j++) 
+          {
             if (
               this.mListUnidades[i].CodiVehiMoni ==
               mListUnidadesAux[j].CodiVehiMoni
@@ -843,9 +839,13 @@ export default {
             }
           }
         }
-      } else if (this.mListUnidades.length < mListUnidadesAux.length) {
-        for (var k = 0; k < mListUnidadesAux.length; k++) {
-          for (var l = 0; l < this.mListUnidades.length; l++) {
+      } else if (this.mListUnidades.length < mListUnidadesAux.length) 
+      {
+
+        for (var k = 0; k < mListUnidadesAux.length; k++) 
+        {
+          for (var l = 0; l < this.mListUnidades.length; l++) 
+          {
             if (
               mListUnidadesAux[k].CodiVehiMoni ==
               this.mListUnidades[l].CodiVehiMoni
@@ -946,13 +946,28 @@ export default {
         this.initIntervalMonitoreoGeneral()
       }
     },
+    centrarUnidadInput()
+    {
+      for(var i=0;i<this.mListUnidades.length;i++)
+      {
+        if(this.mListUnidades[i].CodiVehiMoni == this.unidadInput)
+        {
+          this.ubicarUnidad(this.mListUnidades[i])
+          return
+        }
+      }
+    }
   },
   mounted() {
     this.initRutas();
-    //this.initControles();
-    //this.initRastreo();
+    this.initControles();
+    this.initRastreo();
     this.initIntervalMonitoreoGeneral()
   },
+  destroyed(){
+    clearInterval(this.initIntervalMonitoreoGeneral)
+    clearInterval(this.initIntervaloMonitoreoRuta)
+  }
 };
 </script>
 

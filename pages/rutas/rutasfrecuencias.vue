@@ -5,7 +5,7 @@
         <div class="col">
           <tabs tabNavClasses="nav-fill flex-column flex-sm-row">
             <tab-pane title="Rutas">
-              <br>
+              <br />
               <card
                 class="no-border-card"
                 body-classes="px-0 pb-1"
@@ -45,7 +45,7 @@
                     </div>
                   </div>
                   <el-table
-                    :data="queriedData"
+                    :data="tableData"
                     row-key="id"
                     header-row-class-name="thead-dark"
                   >
@@ -59,21 +59,7 @@
                     <el-table-column
                       label="Estado"
                       min-width="150px"
-                      prop="status"
-                      sortable
-                    >
-                      <template v-slot="{ row }">
-                        <badge class="badge-dot mr-4" type="">
-                          <i :class="`bg-${row.statusType}`"></i>
-                          <span class="status">{{ row.status }}</span>
-                        </badge>
-                      </template>
-                    </el-table-column>
-
-                    <el-table-column
-                      label="Informate"
-                      min-width="150px"
-                      prop="status"
+                      prop="ActiRuta"
                       sortable
                     >
                       <template v-slot="{ row }">
@@ -155,7 +141,6 @@ import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb"
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
 import swal from "sweetalert2";
-import users from "~/components/tables/users2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 
@@ -179,32 +164,39 @@ export default {
           type: "selection",
         },
         {
-          prop: "name",
-          label: "Unidad",
-          minWidth: 115,
-          sortable: true,
+          prop: "LetrRuta",
+          label: "Letra",
+          minWidth: 100,
         },
         {
-          prop: "nickname",
-          label: "Serie",
-          minWidth: 170,
-          sortable: true,
+          prop: "DescRuta",
+          label: "Descripción",
+          minWidth: 200,
         },
         {
-          prop: "email",
-          label: "Placa",
-          minWidth: 110,
-          sortable: true,
+          prop: "DescTerm",
+          label: "Terminal",
+          minWidth: 140,
         },
         {
-          prop: "salary",
-          label: "Número Sim",
+          prop: "InteSaliProgRuta",
+          label: "Intervalo",
+          minWidth: 140,
+        },
+        {
+          prop: "HoraInicSaliProgRuta",
+          label: "Salida",
           minWidth: 160,
-          sortable: true,
+        },
+        {
+          prop: "HoraFinaSaliProgRuta",
+          label: "Finalización",
+          minWidth: 160,
         },
       ],
-      tableData: users,
+      tableData: [],
       selectedRows: [],
+      token: this.$cookies.get("token"),
     };
   },
   methods: {
@@ -256,9 +248,54 @@ export default {
         this.tableData.splice(indexToDelete, 1);
       }
     },
+    showToast(type,msm){
+      var Toast = swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', swal.stopTimer)
+    toast.addEventListener('mouseleave', swal.resumeTimer)
+  }
+})
+
+Toast.fire({
+  icon: type,
+  title: msm
+})
+    },
     selectionChange(selectedRows) {
       this.selectedRows = selectedRows;
     },
+    async readAllRutas() {
+      var datos = await this.$axios.post(process.env.baseUrlPanel + "/rutes", {
+        token: this.token,
+      });
+
+      if (datos.data.status_code == 200) 
+      {
+        for (var i = 0; i < datos.data.data.length; i++) {
+          datos.data.data[i].statusType = datos.data.data[i].ActiRuta = 1
+            ? "success"
+            : "danger";
+          datos.data.data[i].status = datos.data.data[i].ActiRuta = 1
+            ? "Activo"
+            : "Inactivo";
+        }
+
+        this.tableData.push(...datos.data.data);
+      }else if(datos.data.status_code == 400)
+      {
+        this.showToast('danger',datos.data.msm)
+      }else{
+         this.showToast('warning','No existen rutas disponibles')
+      }
+    },
+  },
+  mounted() {
+    this.readAllRutas();
   },
 };
 </script>

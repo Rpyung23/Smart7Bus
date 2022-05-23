@@ -4,7 +4,7 @@
         :center="{ lat: 10, lng: 10 }"
         :zoom="7"
         map-type-id="roadmap"
-        style="width: 100%; height: 100vh"
+        class="mapa"
         :options="{zoomControl: false,
         scaleControl: false,
         mapTypeControl: false,
@@ -20,6 +20,11 @@
 ::-webkit-scrollbar {
     display: none;
 }
+.mapa {
+  width: 100%;
+  height: calc(100vh - 3.56rem);
+}
+
 </style>
 <script>
 export default {

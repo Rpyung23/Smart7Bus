@@ -52,6 +52,27 @@
                   v-bind="column"
                 >
                 </el-table-column>
+                                    <el-table-column
+                      label="Informate"
+                      min-width="150px"
+                      prop="status"
+                      sortable
+                    >
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.statusType}`"></i>
+                          <span class="status">{{ row.status }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column
+                      min-width="180px"
+                      align="right"
+                      label="Actions"
+                    >
+                     <el-button type="primary" icon="ni ni-collection">Ver detalle</el-button>
+                    </el-table-column>
               </el-table>
             </div>
             <div
@@ -115,73 +136,32 @@ export default {
       tableColumns: [
         {
           prop: "name",
-          label: "Salida",
-          minWidth: 140,
+          label: "N° Recibo",
+          minWidth: 160,
           sortable: true,
         },
         {
           prop: "nickname",
-          label: "Unidad",
-          minWidth: 130,
+          label: "Fecha Pago",
+          minWidth: 160,
           sortable: true,
         },
         {
           prop: "email",
-          label: "Ruta - Linea",
-          minWidth: 180,
+          label: "Vehiculo",
+          minWidth: 120,
         },
         {
           prop: "salary",
-          label: "F. Creación",
+          label: "Atención",
           minWidth: 160,
         },
         {
           prop: "salary",
-          label: "F. Pago",
+          label: "Total ($)",
           minWidth: 160,
           sortable: true,
-        },
-        {
-          prop: "salary",
-          label: "Minutos",
-          minWidth: 180,
-        },
-        {
-          prop: "salary",
-          label: "Minutos Desc",
-          minWidth: 180,
-        },
-        {
-          prop: "salary",
-          label: "C. Rubro",
-          minWidth: 200
-        },
-        {
-          prop: "salary",
-          label: "Anotaciones Tablero",
-          minWidth: 250,
-          sortable: true,
-        },
-        {
-          prop: "salary",
-          label: "Total",
-          minWidth: 160
-        },
-        {
-          prop: "salary",
-          label: "T. Desc",
-          minWidth: 160
-        },
-        {
-          prop: "salary",
-          label: "T. Abonado",
-          minWidth: 180
-        },
-        {
-          prop: "salary",
-          label: "T. Restante",
-          minWidth: 160
-        },
+        }
       ],
       tableData: users,
       selectedRows: [],
