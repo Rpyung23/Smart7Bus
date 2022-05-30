@@ -5,80 +5,106 @@
         <div class="col">
           <card
             class="no-border-card"
-            body-classes="px-0 pb-1"
+            body-classes="card-bodyPanelCOntrolProduccion px-0 pb-1"
             footer-classes="pb-2"
           >
             <div>
-              <div
-                class="
-                  col-12
-                  d-flex
-                  justify-content-center justify-content-sm-between
-                  flex-wrap
-                "
-              >
-                <el-select
-                  class="select-primary pagination-select"
-                  v-model="pagination.perPage"
-                  placeholder="Per page"
-                >
-                  <el-option
-                    class="select-primary"
-                    v-for="item in pagination.perPageOptions"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                  >
-                  </el-option>
-                </el-select>
-
-                <div>
-                  <base-input
-                    v-model="searchQuery"
-                    prepend-icon="fas fa-search"
-                    placeholder="Buscando..."
-                  >
-                  </base-input>
-                </div>
-              </div>
               <el-table
-                :data="queriedData"
+                :data="tableDataPanelControlProduccion"
                 row-key="id"
+                class="tablePanelControlProduccion"
                 header-row-class-name="thead-dark"
+                :row-class-name="tableRowClassNamePanelControlProduccion"
               >
-                <el-table-column
-                  v-for="column in tableColumns"
-                  :key="column.label"
-                  v-bind="column"
-                >
-                </el-table-column>
-              </el-table>
-            </div>
-            <div
-              slot="footer"
-              class="
-                col-12
-                d-flex
-                justify-content-center justify-content-sm-between
-                flex-wrap
-              "
-            >
-              <div class="">
-                <p class="card-category">
-                  Showing {{ from + 1 }} to {{ to }} of {{ total }} entries
+                  
 
-                  <span v-if="selectedRows.length">
-                    &nbsp; &nbsp; {{ selectedRows.length }} rows selected
-                  </span>
-                </p>
-              </div>
-              <base-pagination
-                class="pagination-no-border"
-                v-model="pagination.currentPage"
-                :per-page="pagination.perPage"
-                :total="total"
-              >
-              </base-pagination>
+          <el-table-column
+          prop= "id"
+          label= "ID"
+          minWidth= 120>
+        </el-table-column>
+        <el-table-column
+          prop= "salida_id"
+          label= "Salida"
+          minWidth= 130
+          sortable= true
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "vehiculo_codigo"
+          label= "Unidad"
+          minWidth= 140
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "DescRutaSali_m"
+          label= "Ruta - Linea"
+          minWidth= 200
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "fecha_creacion"
+          label= "F. Creación"
+          minWidth= 180
+          sortable= true
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "FaltMinuDia"
+          label= "Minutos"
+          minWidth= 150
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "FaltMinuDiaDsct"
+          label= "Minutos Desc"
+          minWidth= 150
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "item_descripcion"
+          label= "C. Rubro"
+          minWidth= 200
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "anotaciones"
+          label= "Anotaciones Tablero"
+          minWidth= 200
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "anotacion_descuento"
+          label= "Anotaciones Desc"
+          minWidth= 200
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "monto"
+          label= "Total"
+          minWidth= 120
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "monto_descuento"
+          label= "T. Desc"
+          minWidth= 120
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "monto_abonado"
+          label= "T. Abonado"
+          minWidth= 140
+        >
+        </el-table-column>
+        <el-table-column
+          prop= "pendiente"
+          label= "T. Pendiente"
+          minWidth= 140
+        >
+        </el-table-column>
+
+              </el-table>
             </div>
           </card>
         </div>
@@ -93,13 +119,13 @@ import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb"
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
 import swal from "sweetalert2";
-import users from "~/components/tables/users2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
+import { ro } from 'date-fns/locale';
 
 export default {
   mixins: [clientPaginationMixin],
-  layout: "RecaudoDashboardLayout",
+  layout: "ProduccionDashboardLayout",
   components: {
     Tabs,
     TabPane,
@@ -112,82 +138,37 @@ export default {
   },
   data() {
     return {
-      tableColumns: [
-        {
-          prop: "name",
-          label: "Salida",
-          minWidth: 140,
-          sortable: true,
-        },
-        {
-          prop: "nickname",
-          label: "Unidad",
-          minWidth: 130,
-          sortable: true,
-        },
-        {
-          prop: "email",
-          label: "Ruta - Linea",
-          minWidth: 180,
-        },
-        {
-          prop: "salary",
-          label: "F. Creación",
-          minWidth: 160,
-        },
-        {
-          prop: "salary",
-          label: "F. Pago",
-          minWidth: 160,
-          sortable: true,
-        },
-        {
-          prop: "salary",
-          label: "Minutos",
-          minWidth: 180,
-        },
-        {
-          prop: "salary",
-          label: "Minutos Desc",
-          minWidth: 180,
-        },
-        {
-          prop: "salary",
-          label: "C. Rubro",
-          minWidth: 200
-        },
-        {
-          prop: "salary",
-          label: "Anotaciones Tablero",
-          minWidth: 250,
-          sortable: true,
-        },
-        {
-          prop: "salary",
-          label: "Total",
-          minWidth: 160
-        },
-        {
-          prop: "salary",
-          label: "T. Desc",
-          minWidth: 160
-        },
-        {
-          prop: "salary",
-          label: "T. Abonado",
-          minWidth: 180
-        },
-        {
-          prop: "salary",
-          label: "T. Restante",
-          minWidth: 160
-        },
-      ],
-      tableData: users,
+      tableDataPanelControlProduccion: [],
       selectedRows: [],
+      token:this.$cookies.get("token"),
+      fechaInicialTableroProduccion:"",
+      fechaFinalTableroProduccion:""
     };
   },
   methods: {
+  tableRowClassNamePanelControlProduccion({row, rowIndex}) 
+  {
+        if (row.item_id == 32) {
+          return 'warning-row-panelControlProduccion';
+        } else if (row.item_id == 64) {
+          return 'success-row-panelControlProduccion';
+        }
+        return '';
+      },
+  initFechaActualProduccionPanelControl() {
+      var fecha = new Date();
+      var mes = fecha.getMonth() + 1;
+      var day = fecha.getDate();
+      var format =
+        fecha.getFullYear() +
+        "-" +
+        (mes < 10 ? "0" + mes : mes) +
+        "-" +
+        (day < 10 ? "0" + day : day);
+
+      this.fechaInicialTableroProduccion = format;
+      this.fechaFinalTableroProduccion = format;
+    },
     handleLike(index, row) {
       swal.fire({
         title: `You liked ${row.name}`,
@@ -239,11 +220,41 @@ export default {
     selectionChange(selectedRows) {
       this.selectedRows = selectedRows;
     },
-  },
+    async readlPanelTableroProduccion(){
+      var datos = await this.$axios.post(process.env.baseUrl+"/ProduccionpanelControl",{
+        token:this.token,
+        fechaI: this.fechaInicialTableroProduccion,
+        fechaF: this.fechaFinalTableroProduccion
+      })
+
+      console.log(datos.data)
+
+      if(datos.data.status_code == 200)
+      {
+        this.tableDataPanelControlProduccion.push(...datos.data.datos)
+      }
+
+    }
+  },mounted(){
+    this.initFechaActualProduccionPanelControl()
+    this.readlPanelTableroProduccion()
+  }
 };
 </script>
 <style>
+
+  .el-table .warning-row-panelControlProduccion {
+    background: rgba(252, 143, 143, 0.692) !important;
+  }
+
+  .el-table .success-row-panelControlProduccion {
+    background: #8fed8fbb !important;
+  }
+
 .no-border-card .card-footer {
   border-top: 0;
+}
+.card-bodyPanelCOntrolProduccion{
+  padding: 0rem !important;
 }
 </style>

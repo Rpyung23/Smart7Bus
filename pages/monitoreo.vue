@@ -98,6 +98,7 @@
           class="itemMonitoreoUnidad"
           :key="unidad.CodiVehiMoni"
           v-for="unidad in mListUnidades"
+          v-if="unidad.isvisible"
           @click="ubicarUnidad(unidad)"
         >
           <div class="itemContainerMonitoreo">
@@ -630,7 +631,9 @@ export default {
       }
     },
     selectedRutaMonitoreo() {
-      if (this.mListRutasMonitoreo.length > 0) {
+      if (this.mListRutasMonitoreo.length > 0) 
+      {
+        this.initControleMonitoreoRutas()
         for (var i = 0; i < this.mListUnidades.length; i++) 
         {
           var bandera = false
@@ -645,6 +648,7 @@ export default {
           this.mListUnidades[i].isvisible = bandera ? true : false
         }
       } else {
+        this.initControles()
         for (var k = 0; k < this.mListUnidades.length; k++) {
           this.mListUnidades[k].isvisible = true;
         }
@@ -681,6 +685,33 @@ export default {
           }
         );
         if (datos.data.status_code == 200) {
+          this.mListControlesMonitoreo = [];
+            this.mListControlesMonitoreoAux = [];
+          for (var i = 0; i < datos.data.data.length; i++) {
+            this.mListControlesMonitoreo[i] = datos.data.data[i];
+            this.mListControlesMonitoreoAux[i] = datos.data.data[i];
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async initControleMonitoreoRutas() {
+      console.log("INICIANDO CONTROLES");
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/AllControlesPorRuta",
+          {
+            token: this.token,
+            rutas:this.mListRutasMonitoreo
+          }
+        );
+
+        if (datos.data.status_code == 200) 
+        {
+          this.mListControlesMonitoreo = [];
+          this.mListControlesMonitoreoAux = [] 
+          
           for (var i = 0; i < datos.data.data.length; i++) {
             this.mListControlesMonitoreo[i] = datos.data.data[i];
             this.mListControlesMonitoreoAux[i] = datos.data.data[i];
@@ -898,7 +929,6 @@ export default {
         });
       }
     },
-
     girarMarcadorUnitario(unidad) {
       var rotation = unidad.UltiRumbMoni + 180;
       /*$(`img[src="${unidad.icono.imagen}"]`).css({
@@ -930,7 +960,8 @@ export default {
       };
       this.oZoom = 19;
     },
-    centrarUnidadInput() {
+    centrarUnidadInput() 
+    {
       for (var i = 0; i < this.mListUnidades.length; i++) {
         if (this.mListUnidades[i].CodiVehiMoni == this.unidadInput) {
           this.ubicarUnidad(this.mListUnidades[i]);

@@ -120,7 +120,7 @@ import TabPane from "@/components/argon-core/Tabs/Tab";
 
 export default {
   mixins: [clientPaginationMixin],
-  layout: "RecaudoDashboardLayout",
+  layout: "ProduccionDashboardLayout",
   components: {
     Tabs,
     TabPane,

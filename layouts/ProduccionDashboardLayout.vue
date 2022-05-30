@@ -22,7 +22,7 @@
             :link="{ name: 'Recibos Vehiculos', path: './recibopagosvehiculo' }"
           />
           <sidebar-item
-            :link="{ name: 'Recibos Lineas', path: '/forms/components' }"
+            :link="{ name: 'Recibos Lineas', path: '#' }"
           />
         </sidebar-item>
 
@@ -36,7 +36,7 @@
             :link="{ name: 'Minutos y Tarjetas', path: '/forms/elements' }"
           />
           <sidebar-item :link="{ name: 'Rubros', path: '/forms/components' }" />
-          <sidebar-item :link="{ name: 'Pagos Vehiculo', path: '/forms/components' }" />
+          <sidebar-item :link="{ name: 'Pagos Vehiculo', path: './rpagosvehiculo' }" />
           <sidebar-item
             :link="{ name: 'Resumido Vehiculos', path: '/forms/elements' }"
           />
