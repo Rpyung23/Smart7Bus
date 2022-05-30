@@ -47,24 +47,39 @@
         title-classes="nav-link"
         title-tag="a"
         icon="ni ni-bell-55"
+        :visibleBadge="visibleBadgeNotification"
+        :hasToggle="false"
         menu-classes="dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden"
       >
         <template>
           <!-- Dropdown header -->
           <div class="px-3 py-3">
             <h6 class="text-sm text-muted m-0">
-              You have <strong class="text-primary">13</strong> notifications.
+              Tu tienes
+              <strong class="text-primary">{{
+                mListaAlertasDispositivosNotificaciones.length
+              }}</strong>
+              notificaciones de dispositivos.
             </h6>
           </div>
           <!-- List group -->
-          <div class="list-group list-group-flush">
-            <a href="#!" class="list-group-item list-group-item-action">
+          <div
+            class="
+              list-group list-group-flush
+              container-list-Notificaiones-Alerta
+            "
+          >
+            <a
+              href="#!"
+              class="list-group-item list-group-item-action"
+              v-for="alerta in mListaAlertasDispositivosNotificaciones"
+              :key="alerta.idDispEven"
+            >
               <div class="row align-items-center">
                 <div class="col-auto">
-                  <!-- Avatar -->
                   <img
                     alt="Image placeholder"
-                    src="img/theme/team-1.jpg"
+                    src="img/monitoreo/alerta_lista_big.png"
                     class="avatar rounded-circle"
                   />
                 </div>
@@ -73,120 +88,18 @@
                     class="d-flex justify-content-between align-items-center"
                   >
                     <div>
-                      <h4 class="mb-0 text-sm">John Snow</h4>
+                      <h4 class="mb-0 text-sm">
+                        Unidad N°{{ alerta.CodiVehiDispEven }} Dispositivo N°
+                        {{ alerta.CodiDispDispEven }}
+                      </h4>
                     </div>
                     <div class="text-right text-muted">
-                      <small>2 hrs ago</small>
+                      <small>{{ alerta.HoraDispEven }}</small>
                     </div>
                   </div>
                   <p class="text-sm mb-0">
-                    Let's meet at Starbucks at 11:30. Wdyt?
-                  </p>
-                </div>
-              </div>
-            </a>
-            <a href="#!" class="list-group-item list-group-item-action">
-              <div class="row align-items-center">
-                <div class="col-auto">
-                  <!-- Avatar -->
-                  <img
-                    alt="Image placeholder"
-                    src="img/theme/team-2.jpg"
-                    class="avatar rounded-circle"
-                  />
-                </div>
-                <div class="col ml--2">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <div>
-                      <h4 class="mb-0 text-sm">John Snow</h4>
-                    </div>
-                    <div class="text-right text-muted">
-                      <small>3 hrs ago</small>
-                    </div>
-                  </div>
-                  <p class="text-sm mb-0">
-                    A new issue has been reported for Argon.
-                  </p>
-                </div>
-              </div>
-            </a>
-            <a href="#!" class="list-group-item list-group-item-action">
-              <div class="row align-items-center">
-                <div class="col-auto">
-                  <!-- Avatar -->
-                  <img
-                    alt="Image placeholder"
-                    src="img/theme/team-3.jpg"
-                    class="avatar rounded-circle"
-                  />
-                </div>
-                <div class="col ml--2">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <div>
-                      <h4 class="mb-0 text-sm">John Snow</h4>
-                    </div>
-                    <div class="text-right text-muted">
-                      <small>5 hrs ago</small>
-                    </div>
-                  </div>
-                  <p class="text-sm mb-0">Your posts have been liked a lot.</p>
-                </div>
-              </div>
-            </a>
-            <a href="#!" class="list-group-item list-group-item-action">
-              <div class="row align-items-center">
-                <div class="col-auto">
-                  <!-- Avatar -->
-                  <img
-                    alt="Image placeholder"
-                    src="img/theme/team-4.jpg"
-                    class="avatar rounded-circle"
-                  />
-                </div>
-                <div class="col ml--2">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <div>
-                      <h4 class="mb-0 text-sm">John Snow</h4>
-                    </div>
-                    <div class="text-right text-muted">
-                      <small>2 hrs ago</small>
-                    </div>
-                  </div>
-                  <p class="text-sm mb-0">
-                    Let's meet at Starbucks at 11:30. Wdyt?
-                  </p>
-                </div>
-              </div>
-            </a>
-            <a href="#!" class="list-group-item list-group-item-action">
-              <div class="row align-items-center">
-                <div class="col-auto">
-                  <!-- Avatar -->
-                  <img
-                    alt="Image placeholder"
-                    src="img/theme/team-5.jpg"
-                    class="avatar rounded-circle"
-                  />
-                </div>
-                <div class="col ml--2">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <div>
-                      <h4 class="mb-0 text-sm">John Snow</h4>
-                    </div>
-                    <div class="text-right text-muted">
-                      <small>3 hrs ago</small>
-                    </div>
-                  </div>
-                  <p class="text-sm mb-0">
-                    A new issue has been reported for Argon.
+                    {{ alerta.DescDispEvenList }}
+                    {{ alerta.DescCtrl != null ? alerta.DescCtrl : "" }}
                   </p>
                 </div>
               </div>
@@ -196,10 +109,11 @@
           <a
             href="#!"
             class="dropdown-item text-center text-primary font-weight-bold py-3"
-            >View all</a
+            >Ver todo</a
           >
         </template>
       </base-dropdown>
+
       <base-dropdown
         menu-classes="dropdown-menu-lg dropdown-menu-dark bg-default dropdown-menu-right"
         class="nav-item"
@@ -273,10 +187,12 @@
         <a href="#" class="nav-link pr-0" @click.prevent slot="title-container">
           <div class="media align-items-center">
             <span class="avatar avatar-sm rounded-circle">
-              <img alt="Image placeholder" src="img/theme/team-4.jpg" />
+              <img alt="Image placeholder" :src="logo" />
             </span>
             <div class="media-body ml-2 d-none d-lg-block">
-              <span class="mb-0 text-sm font-weight-bold">John Snow</span>
+              <span class="mb-0 text-sm font-weight-bold">{{
+                nameUsuario
+              }}</span>
             </div>
           </div>
         </a>
@@ -302,7 +218,7 @@
             <span>Support</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#!" class="dropdown-item">
+          <a href="./" class="dropdown-item" @click="cerrarSession()">
             <i class="ni ni-user-run"></i>
             <span>Logout</span>
           </a>
@@ -315,12 +231,14 @@
 import { CollapseTransition } from "vue2-transitions";
 import BaseNav from "@/components/argon-core/Navbar/BaseNav.vue";
 import Modal from "@/components/argon-core/Modal.vue";
+import { Badge } from "element-ui";
 
 export default {
   components: {
     CollapseTransition,
     BaseNav,
     Modal,
+    [Badge.name]: Badge,
   },
   props: {
     type: {
@@ -339,9 +257,14 @@ export default {
   data() {
     return {
       hora: "00:00:00",
+      nameUsuario: "SIN NOMBRE",
+      mListaAlertasDispositivosNotificaciones: [],
+      mListaAlertasDispositivosNotificacionesAux: [],
+      logo: this.$cookies.get("logo"),
       activeNotifications: false,
       showMenu: false,
       searchModalVisible: false,
+      visibleBadgeNotification: false,
       searchQuery: "",
     };
   },
@@ -351,6 +274,12 @@ export default {
     },
     toggleNotificationDropDown() {
       this.activeNotifications = !this.activeNotifications;
+    },
+    cerrarSession(){
+      this.$cookies.set("token",null)
+      this.$cookies.set("logo",null)
+      this.$cookies.set("namesUsuario",null)
+      this.$router.push({ path:"/"+this.$cookies.get("empresa"),replace:true});
     },
     mueveReloj() {
       var momentoActual = new Date();
@@ -378,12 +307,61 @@ export default {
     hideSidebar() {
       this.$sidebar.displaySidebar(false);
     },
+
+    reproducirSonido() {
+      var encontrado = false
+      if (this.mListaAlertasDispositivosNotificacionesAux.length > 0) {
+        for (var contador = 0;contador < this.mListaAlertasDispositivosNotificacionesAux.length;contador++) 
+        {
+          if (
+              this.mListaAlertasDispositivosNotificacionesAux[contador].idDispEven !=
+              this.mListaAlertasDispositivosNotificaciones[contador].idDispEven
+            ) {
+              console.log("NUEVO EVENTO")
+              var audio = new Audio("mp3/alerta.mp3");
+              this.visibleBadgeNotification = true;
+              audio.play();
+              contador = 9999999999999999999999999999;
+              encontrado = true
+            }
+        }
+      }
+
+      if(!encontrado){
+        this.visibleBadgeNotification =  false
+      }
+    },
+    readNotificacionesAlertaDipositivos: async function () {
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/readAllAlertasDispotivos",
+        {
+          token: this.$cookies.get("token"),
+        }
+      );
+
+      this.mListaAlertasDispositivosNotificaciones = [];
+
+      if (datos.data.status_code == 200) {
+        this.mListaAlertasDispositivosNotificaciones.push(...datos.data.datos);
+        this.reproducirSonido();
+        this.mListaAlertasDispositivosNotificacionesAux = []
+        this.mListaAlertasDispositivosNotificacionesAux.push(
+          ...this.mListaAlertasDispositivosNotificaciones
+        );
+      }
+    },
   },
   mounted() {
+    this.readNotificacionesAlertaDipositivos();
     this.mueveReloj();
+    this.nameUsuario = this.$cookies.get("namesUsuario");
     setInterval(() => {
       this.mueveReloj();
     }, 1000);
+
+    setInterval(() => {
+      this.readNotificacionesAlertaDipositivos();
+    }, 16000);
   },
 };
 </script>
@@ -393,6 +371,10 @@ export default {
   src: url("assets/css/nucleo/fonts/digital-7.ttf") format("truetype");
 }
 
+.container-list-Notificaiones-Alerta {
+  height: 20rem !important;
+  overflow: auto;
+}
 .barraTitle {
   display: flex;
   justify-content: center;
@@ -420,7 +402,4 @@ export default {
     display: none;
   }
 }
-
-
-
 </style>

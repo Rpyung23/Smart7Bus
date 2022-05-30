@@ -106,31 +106,23 @@ export default {
   layout: "AuthLayout",
   async asyncData({ params }) {
     let empresa = params.empresa;
-    let sub_empresa = params.subempresa;
-    var descripcion = null;
     var empresa_name = null;
+    let logo_empresa = ""
     try {
       var datos = await axios_.post(
-        process.env.baseUrl + empresa + "/" + sub_empresa + "/info"
+        process.env.baseUrl +"/" + empresa + "/infoEmpresa"
       );
-      //console.log(datos.data.data.descripcion)
-      if (datos.data.data.activo == 1) {
-        descripcion = datos.data.data.descripcion;
-        empresa_name = descripcion;
-      } else {
-        descripcion = "EMPRESA DESACTIVADA MOMENTANEAMENTE";
-        empresa_name = descripcion;
-        empresa = null;
-        sub_empresa = null;
-      }
+      
+      empresa_name = datos.data.data.name;
+      logo_empresa = datos.data.data.logo;
     } catch (error) {
       empresa_name = error.toString();
     }
-    return { empresa, sub_empresa, empresa_name };
+    return { empresa, empresa_name,logo_empresa };
   },
   head() {
     return {
-      title: this.sub_empresa + " | Smart7Bus.com",
+      title: this.empresa + " | Smart7Bus.com",
     };
   },
   data() {
@@ -150,51 +142,40 @@ export default {
   methods: {
     async OnLogin() {
       if (this.model.email != "" && this.model.password != "") {
-        var api =
-          process.env.baseUrl +
-          this.empresa +
-          "/" +
-          this.sub_empresa +
-          "/login";
 
-        var status = await axios_.post(api, {
+        var api =
+          process.env.baseUrl+"/" +this.empresa +"/loginEmpresa";
+
+        var datos = await axios_.post(api, {
           user: this.model.email,
           password: this.model.password,
         });
-        var obj = status.data;
-        if (obj.status_code == 200) {
+
+        var obj = datos.data
+
+        if (obj.token != "S/N" && obj.names != "S/N") 
+        {
           Swal.fire({
             title: "Gestión Inteligente de Transporte Urbano",
-            text: "Bienvenido " + this.model.email,
+            text: "Bienvenido " + obj.names,
             icon: "success",
             allowOutsideClick: false,
             confirmButtonText: "Aceptar",
           }).then((result) => {
             if (result.isConfirmed) 
             {
-              this.$cookies.set("token",obj.data)
+              this.$cookies.set("empresa",this.empresa)
+              this.$cookies.set("token",obj.token)
+              this.$cookies.set("namesUsuario",obj.names)
+              this.$cookies.set("logo",this.logo_empresa)
               this.$router.push("/monitoreo");
               
             }
           });
-        } else if (obj.status_code == 300) {
-          Swal.fire({
-            title: "Aviso",
-            text: obj.msg,
-            icon: "warning",
-            confirmButtonText: "Intenter nuevamente",
-          });
-        } else if (obj.status_code == 400) {
-          Swal.fire({
-            title: "Error 400!",
-            text: obj.msg,
-            icon: "error",
-            confirmButtonText: "Aceptar",
-          });
         } else {
           Swal.fire({
-            title: obj.status_code,
-            text: obj.msg,
+            title: "Gestión Inteligente de Transporte Urbano",
+            text: "Credenciales no válidas",
             icon: "error",
             confirmButtonText: "Aceptar",
           });
@@ -216,7 +197,7 @@ export default {
   mounted() {
     //console.log(this.empresa_container)
     if (this.sub_empresa_texto != "Sin Empresa") {
-      this.sub_empresa_texto = this.empresa_name.substring(0, 18);
+      this.sub_empresa_texto = this.empresa_name;
     }
     /*window.addEventListener("keypress", function(e){
 

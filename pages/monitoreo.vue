@@ -1,4 +1,5 @@
 <template>
+<!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
   <div id="rezizeArea">
     <GmapMap
       :center="oCenter"
@@ -18,6 +19,7 @@
       <GmapMarker
         v-for="(unidad, index) in mListUnidades"
         :key="unidad.CodiVehiMoni"
+        v-if="unidad.isvisible"
         :position="{
           lat: parseFloat(unidad.UltiLatiMoni),
           lng: parseFloat(unidad.UltiLongMoni),
@@ -45,7 +47,7 @@
       </GmapInfoWindow>
 
       <GmapPolygon
-        v-for="control in mListControlesAux"
+        v-for="control in mListControlesMonitoreoAux"
         :key="control.CodiCtrl"
         :options="{
           strokeColor: '#F71313',
@@ -59,8 +61,8 @@
       />
 
       <GmapMarker
-        v-for="(control,index) in mListControlesAux"
-        :key="control.DescCtrl+index"
+        v-for="(control, index) in mListControlesMonitoreoAux"
+        :key="control.DescCtrl + index"
         :position="{
           lat: parseFloat(control.Lati1Ctrl),
           lng: parseFloat(control.Long1Ctrl),
@@ -204,7 +206,7 @@
               type="checkbox"
               :value="ruta.LetrRuta"
               v-model="mListRutasMonitoreo"
-              @change="llenarListaRutasMonitoreo()"
+              @change="selectedRutaMonitoreo()"
             />
           </div>
           <div class="DetalleRuta">
@@ -266,7 +268,7 @@
       <div class="itemsRuta">
         <div
           class="cardRuta"
-          v-for="control in mListControles"
+          v-for="control in mListControlesMonitoreo"
           :key="control.CodiCtrl"
           @click="centrarControl(control)"
         >
@@ -441,7 +443,7 @@
   height: 3.3rem;
   width: 11rem;
   margin-right: 1rem;
-  margin-top: 0.5rem;
+  margin-top: 0.55rem;
   position: absolute;
   top: 0;
   right: 0;
@@ -563,10 +565,10 @@ export default {
       token: this.$cookies.get("token"),
       oCenter: { lat: -1.249546, lng: -78.585376 },
       oZoom: 7,
-      unidadInput:"",
+      unidadInput: "",
       mListRutasMonitoreo: [],
-      mListControles: [],
-      mListControlesAux: [],
+      mListControlesMonitoreo: [],
+      mListControlesMonitoreoAux: [],
       banderaCenter: true,
       mListUnidades: [],
       mListRutas: [],
@@ -578,8 +580,8 @@ export default {
       infoWinOpen: false,
       currentMidx: null,
       fullscreenControl: false,
-      intervaloMonitoreoGeneral :null,
-      intervaloMonitoreoRuta :null,
+      intervaloMonitoreoGeneral: null,
+      intervaloMonitoreoRuta: null,
       infoOptions: {
         pixelOffset: {
           width: 0,
@@ -589,18 +591,14 @@ export default {
     };
   },
   methods: {
-  procedimientoMonitoreo(datos) 
-  {
-    console.log("TAMANIO : "+ datos.data.data.length)
-    console.log("TAMANIO LISTA UNIDADES : "+this.mListUnidades.length)
-      if (datos.data.status_code == 200) 
-      {
+    procedimientoMonitoreo(datos) {
+      console.log("RUTAS SELECIONADAS : " + this.mListRutasMonitoreo);
+      if (datos.data.status_code == 200) {
         if (this.mListUnidades.length == 0) 
         {
-          for (var i = 0; i < datos.data.data.length; i++) 
-          {
-            
+          for (var i = 0; i < datos.data.data.length; i++) {
             this.mListUnidades[i] = datos.data.data[i];
+            this.mListUnidades[i].isvisible = true
             this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
             if (i == 0 && this.banderaCenter) {
               this.oCenter = {
@@ -633,34 +631,33 @@ export default {
         console.log(error);
       }
     },
-    async initRastreoRuta() {
-      try {
-        var datos = null;
-        var rutaApi = "/monitoringRuta";
-        var bodyApi = {
-            token: this.token,
-            rutas:"'JC','PI'"
-          },
-          datos = await this.$axios.post(
-            process.env.baseUrlPanel + rutaApi,
-            bodyApi
-          );
-          console.log(datos.data)
-        this.procedimientoMonitoreo(datos);
-      } catch (error) {
-        console.log(error);
+    selectedRutaMonitoreo(){
+      if(this.mListRutasMonitoreo.length > 0)
+      {
+        for(var i = 0;i< this.mListRutasMonitoreo.length;i++)
+        {
+          for(var j =0;j<this.mListUnidades.length;j++)
+          {
+            if(this.mListRutasMonitoreo[i] == this.mListUnidades[j].LetrRutaMoni)
+            {
+              this.mListUnidades[j].isvisible = true
+            }else{
+              this.mListUnidades[j].isvisible = false
+            }
+          }
+        }
+      }else{
+        for(var k =0;k<this.mListUnidades.length;k++)
+          {
+            this.mListUnidades[k].isvisible = true
+          }
       }
     },
-    initIntervalMonitoreoGeneral : function() {
+    initIntervalMonitoreoGeneral: function () {
       this.intervaloMonitoreoGeneral = setInterval(() => {
-      this.initRastreo()
-    }, 10000)},
-    initIntervaloMonitoreoRuta : function(){
-    this.intervaloMonitoreoRuta = setInterval(() => 
-    {
-      console.log("MONITOREO POR RUTA")
-      this.initRastreoRuta()
-    },10000)},
+        this.initRastreo();
+      }, 10000);
+    },
     async initRutas() {
       try {
         var datos = await this.$axios.post(
@@ -671,26 +668,25 @@ export default {
         );
         console.log(datos.data);
         if (datos.data.status_code == 200) {
-          for (var i = 0; i < datos.data.datos.length; i++) {
-            this.mListRutas[i] = datos.data.datos[i];
-          }
+          this.mListRutas.push(...datos.data.datos)
         }
       } catch (error) {
         console.log(error);
       }
     },
     async initControles() {
+      console.log("INICIANDO CONTROLES")
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrlPanel + "/checkpoints",
+          process.env.baseUrlPanel + "/AllControles",
           {
             token: this.token,
           }
         );
         if (datos.data.status_code == 200) {
           for (var i = 0; i < datos.data.data.length; i++) {
-            this.mListControles[i] = datos.data.data[i];
-            this.mListControlesAux[i] = datos.data.data[i];
+            this.mListControlesMonitoreo[i] = datos.data.data[i];
+            this.mListControlesMonitoreoAux[i] = datos.data.data[i];
           }
         }
       } catch (error) {
@@ -774,12 +770,13 @@ export default {
     },
     showControles(event) {
       if (event.target.checked) {
-        this.mListControlesAux = this.mListControles;
+        this.mListControlesMonitoreoAux = this.mListControlesMonitoreo;
       } else {
-        this.mListControlesAux = [];
+        this.mListControlesMonitoreoAux = [];
       }
     },
-    async getInfoWindowContent(unidad) {
+    async getInfoWindowContent(unidad) 
+    {
       var dir = await this.$axios.get(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
           parseFloat(unidad.UltiLatiMoni) +
@@ -789,13 +786,14 @@ export default {
       );
       var result = dir.data.results;
       return `<div style="width:250px;padding:0.5rem">
-              <strong class="strongLetrasInfoWindows">RUTA : </strong> ${
-                unidad.DescRuta == null || unidad.DescRuta == ""
-                  ? "SIN RUTA"
-                  : unidad.DescRuta.substring(0, 25)
-              }<br>
               <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
                 unidad.UltiFechMoni
+              }<br>
+              <strong class="strongLetrasInfoWindows">RUTA : </strong> ${
+                unidad.LetrRutaMoni =! "" ? unidad.DescRuta == null ? "SIN RUTA" : unidad.DescRuta : "SIN RUTA"
+              }<br>
+              <strong class="strongLetrasInfoWindows">EVENTO : </strong> ${
+                unidad.AlarAnteGPSDescMoni == 1 ? "ALERTA GPS" : (unidad.AlarFuerRutaMoni == null ||  unidad.AlarFuerRutaMoni == 1) ? "FUERA DE RUTA" : "EN RUTA"
               }<br>
               <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
                 unidad.UltiVeloMoni
@@ -810,7 +808,7 @@ export default {
         lat: parseFloat(unidad.UltiLatiMoni),
         lng: parseFloat(unidad.UltiLongMoni),
       };
-      this.infoContent = await this.getInfoWindowContent(unidad);
+      this.infoContent = await this.getInfoWindowContent(unidad)
 
       //check if its the same marker that was selected if yes toggle
       if (this.currentMidx == idx) {
@@ -822,14 +820,10 @@ export default {
         this.currentMidx = idx;
       }
     },
-    updatemListaUnidades(mListUnidadesAux) 
-    {
-      if (this.mListUnidades.length > mListUnidadesAux.length) 
-      {
-        for (var i = 0; i < this.mListUnidades.length; i++) 
-        {
-          for (var j = 0; j < mListUnidadesAux.length; j++) 
-          {
+    updatemListaUnidades(mListUnidadesAux) {
+      if (this.mListUnidades.length > mListUnidadesAux.length) {
+        for (var i = 0; i < this.mListUnidades.length; i++) {
+          for (var j = 0; j < mListUnidadesAux.length; j++) {
             if (
               this.mListUnidades[i].CodiVehiMoni ==
               mListUnidadesAux[j].CodiVehiMoni
@@ -839,13 +833,9 @@ export default {
             }
           }
         }
-      } else if (this.mListUnidades.length < mListUnidadesAux.length) 
-      {
-
-        for (var k = 0; k < mListUnidadesAux.length; k++) 
-        {
-          for (var l = 0; l < this.mListUnidades.length; l++) 
-          {
+      } else if (this.mListUnidades.length < mListUnidadesAux.length) {
+        for (var k = 0; k < mListUnidadesAux.length; k++) {
+          for (var l = 0; l < this.mListUnidades.length; l++) {
             if (
               mListUnidadesAux[k].CodiVehiMoni ==
               this.mListUnidades[l].CodiVehiMoni
@@ -936,38 +926,24 @@ export default {
       };
       this.oZoom = 19;
     },
-    llenarListaRutasMonitoreo() {
-      if (this.mListRutasMonitoreo.length > 0) 
-      {
-        clearInterval(this.initIntervalMonitoreoGeneral)
-        this.initIntervaloMonitoreoRuta()
-      } else {
-        clearInterval(this.initIntervaloMonitoreoRuta)
-        this.initIntervalMonitoreoGeneral()
-      }
-    },
-    centrarUnidadInput()
-    {
-      for(var i=0;i<this.mListUnidades.length;i++)
-      {
-        if(this.mListUnidades[i].CodiVehiMoni == this.unidadInput)
-        {
-          this.ubicarUnidad(this.mListUnidades[i])
-          return
+    centrarUnidadInput() {
+      for (var i = 0; i < this.mListUnidades.length; i++) {
+        if (this.mListUnidades[i].CodiVehiMoni == this.unidadInput) {
+          this.ubicarUnidad(this.mListUnidades[i]);
+          return;
         }
       }
-    }
+    },
   },
   mounted() {
     this.initRutas();
     this.initControles();
     this.initRastreo();
-    this.initIntervalMonitoreoGeneral()
+    this.initIntervalMonitoreoGeneral();
   },
-  destroyed(){
-    clearInterval(this.initIntervalMonitoreoGeneral)
-    clearInterval(this.initIntervaloMonitoreoRuta)
-  }
+  destroyed() {
+    clearInterval(this.initIntervalMonitoreoGeneral);
+  },
 };
 </script>
 

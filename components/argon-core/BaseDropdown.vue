@@ -9,12 +9,15 @@
       <component
         :is="titleTag"
         class="btn-rotate"
-        :class="[{'dropdown-toggle': hasToggle}, titleClasses]"
+        :class="[{ 'dropdown-toggle': hasToggle}, titleClasses]"
         :aria-expanded="isOpen"
         data-toggle="dropdown"
       >
         <slot name="title" :is-open="isOpen">
-          <i :class="icon"></i> {{ title }}
+          <el-badge value="+1" class="item" v-if="visibleBadge">
+                  <i :class="icon"></i> {{ title }}
+          </el-badge>
+          <i :class="icon" v-if="!visibleBadge"></i> {{ title }}
         </slot>
       </component>
     </slot>
@@ -31,8 +34,13 @@
   </component>
 </template>
 <script>
+import { Badge } from "element-ui";
+
 export default {
   name: 'base-dropdown',
+  components:{
+    [Badge.name]: Badge,
+  },
   props: {
     tag: {
       type: String,
@@ -47,6 +55,10 @@ export default {
     title: {
       type: String,
       description: 'Dropdown title'
+    },
+    visibleBadge:{
+      type:Boolean,
+      default:false
     },
     direction: {
       type: String,

@@ -128,8 +128,7 @@ module.exports = {
     /*baseUrl: 'https://api-flota.herokuapp.com/v2/',
     baseUrlPanel: 'https://api-flota.herokuapp.com/v2/system',
     baseUrlPanelRecaudo:'https://api-flota.herokuapp.com/v2/system/recaudo'*/
-    baseUrl: process.env.baseUrl || 'http://localhost:3001/v2/',
-    baseUrlPanel: process.env.baseUrlPanel || 'http://localhost:3001/v2/system',
-    baseUrlPanelRecaudo: process.env.baseUrlPanelRecaudo || 'http://localhost:3001/v2/system/recaudo'
+    baseUrl: process.env.baseUrl || 'http://localhost:3001',
+    baseUrlPanel: process.env.baseUrlPanel || 'http://localhost:3001',
 }
 }
