@@ -1,5 +1,5 @@
 <template>
-<!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
+  <!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
   <div id="rezizeArea">
     <GmapMap
       :center="oCenter"
@@ -179,7 +179,7 @@
               <i
                 class="bx bx-key"
                 :style="
-                  unidad.AlarEnceChapMoni == 1 ? 'color:green;' : 'color:dark;'
+                  unidad.AlarEnceChapMoni == 1 ? 'color:yellow;' : 'color:dark;'
                 "
               ></i>
             </div>
@@ -554,7 +554,7 @@
 <script>
 import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
 import axios from "@nuxtjs/axios";
-import { th } from "date-fns/locale";
+import { th, tr } from "date-fns/locale";
 export default {
   layout: "DashboardLayout",
   components: {
@@ -592,13 +592,11 @@ export default {
   },
   methods: {
     procedimientoMonitoreo(datos) {
-      console.log("RUTAS SELECIONADAS : " + this.mListRutasMonitoreo);
       if (datos.data.status_code == 200) {
-        if (this.mListUnidades.length == 0) 
-        {
+        if (this.mListUnidades.length == 0) {
           for (var i = 0; i < datos.data.data.length; i++) {
             this.mListUnidades[i] = datos.data.data[i];
-            this.mListUnidades[i].isvisible = true
+            this.mListUnidades[i].isvisible = true;
             this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
             if (i == 0 && this.banderaCenter) {
               this.oCenter = {
@@ -631,26 +629,25 @@ export default {
         console.log(error);
       }
     },
-    selectedRutaMonitoreo(){
-      if(this.mListRutasMonitoreo.length > 0)
-      {
-        for(var i = 0;i< this.mListRutasMonitoreo.length;i++)
+    selectedRutaMonitoreo() {
+      if (this.mListRutasMonitoreo.length > 0) {
+        for (var i = 0; i < this.mListUnidades.length; i++) 
         {
-          for(var j =0;j<this.mListUnidades.length;j++)
-          {
-            if(this.mListRutasMonitoreo[i] == this.mListUnidades[j].LetrRutaMoni)
-            {
-              this.mListUnidades[j].isvisible = true
-            }else{
-              this.mListUnidades[j].isvisible = false
+          var bandera = false
+          for (var j = 0; j < this.mListRutasMonitoreo.length; j++) {
+            if (
+              this.mListUnidades[i].LetrRutaMoni == this.mListRutasMonitoreo[j]
+            ) {
+              bandera = true
             }
           }
+
+          this.mListUnidades[i].isvisible = bandera ? true : false
         }
-      }else{
-        for(var k =0;k<this.mListUnidades.length;k++)
-          {
-            this.mListUnidades[k].isvisible = true
-          }
+      } else {
+        for (var k = 0; k < this.mListUnidades.length; k++) {
+          this.mListUnidades[k].isvisible = true;
+        }
       }
     },
     initIntervalMonitoreoGeneral: function () {
@@ -666,16 +663,16 @@ export default {
             token: this.token,
           }
         );
-        console.log(datos.data);
+
         if (datos.data.status_code == 200) {
-          this.mListRutas.push(...datos.data.datos)
+          this.mListRutas.push(...datos.data.datos);
         }
       } catch (error) {
         console.log(error);
       }
     },
     async initControles() {
-      console.log("INICIANDO CONTROLES")
+      console.log("INICIANDO CONTROLES");
       try {
         var datos = await this.$axios.post(
           process.env.baseUrlPanel + "/AllControles",
@@ -775,8 +772,7 @@ export default {
         this.mListControlesMonitoreoAux = [];
       }
     },
-    async getInfoWindowContent(unidad) 
-    {
+    async getInfoWindowContent(unidad) {
       var dir = await this.$axios.get(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
           parseFloat(unidad.UltiLatiMoni) +
@@ -789,11 +785,19 @@ export default {
               <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
                 unidad.UltiFechMoni
               }<br>
-              <strong class="strongLetrasInfoWindows">RUTA : </strong> ${
-                unidad.LetrRutaMoni =! "" ? unidad.DescRuta == null ? "SIN RUTA" : unidad.DescRuta : "SIN RUTA"
-              }<br>
+              <strong class="strongLetrasInfoWindows">RUTA : </strong> ${(unidad.LetrRutaMoni =
+                !""
+                  ? unidad.DescRuta == null
+                    ? "SIN RUTA"
+                    : unidad.DescRuta
+                  : "SIN RUTA")}<br>
               <strong class="strongLetrasInfoWindows">EVENTO : </strong> ${
-                unidad.AlarAnteGPSDescMoni == 1 ? "ALERTA GPS" : (unidad.AlarFuerRutaMoni == null ||  unidad.AlarFuerRutaMoni == 1) ? "FUERA DE RUTA" : "EN RUTA"
+                unidad.AlarAnteGPSDescMoni == 1
+                  ? "ALERTA GPS"
+                  : unidad.AlarFuerRutaMoni == null ||
+                    unidad.AlarFuerRutaMoni == 1
+                  ? "FUERA DE RUTA"
+                  : "EN RUTA"
               }<br>
               <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
                 unidad.UltiVeloMoni
@@ -808,7 +812,7 @@ export default {
         lat: parseFloat(unidad.UltiLatiMoni),
         lng: parseFloat(unidad.UltiLongMoni),
       };
-      this.infoContent = await this.getInfoWindowContent(unidad)
+      this.infoContent = await this.getInfoWindowContent(unidad);
 
       //check if its the same marker that was selected if yes toggle
       if (this.currentMidx == idx) {
