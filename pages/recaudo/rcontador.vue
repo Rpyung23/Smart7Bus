@@ -9,16 +9,35 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-autocomplete
+            <!--<el-autocomplete
               class="inline-input"
-              v-model="itemUnidadProduccionRPagoVehiculo"
+              v-model="itemUnidadContadorPasajero"
               :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo"
               style="margin-right: 0.5rem"
               placeholder="Unidad"
               prefix-icon="ni ni-bus-front-12"
               :trigger-on-focus="false"
               @select="handleSelectUnidadProduccionRPagoVehiculo"
-            ></el-autocomplete>
+            ></el-autocomplete>-->
+
+            <el-select
+              v-model="itemUnidadContadorPasajero"
+              multiple
+              filterable
+              style="margin-right: 0.5rem"
+              remote
+              placeholder="Ingrese unidad"
+              :remote-method="remoteMethodUnidadesContadorPasajeros"
+              :loading="loadingUnidadesContadorPasajeros"
+            >
+              <el-option
+                v-for="item in optionsUnidadesSelectContadorPasajero"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
+              </el-option>
+            </el-select>
 
             <base-input
               addon-left-icon="ni ni-calendar-grid-58"
@@ -73,12 +92,10 @@
               ></span>
               <span class="btn-inner--text"> Exportar Excel</span>
             </download-excel>
-            <!--<base-button outline type="success">
-              <span class="btn-inner--icon"
-                ><i class="ni ni-collection"></i
-              ></span>
-              <span class="btn-inner--text"> Exportar Excel</span>
-            </base-button>-->
+            <base-button outline type="danger">
+              <span class="btn-inner--icon"><i class="ni ni-ungroup"></i></span>
+              <span class="btn-inner--text"> Exportar PDF</span>
+            </base-button>
           </div>
         </card>
 
@@ -90,40 +107,33 @@
         >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
             <el-select
-              v-model="mSelectRubroValuePagosVehiculo"
+              v-model="mSelectRutaContadorPasajero"
               multiple
               collapse-tags
-              placeholder="Rubros"
+              placeholder="Lineas"
             >
               <el-option
-                v-for="item in mListRubrosRPagosVehiculo"
-                :key="item.id"
-                :label="item.descripcion"
-                :value="item.id"
+                v-for="item in mListLineasContadorPasajeros"
+                :key="item.LetrRuta"
+                :label="item.DescRuta"
+                :value="item.LetrRuta"
               >
               </el-option>
             </el-select>
-
-            <el-radio v-model="radioEstadoRPagosVehiculo" label="*"
-              >TODOS</el-radio
-            >
-            <el-radio v-model="radioEstadoRPagosVehiculo" label="2"
-              >PAGADOS</el-radio
-            >
-            <el-radio v-model="radioEstadoRPagosVehiculo" label="1"
-              >PENDIENTES</el-radio
-            >
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: green; margin-right: 0.5rem"
-              >Recaudado : {{ mPagadoRPagosVehiculo }} $</strong
-            >
             <strong style="color: blue; margin-right: 0.5rem"
-              >Pendiente : {{ mPendienteRPagosVehiculo }} $</strong
+              >Subida : {{ mTotalPasajerosSubidaContador }}</strong
             >
-            <strong style="color: drak"
-              >Total : {{ mTotalRPagosVehiculo }} $</strong
+            <strong style="color: read; margin-right: 0.5rem"
+              >Bajada : {{ mTotalPasajerosBajadaContador }}</strong
+            >
+            <strong style="color: black; margin-right: 0.5rem"
+              >Total : {{ mTotalPasajerosContador }}</strong
+            >
+            <strong style="color: green"
+              >Dinero Recaudado : {{ mTotalDineroPasajerosContador }} $</strong
             >
           </div>
         </card>
@@ -173,51 +183,61 @@
               </el-table-column>
               <el-table-column
                 prop="fecha_creacion"
-                label="F. Creación"
-                minWidth="190"
-                sortable="true"
+                label="Puerta 1 (S)"
+                minWidth="160"
               >
               </el-table-column>
               <el-table-column
                 prop="fecha_pago"
-                label="F. Pago"
-                minWidth="180"
-                sortable="true"
+                label="Puerta 2 (S)"
+                minWidth="160"
               >
               </el-table-column>
               <el-table-column
                 prop="montoControles"
-                label="Minutos"
-                minWidth="150"
+                label="Puerta 3 (S)"
+                minWidth="160"
               >
               </el-table-column>
               <el-table-column
                 prop="montoControlesDesc"
-                label="Minutos Desc"
-                minWidth="150"
+                label="Puerta 1 (B)"
+                minWidth="160"
               >
               </el-table-column>
               <el-table-column
                 prop="descripcion_rubro"
-                label="C. Rubro"
-                minWidth="200"
+                label="Puerta 2 (B)"
+                minWidth="160"
               >
               </el-table-column>
-              <el-table-column prop="montoMultas" label="Rubros" minWidth="150">
-              </el-table-column>
               <el-table-column
-                prop="montoMultasDesc"
-                label="Rubros Desc"
-                minWidth="150"
+                prop="montoMultas"
+                label="Puerta 3 (B)"
+                minWidth="160"
               >
               </el-table-column>
-              <el-table-column prop="monto_pagado" label="Total" minWidth="120">
-              </el-table-column>
               <el-table-column
-                prop="estado"
-                label="Estado"
-                minWidth="130"
-                sortable="true"
+                prop="montoMultas"
+                label="Total Subidas"
+                minWidth="180"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="montoMultas"
+                label="Total Bajadas"
+                minWidth="180"
+              >
+              </el-table-column>
+
+              <el-table-column prop="montoMultas" label="Total" minWidth="150">
+              </el-table-column>
+
+              <el-table-column
+                prop="montoMultas"
+                label="D. Recaudado ($)"
+                minWidth="180"
               >
               </el-table-column>
 
@@ -253,7 +273,7 @@ import TabPane from "@/components/argon-core/Tabs/Tab";
 
 export default {
   mixins: [clientPaginationMixin],
-  layout: "ProduccionDashboardLayout",
+  layout: "RecaudoDashboardLayout",
   components: {
     Tabs,
     TabPane,
@@ -274,23 +294,25 @@ export default {
     return {
       mListaUnidadesPagosVehiculoProduccion: [],
       tableDataRPagosVEhiculoProduccion: [],
-      radioEstadoRPagosVehiculo: "*",
-      mListRubrosRPagosVehiculo: [],
-      mSelectRubroValuePagosVehiculo: [],
-      itemUnidadProduccionRPagoVehiculo: "*",
+      mListLineasContadorPasajeros: [],
+      loadingUnidadesContadorPasajeros: false,
+      mSelectRutaContadorPasajero: ["*"],
+      itemUnidadContadorPasajero: ["*"],
       token: this.$cookies.get("token"),
       fechaInicialRPagosVehiculoProduccion: "",
       fechaFinalRPagosVehiculoProduccion: "",
       loadingRPagosVehiculo: false,
-      mTotalRPagosVehiculo: "0.00",
-      mPagadoRPagosVehiculo: "0.00",
-      mPendienteRPagosVehiculo: "0.00",
-      WorksheetExcelRPagosVehiculoProduccion:"",
-      FileNameExcelRPagosVehiculoProduccion:"",
-      headerExcelRPagosVehiculoProduccion:[],
+      mTotalPasajerosContador: "0",
+      mTotalPasajerosSubidaContador: "0",
+      mTotalPasajerosBajadaContador: "0",
+      mTotalDineroPasajerosContador: "0.00",
+      WorksheetExcelRPagosVehiculoProduccion: "",
+      FileNameExcelRPagosVehiculoProduccion: "",
+      headerExcelRPagosVehiculoProduccion: [],
+      optionsUnidadesSelectContadorPasajero: [],
       json_fields_excelRPagosVehiculoProduccion: {
-        "Unidad": "vehiculo_codigo",
-        "Salida": "salida_id",
+        Unidad: "vehiculo_codigo",
+        Salida: "salida_id",
         "Linea - Ruta": "DescRutaSali_m",
         "Fecha Salida": "HoraSaliProgSali_m",
         "Fecha Creación": "fecha_creacion",
@@ -301,11 +323,28 @@ export default {
         "Rubros ($)": "montoMultas",
         "Rubros Jus ($)": "montoMultasDesc",
         "Monto Pagado": "monto_pagado",
-        "Estado": "estado",
+        Estado: "estado",
       },
     };
   },
   methods: {
+    remoteMethodUnidadesContadorPasajeros(query) {
+      if (query !== "") {
+        this.loadingUnidadesContadorPasajeros = true;
+        setTimeout(() => {
+          this.loadingUnidadesContadorPasajeros = false;
+          this.optionsUnidadesSelectContadorPasajero =
+            this.mListaUnidadesPagosVehiculoProduccion.filter((item) => {
+              return (
+                item.CodiVehi.toLowerCase().indexOf(query.toLowerCase()) > -1
+              );
+            });
+        }, 200);
+      } else {
+        this.optionsUnidadesSelectContadorPasajero = [];
+      }
+    },
+
     querySearchUnidadProduccionRPagoVehiculo(queryString, cb) {
       var results = queryString
         ? this.mListaUnidadesPagosVehiculoProduccion.filter(
@@ -321,9 +360,6 @@ export default {
           unidad.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
         );
       };
-    },
-    handleSelectUnidadProduccionRPagoVehiculo(item) {
-      console.log(item);
     },
     tableRowClassNameRPagosVehiculoProduccion({ row, rowIndex }) {
       if (row.fecha_pago == null) {
@@ -363,121 +399,23 @@ export default {
         }
       }
     },
-    async readAllRubrosPagosVehiculoProduccion() {
-      var datos = await this.$axios.post(
-        process.env.baseUrl + "/rubros-activos",
-        {
-          token: this.token,
-        }
-      );
-
+    async readAllLineasContadorPasajeros() {
+      var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
+        token: this.token,
+      });
+      this.mListLineasContadorPasajeros.push({
+        DescRuta: "Todas las Rutas",
+        LetrRuta: "*",
+      });
       if (datos.data.status_code == 200) {
-        this.mListRubrosRPagosVehiculo.push(...datos.data.datos);
-      }
-    },
-    async readAllRPagosVehiculoProduccion() 
-    {
-
-      this.mTotalRPagosVehiculo = "0.00"
-      this.mPagadoRPagosVehiculo = "0.00"
-      this.mPendienteRPagosVehiculo = "0.00"
-
-      this.WorksheetExcelRPagosVehiculoProduccion = "RPV_W_"+this.itemUnidadProduccionRPagoVehiculo+"_"+Date.now()
-      this.FileNameExcelRPagosVehiculoProduccion = "RPV_"+this.itemUnidadProduccionRPagoVehiculo+"_"+Date.now()+".xls"
-      
-      if (this.loadingRPagosVehiculo) {
-        Notification.warning({
-          title: "Reporte Pagos Vehiculo",
-          message: "Por favor espere un momento.",
-          duration: 3500,
-        });
-      } else {
-        try {
-          this.loadingRPagosVehiculo = true;
-          this.tableDataRPagosVEhiculoProduccion = [];
-          var body = {
-            token: this.token,
-            unidad: this.itemUnidadProduccionRPagoVehiculo,
-            inicio: this.fechaInicialRPagosVehiculoProduccion,
-            final: this.fechaInicialRPagosVehiculoProduccion,
-            tipo: this.radioEstadoRPagosVehiculo,
-            rubro:
-              this.mSelectRubroValuePagosVehiculo.length == 0
-                ? "*"
-                : this.mSelectRubroValuePagosVehiculo,
-          };
-          console.log(body);
-          var datos = await this.$axios.post(
-            process.env.baseUrl + "/reporte_produccion_pagos_vehiculo_general",
-            body
-          );
-
-          if (datos.data.status_code == 200) {
-            Notification.success({
-              title: "Reporte Pagos Vehiculo",
-              message: "Datos consultados con éxito.",
-              duration: 2500,
-            });
-            var total = 0;
-            var pendiente = 0;
-            var pagado = 0;
-
-            this.tableDataRPagosVEhiculoProduccion.push(...datos.data.datos);
-            for (var i = 0; i < datos.data.datos.length; i++) {
-              if (datos.data.datos[i].fecha_pago != null) {
-                pagado = pagado + parseFloat(datos.data.datos[i].monto_pagado);
-              } else {
-                pendiente =
-                  pendiente +
-                  (parseFloat(datos.data.datos[i].montoControles) +
-                    parseFloat(datos.data.datos[i].montoMultas) -
-                    (parseFloat(datos.data.datos[i].montoControlesDesc) +
-                      parseFloat(datos.data.datos[i].montoMultasDesc)));
-              }
-            }
-
-            this.mPagadoRPagosVehiculo = Number(pagado).toFixed(2);
-            this.mPendienteRPagosVehiculo = Number(pendiente).toFixed(2);
-            this.mTotalRPagosVehiculo = Number(pendiente + pagado).toFixed(2);
-            this.headerExcelRPagosVehiculoProduccion = [
-              "Reporte Pagos : "+(this.itemUnidadProduccionRPagoVehiculo == "*" ? "TODAS LAS UNIDADES" : 
-              this.itemUnidadProduccionRPagoVehiculo),
-              "Fechas : "+this.fechaInicialRPagosVehiculoProduccion +" hasta "+this.fechaFinalRPagosVehiculoProduccion,
-              "Dinero Recaudado : "+this.mPagadoRPagosVehiculo,
-              "Dinero Pendiente : "+this.mPendienteRPagosVehiculo,
-              "Total : "+this.mTotalRPagosVehiculo,
-            ]
-
-            this.loadingRPagosVehiculo = false;
-          } else if (datos.data.status_code == 300) {
-            this.loadingRPagosVehiculo = false;
-            Notification.info({
-              title: "Reporte Pagos Vehiculo",
-              message: "No existen datos disponibles",
-              duration: 2500,
-            });
-          } else {
-            Notification.error({
-              title: "API ERROR Reporte Pagos Vehiculo",
-              message: datos.data.msm,
-              duration: 2500,
-            });
-          }
-        } catch (error) {
-          Notification.error({
-            title: "ERROR CATCH Reporte Pagos Vehiculo",
-            message: error.toString(),
-            duration: 2500,
-          });
-        }
-        this.loadingRPagosVehiculo = false;
+        this.mListLineasContadorPasajeros.push(...datos.data.data);
       }
     },
   },
   mounted() {
     this.readAllUnidadesPagosVehiculoProduccion();
     this.initFechaActualProduccionRPAgosVehiculo();
-    this.readAllRubrosPagosVehiculoProduccion();
+    this.readAllLineasContadorPasajeros();
   },
 };
 </script>

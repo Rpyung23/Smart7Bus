@@ -63,7 +63,7 @@
           :link="{
             name: 'Recaudo',
             icon: 'ni ni-single-02 text-orange',
-            path: './produccion/tablero',
+            path: './recaudo/rcontador',
           }"
         >
         </sidebar-item>

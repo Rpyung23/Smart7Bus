@@ -79,8 +79,12 @@
       />
     </GmapMap>
 
-    <div id="element2" class="container_unidades_monitoreo">
+    <div id="element2" class="container_unidades_monitoreo" :style="anchoPanelMonitoreoClickMinMax">
       <div id="resizerXY"></div>
+      <div class="min-max">
+        <i class="bx-min-max bx bx-checkbox-minus" @click="minPanel()"></i>
+        <i class="bx-min-max bx bx-windows" @click="maxPanel()"></i>
+      </div>
       <div class="searchInput">
         <i class="bx bx-search"></i>
         <input
@@ -307,6 +311,18 @@
   </div>
 </template>
 <style>
+.min-max {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  margin-right: 1.5rem;
+  margin-bottom: 00.5rem;
+  color: #48494b8f;
+}
+.bx-min-max:hover {
+  cursor: pointer;
+  color: #172b4d;
+}
 .cardRuta {
   width: 15.5rem;
   border-radius: 0.5rem;
@@ -518,7 +534,7 @@
   position: absolute;
   height: calc(100vh - 9em);
   min-width: 17rem !important;
-  max-width: 85vw;
+  max-width: 85vw !important;
   right: 0px;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -589,9 +605,18 @@ export default {
           height: -35,
         },
       },
+      anchoPanelMonitoreoClickMinMax:"width: 17rem",
     };
   },
   methods: {
+    minPanel() {
+      console.log("MIN")
+      this.anchoPanelMonitoreoClickMinMax = "width: 17rem"
+    },
+    maxPanel() {
+      console.log("MAX")
+      this.anchoPanelMonitoreoClickMinMax =  "width: 85vw"
+    },
     procedimientoMonitoreo(datos) {
       if (datos.data.status_code == 200) {
         if (this.mListUnidades.length == 0) {
@@ -631,24 +656,22 @@ export default {
       }
     },
     selectedRutaMonitoreo() {
-      if (this.mListRutasMonitoreo.length > 0) 
-      {
-        this.initControleMonitoreoRutas()
-        for (var i = 0; i < this.mListUnidades.length; i++) 
-        {
-          var bandera = false
+      if (this.mListRutasMonitoreo.length > 0) {
+        this.initControleMonitoreoRutas();
+        for (var i = 0; i < this.mListUnidades.length; i++) {
+          var bandera = false;
           for (var j = 0; j < this.mListRutasMonitoreo.length; j++) {
             if (
               this.mListUnidades[i].LetrRutaMoni == this.mListRutasMonitoreo[j]
             ) {
-              bandera = true
+              bandera = true;
             }
           }
 
-          this.mListUnidades[i].isvisible = bandera ? true : false
+          this.mListUnidades[i].isvisible = bandera ? true : false;
         }
       } else {
-        this.initControles()
+        this.initControles();
         for (var k = 0; k < this.mListUnidades.length; k++) {
           this.mListUnidades[k].isvisible = true;
         }
@@ -686,7 +709,7 @@ export default {
         );
         if (datos.data.status_code == 200) {
           this.mListControlesMonitoreo = [];
-            this.mListControlesMonitoreoAux = [];
+          this.mListControlesMonitoreoAux = [];
           for (var i = 0; i < datos.data.data.length; i++) {
             this.mListControlesMonitoreo[i] = datos.data.data[i];
             this.mListControlesMonitoreoAux[i] = datos.data.data[i];
@@ -703,15 +726,14 @@ export default {
           process.env.baseUrlPanel + "/AllControlesPorRuta",
           {
             token: this.token,
-            rutas:this.mListRutasMonitoreo
+            rutas: this.mListRutasMonitoreo,
           }
         );
 
-        if (datos.data.status_code == 200) 
-        {
+        if (datos.data.status_code == 200) {
           this.mListControlesMonitoreo = [];
-          this.mListControlesMonitoreoAux = [] 
-          
+          this.mListControlesMonitoreoAux = [];
+
           for (var i = 0; i < datos.data.data.length; i++) {
             this.mListControlesMonitoreo[i] = datos.data.data[i];
             this.mListControlesMonitoreoAux[i] = datos.data.data[i];
@@ -960,8 +982,7 @@ export default {
       };
       this.oZoom = 19;
     },
-    centrarUnidadInput() 
-    {
+    centrarUnidadInput() {
       for (var i = 0; i < this.mListUnidades.length; i++) {
         if (this.mListUnidades[i].CodiVehiMoni == this.unidadInput) {
           this.ubicarUnidad(this.mListUnidades[i]);

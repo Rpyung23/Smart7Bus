@@ -71,6 +71,7 @@ module.exports = {
   */
   plugins: [
     '~/plugins/dashboard/dashboard-plugin',
+    '~/plugins/excel/vue-json-excel',
     {src: '~/plugins/dashboard/full-calendar', ssr: false },
     {src: '~/plugins/dashboard/world-map', ssr: false },
     {src: '~/plugins/map/vue2-google-maps.js', ssr: false },

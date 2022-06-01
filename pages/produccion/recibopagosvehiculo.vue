@@ -1,120 +1,236 @@
 <template>
   <div class="content">
-    <base-header class="pb-6">
-      <div class="row align-items-center py-4">
-        <div class="col">
-          <card
-            class="no-border-card"
-            body-classes="px-0 pb-1"
-            footer-classes="pb-2"
-          >
-            <div>
-              <div
-                class="
-                  col-12
-                  d-flex
-                  justify-content-center justify-content-sm-between
-                  flex-wrap
-                "
-              >
-                <el-select
-                  class="select-primary pagination-select"
-                  v-model="pagination.perPage"
-                  placeholder="Per page"
-                >
-                  <el-option
-                    class="select-primary"
-                    v-for="item in pagination.perPageOptions"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                  >
-                  </el-option>
-                </el-select>
-
-                <div>
-                  <base-input
-                    v-model="searchQuery"
-                    prepend-icon="fas fa-search"
-                    placeholder="Buscando..."
-                  >
-                  </base-input>
-                </div>
-              </div>
-              <el-table
-                :data="queriedData"
-                row-key="id"
-                header-row-class-name="thead-dark"
-              >
-                <el-table-column
-                  v-for="column in tableColumns"
-                  :key="column.label"
-                  v-bind="column"
-                >
-                </el-table-column>
-                                    <el-table-column
-                      label="Informate"
-                      min-width="150px"
-                      prop="status"
-                      sortable
-                    >
-                      <template v-slot="{ row }">
-                        <badge class="badge-dot mr-4" type="">
-                          <i :class="`bg-${row.statusType}`"></i>
-                          <span class="status">{{ row.status }}</span>
-                        </badge>
-                      </template>
-                    </el-table-column>
-
-                    <el-table-column
-                      min-width="180px"
-                      align="right"
-                      label="Actions"
-                    >
-                     <el-button type="primary" icon="ni ni-collection">Ver detalle</el-button>
-                    </el-table-column>
-              </el-table>
-            </div>
-            <div
-              slot="footer"
-              class="
-                col-12
-                d-flex
-                justify-content-center justify-content-sm-between
-                flex-wrap
+    <base-header>
+      <div class="align-items-center py-3">
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          footer-classes="pb-2"
+        >
+          <div class="cardTextoRPagosVehiculoProduccion">
+            <el-autocomplete
+              class="inline-input"
+              v-model="itemUnidadProduccionRPagoVehiculorecibo"
+              :fetch-suggestions="
+                querySearchUnidadProduccionRPagoVehiculoRecibo
               "
-            >
-              <div class="">
-                <p class="card-category">
-                  Showing {{ from + 1 }} to {{ to }} of {{ total }} entries
+              style="margin-right: 0.5rem"
+              placeholder="Unidad"
+              prefix-icon="ni ni-bus-front-12"
+              :trigger-on-focus="false"
+              @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"
+            ></el-autocomplete>
 
-                  <span v-if="selectedRows.length">
-                    &nbsp; &nbsp; {{ selectedRows.length }} rows selected
-                  </span>
-                </p>
-              </div>
-              <base-pagination
-                class="pagination-no-border"
-                v-model="pagination.currentPage"
-                :per-page="pagination.perPage"
-                :total="total"
+            <base-input
+              addon-left-icon="ni ni-calendar-grid-58"
+              style="margin-right: 0.5rem"
+            >
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaInicialRPagosVehiculoProduccionRecibo"
               >
-              </base-pagination>
-            </div>
-          </card>
-        </div>
+              </flat-picker>
+            </base-input>
+
+            <base-input addon-left-icon="ni ni-calendar-grid-58">
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaFinalRPagosVehiculoProduccionRecibo"
+              >
+              </flat-picker>
+            </base-input>
+          </div>
+
+          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
+            <base-button
+              icon
+              type="primary"
+              @click="readAllRPagosVehiculoProduccionRecibos()"
+            >
+              <span class="btn-inner--icon"
+                ><i class="el-icon-search"></i
+              ></span>
+              <span class="btn-inner--text">Buscar</span>
+            </base-button>
+            <base-button outline type="success">
+              <span class="btn-inner--icon"
+                ><i class="ni ni-collection"></i
+              ></span>
+              <span class="btn-inner--text"> Exportar Excel</span>
+            </base-button>
+          </div>
+        </card>
+
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          footer-classes="pb-2"
+        >
+          <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
+            <el-radio v-model="radioEstadoRPagosVehiculoRecibo" label="*"
+              >TODOS</el-radio
+            >
+            <el-radio v-model="radioEstadoRPagosVehiculoRecibo" label="2"
+              >PAGADOS</el-radio
+            >
+            <el-radio v-model="radioEstadoRPagosVehiculoRecibo" label="1"
+              >ANULADOS</el-radio
+            >
+          </div>
+
+          <div class="cardTextoRPagosVehiculoProduccion">
+            <strong style="color: green; margin-right: 0.5rem"
+              >Dinero Recaudado : {{ mPagadoRPagosVehiculoRecibo }} $</strong
+            >
+            <strong style="color: red; margin-right: 0.5rem"
+              >Dinero Anulado : {{ mAnuladoRPagosVehiculoRecibo }} $</strong
+            >
+          </div>
+        </card>
+
+        <card
+          class="no-border-card"
+          style="margin-bottom: 0rem"
+          body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1"
+          footer-classes="pb-2"
+        >
+          <div>
+            <el-table
+              v-loading="loadingRPagosVehiculoRecibo"
+              element-loading-text="Cargando Datos..."
+              element-loading-spinner="el-icon-loading"
+              :data="tableDataRPagosVEhiculoProduccionRecibo"
+              row-key="id"
+              :default-sort = "{prop: 'estado', order: 'descending'}"
+              class="tablePanelControlProduccion"
+              header-row-class-name="thead-dark"
+              :row-class-name="tableRowClassNameRPagosVehiculoProduccionRecibo"
+            >
+              <el-table-column prop="id" label="N° Recibo" minWidth="100">
+              </el-table-column>
+
+              <el-table-column
+                prop="fecha"
+                label="Fecha Pagado"
+                minWidth="170"
+              >
+              </el-table-column>
+
+              <el-table-column prop="unidad" label="Unidad" minWidth="100">
+              </el-table-column>
+              <el-table-column
+                prop="NombApellUsua"
+                label="Atención"
+                minWidth="200"
+              >
+              </el-table-column>
+
+              <el-table-column prop="monto" label="Total ($)" minWidth="100">
+              </el-table-column>
+
+              <el-table-column
+                prop="estado"
+                label="Estado"
+                minWidth="120"
+                sortable
+              >
+              <template slot-scope="scope">
+                {{scope.row.estado == 1 ? "PAGADO" : "ANULADO"}}
+              </template>
+              </el-table-column>
+
+              <el-table-column label="Acciones" width="140">
+                <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    @click="
+                      readAllDetalleReciboPagosVehiculoProduccion(
+                        scope.$index,
+                        scope.row
+                      )
+                    "
+                    size="small"
+                  >
+                    Ver Detalle
+                  </el-button>
+                </template>
+              </el-table-column>
+
+              <div slot="empty"></div>
+            </el-table>
+          </div>
+        </card>
       </div>
     </base-header>
+
+    <!--Form modal-->
+    <modal :show.sync="modalsReciboProduccion" size="sm" body-classes="p-0">
+      <card
+        type="secondary"
+        header-classes="bg-transparent pb-5"
+        class="border-0 mb-0"
+      >
+        <template slot="header">
+          <div class="row">
+            <div class="col">
+              <strong>
+                Recibo N° {{ itemModalIdReciboPagoVehiculoProduccion }}  Unidad
+              N° {{ itemModalUnidadReciboPagoVehiculoProduccion }}
+              </strong>
+            </div>
+            <div class="col">
+              <strong style="color:green"
+                >Total :
+                {{ itemModalTotalReciboPagoVehiculoProduccion }} $</strong
+              >
+            </div>
+          </div>
+        </template>
+        <el-table
+          :data="tableDataDetalleReciboPAgoVehiculoProduccion"
+          border=""
+        >
+          <el-table-column prop="rubro_descripcion" label="Detalle" width="160">
+          </el-table-column>
+          <el-table-column prop="cantidad" label="Cant" width="100">
+          </el-table-column>
+          <el-table-column prop="total" label="Total($)" width="120">
+          </el-table-column>
+        </el-table>
+      </card>
+    </modal>
   </div>
 </template>
 <script>
-import { Table, TableColumn, Select, Option } from "element-ui";
+import flatPicker from "vue-flatpickr-component";
+import "flatpickr/dist/flatpickr.css";
+import {
+  Table,
+  TableColumn,
+  Select,
+  Option,
+  Autocomplete,
+  DatePicker,
+  RadioButton,
+  Radio,
+  Notification,
+  Button,
+} from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
 import swal from "sweetalert2";
-import users from "~/components/tables/users2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 
@@ -125,105 +241,264 @@ export default {
     Tabs,
     TabPane,
     BasePagination,
+    flatPicker,
     RouteBreadCrumb,
+    [DatePicker.name]: DatePicker,
     [Select.name]: Select,
     [Option.name]: Option,
     [Table.name]: Table,
+    [Notification.name]: Notification,
+    [Autocomplete.name]: Autocomplete,
     [TableColumn.name]: TableColumn,
+    [RadioButton.name]: RadioButton,
+    [Radio.name]: Radio,
+    [Button.name]: Button,
   },
   data() {
     return {
-      tableColumns: [
-        {
-          prop: "name",
-          label: "N° Recibo",
-          minWidth: 160,
-          sortable: true,
-        },
-        {
-          prop: "nickname",
-          label: "Fecha Pago",
-          minWidth: 160,
-          sortable: true,
-        },
-        {
-          prop: "email",
-          label: "Vehiculo",
-          minWidth: 120,
-        },
-        {
-          prop: "salary",
-          label: "Atención",
-          minWidth: 160,
-        },
-        {
-          prop: "salary",
-          label: "Total ($)",
-          minWidth: 160,
-          sortable: true,
-        }
-      ],
-      tableData: users,
-      selectedRows: [],
+      mListaUnidadesPagosVehiculoProduccionRecibo: [],
+      tableDataRPagosVEhiculoProduccionRecibo: [],
+      radioEstadoRPagosVehiculoRecibo: "*",
+      itemUnidadProduccionRPagoVehiculorecibo: "*",
+      token: this.$cookies.get("token"),
+      fechaInicialRPagosVehiculoProduccionRecibo: "",
+      fechaFinalRPagosVehiculoProduccionRecibo: "",
+      loadingRPagosVehiculoRecibo: false,
+      Base64PdfRECIBOPDFPRODUCCION: "",
+      mPagadoRPagosVehiculoRecibo: "0.00",
+      mAnuladoRPagosVehiculoRecibo: "0.00",
+      modalsReciboProduccion: false,
+      tableDataDetalleReciboPAgoVehiculoProduccion: [],
+      itemModalIdReciboPagoVehiculoProduccion: "",
+      itemModalUnidadReciboPagoVehiculoProduccion: "",
+      itemModalTotalReciboPagoVehiculoProduccion: "",
     };
   },
   methods: {
-    handleLike(index, row) {
-      swal.fire({
-        title: `You liked ${row.name}`,
-        buttonsStyling: false,
-        type: "success",
-        confirmButtonClass: "btn btn-success btn-fill",
-      });
+    querySearchUnidadProduccionRPagoVehiculoRecibo(queryString, cb) {
+      var results = queryString
+        ? this.mListaUnidadesPagosVehiculoProduccionRecibo.filter(
+            this.createFilterUnidadProduccionRPagoVehiculoRecibo(queryString)
+          )
+        : this.mListaUnidadesPagosVehiculoProduccionRecibo;
+      // call callback function to return suggestions
+      cb(results);
     },
-    handleEdit(index, row) {
-      swal.fire({
-        title: `You want to edit ${row.name}`,
-        buttonsStyling: false,
-        confirmButtonClass: "btn btn-info btn-fill",
-      });
+    createFilterUnidadProduccionRPagoVehiculoRecibo(queryString) {
+      return (unidad) => {
+        return (
+          unidad.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+        );
+      };
     },
-    handleDelete(index, row) {
-      swal
-        .fire({
-          title: "Are you sure?",
-          text: `You won't be able to revert this!`,
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn btn-success btn-fill",
-          cancelButtonClass: "btn btn-danger btn-fill",
-          confirmButtonText: "Yes, delete it!",
-          buttonsStyling: false,
-        })
-        .then((result) => {
-          if (result.value) {
-            this.deleteRow(row);
-            swal.fire({
-              title: "Deleted!",
-              text: `You deleted ${row.name}`,
-              type: "success",
-              confirmButtonClass: "btn btn-success btn-fill",
-              buttonsStyling: false,
-            });
-          }
-        });
+    handleSelectUnidadProduccionRPagoVehiculoRecibo(item) {
+      console.log(item);
     },
-    deleteRow(row) {
-      let indexToDelete = this.tableData.findIndex(
-        (tableRow) => tableRow.id === row.id
-      );
-      if (indexToDelete >= 0) {
-        this.tableData.splice(indexToDelete, 1);
+    tableRowClassNameRPagosVehiculoProduccionRecibo({ row, rowIndex }) 
+    {
+      if (row.estado == 0) {
+        //row.estado = "ANULADO";
+        return "warning-row-panelControlProduccion";
+      } else if(row.estado == 1) {
+        //row.estado = "PAGADO";
+        return "success-row-panelControlProduccion";
       }
     },
-    selectionChange(selectedRows) {
-      this.selectedRows = selectedRows;
+    initFechaActualProduccionRPAgosVehiculoRecibo() {
+      var fecha = new Date();
+      var mes = fecha.getMonth() + 1;
+      var day = fecha.getDate();
+      var format =
+        fecha.getFullYear() +
+        "-" +
+        (mes < 10 ? "0" + mes : mes) +
+        "-" +
+        (day < 10 ? "0" + day : day);
+
+      this.fechaInicialRPagosVehiculoProduccionRecibo = format;
+      this.fechaFinalRPagosVehiculoProduccionRecibo = format;
     },
+    async readAllUnidadesPagosVehiculoProduccionRecibo() {
+      var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
+        token: this.token,
+      });
+
+      console.log(datos.data);
+
+      if (datos.data.status_code == 200) {
+        for (var i = 0; i < datos.data.data.length; i++) {
+          this.mListaUnidadesPagosVehiculoProduccionRecibo[i] =
+            datos.data.data[i];
+          this.mListaUnidadesPagosVehiculoProduccionRecibo[i].value =
+            datos.data.data[i].CodiVehi;
+        }
+      }
+    },
+    async readAllRPagosVehiculoProduccionRecibos() 
+    {
+      this.mPagadoRPagosVehiculoRecibo = "0.00"
+      this.mAnuladoRPagosVehiculoRecibo = "0.00"
+
+      if (this.loadingRPagosVehiculoRecibo) {
+        Notification.warning({
+          title: "Reporte Pagos Vehiculo",
+          message: "Por favor espere un momento.",
+          duration: 3500,
+        });
+      } else {
+        try {
+          this.loadingRPagosVehiculoRecibo = true;
+          this.tableDataRPagosVEhiculoProduccionRecibo = [];
+          var body = {
+            token: this.token,
+            unidad: this.itemUnidadProduccionRPagoVehiculorecibo,
+            inicio: this.fechaInicialRPagosVehiculoProduccionRecibo,
+            final: this.fechaFinalRPagosVehiculoProduccionRecibo,
+            tipo: this.radioEstadoRPagosVehiculoRecibo,
+          };
+          console.log(body);
+          var datos = await this.$axios.post(
+            process.env.baseUrl + "/reporte_pagos_vehiculo_recibo",
+            body
+          );
+
+          if (datos.data.status_code == 200) {
+            Notification.success({
+              title: "Reporte Pagos Vehiculo",
+              message: "Datos consultados con éxito.",
+              duration: 2500,
+            });
+            var anulado = 0;
+            var pagado = 0;
+
+            this.tableDataRPagosVEhiculoProduccionRecibo.push(
+              ...datos.data.datos
+            );
+          for(var i = 0;i<datos.data.datos.length;i++)
+          {
+            if(datos.data.datos[i].estado  == 1)
+            {
+              pagado = pagado + parseFloat(datos.data.datos[i].monto)
+            }else{
+              anulado = anulado + parseFloat(datos.data.datos[i].monto)
+            }
+          }
+          
+          this.mPagadoRPagosVehiculoRecibo = Number(pagado).toFixed(2)
+          this.mAnuladoRPagosVehiculoRecibo = Number(anulado).toFixed(2)
+
+          this.loadingRPagosVehiculoRecibo = false;
+          } else if (datos.data.status_code == 300) {
+            this.loadingRPagosVehiculoRecibo = false;
+            Notification.info({
+              title: "Reporte Pagos Vehiculo",
+              message: "No existen datos disponibles",
+              duration: 2500,
+            });
+          } else {
+            Notification.error({
+              title: "API ERROR Reporte Pagos Vehiculo",
+              message: datos.data.msm,
+              duration: 2500,
+            });
+          }
+        } catch (error) {
+          Notification.error({
+            title: "ERROR CATCH Reporte Pagos Vehiculo",
+            message: error.toString(),
+            duration: 2500,
+          });
+        }
+        this.loadingRPagosVehiculoRecibo = false;
+      }
+    },
+    async readAllDetalleReciboPagosVehiculoProduccion(index, item) {
+      this.modalsReciboProduccion = true;
+      this.tableDataDetalleReciboPAgoVehiculoProduccion = [];
+      this.itemModalUnidadReciboPagoVehiculoProduccion = item.unidad;
+      this.itemModalIdReciboPagoVehiculoProduccion = item.id;
+      this.itemModalTotalReciboPagoVehiculoProduccion = item.monto;
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/reporte_detalle_recibo_pagos_vehiculo",
+          {
+            token: this.token,
+            item: item.id,
+          }
+        );
+
+        this.tableDataDetalleReciboPAgoVehiculoProduccion.push(
+          ...datos.data.datos
+        );
+      } catch (error) {
+        Notification.error({
+          title: "ERROR CATCH Reporte Pagos Vehiculo",
+          message: error.toString(),
+          duration: 2500,
+        });
+      }
+    },
+  },
+  mounted() {
+    this.readAllUnidadesPagosVehiculoProduccionRecibo();
+    this.initFechaActualProduccionRPAgosVehiculoRecibo();
   },
 };
 </script>
 <style>
+.form-group {
+  margin-bottom: 0rem;
+}
+.form-controlPersonal {
+  display: block;
+  width: 100%;
+  /* height: calc(1.5em + 1.25rem + 2px); */
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #8898aa;
+  background-color: #fff;
+  background-clip: padding-box;
+  outline: none;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  margin-bottom: 0rem;
+  box-shadow: 0 3px 2px rgba(233, 236, 239, 0.05);
+  transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.el-loading-text {
+  color: black !important;
+}
+.el-icon-loading {
+  color: black !important;
+}
+.cardTextoRPagosVehiculoProduccion {
+  display: flex;
+  align-items: center;
+}
+.cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
+  display: flex;
+  justify-content: space-between;
+}
+.el-table .warning-row-panelControlProduccion {
+  background: rgba(252, 143, 143, 0.692) !important;
+}
+
+.el-table .success-row-panelControlProduccion {
+  background: #8fed8fbb !important;
+}
+
 .no-border-card .card-footer {
   border-top: 0;
+}
+.card-bodyRPagosVehiculoReciboProduccion {
+  padding: 0rem !important;
+  height: calc(100vh - 12rem);
+  overflow: auto;
+}
+
+.card-bodyTopOpcionesRPagosVehiculoPRoduccion {
+  padding-top: 0.25rem !important;
 }
 </style>

@@ -3,7 +3,7 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-        <sidebar-item
+        <!--<sidebar-item
           :link="{
             name: 'Tablero',
             icon: 'ni ni-collection text-success',
@@ -21,10 +21,7 @@
           <sidebar-item
             :link="{ name: 'Recibos Pagos Vehiculo', path: './recibopagosvehiculo' }"
           />
-          <!--<sidebar-item
-            :link="{ name: 'Recibos Lineas', path: '#' }"
-          />-->
-        </sidebar-item>
+        </sidebar-item>-->
 
         <sidebar-item
           :link="{
@@ -32,16 +29,7 @@
             icon: 'ni ni-book-bookmark text-blank',
           }"
         >
-          <sidebar-item
-            :link="{ name: 'Minutos y Tarjetas', path: '/forms/elements' }"
-          />
-          <sidebar-item :link="{ name: 'Pagos Vehiculo', path: './rpagosvehiculo' }" />
-          <sidebar-item
-            :link="{ name: 'Pagos Vehiculo Resumido', path: './rpagosvehiculoresumido' }"
-          />
-          <sidebar-item
-            :link="{ name: 'Cobros Operador', path: './rcobrosoperador' }"
-          />
+          <sidebar-item :link="{ name: 'Contador Pasajeros', path: './rcontador' }" />
         </sidebar-item>
 
         <sidebar-item

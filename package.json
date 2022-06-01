@@ -32,6 +32,7 @@
     "fuse.js": "6.4.6",
     "google-maps": "4.3.3",
     "jquery": "^3.6.0",
+    "jspdf": "^2.5.1",
     "nouislider": "15.5.0",
     "nuxt": "2.15.8",
     "perfect-scrollbar": "1.5.2",
@@ -42,6 +43,7 @@
     "vue-chartjs": "3.5.1",
     "vue-clipboard2": "0.3.3",
     "vue-flatpickr-component": "8.1.7",
+    "vue-json-excel": "^0.3.0",
     "vue2-google-maps": "^0.10.7",
     "vue2-transitions": "0.3.0"
   },
