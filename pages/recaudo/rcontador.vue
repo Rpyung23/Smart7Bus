@@ -161,26 +161,14 @@
                 minWidth="110"
               >
               </el-table-column>
-              <el-table-column
-                prop="salida_id"
-                label="Salida"
-                minWidth="130"
-                sortable="true"
-              >
-              </el-table-column>
+
               <el-table-column
                 prop="DescRutaSali_m"
                 label="Ruta - Linea"
                 minWidth="200"
               >
               </el-table-column>
-              <el-table-column
-                prop="HoraSaliProgSali_m"
-                label="F. Salida"
-                minWidth="180"
-                sortable="true"
-              >
-              </el-table-column>
+
               <el-table-column
                 prop="fecha_creacion"
                 label="Puerta 1 (S)"
@@ -389,13 +377,17 @@ export default {
         token: this.token,
       });
 
-      console.log(datos.data);
-
-      if (datos.data.status_code == 200) {
-        for (var i = 0; i < datos.data.data.length; i++) {
-          this.mListaUnidadesPagosVehiculoProduccion[i] = datos.data.data[i];
-          this.mListaUnidadesPagosVehiculoProduccion[i].value =
-            datos.data.data[i].CodiVehi;
+      if (datos.data.status_code == 200) 
+      {
+        this.mListaUnidadesPagosVehiculoProduccion.push({
+          CodiVehi:"*",
+          value:"*"
+        })
+        for (var i = 0; i < datos.data.data.length; i++) 
+        {
+          var obj = datos.data.data[i]
+          obj.value = obj.CodiVehi
+          this.mListaUnidadesPagosVehiculoProduccion.push(obj)
         }
       }
     },
@@ -411,6 +403,14 @@ export default {
         this.mListLineasContadorPasajeros.push(...datos.data.data);
       }
     },
+    async readConteoPasajeros(){
+      var body = {
+        fechaI:'',
+        fechaF:'',
+        unidad:'',
+        ruta:''
+      }
+    }
   },
   mounted() {
     this.readAllUnidadesPagosVehiculoProduccion();
