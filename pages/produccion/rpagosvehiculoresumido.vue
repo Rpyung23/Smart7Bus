@@ -273,7 +273,7 @@ export default {
           this.tableDataRPagosVEhiculoProduccionResumido = [];
           var body = {
             token: this.token,
-            unidad: this.itemUnidadProduccionRPagoVehiculoResumido,
+            unidad: this.itemUnidadProduccionRPagoVehiculoResumido == "" ? "*" : this.itemUnidadProduccionRPagoVehiculoResumido,
             inicio: this.fechaInicialRPagosVehiculoResumidoProduccion,
             final: this.fechaInicialRPagosVehiculoResumidoProduccion,
           };
@@ -350,7 +350,7 @@ export default {
       }
 
                   this.headerExcelRPagosVehiculoResumidoProduccion = [
-              "Reporte Pagos Resumido: "+(this.itemUnidadProduccionRPagoVehiculoResumido == "*" ? "TODAS LAS UNIDADES" : 
+              "Reporte Pagos Resumido: "+(this.itemUnidadProduccionRPagoVehiculoResumido == "" ? "TODAS LAS UNIDADES" : 
               this.itemUnidadProduccionRPagoVehiculoResumido),
               "Fechas : "+this.fechaInicialRPagosVehiculoResumidoProduccion +" hasta "+this.fechaFinalRPagosVehiculoResumidoProduccion,
               "Dinero Recaudado : "+this.mPagadoRPagosVehiculoResumido,

@@ -36,6 +36,7 @@
                       </base-input>
                     </div>
                   </div>
+                  <br>
                   <el-table
                     v-loading="loadingUnidadesFlotaVehicular"
                     element-loading-text="Cargando..."
@@ -155,6 +156,7 @@
                       </base-input>
                     </div>
                   </div>
+                  <br>
                   <el-table
                     v-loading="loadingGruposFlotaVehicular"
                     element-loading-text="Cargando..."
@@ -250,6 +252,7 @@
                       </base-input>
                     </div>
                   </div>
+                  <br>
                   <el-table
                     v-loading="loadingPropietariosFlotaVehicular"
                     element-loading-text="Cargando..."
@@ -343,6 +346,7 @@
                       </base-input>
                     </div>
                   </div>
+                  <br>
                   <el-table
                     v-loading="loadingAdministrativosFlotaVehicular"
                     element-loading-text="Cargando..."

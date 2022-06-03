@@ -259,7 +259,7 @@ export default {
       mListaUnidadesPagosVehiculoProduccionRecibo: [],
       tableDataRPagosVEhiculoProduccionRecibo: [],
       radioEstadoRPagosVehiculoRecibo: "*",
-      itemUnidadProduccionRPagoVehiculorecibo: "*",
+      itemUnidadProduccionRPagoVehiculorecibo: "",
       token: this.$cookies.get("token"),
       fechaInicialRPagosVehiculoProduccionRecibo: "",
       fechaFinalRPagosVehiculoProduccionRecibo: "",
@@ -351,7 +351,7 @@ export default {
           this.tableDataRPagosVEhiculoProduccionRecibo = [];
           var body = {
             token: this.token,
-            unidad: this.itemUnidadProduccionRPagoVehiculorecibo,
+            unidad: this.itemUnidadProduccionRPagoVehiculorecibo == "" ? "*" : this.itemUnidadProduccionRPagoVehiculorecibo,
             inicio: this.fechaInicialRPagosVehiculoProduccionRecibo,
             final: this.fechaFinalRPagosVehiculoProduccionRecibo,
             tipo: this.radioEstadoRPagosVehiculoRecibo,

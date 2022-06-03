@@ -277,7 +277,7 @@ export default {
       radioEstadoRPagosVehiculo: "*",
       mListRubrosRPagosVehiculo: [],
       mSelectRubroValuePagosVehiculo: [],
-      itemUnidadProduccionRPagoVehiculo: "*",
+      itemUnidadProduccionRPagoVehiculo: "",
       token: this.$cookies.get("token"),
       fechaInicialRPagosVehiculoProduccion: "",
       fechaFinalRPagosVehiculoProduccion: "",
@@ -397,7 +397,7 @@ export default {
           this.tableDataRPagosVEhiculoProduccion = [];
           var body = {
             token: this.token,
-            unidad: this.itemUnidadProduccionRPagoVehiculo,
+            unidad: this.itemUnidadProduccionRPagoVehiculo == "" ? "*" : this.itemUnidadProduccionRPagoVehiculo,
             inicio: this.fechaInicialRPagosVehiculoProduccion,
             final: this.fechaInicialRPagosVehiculoProduccion,
             tipo: this.radioEstadoRPagosVehiculo,

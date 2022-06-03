@@ -834,7 +834,10 @@ export default {
           "&key=AIzaSyDOAdi7ZLdoctlCRA3_gYTeeIAjEHsTTY4"
       );
       var result = dir.data.results;
-      return `<div style="width:250px;padding:0.5rem">
+      return `<div style="width:300px;padding:0.50rem">
+              <strong class="strongLetrasInfoWindows">UNIDAD N° : </strong> ${
+                unidad.CodiVehiMoni
+              }<br>
               <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
                 unidad.UltiFechMoni
               }<br>

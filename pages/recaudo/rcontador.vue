@@ -49,7 +49,7 @@
                 @on-close="blur"
                 :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker"
-                v-model="fechaInicialRPagosVehiculoProduccion"
+                v-model="fechaInicialConteoPasajeros"
               >
               </flat-picker>
             </base-input>
@@ -61,18 +61,14 @@
                 @on-close="blur"
                 :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker"
-                v-model="fechaFinalRPagosVehiculoProduccion"
+                v-model="fechaFinalConteoPasajeros"
               >
               </flat-picker>
             </base-input>
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button
-              icon
-              type="primary"
-              @click="readAllRPagosVehiculoProduccion()"
-            >
+            <base-button icon type="primary" @click="readConteoPasajeros()">
               <span class="btn-inner--icon"
                 ><i class="el-icon-search"></i
               ></span>
@@ -82,7 +78,7 @@
               class="btn btn-outline-success"
               outline
               :header="headerExcelRPagosVehiculoProduccion"
-              :data="tableDataRPagosVEhiculoProduccion"
+              :data="tableDataRecaudoContadorPasajeros"
               :fields="json_fields_excelRPagosVehiculoProduccion"
               :worksheet="WorksheetExcelRPagosVehiculoProduccion"
               :name="FileNameExcelRPagosVehiculoProduccion"
@@ -122,20 +118,7 @@
             </el-select>
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: blue; margin-right: 0.5rem"
-              >Subida : {{ mTotalPasajerosSubidaContador }}</strong
-            >
-            <strong style="color: read; margin-right: 0.5rem"
-              >Bajada : {{ mTotalPasajerosBajadaContador }}</strong
-            >
-            <strong style="color: black; margin-right: 0.5rem"
-              >Total : {{ mTotalPasajerosContador }}</strong
-            >
-            <strong style="color: green"
-              >Dinero Recaudado : {{ mTotalDineroPasajerosContador }} $</strong
-            >
-          </div>
+          <div class="cardTextoRPagosVehiculoProduccion"></div>
         </card>
 
         <card
@@ -146,20 +129,15 @@
         >
           <div>
             <el-table
-              v-loading="loadingRPagosVehiculo"
+              v-loading="loadingUnidadesContadorPasajerosPasajeros"
               element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading"
-              :data="tableDataRPagosVEhiculoProduccion"
+              :data="tableDataRecaudoContadorPasajeros"
               row-key="id"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
-              :row-class-name="tableRowClassNameRPagosVehiculoProduccion"
             >
-              <el-table-column
-                prop="vehiculo_codigo"
-                label="Unidad"
-                minWidth="110"
-              >
+              <el-table-column prop="unidad" label="Unidad" minWidth="110">
               </el-table-column>
 
               <el-table-column
@@ -170,60 +148,60 @@
               </el-table-column>
 
               <el-table-column
-                prop="fecha_creacion"
+                prop="subida1"
                 label="Puerta 1 (S)"
                 minWidth="160"
               >
               </el-table-column>
               <el-table-column
-                prop="fecha_pago"
+                prop="subida2"
                 label="Puerta 2 (S)"
                 minWidth="160"
               >
               </el-table-column>
               <el-table-column
-                prop="montoControles"
+                prop="subida3"
                 label="Puerta 3 (S)"
                 minWidth="160"
               >
               </el-table-column>
               <el-table-column
-                prop="montoControlesDesc"
+                prop="bajada1"
                 label="Puerta 1 (B)"
                 minWidth="160"
               >
               </el-table-column>
               <el-table-column
-                prop="descripcion_rubro"
+                prop="bajada2"
                 label="Puerta 2 (B)"
                 minWidth="160"
               >
               </el-table-column>
               <el-table-column
-                prop="montoMultas"
+                prop="bajada3"
                 label="Puerta 3 (B)"
                 minWidth="160"
               >
               </el-table-column>
               <el-table-column
-                prop="montoMultas"
+                prop="totalSubidas"
                 label="Total Subidas"
                 minWidth="180"
               >
               </el-table-column>
 
               <el-table-column
-                prop="montoMultas"
+                prop="totalBajadas"
                 label="Total Bajadas"
                 minWidth="180"
               >
               </el-table-column>
 
-              <el-table-column prop="montoMultas" label="Total" minWidth="150">
+              <el-table-column prop="error" label="% Error" minWidth="140">
               </el-table-column>
 
               <el-table-column
-                prop="montoMultas"
+                prop="dinero"
                 label="D. Recaudado ($)"
                 minWidth="180"
               >
@@ -280,20 +258,16 @@ export default {
   },
   data() {
     return {
-      mListaUnidadesPagosVehiculoProduccion: [],
-      tableDataRPagosVEhiculoProduccion: [],
+      mListaUnidadesContadorPasajeros: [],
+      tableDataRecaudoContadorPasajeros: [],
       mListLineasContadorPasajeros: [],
       loadingUnidadesContadorPasajeros: false,
-      mSelectRutaContadorPasajero: ["*"],
-      itemUnidadContadorPasajero: ["*"],
+      loadingUnidadesContadorPasajerosPasajeros: false,
+      mSelectRutaContadorPasajero: [],
+      itemUnidadContadorPasajero: [],
       token: this.$cookies.get("token"),
-      fechaInicialRPagosVehiculoProduccion: "",
-      fechaFinalRPagosVehiculoProduccion: "",
-      loadingRPagosVehiculo: false,
-      mTotalPasajerosContador: "0",
-      mTotalPasajerosSubidaContador: "0",
-      mTotalPasajerosBajadaContador: "0",
-      mTotalDineroPasajerosContador: "0.00",
+      fechaInicialConteoPasajeros: "",
+      fechaFinalConteoPasajeros: "",
       WorksheetExcelRPagosVehiculoProduccion: "",
       FileNameExcelRPagosVehiculoProduccion: "",
       headerExcelRPagosVehiculoProduccion: [],
@@ -322,7 +296,7 @@ export default {
         setTimeout(() => {
           this.loadingUnidadesContadorPasajeros = false;
           this.optionsUnidadesSelectContadorPasajero =
-            this.mListaUnidadesPagosVehiculoProduccion.filter((item) => {
+            this.mListaUnidadesContadorPasajeros.filter((item) => {
               return (
                 item.CodiVehi.toLowerCase().indexOf(query.toLowerCase()) > -1
               );
@@ -333,32 +307,7 @@ export default {
       }
     },
 
-    querySearchUnidadProduccionRPagoVehiculo(queryString, cb) {
-      var results = queryString
-        ? this.mListaUnidadesPagosVehiculoProduccion.filter(
-            this.createFilterUnidadProduccionRPagoVehiculo(queryString)
-          )
-        : this.mListaUnidadesPagosVehiculoProduccion;
-      // call callback function to return suggestions
-      cb(results);
-    },
-    createFilterUnidadProduccionRPagoVehiculo(queryString) {
-      return (unidad) => {
-        return (
-          unidad.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        );
-      };
-    },
-    tableRowClassNameRPagosVehiculoProduccion({ row, rowIndex }) {
-      if (row.fecha_pago == null) {
-        row.estado = "PENDIENTE";
-        return "warning-row-panelControlProduccion";
-      } else {
-        row.estado = "PAGADO";
-        return "success-row-panelControlProduccion";
-      }
-    },
-    initFechaActualProduccionRPAgosVehiculo() {
+    initFechaActualContadorPasajeros() {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
       var day = fecha.getDate();
@@ -369,25 +318,21 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialRPagosVehiculoProduccion = format;
-      this.fechaFinalRPagosVehiculoProduccion = format;
+      this.fechaInicialConteoPasajeros = format;
+      this.fechaFinalConteoPasajeros = format;
     },
-    async readAllUnidadesPagosVehiculoProduccion() {
+    async readAllUnidadesContadorPasajeros() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
         token: this.token,
       });
 
       if (datos.data.status_code == 200) 
       {
-        this.mListaUnidadesPagosVehiculoProduccion.push({
-          CodiVehi:"*",
-          value:"*"
-        })
-        for (var i = 0; i < datos.data.data.length; i++) 
-        {
-          var obj = datos.data.data[i]
-          obj.value = obj.CodiVehi
-          this.mListaUnidadesPagosVehiculoProduccion.push(obj)
+
+        for (var i = 0; i < datos.data.data.length; i++) {
+          var obj = datos.data.data[i];
+          obj.value = obj.CodiVehi;
+          this.mListaUnidadesContadorPasajeros.push(obj);
         }
       }
     },
@@ -395,26 +340,51 @@ export default {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
       });
-      this.mListLineasContadorPasajeros.push({
-        DescRuta: "Todas las Rutas",
-        LetrRuta: "*",
-      });
       if (datos.data.status_code == 200) {
         this.mListLineasContadorPasajeros.push(...datos.data.data);
       }
     },
-    async readConteoPasajeros(){
-      var body = {
-        fechaI:'',
-        fechaF:'',
-        unidad:'',
-        ruta:''
+    async readConteoPasajeros() 
+    {
+
+      if (this.loadingUnidadesContadorPasajerosPasajeros) {
+        Notification.info({
+          title: "Conteo de Pasajeros",
+          message: "Por favor espere un momento, consulta en proceso.",
+        });
+      } else {
+        this.loadingUnidadesContadorPasajerosPasajeros = true;
+        this.tableDataRecaudoContadorPasajeros = []
+        try {
+          /*console.log(this.itemUnidadContadorPasajero)
+          console.log(this.mSelectRutaContadorPasajero)*/
+          var body = {
+            token: this.token,
+            unidades: this.itemUnidadContadorPasajero.length == 0? "*" : this.itemUnidadContadorPasajero,
+            rutas: this.mSelectRutaContadorPasajero.length == 0 ? "*" : this.mSelectRutaContadorPasajero,
+            fechaI: this.fechaInicialConteoPasajeros,
+            fechaF: this.fechaFinalConteoPasajeros,
+          };
+          console.log(body)
+          var datos = await this.$axios.post(
+            process.env.baseUrl + "/contadorPasajerosFecha",
+            body
+          );
+
+          if (datos.data.status_code == 200) {
+            this.tableDataRecaudoContadorPasajeros.push(...datos.data.datos);
+          }
+          console.log(datos.data)
+        } catch (error) {
+          console.log(error);
+        }
+        this.loadingUnidadesContadorPasajerosPasajeros = false;
       }
-    }
+    },
   },
   mounted() {
-    this.readAllUnidadesPagosVehiculoProduccion();
-    this.initFechaActualProduccionRPAgosVehiculo();
+    this.readAllUnidadesContadorPasajeros();
+    this.initFechaActualContadorPasajeros();
     this.readAllLineasContadorPasajeros();
   },
 };

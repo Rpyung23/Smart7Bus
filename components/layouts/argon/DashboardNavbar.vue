@@ -130,31 +130,31 @@
               >
                 <i class="ni ni-calendar-grid-58"></i>
               </span>
-              <small>Calendar</small>
+              <small>Despacho</small>
             </a>
-            <a href="#!" class="col-4 shortcut-item">
+            <a href="./monitoreo" class="col-4 shortcut-item">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-orange"
               >
-                <i class="ni ni-email-83"></i>
+                <i class="ni ni-bus-front-12"></i>
               </span>
-              <small>Email</small>
+              <small>Moniroreo</small>
             </a>
-            <a href="#!" class="col-4 shortcut-item">
+            <a href="./produccion/tablero" class="col-4 shortcut-item">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-info"
               >
                 <i class="ni ni-credit-card"></i>
               </span>
-              <small>Payments</small>
+              <small>Producción</small>
             </a>
             <a href="#!" class="col-4 shortcut-item">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-green"
               >
-                <i class="ni ni-books"></i>
+                <i class="ni ni-money-coins"></i>
               </span>
-              <small>Reports</small>
+              <small>Liquidación</small>
             </a>
             <a href="#!" class="col-4 shortcut-item">
               <span
@@ -162,15 +162,15 @@
               >
                 <i class="ni ni-pin-3"></i>
               </span>
-              <small>Maps</small>
+              <small>Historial</small>
             </a>
-            <a href="#!" class="col-4 shortcut-item">
+            <a href="./recaudo/rcontador" class="col-4 shortcut-item">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-yellow"
               >
-                <i class="ni ni-basket"></i>
+                <i class="ni ni-single-02"></i>
               </span>
-              <small>Shop</small>
+              <small>Recaudo</small>
             </a>
           </div>
         </template>
@@ -198,7 +198,7 @@
         </a>
 
         <template>
-          <div class="dropdown-header noti-title">
+          <!--<div class="dropdown-header noti-title">
             <h6 class="text-overflow m-0">Welcome!</h6>
           </div>
           <a href="#!" class="dropdown-item">
@@ -217,7 +217,7 @@
             <i class="ni ni-support-16"></i>
             <span>Support</span>
           </a>
-          <div class="dropdown-divider"></div>
+          <div class="dropdown-divider"></div>-->
           <a href="./" class="dropdown-item" @click="cerrarSession()">
             <i class="ni ni-user-run"></i>
             <span>Logout</span>
