@@ -16,6 +16,26 @@
         disableDefaultUi: true,
       }"
     >
+      <GmapMarker
+        v-for="(marker, index) in mListPosicionesRecorrido"
+        :key="marker.idHistEve"
+        :icon="marker.icono"
+        @click="showInfoWindowsRecorrido(marker, index)"
+        :position="{
+          lat: parseFloat(marker.LatiHistEven),
+          lng: parseFloat(marker.LongHistEven),
+        }"
+      />
+
+      <GmapInfoWindow
+        :options="infoOptionsRecorrido"
+        :position="infoWindowPosRecorrido"
+        :opened="infoWinOpenRecorrido"
+        @closeclick="infoWinOpenRecorrido = false"
+      >
+        <div v-html="infoContentRecorrido"></div>
+      </GmapInfoWindow>
+
       <GmapPolygon
         v-for="control in mListControlesRecorrido"
         :key="control.CodiCtrl"
@@ -41,83 +61,13 @@
         icon="static/img/control/control.png"
         :options="{
           label: {
-            text: control.CodiCtrl,
+            text: control.DescCtrl,
             color: '#F71313',
             className: 'paddingLabelControl',
           },
         }"
       />
-      <GmapMarker
-        v-for="(marker, index) in mListPosicionesRecorrido"
-        :key="marker.idHistEve"
-        :icon="marker.icono"
-        @click="showInfoWindowsRecorrido(marker, index)"
-        :position="{
-          lat: parseFloat(marker.LatiHistEven),
-          lng: parseFloat(marker.LongHistEven),
-        }"
-      />
-
-      <GmapMarker
-        v-for="(control, index) in mListControlesRecorrido"
-        :key="control.DescCtrl + index"
-        :position="{
-          lat: parseFloat(control.Lati1Ctrl),
-          lng: parseFloat(control.Long1Ctrl),
-        }"
-        :optimized="true"
-        icon="static/img/control/control.png"
-        :options="{
-          label: {
-            text: control.CodiCtrl,
-            color: '#F71313',
-            className: 'paddingLabelControl',
-          },
-        }"
-      />
-
-      <GmapInfoWindow
-        :options="infoOptionsRecorrido"
-        :position="infoWindowPosRecorrido"
-        :opened="infoWinOpenRecorrido"
-        @closeclick="infoWinOpenRecorrido = false"
-      >
-        <div v-html="infoContentRecoorrido"></div>
-      </GmapInfoWindow>
     </GmapMap>
-
-    <!--<div class="container-item-busqueda">
-      <el-autocomplete
-        class="inline-input autocomplete-5rem"
-        v-model="itemUnidadRecorrido"
-        :fetch-suggestions="querySearchUnidadRecorrido"
-        placeholder="Unidad"
-        :trigger-on-focus="false"
-        @select="handleSelectUnidadRecorrido"
-      ></el-autocomplete>
-
-      <base-input addon-left-icon="ni ni-calendar-grid-58">
-        <flat-picker
-          slot-scope="{ focus, blur }"
-          @on-open="focus"
-          @on-close="blur"
-          :config="{ allowInput: true, mode: 'range' }"
-          class="form-control datepicker datepicker-ancho"
-          v-model="dates.range"
-        >
-        </flat-picker>
-      </base-input>
-
-      <el-date-picker
-        v-model="value3"
-        type="datetime"
-        placeholder="Select date and time"
-        default-time="12:00:00"
-      >
-      </el-date-picker>
-
-      <el-button type="primary" icon="el-icon-search">Search</el-button>
-    </div>-->
 
     <div id="tabOptionsRecorrido" class="tabOptionsRecorrido">
       <div
@@ -142,32 +92,42 @@
 
     <div id="PanelExVelocidad" class="container_Recorrido"></div>
 
-    <div id="PanelControlesRecorrido" class="container_Recorrido"></div>
+    <div id="PanelControlesRecorrido" class="container_Recorrido">
+      <ul>
+        <li class="li-item-salidas-recorrido">
+        </li>
+      </ul>
+    </div>
 
     <el-dialog title="Recorrido Unidad" :visible.sync="dialogFormVisible">
       <el-form>
         <div class="row">
           <el-form-item class="col" label="Unidad">
-            <el-autocomplete
-              class="inline-input autocomplete-5rem"
-              v-model="itemUnidadRecorrido"
-              :fetch-suggestions="querySearchUnidadRecorrido"
-              placeholder="Unidad"
-              :trigger-on-focus="false"
-              @select="handleSelectUnidadRecorrido"
-            ></el-autocomplete>
-          </el-form-item>
-
-          <el-form-item class="col" label="Fecha">
-            <el-date-picker
-              type="date"
-              placeholder="Seleccione la fecha"
-              v-model="fechaActualRecorrido"
-              :picker-options="{
-                selectableRange: '01:00:00 - 23:59:59',
-              }"
+            <el-select
+              v-model="itemUnidadSelectRecorrido"
+              multiple
+              filterable
+              remote
+              placeholder="Ingrese la unidad"
+              :remote-method="remoteMethodUnidadRecorrido"
+              :loading="loadingUnidadRecorrido"
             >
-            </el-date-picker>
+              <el-option
+                v-for="item in optionsUnidadesRecorrido"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="col">
+            <flat-picker
+              :config="{ allowInput: true }"
+              class="form-control datepicker"
+              v-model="fechaActualRecorrido"
+            >
+            </flat-picker>
           </el-form-item>
         </div>
 
@@ -189,6 +149,7 @@
         >
       </span>
     </el-dialog>
+
     <script src="../js/tabButtonsRecorrido.js"></script>
   </div>
 </template>
@@ -286,14 +247,16 @@ import {
   DatePicker,
   FormItem,
   Notification,
+  Select,
+  Option,
 } from "element-ui";
-import { FechaStringToHour } from "../util/fechas";
+import { FechaStringToHour } from "../../util/fechas";
 import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 
 export default {
-  layout: "DashboardLayout",
+  layout: "HistorialDashboardLayout",
   components: {
     BaseCheckbox,
     flatPicker,
@@ -305,16 +268,17 @@ export default {
     [Autocomplete.name]: Autocomplete,
     [Button.name]: Button,
     [Notification.name]: Notification,
+    [Select.name]: Select,
+    [Option.name]: Option,
   },
   data() {
     return {
       token: this.$cookies.get("token"),
-      itemUnidadRecorrido: "",
       infoWindowPosRecorrido: {
         lat: 0,
         lng: 0,
       },
-      infoContentRecoorrido: null,
+      infoContentRecorrido: null,
       fechaActualRecorrido: null,
       infoWinOpenRecorrido: false,
       infoOptionsRecorrido: {
@@ -324,10 +288,10 @@ export default {
         },
       },
       currentMinxRecorrido: null,
-      googleMap: null,
+      itemUnidadSelectRecorrido: [],
       mListUnidadesRecorrido: [],
       mListPosicionesRecorrido: [],
-      mListPosicionesMarc: [],
+      loadingUnidadRecorrido: false,
       RangeHorasRecorrido: [
         new Date(2016, 9, 10, 9, 0),
         new Date(2016, 9, 23, 59, 59),
@@ -335,6 +299,7 @@ export default {
       dialogFormVisible: false,
       oCenter: { lat: -1.249546, lng: -78.585376 },
       oZoom: 7,
+      optionsUnidadesRecorrido: [],
       mListControlesRecorrido: [],
     };
   },
@@ -344,7 +309,7 @@ export default {
         lat: parseFloat(unidad.LatiHistEven),
         lng: parseFloat(unidad.LongHistEven),
       };
-      this.infoContentRecoorrido = await this.getInfoWindowContentRecorrido(
+      this.infoContentRecorrido = await this.getInfoWindowContentRecorrido(
         unidad
       );
 
@@ -382,55 +347,6 @@ export default {
               }
             </div>`;
     },
-    async getPosicionesMarcacionRecorrido(salidas, fechaI, fechaF) 
-    {
-
-      var body = {
-        token: this.token,
-        idsalida: salidas,
-        fechaI: fechaI,
-        fechaF: fechaF,
-      };
-      console.log(body);
-      try {
-        var datos = await this.$axios.post(
-          process.env.baseUrlPanel + "/detalleSalidaHoras",
-          body
-        );
-
-        if (datos.data.status_code == 200) 
-        {
-          Notification.success({
-            title: "Marcaciones",
-            message: "Marcaciones consultados con éxito.",
-          });
-
-          for(var i = 0;i<datos.data.data.length;i++)
-          {
-            /*if(datos.data.data[i].){
-              this.mListControlesRecorrido[i].coordinates[]
-            }*/
-          }
-
-        } else if (datos.data.status_code == 300) {
-          Notification.info({
-            title: "Marcaciones",
-            message: "No existen Marcaciones disponibles actualmente.",
-          });
-        } else {
-          Notification.error({
-            title: "Marcaciones",
-            message: datos.data.sms,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-        Notification.error({
-          title: "Error Api Marcaciones",
-          message: error.toString(),
-        });
-      }
-    },
     initFechaActual() {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
@@ -463,26 +379,10 @@ export default {
         title: msm,
       });
     },
-    async initControlesRecorrido() {
-      try {
-        var datos = await this.$axios.post(
-          process.env.baseUrlPanel + "/checkpoints",
-          {
-            token: this.token,
-          }
-        );
-        console.log(datos.data.data);
-        if (datos.data.status_code == 200) {
-          this.mListControlesRecorrido.push(...datos.data.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
     async readUnidadAllRecorrido() {
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrlPanel + "/unidades-all",
+          process.env.baseUrlPanel + "/unidades",
           {
             token: this.token,
           }
@@ -498,11 +398,38 @@ export default {
         this.showToast("error", error.toString());
       }
     },
+    getIconoRecorrido(unidad) {
+      var pathExVelocidad = "img/recorrido/recorrido_ex_velocidad.png#";
+      var pathFRuta = "img/recorrido/recorrido_f_ruta.png#";
+      var pathTrazado = "img/recorrido/recorrido_trazado.png#";
+      var imagen = "";
+      if (unidad.EvenExceVeloHistEven == 1) {
+        imagen = pathExVelocidad + unidad.idHistEve;
+      } else if (unidad.OutRoutHistEven == 1) {
+        imagen = pathFRuta + unidad.idHistEve;
+      } else {
+        imagen = pathTrazado + unidad.idHistEve;
+      }
+      return {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        fillColor:
+          unidad.EvenExceVeloHistEven == 1
+            ? "yellow"
+            : unidad.OutRoutHistEven == 1
+            ? "red"
+            : "green",
+        fillOpacity: 1,
+        strokeWeight: 0,
+        rotation: unidad.RumbHistEven,
+        scale: 3,
+        anchor: new google.maps.Point(0, 0),
+      };
+    },
     async initRecorrido() {
       this.mListPosicionesRecorrido = [];
       var body = {
         token: this.token,
-        unidad: this.itemUnidadRecorrido,
+        unidades: this.itemUnidadSelectRecorrido,
         fechaI:
           this.fechaActualRecorrido +
           " " +
@@ -515,7 +442,7 @@ export default {
       console.log(body);
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrlPanel + "/recorridoUnidad",
+          process.env.baseUrlPanel + "/historialUnidadesFechas",
           body
         );
 
@@ -527,24 +454,8 @@ export default {
 
           for (var i = 0; i < datos.data.datos.length; i++) {
             this.mListPosicionesRecorrido[i] = datos.data.datos[i];
-            this.mListPosicionesRecorrido[i].icono = this.getIcono(
-              this.mListPosicionesRecorrido[i]
-            );
-            //console.log(this.mListUnidadesRecorrido[i].icono)
-            //this.girarMarcadorUnitario(this.mListUnidadesRecorrido[i])
-            if (i == 0) {
-              this.oZoom = 17;
-              this.oCenter = {
-                lat: parseFloat(datos.data.datos[i].LatiHistEven),
-                lng: parseFloat(datos.data.datos[i].LongHistEven),
-              };
-            }
-          }
-          if (datos.data.salidas.length > 0) {
-            await this.getPosicionesMarcacionRecorrido(
-              datos.data.salidas,
-              body.fechaI,
-              body.fechaF
+            this.mListPosicionesRecorrido[i].icono = this.getIconoRecorrido(
+              datos.data.datos[i]
             );
           }
         } else if (datos.data.status_code == 300) {
@@ -566,83 +477,43 @@ export default {
         });
       }
     },
-    getIcono(unidad) {
-      var pathExVelocidad = "img/recorrido/recorrido_ex_velocidad.png#";
-      var pathFRuta = "img/recorrido/recorrido_f_ruta.png#";
-      var pathTrazado = "img/recorrido/recorrido_trazado.png#";
-      var imagen = "";
-      if (unidad.EvenExceVeloHistEven == 1) {
-        imagen = pathExVelocidad + unidad.idHistEve;
-      } else if (unidad.OutRoutHistEven == 1) {
-        imagen = pathFRuta + unidad.idHistEve;
-      } else {
-        imagen = pathTrazado + unidad.idHistEve;
-      }
-
-      return {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        fillColor:
-          unidad.EvenExceVeloHistEven == 1
-            ? "yellow"
-            : unidad.OutRoutHistEven
-            ? "red"
-            : "green",
-        fillOpacity: 1,
-        strokeWeight: 0,
-        rotation: unidad.RumbHistEven,
-        scale: 3,
-        anchor: new google.maps.Point(0, 0),
-      };
-    },
-    girarMarcador() {
-      for (var i = 0; i < this.mListUnidadesRecorrido.length; i++) {
-        $('img[src*="' + this.mListUnidadesRecorrido[i].icono + '"]').css({
-          transform:
-            "rotate(" + (this.mListUnidades[i].UltiRumbMoni - 90) + "deg)",
-        });
-      }
-    },
-    girarMarcadorUnitario(unidad) {
-      var rotation = unidad.RumbHistEven - 90;
-      /*$(`img[src="${unidad.icono.imagen}"]`).css({
-        "-webkit-transform": "rotate(" + rotation + "deg)",
-        "-moz-transform": "rotate(" + rotation + "deg)",
-        "-ms-transform": "rotate(" + rotation + "deg)",
-        transform: "rotate(" + rotation + "deg)",
-      });*/
-      console.log(unidad.icono);
-      console.log(rotation);
-
-      $('img[src*="' + unidad.icono + '"]').css({
-        transform: "rotate(" + rotation + "deg)",
-      });
-
-      /*$('img[src*="' + unidad.icono.imagen + '"]')
-        .parent()
-        .css("transform", "rotate(" + unidad.UltiRumbMoni + "deg)");*/
-    },
-    querySearchUnidadRecorrido(queryString, cb) {
-      var unidades = this.mListUnidadesRecorrido;
-      var results = queryString
-        ? unidades.filter(this.createFilterUnidadRecorrido(queryString))
-        : unidades;
-      cb(results);
-    },
-    createFilterUnidadRecorrido(queryString) {
-      return (link) => {
-        return (
-          link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+    async initControlesRecorrido() {
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/AllControles",
+          {
+            token: this.token,
+          }
         );
-      };
+        if (datos.data.status_code == 200) {
+          this.mListControlesRecorrido.push(...datos.data.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
-    handleSelectUnidadRecorrido(item) {
-      console.log(item);
+    remoteMethodUnidadRecorrido(query) {
+      if (query !== "") {
+        this.loadingUnidadRecorrido = true;
+        setTimeout(() => {
+          this.loadingUnidadRecorrido = false;
+          this.optionsUnidadesRecorrido = this.mListUnidadesRecorrido.filter(
+            (item) => {
+              return (
+                item.CodiVehi.toLowerCase().indexOf(query.toLowerCase()) > -1
+              );
+            }
+          );
+        }, 200);
+      } else {
+        this.optionsUnidadesRecorrido = [];
+      }
     },
   },
   mounted() {
     this.initFechaActual();
-    this.readUnidadAllRecorrido();
     this.initControlesRecorrido();
+    this.readUnidadAllRecorrido();
   },
 };
 </script>

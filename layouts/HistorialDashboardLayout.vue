@@ -3,24 +3,25 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
+
         <sidebar-item
           :link="{
-            name: 'Despacho',
-            icon: 'ni ni-calendar-grid-58 text-success',
-            path: './panelDespacho',
+            name: 'Recorrido',
+            icon: 'ni ni-vector text-success',
+            path: './recorrido',
           }"
         >
         </sidebar-item>
 
-
         <sidebar-item
           :link="{
-            name: 'Reportes',
-            icon: 'ni ni-collection text-primary',
+            name: 'Simulador',
+            icon: 'ni ni-button-play text-info',
+            path: './simulador',
           }"
         >
-          <sidebar-item :link="{ name: 'Despachos (Salidas)', path: './panelDespachoBusqueda' }" />
         </sidebar-item>
+
       </template>
     </side-bar>
     <div class="main-content">

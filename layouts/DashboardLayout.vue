@@ -85,13 +85,9 @@
           :link="{
             name: 'Historial',
             icon: 'ni ni-pin-3 text-info',
-            path: './historial',
+            path: './historial/recorrido',
           }"
         >
-          <sidebar-item
-            :link="{ name: 'Trazado de Ruta - Recorrido', path: '/recorrido' }"
-          />
-          <sidebar-item :link="{ name: 'Simulador', path: '/login' }" />
         </sidebar-item>
 
         <sidebar-item
