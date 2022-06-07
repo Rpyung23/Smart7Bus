@@ -116,6 +116,7 @@ export default {
       empresa_name = datos.data.data.name;
       logo_empresa = datos.data.data.logo;
     } catch (error) {
+      console.log(error)
       empresa_name = error.toString();
     }
     return { empresa, empresa_name,logo_empresa };
@@ -141,12 +142,13 @@ export default {
   },
   methods: {
     async OnLogin() {
+
       if (this.model.email != "" && this.model.password != "") {
 
         var api =
           process.env.baseUrl+"/" +this.empresa +"/loginEmpresa";
-
-        var datos = await axios_.post(api, {
+          try{
+            var datos = await axios_.post(api, {
           user: this.model.email,
           password: this.model.password,
         });
@@ -180,6 +182,9 @@ export default {
             confirmButtonText: "Aceptar",
           });
         }
+          }catch(e){
+            console.log(e)
+          }
       } else {
         alert("DATOS VACIOS");
       }
