@@ -324,7 +324,7 @@ export default {
               console.log("NUEVO EVENTO")
               var audio = new Audio("mp3/alerta.mp3");
               this.visibleBadgeNotification = true;
-              //audio.play();
+              audio.play();
               contador = 9999999999999999999999999999;
               encontrado = true
             }
