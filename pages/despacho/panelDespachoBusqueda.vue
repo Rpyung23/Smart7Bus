@@ -9,29 +9,18 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccion">
-            <!--<el-autocomplete
-              class="inline-input"
-              v-model="itemUnidadContadorPasajero"
-              :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo"
-              style="margin-right: 0.5rem"
-              placeholder="Unidad"
-              prefix-icon="ni ni-bus-front-12"
-              :trigger-on-focus="false"
-              @select="handleSelectUnidadProduccionRPagoVehiculo"
-            ></el-autocomplete>-->
-
             <el-select
-              v-model="itemUnidadContadorPasajero"
+              v-model="itemUnidadSalidasPanelBusqueda"
               multiple
               filterable
               style="margin-right: 0.5rem"
               remote
               placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesContadorPasajeros"
-              :loading="loadingUnidadesContadorPasajeros"
+              :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
             >
               <el-option
-                v-for="item in optionsUnidadesSelectContadorPasajero"
+                v-for="item in optionsUnidadesSalidasPanelBusqueda"
                 :key="item.CodiVehi"
                 :label="item.CodiVehi"
                 :value="item.CodiVehi"
@@ -49,7 +38,7 @@
                 @on-close="blur"
                 :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker"
-                v-model="fechaInicialConteoPasajeros"
+                v-model="fechaInicialSalidasPanelBusqueda"
               >
               </flat-picker>
             </base-input>
@@ -61,14 +50,18 @@
                 @on-close="blur"
                 :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker"
-                v-model="fechaFinalConteoPasajeros"
+                v-model="fechaFinalSalidasPanelBusqueda"
               >
               </flat-picker>
             </base-input>
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readConteoPasajeros()">
+            <base-button
+              icon
+              type="primary"
+              @click="readSalidasPanelBusqueda()"
+            >
               <span class="btn-inner--icon"
                 ><i class="el-icon-search"></i
               ></span>
@@ -78,7 +71,7 @@
               class="btn btn-outline-success"
               outline
               :header="headerExcelRPagosVehiculoProduccion"
-              :data="tableDataRecaudoContadorPasajeros"
+              :data="mListaSalidasPanelBusqueda"
               :fields="json_fields_excelRPagosVehiculoProduccion"
               :worksheet="WorksheetExcelRPagosVehiculoProduccion"
               :name="FileNameExcelRPagosVehiculoProduccion"
@@ -103,19 +96,30 @@
         >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
             <el-select
-              v-model="mSelectRutaContadorPasajero"
+              v-model="mSelectRutaSalidaPanelBusqueda"
               multiple
               collapse-tags
               placeholder="Lineas"
             >
               <el-option
-                v-for="item in mListLineasContadorPasajeros"
+                v-for="item in mListLineasSalidasPanelBusqueda"
                 :key="item.LetrRuta"
                 :label="item.DescRuta"
                 :value="item.LetrRuta"
               >
               </el-option>
             </el-select>
+            <el-radio style="margin-left: 0.5rem" v-model="radioEstadoRSalidasPanelBusqueda" 
+            label="*" @change="readSalidasPanelBusqueda()">TODOS</el-radio>
+            <el-radio v-model="radioEstadoRSalidasPanelBusqueda" label="2"
+              @change="readSalidasPanelBusqueda()">EN RUTA</el-radio
+            >
+            <el-radio v-model="radioEstadoRSalidasPanelBusqueda" label="4"
+              @change="readSalidasPanelBusqueda()">ANULADOS</el-radio
+            >
+            <el-radio v-model="radioEstadoRSalidasPanelBusqueda" label="3"
+              @change="readSalidasPanelBusqueda()">FINALIZADOS</el-radio
+            >
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion"></div>
@@ -129,82 +133,49 @@
         >
           <div>
             <el-table
-              v-loading="loadingUnidadesContadorPasajerosPasajeros"
+              v-loading="loadingTableUnidadesSalidasPanelBusqueda"
               element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading"
-              :data="tableDataRecaudoContadorPasajeros"
+              :data="mListaSalidasPanelBusqueda"
               row-key="id"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
             >
-              <el-table-column prop="unidad" label="Unidad" minWidth="110">
-              </el-table-column>
-
               <el-table-column
-                prop="DescRutaSali_m"
-                label="Ruta - Linea"
-                minWidth="200"
+                v-for="column in tableColumnsUnidadesFlotaVehicular"
+                :key="column.label"
+                v-bind="column"
+                :row-class-name="tableRowClassNameSalidasPanelBusqueda"
               >
               </el-table-column>
 
               <el-table-column
-                prop="subida1"
-                label="Puerta 1 (S)"
-                minWidth="160"
+                label="Estado"
+                min-width="150px"
+                prop="EstaSali_m"
               >
-              </el-table-column>
-              <el-table-column
-                prop="subida2"
-                label="Puerta 2 (S)"
-                minWidth="160"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="subida3"
-                label="Puerta 3 (S)"
-                minWidth="160"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="bajada1"
-                label="Puerta 1 (B)"
-                minWidth="160"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="bajada2"
-                label="Puerta 2 (B)"
-                minWidth="160"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="bajada3"
-                label="Puerta 3 (B)"
-                minWidth="160"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="totalSubidas"
-                label="Total Subidas"
-                minWidth="180"
-              >
-              </el-table-column>
-
-              <el-table-column
-                prop="totalBajadas"
-                label="Total Bajadas"
-                minWidth="180"
-              >
-              </el-table-column>
-
-              <el-table-column prop="error" label="% Error" minWidth="140">
-              </el-table-column>
-
-              <el-table-column
-                prop="dinero"
-                label="D. Recaudado ($)"
-                minWidth="180"
-              >
+                <template v-slot="{ row }">
+                  <badge class="badge-dot mr-4" type="">
+                    <i
+                      :class="`bg-${
+                        row.EstaSali_m == 4
+                          ? 'danger'
+                          : row.EstaSali_m == 2
+                          ? 'warning'
+                          : 'success'
+                      }`"
+                    ></i>
+                    <span class="status"
+                      ><strong>{{
+                        row.EstaSali_m == 4
+                          ? "ANULADO"
+                          : row.EstaSali_m == 2
+                          ? "EN RUTA"
+                          : "FINALIZADO"
+                      }}</strong></span
+                    >
+                  </badge>
+                </template>
               </el-table-column>
 
               <div slot="empty"></div>
@@ -239,7 +210,7 @@ import TabPane from "@/components/argon-core/Tabs/Tab";
 
 export default {
   mixins: [clientPaginationMixin],
-  layout: "RecaudoDashboardLayout",
+  layout: "DespachoDashboardLayout",
   components: {
     Tabs,
     TabPane,
@@ -258,20 +229,20 @@ export default {
   },
   data() {
     return {
-      mListaUnidadesContadorPasajeros: [],
-      tableDataRecaudoContadorPasajeros: [],
-      mListLineasContadorPasajeros: [],
-      loadingUnidadesContadorPasajeros: false,
-      loadingUnidadesContadorPasajerosPasajeros: false,
-      mSelectRutaContadorPasajero: [],
-      itemUnidadContadorPasajero: [],
+      mListaUnidadesSalidasPanelBusqueda: [],
+      mListLineasSalidasPanelBusqueda: [],
+      loadingTableUnidadesSalidasPanelBusquedaloading: false,
+      loadingTableUnidadesSalidasPanelBusqueda: false,
+      mSelectRutaSalidaPanelBusqueda: [],
+      itemUnidadSalidasPanelBusqueda: [],
       token: this.$cookies.get("token"),
-      fechaInicialConteoPasajeros: "",
-      fechaFinalConteoPasajeros: "",
+      fechaInicialSalidasPanelBusqueda: "",
+      fechaFinalSalidasPanelBusqueda: "",
+      radioEstadoRSalidasPanelBusqueda :"*",
       WorksheetExcelRPagosVehiculoProduccion: "",
       FileNameExcelRPagosVehiculoProduccion: "",
       headerExcelRPagosVehiculoProduccion: [],
-      optionsUnidadesSelectContadorPasajero: [],
+      optionsUnidadesSalidasPanelBusqueda: [],
       json_fields_excelRPagosVehiculoProduccion: {
         Unidad: "vehiculo_codigo",
         Salida: "salida_id",
@@ -287,27 +258,90 @@ export default {
         "Monto Pagado": "monto_pagado",
         Estado: "estado",
       },
+      tableColumnsUnidadesFlotaVehicular: [
+        {
+          prop: "CodiVehiSali_m",
+          label: "Unidad",
+          minWidth: 130,
+          sortable: true,
+        },
+        {
+          prop: "idSali_m",
+          label: "Salida",
+          minWidth: 140,
+        },
+        {
+          prop: "NumeVuelSali_m",
+          label: "N° Vuelta",
+          minWidth: 160,
+        },
+        {
+          prop: "HoraSaliProgSali_m",
+          label: "Hora Salida",
+          minWidth: 150,
+        },
+        {
+          prop: "HoraLlegProgSali_m",
+          label: "Hora Llegada",
+          minWidth: 160,
+        },
+        {
+          prop: "atrasoTime",
+          label: "Min Atraso",
+          minWidth: 150,
+        },
+        {
+          prop: "adelantoTime",
+          label: "Min Adelantos",
+          minWidth: 170,
+        },
+        {
+          prop: "VeloMaxiSali_m",
+          label: "Velocidad",
+          minWidth: 160,
+        },
+        {
+          prop: "NumeTarjSali_m",
+          label: "N° Tarjeta",
+          minWidth: 160,
+        },
+        {
+          prop: "DescRutaSali_m",
+          label: "Ruta",
+          minWidth: 200,
+        },
+        {
+          prop: "DescFrec",
+          label: "Frecuencia",
+          minWidth: 200,
+        },
+        {
+          prop: "PenaCtrlSali_d",
+          label: "PEN ($)",
+          minWidth: 160,
+        },
+      ],
+      mListaSalidasPanelBusqueda: [],
     };
   },
   methods: {
-    remoteMethodUnidadesContadorPasajeros(query) {
+    remoteMethodUnidadesSalidasPanelBusqueda(query) {
       if (query !== "") {
-        this.loadingUnidadesContadorPasajeros = true;
+        this.loadingTableUnidadesSalidasPanelBusquedaloading = true;
         setTimeout(() => {
-          this.loadingUnidadesContadorPasajeros = false;
-          this.optionsUnidadesSelectContadorPasajero =
-            this.mListaUnidadesContadorPasajeros.filter((item) => {
+          this.loadingTableUnidadesSalidasPanelBusquedaloading = false;
+          this.optionsUnidadesSalidasPanelBusqueda =
+            this.mListaUnidadesSalidasPanelBusqueda.filter((item) => {
               return (
                 item.CodiVehi.toLowerCase().indexOf(query.toLowerCase()) > -1
               );
             });
         }, 200);
       } else {
-        this.optionsUnidadesSelectContadorPasajero = [];
+        this.optionsUnidadesSalidasPanelBusqueda = [];
       }
     },
-
-    initFechaActualContadorPasajeros() {
+    initFechaActualSalidaBusquedaPanel() {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
       var day = fecha.getDate();
@@ -318,80 +352,108 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialConteoPasajeros = format;
-      this.fechaFinalConteoPasajeros = format;
+      this.fechaInicialSalidasPanelBusqueda = format;
+      this.fechaFinalSalidasPanelBusqueda = format;
     },
-    async readAllUnidadesContadorPasajeros() {
+    async readAllUnidadesSalidasPanelBusqueda() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
         token: this.token,
       });
 
-      if (datos.data.status_code == 200) 
-      {
-
+      if (datos.data.status_code == 200) {
         for (var i = 0; i < datos.data.data.length; i++) {
           var obj = datos.data.data[i];
           obj.value = obj.CodiVehi;
-          this.mListaUnidadesContadorPasajeros.push(obj);
+          this.mListaUnidadesSalidasPanelBusqueda.push(obj);
         }
       }
     },
-    async readAllLineasContadorPasajeros() {
+    async readAllLineasContadorSalidasPanelBusqueda() {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
       });
       if (datos.data.status_code == 200) {
-        this.mListLineasContadorPasajeros.push(...datos.data.data);
+        this.mListLineasSalidasPanelBusqueda.push(...datos.data.data);
       }
     },
-    async readConteoPasajeros() 
-    {
+    async readSalidasPanelBusqueda() {
+      this.mListaSalidasPanelBusqueda = [];
 
-      if (this.loadingUnidadesContadorPasajerosPasajeros) {
-        Notification.info({
-          title: "Conteo de Pasajeros",
-          message: "Por favor espere un momento, consulta en proceso.",
-        });
-      } else {
-        this.loadingUnidadesContadorPasajerosPasajeros = true;
-        this.tableDataRecaudoContadorPasajeros = []
+      if (!this.loadingTableUnidadesSalidasPanelBusqueda) {
+        this.loadingTableUnidadesSalidasPanelBusqueda = true;
         try {
-          /*console.log(this.itemUnidadContadorPasajero)
-          console.log(this.mSelectRutaContadorPasajero)*/
-          var body = {
-            token: this.token,
-            unidades: this.itemUnidadContadorPasajero.length == 0? "*" : this.itemUnidadContadorPasajero,
-            rutas: this.mSelectRutaContadorPasajero.length == 0 ? "*" : this.mSelectRutaContadorPasajero,
-            fechaI: this.fechaInicialConteoPasajeros,
-            fechaF: this.fechaFinalConteoPasajeros,
-          };
-          console.log(body)
           var datos = await this.$axios.post(
-            process.env.baseUrl + "/contadorPasajerosFecha",
-            body,{
-              timeout: 600000
+            process.env.baseUrl + "/readSalidasPanel",
+            {
+              token: this.token,
+              unidades:
+                this.itemUnidadSalidasPanelBusqueda.length <= 0
+                  ? "*"
+                  : this.itemUnidadSalidasPanelBusqueda,
+              rutas:
+                this.mSelectRutaSalidaPanelBusqueda.length <= 0
+                  ? "*"
+                  : this.mSelectRutaSalidaPanelBusqueda,
+              fechaI: this.fechaInicialSalidasPanelBusqueda,
+              fechaF: this.fechaFinalSalidasPanelBusqueda,
+              tipo :this.radioEstadoRSalidasPanelBusqueda
             }
           );
 
           if (datos.data.status_code == 200) {
-            this.tableDataRecaudoContadorPasajeros.push(...datos.data.datos);
+            Notification.success({
+              title: "Panel Salidas",
+              message: "Datos consultados con éxito",
+            });
+            this.mListaSalidasPanelBusqueda.push(...datos.data.datos);
+          } else if (datos.data.status_code == 300) {
+            Notification.info({
+              title: "Panel Salidas",
+              message: "ANo existen datos disponibles.",
+            });
+          } else {
+            Notification.error({
+              title: "Panel Salidas",
+              message: datos.data.msm,
+            });
           }
-          console.log(datos.data)
         } catch (error) {
           console.log(error);
+          Notification.info({
+            title: "TryCatch Panel Salidas",
+            message: error.toString(),
+          });
         }
-        this.loadingUnidadesContadorPasajerosPasajeros = false;
+      } else {
+        Notification.warning({
+          title: "Panel Salidas",
+          message:
+            "Actualmente ya existe una busqueda, porfavor espere un momento",
+        });
+      }
+      this.loadingTableUnidadesSalidasPanelBusqueda = false;
+    },
+    tableRowClassNameSalidasPanelBusqueda({ row, rowIndex }) 
+    {
+      if (row.EstaSali_m == 4) {
+        //row.estado = "ANULADO";
+        return "warning-row-panelControlProduccion";
+      } else if(row.EstaSali_m == 2) {
+        //row.estado = "PAGADO";
+        return "success-row-panelControlProduccion";
       }
     },
   },
   mounted() {
-    this.readAllUnidadesContadorPasajeros();
-    this.initFechaActualContadorPasajeros();
-    this.readAllLineasContadorPasajeros();
+    this.readAllUnidadesSalidasPanelBusqueda();
+    this.initFechaActualSalidaBusquedaPanel();
+    this.readAllLineasContadorSalidasPanelBusqueda();
+    this.readSalidasPanelBusqueda();
   },
 };
 </script>
 <style>
+
 .form-group {
   margin-bottom: 0rem;
 }
@@ -432,7 +494,7 @@ export default {
 }
 
 .el-table .success-row-panelControlProduccion {
-  background: #8fed8fbb !important;
+  background: hsla(61, 100%, 66%, 0.479) !important;
 }
 
 .no-border-card .card-footer {

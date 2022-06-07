@@ -39,7 +39,11 @@
           <i class="ni ni-zoom-split-in"></i>
         </a>
       </li>
-      <span class="reloj">{{ hora }}</span>
+
+      <iframe id="reloj" src="https://free.timeanddate.com/clock/i8cxjbwb/n4622/fn8/fs18/fcfff/tc2a8d62/pa6/th1/ta1" frameborder="0" width="142" height="32"></iframe>
+
+
+      <!--<span class="reloj">{{ hora }}</span>-->
 
       <base-dropdown
         class="nav-item"
@@ -281,7 +285,7 @@ export default {
       this.$cookies.set("namesUsuario",null)
       this.$router.push({ path:"/"+this.$cookies.get("empresa"),replace:true});
     },
-    mueveReloj() {
+    /*mueveReloj() {
       var momentoActual = new Date();
       var hora = momentoActual.getHours();
       var minuto = momentoActual.getMinutes();
@@ -297,7 +301,7 @@ export default {
         " : " +
         (segundo < 10 ? "0" + segundo : segundo) +
         (hora < 13 ? " AM " : " PM ");
-    },
+    },*/
     closeDropDown() {
       this.activeNotifications = false;
     },
@@ -353,15 +357,15 @@ export default {
   },
   mounted() {
     this.readNotificacionesAlertaDipositivos();
-    this.mueveReloj();
+    /*this.mueveReloj();*/
     this.nameUsuario = this.$cookies.get("namesUsuario");
-    setInterval(() => {
+    /*setInterval(() => {
       this.mueveReloj();
-    }, 1000);
+    }, 1000);*/
 
     setInterval(() => {
       this.readNotificacionesAlertaDipositivos();
-    }, 16000);
+    }, 10000);
   },
 };
 </script>
@@ -386,15 +390,16 @@ export default {
   font-size: 1.45rem;
 }
 
-.reloj {
-  color: white;
+
+#t1 {
+  color: white !important;
   /*background-color: #172b4d;*/
-  background-color: #2a8d62;
-  border-radius: 10px;
-  width: 8.5rem;
-  font-size: 1.5rem;
-  font-family: "digital-7";
-  text-align: center;
+  background-color: #2a8d62 !important;
+  width: 8.5rem !important;
+  font-size: 1.5rem !important;
+  font-family: "digital-7" !important;
+  text-align: center !important;
+  border-radius: 10px !important;
 }
 
 @media only screen and (max-width: 70em) {

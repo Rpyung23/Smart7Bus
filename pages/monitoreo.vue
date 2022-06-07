@@ -571,7 +571,6 @@
 <script>
 import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
 import axios from "@nuxtjs/axios";
-import { th, tr } from "date-fns/locale";
 export default {
   layout: "DashboardLayout",
   components: {
