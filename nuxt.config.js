@@ -107,8 +107,8 @@ module.exports = {
     }
   },
   env: {
-    baseUrl: 'https://api-smart7bus.herokuapp.com',
-    baseUrlPanel: 'https://api-smart7bus.herokuapp.com'
+    baseUrl: baseUrl || 'http://localhost:3001',
+    baseUrlPanel: baseUrlPanel || 'http://localhost:3001'
     /*baseUrl:'lionfish-app-sn8oz.ondigitalocean.app',
     baseUrlPanel: 'lionfish-app-sn8oz.ondigitalocean.app',*/
 }
