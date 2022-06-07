@@ -107,8 +107,8 @@ module.exports = {
     }
   },
   env: {
-    baseUrl: baseUrl || 'http://localhost:3001',
-    baseUrlPanel: baseUrlPanel || 'http://localhost:3001'
+    baseUrl: process.env.baseUrl || 'http://localhost:3001',
+    baseUrlPanel:  process.env.baseUrlPanel || 'http://localhost:3001'
     /*baseUrl:'lionfish-app-sn8oz.ondigitalocean.app',
     baseUrlPanel: 'lionfish-app-sn8oz.ondigitalocean.app',*/
 }
