@@ -107,14 +107,8 @@ module.exports = {
     }
   },
   env: {
-    /*baseUrl: 'https://urbanorest.smart7bus.com/v2/',
-    baseUrlPanel: 'https://urbanorest.smart7bus.com/v2/system',
-    baseUrlPanelRecaudo:'https://urbanorest.smart7bus.com/v2/system/recaudo'*/
-    /*baseUrl: 'https://api-flota.herokuapp.com/v2/',
-    baseUrlPanel: 'https://api-flota.herokuapp.com/v2/system',
-    baseUrlPanelRecaudo:'https://api-flota.herokuapp.com/v2/system/recaudo'*/
-    baseUrl: process.env.baseUrl || 'http://localhost:3001',
-    baseUrlPanel: process.env.baseUrlPanel || 'http://localhost:3001',
+    baseUrl: 'https://api-smart7bus.herokuapp.com',
+    baseUrlPanel: 'https://api-smart7bus.herokuapp.com'
     /*baseUrl:'lionfish-app-sn8oz.ondigitalocean.app',
     baseUrlPanel: 'lionfish-app-sn8oz.ondigitalocean.app',*/
 }
