@@ -114,11 +114,7 @@ module.exports = {
     baseUrlPanel: 'https://api-flota.herokuapp.com/v2/system',
     baseUrlPanelRecaudo:'https://api-flota.herokuapp.com/v2/system/recaudo'*/
     baseUrl: process.env.baseUrl || 'http://localhost:3001',
-<<<<<<< HEAD
     baseUrlPanel: process.env.baseUrlPanel || 'http://localhost:3001'
-=======
-    baseUrlPanel: process.env.baseUrlPanel || 'http://localhost:3001',
->>>>>>> developer
     /*baseUrl:'lionfish-app-sn8oz.ondigitalocean.app',
     baseUrlPanel: 'lionfish-app-sn8oz.ondigitalocean.app',*/
 }
