@@ -59,15 +59,6 @@
         >
         </sidebar-item>
 
-      <sidebar-item
-          :link="{
-            name: 'Recaudo',
-            icon: 'ni ni-single-02 text-orange',
-            path: './recaudo/rcontador',
-          }"
-        >
-        </sidebar-item>
-
         <sidebar-item
           :link="{
             name: 'Reportes',
