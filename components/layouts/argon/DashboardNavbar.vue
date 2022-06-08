@@ -168,14 +168,6 @@
               </span>
               <small>Historial</small>
             </a>
-            <a href="./recaudo/rcontador" class="col-4 shortcut-item">
-              <span
-                class="shortcut-media avatar rounded-circle bg-gradient-yellow"
-              >
-                <i class="ni ni-single-02"></i>
-              </span>
-              <small>Recaudo</small>
-            </a>
           </div>
         </template>
       </base-dropdown>
