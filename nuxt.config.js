@@ -107,8 +107,8 @@ module.exports = {
     }
   },
   env: {
-    baseUrl: 'https://api-smart7bus.herokuapp.com',
-    baseUrlPanel: 'https://api-smart7bus.herokuapp.com'
+    baseUrl: 'https://lionfish-app-sn8oz.ondigitalocean.app',
+    baseUrlPanel: 'https://lionfish-app-sn8oz.ondigitalocean.app'
     /*baseUrl:'lionfish-app-sn8oz.ondigitalocean.app',
     baseUrlPanel: 'lionfish-app-sn8oz.ondigitalocean.app',*/
 }
