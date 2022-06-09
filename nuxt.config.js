@@ -107,8 +107,8 @@ module.exports = {
     }
   },
   env: {
-    baseUrl: 'https://lionfish-app-sn8oz.ondigitalocean.app',
-    baseUrlPanel: 'https://lionfish-app-sn8oz.ondigitalocean.app'
+    baseUrl: 'https://urbano.vigitracklatam.com',
+    baseUrlPanel: 'https://urbano.vigitracklatam.com'
     /*baseUrl:'lionfish-app-sn8oz.ondigitalocean.app',
     baseUrlPanel: 'lionfish-app-sn8oz.ondigitalocean.app',*/
 }
