@@ -107,9 +107,9 @@ module.exports = {
     }
   },
   env: {
-    baseUrl: 'https://apiurbano.vigitracklatam.com',
-    baseUrlPanel: 'https://apiurbano.vigitracklatam.com'
-    /*baseUrl:'lionfish-app-sn8oz.ondigitalocean.app',
-    baseUrlPanel: 'lionfish-app-sn8oz.ondigitalocean.app',*/
+    /*baseUrl: 'https://apiurbano.vigitracklatam.com',
+    baseUrlPanel: 'https://apiurbano.vigitracklatam.com'*/
+    baseUrl:'lionfish-app-sn8oz.ondigitalocean.app',
+    baseUrlPanel: 'lionfish-app-sn8oz.ondigitalocean.app'
 }
 }
