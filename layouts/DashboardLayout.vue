@@ -3,7 +3,9 @@
     <notifications></notifications>
     <side-bar>
       <template slot-scope="props" slot="links">
+
         <sidebar-item
+        v-if="permisos == null || permisos.monitoreo.active"
           :link="{
             name: 'Monitoreo',
             icon: 'ni ni-world text-success',
@@ -13,6 +15,7 @@
         </sidebar-item>
 
         <sidebar-item
+        v-if="permisos == null || permisos.flota_vehicular.active"
           :link="{
             name: 'Flota Vehicular',
             icon: 'ni ni-bus-front-12 text-primary',
@@ -22,6 +25,7 @@
         </sidebar-item>
 
         <sidebar-item
+        v-if="permisos == null || permisos.despacho.active"
           :link="{
             name: 'Despacho',
             icon: 'ni ni-calendar-grid-58 text-dark',
@@ -31,6 +35,7 @@
         </sidebar-item>
 
         <sidebar-item
+        v-if="permisos == null || permisos.editor_rutas.active"
           :link="{
             name: 'Editor de Rutas',
             icon: 'ni ni-vector text-danger',
@@ -42,6 +47,7 @@
 
 
         <sidebar-item
+        v-if="permisos == null || permisos.produccion.active"
           :link="{
             name: 'Producción',
             icon: 'ni ni-money-coins text-green',
@@ -51,6 +57,7 @@
         </sidebar-item>
 
         <sidebar-item
+        v-if="permisos == null || permisos.liquidacion.active"
           :link="{
             name: 'Liquidación',
             icon: 'ni ni-money-coins text-green',
@@ -59,7 +66,18 @@
         >
         </sidebar-item>
 
+      <sidebar-item
+      v-if="permisos==null || permisos.recaudo.active"
+          :link="{
+            name: 'Recaudo',
+            icon: 'ni ni-single-02 text-orange',
+            path: './recaudo/rcontador',
+          }"
+        >
+        </sidebar-item>
+
         <sidebar-item
+        v-if="permisos==null || permisos.reportes.active"
           :link="{
             name: 'Reportes',
             icon: 'ni ni-ungroup text-orange',
@@ -73,6 +91,7 @@
         </sidebar-item>
 
         <sidebar-item
+        v-if="permisos == null || permisos.historial.active"
           :link="{
             name: 'Historial',
             icon: 'ni ni-pin-3 text-info',
@@ -82,6 +101,7 @@
         </sidebar-item>
 
         <sidebar-item
+        v-if="permisos == null || permisos.movilidad.active"
           :link="{
             name: 'Movilidad',
             icon: 'ni ni-building text-default',
@@ -126,11 +146,17 @@ function initScrollbar(className) {
 
 import DashboardNavbar from "~/components/layouts/argon/DashboardNavbar.vue";
 import DashboardContent from "~/components/layouts/argon/Content.vue";
+import jwt_decode from "jwt-decode";
 
 export default {
   components: {
     DashboardNavbar,
     DashboardContent,
+  },
+  data(){
+    return {
+      permisos:null
+    }
   },
   methods: {
     initScrollbar() {
@@ -141,9 +167,16 @@ export default {
         initScrollbar("sidenav");
       }
     },
+    decodedPermisos()
+    {
+      var decodeBase64 = window.atob(this.$cookies.get("token"))
+      console.log("PERMISOS")
+      this.permisos = jwt_decode(decodeBase64).PermisosJSON
+    }
   },
   mounted() {
-    this.initScrollbar();
+    this.decodedPermisos()
+    this.initScrollbar()
   },
 };
 </script>

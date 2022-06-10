@@ -54,6 +54,7 @@
         :visibleBadge="visibleBadgeNotification"
         :hasToggle="false"
         menu-classes="dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden"
+        v-if="permisos == null || permisos.notification.active"
       >
         <template>
           <!-- Dropdown header -->
@@ -128,7 +129,7 @@
       >
         <template>
           <div class="row shortcuts px-4">
-            <a href="#!" class="col-4 shortcut-item">
+            <a href="#!" class="col-4 shortcut-item" v-if="permisos == null || permisos.despacho.active">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-red"
               >
@@ -136,15 +137,15 @@
               </span>
               <small>Despacho</small>
             </a>
-            <a href="./monitoreo" class="col-4 shortcut-item">
+            <a href="./monitoreo" class="col-4 shortcut-item" v-if="permisos == null || permisos.monitoreo.active">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-orange"
               >
                 <i class="ni ni-bus-front-12"></i>
               </span>
-              <small>Moniroreo</small>
+              <small>Monitoreo</small>
             </a>
-            <a href="./produccion/tablero" class="col-4 shortcut-item">
+            <a href="./produccion/tablero" class="col-4 shortcut-item" v-if="permisos == null || permisos.produccion.active">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-info"
               >
@@ -152,7 +153,7 @@
               </span>
               <small>Producción</small>
             </a>
-            <a href="#!" class="col-4 shortcut-item">
+            <a href="#!" class="col-4 shortcut-item" v-if="permisos == null || permisos.liquidacion.active">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-green"
               >
@@ -160,13 +161,21 @@
               </span>
               <small>Liquidación</small>
             </a>
-            <a href="#!" class="col-4 shortcut-item">
+            <a href="#!" class="col-4 shortcut-item" v-if="permisos == null || permisos.historial.active">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-purple"
               >
                 <i class="ni ni-pin-3"></i>
               </span>
               <small>Historial</small>
+            </a>
+            <a href="./recaudo/rcontador" class="col-4 shortcut-item" v-if="permisos == null || permisos.recaudo.active">
+              <span
+                class="shortcut-media avatar rounded-circle bg-gradient-yellow"
+              >
+                <i class="ni ni-single-02"></i>
+              </span>
+              <small>Recaudo</small>
             </a>
           </div>
         </template>
@@ -228,6 +237,7 @@ import { CollapseTransition } from "vue2-transitions";
 import BaseNav from "@/components/argon-core/Navbar/BaseNav.vue";
 import Modal from "@/components/argon-core/Modal.vue";
 import { Badge } from "element-ui";
+import jwt_decode from "jwt-decode";
 
 export default {
   components: {
@@ -262,6 +272,7 @@ export default {
       searchModalVisible: false,
       visibleBadgeNotification: false,
       searchQuery: "",
+      permisos:null
     };
   },
   methods: {
@@ -307,7 +318,7 @@ export default {
     reproducirSonido() {
       var encontrado = false
       if (this.mListaAlertasDispositivosNotificacionesAux.length > 0) {
-        for (var contador = 0;contador < this.mListaAlertasDispositivosNotificacionesAux.length;contador++) 
+        for (var contador = 0;contador < this.mListaAlertasDispositivosNotificacionesAux.length;contador++)
         {
           if (
               this.mListaAlertasDispositivosNotificacionesAux[contador].idDispEven !=
@@ -346,18 +357,27 @@ export default {
         );
       }
     },
+    decodedPermisosNavBar()
+    {
+      var decodeBase64 = window.atob(this.$cookies.get("token"))
+      this.permisos = jwt_decode(decodeBase64).PermisosJSON
+      if(this.permisos!=null && this.permisos.notification.active){
+            this.readNotificacionesAlertaDipositivos();
+    setInterval(() => {
+      this.readNotificacionesAlertaDipositivos();
+    }, 10000);
+      }
+    }
   },
   mounted() {
-    this.readNotificacionesAlertaDipositivos();
+    this.decodedPermisosNavBar()
+
     /*this.mueveReloj();*/
     this.nameUsuario = this.$cookies.get("namesUsuario");
     /*setInterval(() => {
       this.mueveReloj();
     }, 1000);*/
 
-    setInterval(() => {
-      this.readNotificacionesAlertaDipositivos();
-    }, 10000);
   },
 };
 </script>

@@ -67,7 +67,7 @@
               ></span>
               <span class="btn-inner--text">Buscar</span>
             </base-button>
-            <download-excel
+            <!--<download-excel
               class="btn btn-outline-success"
               outline
               :header="headerExcelRPagosVehiculoProduccion"
@@ -80,10 +80,22 @@
                 ><i class="ni ni-collection"></i
               ></span>
               <span class="btn-inner--text"> Excel</span>
-            </download-excel>
+            </download-excel>-->
             <base-button outline type="danger">
-              <span class="btn-inner--icon"><i class="ni ni-ungroup"></i></span>
-              <span class="btn-inner--text"> PDF</span>
+              <span class="btn-inner--icon"
+                ><i class="ni ni-cloud-download-95"></i
+              ></span>
+              <span class="btn-inner--text"> Descargas</span>
+            </base-button>
+
+            <base-button outline type="success" v-if="isVisibleRecorrido">
+              <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
+              <span
+                class="btn-inner--text"
+                @click="showRecorridoSalidasPanelBusqueda()"
+              >
+                Recorrido</span
+              >
             </base-button>
           </div>
         </card>
@@ -109,20 +121,34 @@
               >
               </el-option>
             </el-select>
-            <el-radio style="margin-left: 0.5rem" v-model="radioEstadoRSalidasPanelBusqueda" 
-            label="*" @change="readSalidasPanelBusqueda()">TODOS</el-radio>
-            <el-radio v-model="radioEstadoRSalidasPanelBusqueda" label="2"
-              @change="readSalidasPanelBusqueda()">EN RUTA</el-radio
-            >
-            <el-radio v-model="radioEstadoRSalidasPanelBusqueda" label="4"
-              @change="readSalidasPanelBusqueda()">ANULADOS</el-radio
-            >
-            <el-radio v-model="radioEstadoRSalidasPanelBusqueda" label="3"
-              @change="readSalidasPanelBusqueda()">FINALIZADOS</el-radio
-            >
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccion"></div>
+          <div class="cardTextoRPagosVehiculoProduccion">
+            <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
+              <el-checkbox
+                label="2"
+                style="background-color: hsla(226, 88%, 61%, 0.301)"
+                >EN RUTA</el-checkbox
+              >
+              <el-checkbox
+                label="4"
+                style="background-color: rgba(252, 143, 143, 0.692)"
+                >ANULADOS</el-checkbox
+              >
+              <el-checkbox label="3">FINALIZADOS</el-checkbox>
+              <el-checkbox
+                label="0,1"
+                style="background-color: hsla(115, 100%, 59%, 0.301)"
+                >SALIDAS DIFERIDAS</el-checkbox
+              >
+              <!--<el-checkbox
+                label="31"
+                disabled="false"
+                style="background-color: hsla(34, 93%, 61%, 0.479)"
+                >PENALIZADAS</el-checkbox
+              >-->
+            </el-checkbox-group>
+          </div>
         </card>
 
         <card
@@ -139,24 +165,53 @@
               :data="mListaSalidasPanelBusqueda"
               row-key="id"
               class="tablePanelControlProduccion"
+              :row-class-name="tableRowClassNameSalidasPanelBusqueda"
               header-row-class-name="thead-dark"
+              :height="mListaSalidasPanelBusqueda.length > 0 ? 900 : 150"
+              highlight-current-row
+              @current-change="handleCurrentChangeSelectionFilaSalidaBusqueda"
             >
+              <el-table-column prop="CodiVehiSali_m" label="Unidad" width="130">
+              </el-table-column>
+
+              <el-table-column prop="idSali_m" label="Salida" width="140">
+                <template slot-scope="scope">
+                  <el-button slot="reference" style="cursor: pointer">
+                    <u>{{ scope.row.idSali_m }}</u>
+                  </el-button>
+
+                  <!--<el-popover
+                    placement="bottom"
+                    :title="scope.row.idSali_m"
+                    width="200"
+                    trigger="click"
+                  >
+                  
+                    <ul>
+                      <li @click="showRecorridoSalidasPanelBusqueda()">Recorrido</li>
+                      <li>Tarjeta Reporte</li>
+                      <li>Tarjeta (Ticket)</li>
+                    </ul>
+                    <el-button slot="reference" style="cursor:pointer;"><u>{{scope.row.idSali_m}}</u></el-button>
+                  </el-popover>-->
+                </template>
+              </el-table-column>
+
               <el-table-column
                 v-for="column in tableColumnsUnidadesFlotaVehicular"
                 :key="column.label"
                 v-bind="column"
-                :row-class-name="tableRowClassNameSalidasPanelBusqueda"
               >
               </el-table-column>
 
               <el-table-column
                 label="Estado"
-                min-width="150px"
+                min-width="270px"
                 prop="EstaSali_m"
               >
                 <template v-slot="{ row }">
                   <badge class="badge-dot mr-4" type="">
-                    <i
+                    <!--<i
                       :class="`bg-${
                         row.EstaSali_m == 4
                           ? 'danger'
@@ -164,14 +219,19 @@
                           ? 'warning'
                           : 'success'
                       }`"
-                    ></i>
+                    ></i>-->
                     <span class="status"
                       ><strong>{{
-                        row.EstaSali_m == 4
+                        row.EstaSali_m <= 1
+                          ? "DIFERIDA"
+                          : row.EstaSali_m == 4
                           ? "ANULADO"
                           : row.EstaSali_m == 2
                           ? "EN RUTA"
-                          : "FINALIZADO"
+                          : row.EstaSali_m == 3 &&
+                            parseFloat(row.PenaCtrlSali_d) > 0
+                          ? "FINALIZADO CON PENALIDAD"
+                          : "FINALIZADA SIN PENALIDAD"
                       }}</strong></span
                     >
                   </badge>
@@ -184,6 +244,54 @@
         </card>
       </div>
     </base-header>
+
+    <!--Form modal-->
+    <modal
+      :show.sync="modalSalidasPanelDespachoBusqueda"
+      size="xl"
+      body-classes="p-0"
+    >
+      <card
+        type="secondary"
+        header-classes="bg-transparent pb-5"
+        class="border-0 mb-0"
+      >
+        <GmapMap
+          map-type-id="roadmap"
+          class="mapa"
+          :center="oCenter"
+          :zoom="oZoom"
+          :options="{
+            zoomControl: false,
+            scaleControl: false,
+            mapTypeControl: false,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: false,
+            disableDefaultUi: true,
+          }"
+        >
+          <GmapMarker
+            v-for="marker in mListPosicionesHistorialSalidasPanelBusqueda"
+            :key="marker.idHistEve"
+            :position="{
+              lat: parseFloat(marker.LatiHistEven),
+              lng: parseFloat(marker.LongHistEven),
+            }"
+            :icon="marker.icono"
+            :clickable="false"
+            :draggable="false"
+            :optimized="true"
+          />
+        </GmapMap>
+        
+        <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingRecorridoSalidaPanelBusqueda">
+          <div class="circleProgress">
+          </div>
+        </div>
+      
+      </card>
+    </modal>
   </div>
 </template>
 <script>
@@ -199,6 +307,12 @@ import {
   RadioButton,
   Radio,
   Notification,
+  Checkbox,
+  CheckboxButton,
+  CheckboxGroup,
+  Popover,
+  Button,
+  Loading
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -226,6 +340,11 @@ export default {
     [TableColumn.name]: TableColumn,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
+    [Checkbox.name]: Checkbox,
+    [CheckboxButton.name]: CheckboxButton,
+    [CheckboxGroup.name]: CheckboxGroup,
+    [Popover.name]: Popover,
+    [Button.name]: Button,
   },
   data() {
     return {
@@ -238,7 +357,7 @@ export default {
       token: this.$cookies.get("token"),
       fechaInicialSalidasPanelBusqueda: "",
       fechaFinalSalidasPanelBusqueda: "",
-      radioEstadoRSalidasPanelBusqueda :"*",
+      radioEstadoRSalidasPanelBusqueda: [],
       WorksheetExcelRPagosVehiculoProduccion: "",
       FileNameExcelRPagosVehiculoProduccion: "",
       headerExcelRPagosVehiculoProduccion: [],
@@ -258,27 +377,28 @@ export default {
         "Monto Pagado": "monto_pagado",
         Estado: "estado",
       },
+      modalSalidasPanelDespachoBusqueda: false,
       tableColumnsUnidadesFlotaVehicular: [
         {
-          prop: "CodiVehiSali_m",
-          label: "Unidad",
-          minWidth: 130,
-          sortable: true,
+          prop: "DescRutaSali_m",
+          label: "Ruta",
+          minWidth: 200,
         },
         {
-          prop: "idSali_m",
-          label: "Salida",
-          minWidth: 140,
+          prop: "DescFrec",
+          label: "Frecuencia",
+          minWidth: 200,
         },
         {
           prop: "NumeVuelSali_m",
           label: "N° Vuelta",
-          minWidth: 160,
+          minWidth: 130,
         },
         {
           prop: "HoraSaliProgSali_m",
           label: "Hora Salida",
-          minWidth: 150,
+          minWidth: 170,
+          sortable: true,
         },
         {
           prop: "HoraLlegProgSali_m",
@@ -306,22 +426,19 @@ export default {
           minWidth: 160,
         },
         {
-          prop: "DescRutaSali_m",
-          label: "Ruta",
-          minWidth: 200,
-        },
-        {
-          prop: "DescFrec",
-          label: "Frecuencia",
-          minWidth: 200,
-        },
-        {
           prop: "PenaCtrlSali_d",
           label: "PEN ($)",
           minWidth: 160,
+          sortable: true,
         },
       ],
       mListaSalidasPanelBusqueda: [],
+      oCenter: { lat: -1.249546, lng: -78.585376 },
+      oZoom: 7,
+      mListPosicionesHistorialSalidasPanelBusqueda: [],
+      isVisibleRecorrido: false,
+      filaSelectionCurrentSalidaPanelBusqueda: null,
+      isLoadingRecorridoSalidaPanelBusqueda:false
     };
   },
   methods: {
@@ -396,7 +513,10 @@ export default {
                   : this.mSelectRutaSalidaPanelBusqueda,
               fechaI: this.fechaInicialSalidasPanelBusqueda,
               fechaF: this.fechaFinalSalidasPanelBusqueda,
-              tipo :this.radioEstadoRSalidasPanelBusqueda
+              tipo:
+                this.radioEstadoRSalidasPanelBusqueda.length <= 0
+                  ? "*"
+                  : this.radioEstadoRSalidasPanelBusqueda,
             }
           );
 
@@ -433,18 +553,76 @@ export default {
       }
       this.loadingTableUnidadesSalidasPanelBusqueda = false;
     },
-    tableRowClassNameSalidasPanelBusqueda({ row, rowIndex }) 
-    {
+    tableRowClassNameSalidasPanelBusqueda({ row, rowIndex }) {
       if (row.EstaSali_m == 4) {
-        //row.estado = "ANULADO";
         return "warning-row-panelControlProduccion";
-      } else if(row.EstaSali_m == 2) {
-        //row.estado = "PAGADO";
+      } else if (row.EstaSali_m == 2) {
+        return "diferido-row-panelControlProduccion";
+      } else if (row.EstaSali_m <= 1) {
+        return "finalizado-row-panelControlProduccion";
+      } else if (row.EstaSali_m == 3 && parseFloat(row.PenaCtrlSali_d) > 0) {
         return "success-row-panelControlProduccion";
+      } else {
+        return "";
+      }
+    },
+    showRecorridoSalidasPanelBusqueda() {
+      this.modalSalidasPanelDespachoBusqueda = true;
+      this.readHistorialSalidaPanelBusqueda();
+    },
+    async readHistorialSalidaPanelBusqueda() {
+      this.isLoadingRecorridoSalidaPanelBusqueda = true
+      this.mListPosicionesHistorialSalidasPanelBusqueda = [];
+
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/historialUnidadSalida",
+        {
+          token: this.token,
+          unidad: this.filaSelectionCurrentSalidaPanelBusqueda.CodiVehiSali_m,
+          salida: this.filaSelectionCurrentSalidaPanelBusqueda.idSali_m,
+        }
+      );
+      console.log("RECORRIDO SALIDA");
+      console.log(datos);
+
+      for (var i = 0; i < datos.data.datos.length; i++) {
+        var obj = datos.data.datos[i];
+        obj.icono = {
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          fillColor:
+            obj.EvenExceVeloHistEven == 1
+              ? "yellow"
+              : obj.OutRoutHistEven == 1
+              ? "red"
+              : "green",
+          fillOpacity: 1,
+          strokeWeight: 0,
+          rotation: obj.RumbHistEven,
+          scale: 3,
+          anchor: new google.maps.Point(0, 0),
+        };
+
+        this.mListPosicionesHistorialSalidasPanelBusqueda.push(obj);
+        if(i == 0)
+        {
+          this.oCenter.lat = parseFloat(this.mListPosicionesHistorialSalidasPanelBusqueda[0].LatiHistEven)
+          this.oCenter.lng = parseFloat(this.mListPosicionesHistorialSalidasPanelBusqueda[0].LongHistEven)
+          this.oZoom = 17
+        }
+      }
+      this.isLoadingRecorridoSalidaPanelBusqueda = false
+    },
+    handleCurrentChangeSelectionFilaSalidaBusqueda(val) {
+      if (val != null) {
+        this.isVisibleRecorrido = true;
+        this.filaSelectionCurrentSalidaPanelBusqueda = val;
+      } else {
+        this.isVisibleRecorrido = false;
       }
     },
   },
   mounted() {
+    //this.readHistorialSalidaPanelBusqueda();
     this.readAllUnidadesSalidasPanelBusqueda();
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllLineasContadorSalidasPanelBusqueda();
@@ -453,6 +631,62 @@ export default {
 };
 </script>
 <style>
+.loadingRecorridoSalidaBusquedaPanel {
+  height: 98%;
+  width: 98%;
+  background-color: rgba(0, 0, 0, 0.253);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border-radius: 1rem;
+}
+.circleProgress{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: transparent;
+  border-right-color: blue;
+  border-left-color: white;
+  border-top-color: white;
+  border-bottom-color: white;
+  border-width: 0.3rem;
+  border-radius: 50%;
+  border-style: solid;
+  height: 3.5rem;
+  width: 3.5rem;
+  animation: girarLoading 1s ease-in infinite;
+}
+
+@keyframes girarLoading{
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+
+.current-row {
+  background-color: rgba(0, 0, 0, 0.178);
+}
+
+.el-table__body tr.current-row > td.el-table__cell {
+  background-color: rgba(0, 0, 0, 0.178) !important;
+}
+
+.mapa {
+  width: 100%;
+  height: calc(80vh);
+}
 
 .form-group {
   margin-bottom: 0rem;
@@ -494,9 +728,15 @@ export default {
 }
 
 .el-table .success-row-panelControlProduccion {
-  background: hsla(61, 100%, 66%, 0.479) !important;
+  background: hsla(34, 93%, 61%, 0.479) !important;
+}
+.el-table .finalizado-row-panelControlProduccion {
+  background: hsla(115, 100%, 59%, 0.301) !important;
 }
 
+.el-table .diferido-row-panelControlProduccion {
+  background: hsla(226, 88%, 61%, 0.301) !important;
+}
 .no-border-card .card-footer {
   border-top: 0;
 }

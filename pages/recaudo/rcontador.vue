@@ -326,9 +326,7 @@ export default {
         token: this.token,
       });
 
-      if (datos.data.status_code == 200) 
-      {
-
+      if (datos.data.status_code == 200) {
         for (var i = 0; i < datos.data.data.length; i++) {
           var obj = datos.data.data[i];
           obj.value = obj.CodiVehi;
@@ -344,9 +342,7 @@ export default {
         this.mListLineasContadorPasajeros.push(...datos.data.data);
       }
     },
-    async readConteoPasajeros() 
-    {
-
+    async readConteoPasajeros() {
       if (this.loadingUnidadesContadorPasajerosPasajeros) {
         Notification.info({
           title: "Conteo de Pasajeros",
@@ -354,29 +350,46 @@ export default {
         });
       } else {
         this.loadingUnidadesContadorPasajerosPasajeros = true;
-        this.tableDataRecaudoContadorPasajeros = []
+        this.tableDataRecaudoContadorPasajeros = [];
         try {
           /*console.log(this.itemUnidadContadorPasajero)
           console.log(this.mSelectRutaContadorPasajero)*/
           var body = {
             token: this.token,
-            unidades: this.itemUnidadContadorPasajero.length == 0? "*" : this.itemUnidadContadorPasajero,
-            rutas: this.mSelectRutaContadorPasajero.length == 0 ? "*" : this.mSelectRutaContadorPasajero,
+            unidades:
+              this.itemUnidadContadorPasajero.length == 0
+                ? "*"
+                : this.itemUnidadContadorPasajero,
+            rutas:
+              this.mSelectRutaContadorPasajero.length == 0
+                ? "*"
+                : this.mSelectRutaContadorPasajero,
             fechaI: this.fechaInicialConteoPasajeros,
             fechaF: this.fechaFinalConteoPasajeros,
           };
-          console.log(body)
+          //console.log(body)
           var datos = await this.$axios.post(
             process.env.baseUrl + "/contadorPasajerosFecha",
-            body,{
-              timeout: 600000
+            body,
+            {
+              timeout: 600000,
             }
           );
 
           if (datos.data.status_code == 200) {
             this.tableDataRecaudoContadorPasajeros.push(...datos.data.datos);
+          } else if (datos.data.status_code == 300) {
+            Notification.info({
+              title: "Conteo de Pasajeros",
+              message: "No existen datos disponibles.",
+            });
+          } else {
+            Notification.error({
+              title: "Conteo de Pasajeros",
+              message: datos.data.msm,
+            });
           }
-          console.log(datos.data)
+          console.log(datos.data);
         } catch (error) {
           console.log(error);
         }
