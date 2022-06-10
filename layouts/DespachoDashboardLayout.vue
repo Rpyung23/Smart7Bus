@@ -12,15 +12,15 @@
         >
         </sidebar-item>
 
-
         <sidebar-item
           :link="{
-            name: 'Reportes',
+            name: 'Despacho Busqueda',
             icon: 'ni ni-collection text-primary',
+            path: './panelDespachoBusqueda',
           }"
         >
-          <sidebar-item :link="{ name: 'Despachos (Salidas)', path: './panelDespachoBusqueda' }" />
         </sidebar-item>
+
       </template>
     </side-bar>
     <div class="main-content">

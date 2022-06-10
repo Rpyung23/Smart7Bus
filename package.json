@@ -38,6 +38,7 @@
     "google-maps": "4.3.3",
     "jquery": "^3.6.0",
     "jspdf": "^2.5.1",
+    "jwt-decode": "^3.1.2",
     "nouislider": "15.5.0",
     "nuxt": "2.15.8",
     "perfect-scrollbar": "1.5.2",
