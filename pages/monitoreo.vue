@@ -4,7 +4,7 @@
     <GmapMap
       :center="oCenter"
       :zoom="oZoom"
-      map-type-id="roadmap"
+      :map-type-id="radioMapaMonitoreo"
       class="mapa"
       :options="{
         zoomControl: false,
@@ -79,7 +79,11 @@
       />
     </GmapMap>
 
-    <div id="element2" class="container_unidades_monitoreo" :style="anchoPanelMonitoreoClickMinMax">
+    <div
+      id="element2"
+      class="container_unidades_monitoreo"
+      :style="anchoPanelMonitoreoClickMinMax"
+    >
       <div id="resizerXY"></div>
       <div class="min-max">
         <i class="bx-min-max bx bx-checkbox-minus" @click="minPanel()"></i>
@@ -265,10 +269,10 @@
         <input
           type="checkbox"
           style="margin-bottom: 0.7rem"
-          checked="true"
+          :checked="false"
           @change="showControles($event)"
         />
-        Visualizar Controles
+        Visualizar Controles (Mapa)
       </div>
       <div class="itemsRuta">
         <div
@@ -285,6 +289,23 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div id="PanelConfigMapaMonitoreo" class="container_otrosPaneles">
+      <div class="RadioTiposMapaMonitoreo">
+        <el-radio v-model="radioMapaMonitoreo" label="roadmap" border
+          >Mapa Vial</el-radio
+        >
+        <el-radio v-model="radioMapaMonitoreo" label="satellite" border
+          >Mapa Satelital</el-radio
+        >
+        <el-radio v-model="radioMapaMonitoreo" label="hybrid" border
+          >Mapa Hibrido</el-radio
+        >
+        <el-radio v-model="radioMapaMonitoreo" label="terrain" border
+          >Mapa Terrestre</el-radio
+        >
       </div>
     </div>
 
@@ -311,6 +332,16 @@
   </div>
 </template>
 <style>
+.RadioTiposMapaMonitoreo {
+  display: flex;
+  flex-direction: column;
+  width: 15.5rem;
+}
+.is-bordered {
+  margin-left: 0px !important;
+  width: 15.5rem;
+}
+
 .min-max {
   display: flex;
   width: 100%;
@@ -570,11 +601,14 @@
 
 <script>
 import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
+import { Radio, RadioButton } from "element-ui";
 import axios from "@nuxtjs/axios";
 export default {
   layout: "DashboardLayout",
   components: {
     BaseCheckbox,
+    [Radio.name]: Radio,
+    [RadioButton.name]: RadioButton,
   },
   data() {
     return {
@@ -598,23 +632,24 @@ export default {
       fullscreenControl: false,
       intervaloMonitoreoGeneral: null,
       intervaloMonitoreoRuta: null,
+      radioMapaMonitoreo: "roadmap",
       infoOptions: {
         pixelOffset: {
           width: 0,
           height: -35,
         },
       },
-      anchoPanelMonitoreoClickMinMax:"width: 17rem",
+      anchoPanelMonitoreoClickMinMax: "width: 17rem",
     };
   },
   methods: {
     minPanel() {
-      console.log("MIN")
-      this.anchoPanelMonitoreoClickMinMax = "width: 17rem"
+      console.log("MIN");
+      this.anchoPanelMonitoreoClickMinMax = "width: 17rem";
     },
     maxPanel() {
-      console.log("MAX")
-      this.anchoPanelMonitoreoClickMinMax =  "width: 85vw"
+      console.log("MAX");
+      this.anchoPanelMonitoreoClickMinMax = "width: 85vw";
     },
     procedimientoMonitoreo(datos) {
       if (datos.data.status_code == 200) {
@@ -711,7 +746,7 @@ export default {
           this.mListControlesMonitoreoAux = [];
           for (var i = 0; i < datos.data.data.length; i++) {
             this.mListControlesMonitoreo[i] = datos.data.data[i];
-            this.mListControlesMonitoreoAux[i] = datos.data.data[i];
+            //this.mListControlesMonitoreoAux[i] = datos.data.data[i];
           }
         }
       } catch (error) {

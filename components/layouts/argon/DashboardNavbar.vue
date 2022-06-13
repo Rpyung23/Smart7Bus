@@ -361,12 +361,12 @@ export default {
     {
       var decodeBase64 = window.atob(this.$cookies.get("token"))
       this.permisos = jwt_decode(decodeBase64).PermisosJSON
-      if(this.permisos!=null && this.permisos.notification.active){
+      /*if(this.permisos!=null && this.permisos.notification.active){
             this.readNotificacionesAlertaDipositivos();
     setInterval(() => {
       this.readNotificacionesAlertaDipositivos();
     }, 10000);
-      }
+      }*/
     }
   },
   mounted() {

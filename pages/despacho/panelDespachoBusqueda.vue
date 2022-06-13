@@ -284,12 +284,36 @@
             :optimized="true"
           />
         </GmapMap>
-        
-        <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingRecorridoSalidaPanelBusqueda">
-          <div class="circleProgress">
-          </div>
+
+        <div
+          class="loadingRecorridoSalidaBusquedaPanel"
+          v-if="isLoadingRecorridoSalidaPanelBusqueda"
+        >
+          <div class="circleProgress"></div>
         </div>
-      
+      </card>
+    </modal>
+
+    <!--Form modal TICKET SALIDA-->
+    <modal
+      :show.sync="modalSalidasTarjetaPanelDespachoBusqueda"
+      size="sm"
+      body-classes="p-0"
+    >
+      <card
+        type="secondary"
+        header-classes="bg-transparent pb-5"
+        class="border-0 mb-0"
+      >
+        <PSPDFKitContainer :pdfFile="pdfFile" @loaded="handleLoaded" />
+
+
+        <div
+          class="loadingRecorridoSalidaBusquedaPanel"
+          v-if="isLoadingRecorridoSalidaPanelBusqueda"
+        >
+          <div class="circleProgress"></div>
+        </div>
       </card>
     </modal>
   </div>
@@ -312,12 +336,14 @@ import {
   CheckboxGroup,
   Popover,
   Button,
-  Loading
+  Loading,
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
+import PSPDFKitContainer from "@/components/PSPDFKitContainer.vue";
+
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
@@ -331,6 +357,7 @@ export default {
     BasePagination,
     flatPicker,
     RouteBreadCrumb,
+    PSPDFKitContainer,
     [DatePicker.name]: DatePicker,
     [Select.name]: Select,
     [Option.name]: Option,
@@ -438,7 +465,9 @@ export default {
       mListPosicionesHistorialSalidasPanelBusqueda: [],
       isVisibleRecorrido: false,
       filaSelectionCurrentSalidaPanelBusqueda: null,
-      isLoadingRecorridoSalidaPanelBusqueda:false
+      isLoadingRecorridoSalidaPanelBusqueda: false,
+      modalSalidasTarjetaPanelDespachoBusqueda:true,
+      pdfFile: this.pdfFile || "/document.pdf"
     };
   },
   methods: {
@@ -571,46 +600,58 @@ export default {
       this.readHistorialSalidaPanelBusqueda();
     },
     async readHistorialSalidaPanelBusqueda() {
-      this.isLoadingRecorridoSalidaPanelBusqueda = true
+      this.isLoadingRecorridoSalidaPanelBusqueda = true;
       this.mListPosicionesHistorialSalidasPanelBusqueda = [];
 
-      var datos = await this.$axios.post(
-        process.env.baseUrl + "/historialUnidadSalida",
-        {
-          token: this.token,
-          unidad: this.filaSelectionCurrentSalidaPanelBusqueda.CodiVehiSali_m,
-          salida: this.filaSelectionCurrentSalidaPanelBusqueda.idSali_m,
-        }
-      );
-      console.log("RECORRIDO SALIDA");
-      console.log(datos);
+      try {
+        console.log("INICIAR HISTORIAL RECORRIDO");
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/historialUnidadSalida",
+          {
+            token: this.token,
+            unidad: this.filaSelectionCurrentSalidaPanelBusqueda.CodiVehiSali_m,
+            salida: this.filaSelectionCurrentSalidaPanelBusqueda.idSali_m,
+          }
+        );
+        console.log("RECORRIDO SALIDA");
+        console.log(datos);
 
-      for (var i = 0; i < datos.data.datos.length; i++) {
-        var obj = datos.data.datos[i];
-        obj.icono = {
-          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-          fillColor:
-            obj.EvenExceVeloHistEven == 1
-              ? "yellow"
-              : obj.OutRoutHistEven == 1
-              ? "red"
-              : "green",
-          fillOpacity: 1,
-          strokeWeight: 0,
-          rotation: obj.RumbHistEven,
-          scale: 3,
-          anchor: new google.maps.Point(0, 0),
-        };
+        for (var i = 0; i < datos.data.datos.length; i++) {
+          var obj = datos.data.datos[i];
+          obj.icono = {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            fillColor:
+              obj.EvenExceVeloHistEven == 1
+                ? "yellow"
+                : obj.OutRoutHistEven == 1
+                ? "red"
+                : "green",
+            fillOpacity: 1,
+            strokeWeight: 0,
+            rotation: obj.RumbHistEven,
+            scale: 3,
+            anchor: new google.maps.Point(0, 0),
+          };
 
-        this.mListPosicionesHistorialSalidasPanelBusqueda.push(obj);
-        if(i == 0)
-        {
-          this.oCenter.lat = parseFloat(this.mListPosicionesHistorialSalidasPanelBusqueda[0].LatiHistEven)
-          this.oCenter.lng = parseFloat(this.mListPosicionesHistorialSalidasPanelBusqueda[0].LongHistEven)
-          this.oZoom = 17
+          this.mListPosicionesHistorialSalidasPanelBusqueda.push(obj);
+          if (i == 0) {
+            this.oCenter.lat = parseFloat(
+              this.mListPosicionesHistorialSalidasPanelBusqueda[0].LatiHistEven
+            );
+            this.oCenter.lng = parseFloat(
+              this.mListPosicionesHistorialSalidasPanelBusqueda[0].LongHistEven
+            );
+            this.oZoom = 17;
+          }
         }
+      } catch (error) {
+        console.log(error);
+        Notification.error({
+          title: "Error TRYCTACH",
+          msm: error.toString(),
+        });
       }
-      this.isLoadingRecorridoSalidaPanelBusqueda = false
+      this.isLoadingRecorridoSalidaPanelBusqueda = false;
     },
     handleCurrentChangeSelectionFilaSalidaBusqueda(val) {
       if (val != null) {
@@ -619,6 +660,10 @@ export default {
       } else {
         this.isVisibleRecorrido = false;
       }
+    },
+    handleLoaded(instance) {
+      console.log("PSPDFKit has loaded: ", instance);
+      // Do something.
     },
   },
   mounted() {
@@ -643,7 +688,7 @@ export default {
   margin: auto;
   border-radius: 1rem;
 }
-.circleProgress{
+.circleProgress {
   position: absolute;
   top: 0;
   left: 0;
@@ -663,7 +708,7 @@ export default {
   animation: girarLoading 1s ease-in infinite;
 }
 
-@keyframes girarLoading{
+@keyframes girarLoading {
   0% {
     transform: rotate(0deg);
   }
@@ -671,9 +716,6 @@ export default {
     transform: rotate(360deg);
   }
 }
-
-
-
 
 .current-row {
   background-color: rgba(0, 0, 0, 0.178);

@@ -8,8 +8,8 @@ function closeAllPanel()
     $("#element2").css("display","none")
     $("#PanelRutas").css("display","none")
     $("#PanelControles").css("display","none")
-    /*$("#").css("display","none")
-    $("#").css("display","none")*/
+    $("#PanelConfigMapaMonitoreo").css("display","none")
+    /*$("#").css("display","none")*/
 }
 
 function showPanel(idPanel)
@@ -48,6 +48,7 @@ itemConfig.addEventListener('click',function(){
     deleteItemSelected()
     $('#itemConfig').addClass("itemOptionMonitoreoActive")
     closeAllPanel()
+    showPanel("#PanelConfigMapaMonitoreo")
 })
 
 closeAllPanel()
