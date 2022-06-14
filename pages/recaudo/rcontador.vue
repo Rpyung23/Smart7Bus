@@ -375,8 +375,9 @@ export default {
               timeout: 600000,
             }
           );
-
-          if (datos.data.status_code == 200) {
+          console.log(datos.data)
+          if (datos.data.status_code == 200) 
+          {
             this.tableDataRecaudoContadorPasajeros.push(...datos.data.datos);
           } else if (datos.data.status_code == 300) {
             Notification.info({
@@ -389,9 +390,12 @@ export default {
               message: datos.data.msm,
             });
           }
-          console.log(datos.data);
         } catch (error) {
           console.log(error);
+          Notification.error({
+              title: "TRYCTACH Conteo de Pasajeros",
+              message: error.toString(),
+            });
         }
         this.loadingUnidadesContadorPasajerosPasajeros = false;
       }

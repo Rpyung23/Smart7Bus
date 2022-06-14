@@ -283,6 +283,70 @@
             :draggable="false"
             :optimized="true"
           />
+
+          <!--MARCADORES CON MARCACION-->
+          <GmapMarker
+            v-for="marker in mListPosicionesHistorialMarcSalidasPanelBusqueda"
+            :key="marker.idHistEve"
+            :position="{
+              lat: parseFloat(marker.LatiHistEven),
+              lng: parseFloat(marker.LongHistEven),
+            }"
+            icon="static/img/control/control.png"
+            :clickable="false"
+            :draggable="false"
+            :optimized="true"
+            :options="{
+              label: {
+                text:
+                  'RUTA : ' +
+                  marker.DescRutaSali_m +
+                  '\nPROG : ' +
+                  marker.HoraProgSali_d +
+                  ' MARC : ' +
+                  marker.HoraMarcSali_d,
+                color: '#008000',
+                className: 'paddingLabelControlMarc',
+              },
+            }"
+          />
+
+
+          <!--TODOS LOS MARCADORES-->
+
+          <GmapPolygon
+            v-for="control in mListControlesSalidaPanelBusquedaDespacho"
+            :key="control.CodiCtrl"
+            :options="{
+              strokeColor: '#F71313',
+              fillColor: '#F7131380',
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+            }"
+            :strokeOpacity="0.5"
+            :strokeWeight="1"
+            :paths="control.calculator.coordinates"
+          />
+
+          <GmapMarker
+            v-for="(control, index) in mListControlesSalidaPanelBusquedaDespacho"
+            :key="control.DescCtrl + index"
+            :position="{
+              lat: parseFloat(control.Lati1Ctrl),
+              lng: parseFloat(control.Long1Ctrl),
+            }"
+            :optimized="true"
+            icon="static/img/control/control.png"
+            :options="{
+              label: {
+                text: control.DescCtrl,
+                color: '#F71313',
+                className: 'paddingLabelControl',
+              },
+            }"
+          />
+
+
         </GmapMap>
 
         <div
@@ -306,7 +370,6 @@
         class="border-0 mb-0"
       >
         <PSPDFKitContainer :pdfFile="pdfFile" @loaded="handleLoaded" />
-
 
         <div
           class="loadingRecorridoSalidaBusquedaPanel"
@@ -463,11 +526,13 @@ export default {
       oCenter: { lat: -1.249546, lng: -78.585376 },
       oZoom: 7,
       mListPosicionesHistorialSalidasPanelBusqueda: [],
+      mListPosicionesHistorialMarcSalidasPanelBusqueda: [],
       isVisibleRecorrido: false,
       filaSelectionCurrentSalidaPanelBusqueda: null,
       isLoadingRecorridoSalidaPanelBusqueda: false,
-      modalSalidasTarjetaPanelDespachoBusqueda:true,
-      pdfFile: this.pdfFile || "/document.pdf"
+      modalSalidasTarjetaPanelDespachoBusqueda: false,
+      pdfFile: this.pdfFile || "/document.pdf",
+      mListControlesSalidaPanelBusquedaDespacho: []
     };
   },
   methods: {
@@ -602,6 +667,7 @@ export default {
     async readHistorialSalidaPanelBusqueda() {
       this.isLoadingRecorridoSalidaPanelBusqueda = true;
       this.mListPosicionesHistorialSalidasPanelBusqueda = [];
+      this.mListPosicionesHistorialMarcSalidasPanelBusqueda = [];
 
       try {
         console.log("INICIAR HISTORIAL RECORRIDO");
@@ -618,9 +684,11 @@ export default {
 
         for (var i = 0; i < datos.data.datos.length; i++) {
           var obj = datos.data.datos[i];
+
           obj.icono = {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
             fillColor:
+              (obj.HoraMarcSali_d != null && obj.HoraProgSali_d != null) ? "green" :
               obj.EvenExceVeloHistEven == 1
                 ? "yellow"
                 : obj.OutRoutHistEven == 1
@@ -634,6 +702,16 @@ export default {
           };
 
           this.mListPosicionesHistorialSalidasPanelBusqueda.push(obj);
+
+          if (
+            datos.data.datos[i].HoraMarcSali_d != null &&
+            datos.data.datos[i].HoraProgSali_d != null
+          ) {
+            this.mListPosicionesHistorialMarcSalidasPanelBusqueda.push(
+              datos.data.datos[i]
+            );
+          }
+
           if (i == 0) {
             this.oCenter.lat = parseFloat(
               this.mListPosicionesHistorialSalidasPanelBusqueda[0].LatiHistEven
@@ -653,6 +731,26 @@ export default {
       }
       this.isLoadingRecorridoSalidaPanelBusqueda = false;
     },
+    async initControlesSalidasPanelBusqueda() {
+      console.log("INICIANDO CONTROLES");
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/AllControles",
+          {
+            token: this.token,
+          }
+        );
+        if (datos.data.status_code == 200) {
+          this.mListControlesSalidaPanelBusquedaDespacho = [];
+          for (var i = 0; i < datos.data.data.length; i++) {
+            this.mListControlesSalidaPanelBusquedaDespacho[i] = datos.data.data[i];
+            //this.mListControlesMonitoreoAux[i] = datos.data.data[i];
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     handleCurrentChangeSelectionFilaSalidaBusqueda(val) {
       if (val != null) {
         this.isVisibleRecorrido = true;
@@ -669,13 +767,37 @@ export default {
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
     this.readAllUnidadesSalidasPanelBusqueda();
+    this.initControlesSalidasPanelBusqueda()
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllLineasContadorSalidasPanelBusqueda();
     this.readSalidasPanelBusqueda();
+    
   },
 };
 </script>
 <style>
+.paddingLabelControl {
+  margin-bottom: 2.9rem;
+  font-weight: bold;
+  border-color: #f71313;
+  border-width: 1px;
+  background-color: white;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+  border-radius: 1rem;
+}
+
+.paddingLabelControlMarc {
+  margin-top: 2.5rem;
+  border-color: #008000;
+  border-style: solid;
+  border-width: 1px;
+  background-color: white;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+  border-radius: 1rem;
+}
+
 .loadingRecorridoSalidaBusquedaPanel {
   height: 98%;
   width: 98%;
