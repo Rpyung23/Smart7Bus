@@ -84,6 +84,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    analyze: false,
     transpile: [
       'vee-validate/dist/rules'
     ],
