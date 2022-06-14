@@ -87,6 +87,7 @@ module.exports = {
     transpile: [
       'vee-validate/dist/rules'
     ],
+    maxChunkSize: 800000,
     /*
     ** You can extend webpack config here
     */
