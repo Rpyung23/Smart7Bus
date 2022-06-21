@@ -364,8 +364,8 @@ export default {
               this.mSelectRutaContadorPasajero.length == 0
                 ? "*"
                 : this.mSelectRutaContadorPasajero,
-            fechaI: this.fechaInicialConteoPasajeros,
-            fechaF: this.fechaFinalConteoPasajeros,
+            fechaI: this.fechaInicialConteoPasajeros + " 01:00:00",
+            fechaF: this.fechaFinalConteoPasajeros + "23:59:59",
           };
           //console.log(body)
           var datos = await this.$axios.post(
