@@ -14,6 +14,15 @@
 
         <sidebar-item
           :link="{
+            name: 'Tramos EX. Velocidad',
+            icon: 'ni ni-vector text-danger',
+            path: './tramos'
+          }">
+        </sidebar-item>
+
+
+        <sidebar-item
+          :link="{
             name: 'Rutas y Frecuencias',
             icon: 'ni ni-bus-front-12 text-primary',
             path: './rutasfrecuencias'
@@ -21,17 +30,6 @@
         </sidebar-item>
 
 
-
-
-
-
-        <sidebar-item
-          :link="{
-            name: 'Trabajando',
-            icon: 'ni ni-calendar-grid-58 text-red',
-            path: '/calendar'
-          }">
-        </sidebar-item>
 
       </template>
 
