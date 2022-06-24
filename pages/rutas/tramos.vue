@@ -113,17 +113,28 @@
             disableDefaultUi: true,
           }"
         >
+          <GmapPolygon
+            :options="{
+              strokeColor: '#F71313',
+              fillColor: '#F7131380',
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+            }"
+            :editable="true"
+            :strokeOpacity="0.5"
+            :strokeWeight="1"
+            :paths="mTrazadoTramaExVelocidad"
+          />
         </GmapMap>
 
-        <div class="botonesMapaTramas">
+        <!--<div class="botonesMapaTramas">
           <el-row>
-          <el-button type="info" icon="el-icon-plus" circle></el-button>
-          <el-button type="primary" icon="el-icon-edit" circle></el-button>
-          <el-button type="success" icon="el-icon-check" circle></el-button>
-          <el-button type="danger" icon="el-icon-delete" circle></el-button>
-        </el-row>
-        </div>
-        
+            <el-button type="info" icon="el-icon-plus" circle></el-button>
+            <el-button type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button type="success" icon="el-icon-check" circle></el-button>
+            <el-button type="danger" icon="el-icon-delete" circle></el-button>
+          </el-row>
+        </div>-->
       </card>
     </modal>
   </div>
@@ -138,15 +149,13 @@
   height: calc(100vh - 7rem);
 }
 
-.botonesMapaTramas{
-
+.botonesMapaTramas {
   position: absolute;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-margin: auto;
-
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
 }
 </style>
 <script>
@@ -199,11 +208,13 @@ export default {
       tableDataTramosExVelocidad: [],
       selectedRows: [],
       token: this.$cookies.get("token"),
+      mTrazadoTramaExVelocidad: null,
     };
   },
   methods: {
-    async handleViewMapaExVelocidad() {
+    async handleViewMapaExVelocidad(index, row) {
       this.modalTramosExVelocidad = true;
+      this.readTrazadoTramaExVelocidad(row.id_trama_m);
     },
     async readTramosExVelocidad() {
       try {
@@ -221,6 +232,31 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    async readTrazadoTramaExVelocidad(tramo) {
+      var body = {
+          token: this.token,
+          tramo: tramo,
+        }
+      
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/readTrazadoTramosExVelocidad",
+        body
+      );
+      console.log(datos.data)
+      var mList = []
+
+      for(var i = 0;i<datos.data.datos.length;i++)
+      {
+        var obj = {lat:datos.data.datos[i].latitud,lng:datos.data.datos[i].longitud}
+        if(i==0){
+          this.oCenter = obj
+          this.oZoom = 16
+        }
+        mList.push(obj)  
+      }
+      console.log(mList)
+      this.mTrazadoTramaExVelocidad = mList
     },
   },
   mounted() {
