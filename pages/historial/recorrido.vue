@@ -27,6 +27,57 @@
         }"
       />
 
+
+      <!--MARCADORES EXCESO VELOCIDAD-->
+      <GmapMarker
+        v-for="(marker, index) in mListPosicionesFRutaRecorridoHistorial"
+        :key="marker.idHistEve"
+        :icon="marker.icono"
+        @click="showInfoWindowsRecorrido(marker, index)"
+        :position="{
+          lat: parseFloat(marker.LatiHistEven),
+          lng: parseFloat(marker.LongHistEven),
+        }"
+      />
+
+
+      <!--MARCADORES FUERA DE RUTA-->
+      <GmapMarker
+        v-for="(marker, index) in mListPosicionesFRutaRecorridoHistorial"
+        :key="marker.idHistEve"
+        :icon="marker.icono"
+        @click="showInfoWindowsRecorrido(marker, index)"
+        :position="{
+          lat: parseFloat(marker.LatiHistEven),
+          lng: parseFloat(marker.LongHistEven),
+        }"
+      />
+
+      <!--POSICIONES MARCADAS CONTROLES-->
+      <GmapMarker
+        v-for="marker in mListPosicionesMarcRecorridoHistorial"
+        :key="marker.idHistEve"
+        :position="{
+          lat: parseFloat(marker.LatiHistEven),
+          lng: parseFloat(marker.LongHistEven),
+        }"
+        :icon="marker.icono"
+        :clickable="false"
+        :draggable="false"
+        :optimized="true"
+        :options="{
+          label: {
+            text:
+              'PROG : ' +
+              marker.HoraProgSali_d +
+              ' MARC : ' +
+              marker.HoraMarcSali_d,
+            color: '#008000',
+            className: 'paddingLabelControlMarc',
+          },
+        }"
+      />
+
       <GmapInfoWindow
         :options="infoOptionsRecorrido"
         :position="infoWindowPosRecorrido"
@@ -88,15 +139,43 @@
       </div>
     </div>
 
-    <div id="PanelFRutaRecorrido" class="container_Recorrido"></div>
+    <div id="PanelFRutaRecorrido" class="container_Recorrido">
+            <base-button
+        block
+        type="danger"
+        v-for="control in mListPosicionesFRutaRecorridoHistorial"
+        :key="control.CodiCtrlHistEven"
+        @click="centrarMapaHistorial(control)"
+        >{{ control.FechHistEven}}
+      </base-button>
+    </div>
 
-    <div id="PanelExVelocidad" class="container_Recorrido"></div>
+    <div id="PanelExVelocidad" class="container_Recorrido">
+      <base-button
+        block
+        type="warning"
+        v-for="control in mListPosicionesExVelocidadRecorridoHistorial"
+        :key="control.CodiCtrlHistEven"
+        @click="centrarMapaHistorial(control)"
+        >{{ control.FechHistEven}} Vel : {{control.VeloHistEven}} KM/H
+      </base-button>
+    </div>
 
     <div id="PanelControlesRecorrido" class="container_Recorrido">
-      <ul>
-        <li class="li-item-salidas-recorrido">
-        </li>
-      </ul>
+      <base-button
+        block
+        type="success"
+        v-for="control in mListPosicionesMarcRecorridoHistorial"
+        :key="control.CodiCtrlHistEven"
+        @click="centrarMapaHistorial(control)"
+        ><div class="contenidoBotonMarc">
+          <span>{{ control.DescCtrlSali_d.substring(0, 25) }}</span>
+          <span
+            >PROG : {{ control.HoraProgSali_d }} MARC :
+            {{ control.HoraMarcSali_d }}</span
+          >
+        </div>
+      </base-button>
     </div>
 
     <el-dialog title="Recorrido Unidad" :visible.sync="dialogFormVisible">
@@ -154,6 +233,19 @@
   </div>
 </template>
 <style>
+#PanelExVelocidad{
+    padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+#PanelExVelocidad {
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+#PanelControlesRecorrido {
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
 .paddingLabelControl {
   margin-bottom: 2.9rem;
   font-weight: bold;
@@ -167,6 +259,10 @@
 
 .bx {
   font-size: 1.2rem;
+}
+
+.btn:not(:last-child) {
+  margin-right: 0%;
 }
 
 .container_Recorrido {
@@ -186,6 +282,7 @@
   /*align-items: center;*/
   align-items: center;
   border-radius: 0.5rem;
+  overflow: auto;
 }
 
 .tabOptionsRecorrido {
@@ -233,6 +330,12 @@
 /****/
 .el-range-separator {
   width: 4rem !important;
+}
+
+.contenidoBotonMarc {
+  display: flex;
+  flex-direction: column;
+  flex: none;
 }
 </style>
 
@@ -291,6 +394,9 @@ export default {
       itemUnidadSelectRecorrido: [],
       mListUnidadesRecorrido: [],
       mListPosicionesRecorrido: [],
+      mListPosicionesFRutaRecorridoHistorial: [],
+      mListPosicionesExVelocidadRecorridoHistorial: [],
+      mListPosicionesMarcRecorridoHistorial: [],
       loadingUnidadRecorrido: false,
       RangeHorasRecorrido: [
         new Date(2016, 9, 10, 9, 0),
@@ -399,21 +505,12 @@ export default {
       }
     },
     getIconoRecorrido(unidad) {
-      var pathExVelocidad = "img/recorrido/recorrido_ex_velocidad.png#";
-      var pathFRuta = "img/recorrido/recorrido_f_ruta.png#";
-      var pathTrazado = "img/recorrido/recorrido_trazado.png#";
-      var imagen = "";
-      if (unidad.EvenExceVeloHistEven == 1) {
-        imagen = pathExVelocidad + unidad.idHistEve;
-      } else if (unidad.OutRoutHistEven == 1) {
-        imagen = pathFRuta + unidad.idHistEve;
-      } else {
-        imagen = pathTrazado + unidad.idHistEve;
-      }
       return {
         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
         fillColor:
-          unidad.EvenExceVeloHistEven == 1
+          unidad.HoraMarcSali_d != null
+            ? "green"
+            : unidad.EvenExceVeloHistEven == 1
             ? "yellow"
             : unidad.OutRoutHistEven == 1
             ? "red"
@@ -427,6 +524,9 @@ export default {
     },
     async initRecorrido() {
       this.mListPosicionesRecorrido = [];
+      this.mListPosicionesExVelocidadRecorridoHistorial = [];
+      this.mListPosicionesMarcRecorridoHistorial = [];
+      this.mListPosicionesFRutaRecorridoHistorial = []
       var body = {
         token: this.token,
         unidades: this.itemUnidadSelectRecorrido,
@@ -452,11 +552,26 @@ export default {
             message: "Datos consultados con éxito.",
           });
 
-          for (var i = 0; i < datos.data.datos.length; i++) {
-            this.mListPosicionesRecorrido[i] = datos.data.datos[i];
-            this.mListPosicionesRecorrido[i].icono = this.getIconoRecorrido(
-              datos.data.datos[i]
-            );
+          for (var i = 0; i < datos.data.datos.length; i++) 
+          {
+            var obj = datos.data.datos[i];
+            obj.icono = this.getIconoRecorrido(datos.data.datos[i]);
+            
+            if (obj.OutRoutHistEven == 1) 
+            {
+              this.mListPosicionesFRutaRecorridoHistorial.push(obj);
+            } else {
+              if (obj.HoraMarcSali_d == null) {
+                this.mListPosicionesRecorrido.push(obj);
+              } else {
+                if(obj.EvenExceVeloHistEven == 1){
+                  this.mListPosicionesExVelocidadRecorridoHistorial.push(obj)
+                }else{
+                  this.mListPosicionesMarcRecorridoHistorial.push(obj);
+                }
+                
+              }
+            }
           }
         } else if (datos.data.status_code == 300) {
           Notification.info({
@@ -509,6 +624,11 @@ export default {
         this.optionsUnidadesRecorrido = [];
       }
     },
+    centrarMapaHistorial(item)
+    {
+      this.oZoom = 18
+      this.oCenter = {lat:parseFloat(item.LatiHistEven),lng:parseFloat(item.LongHistEven)}
+    }
   },
   mounted() {
     this.initFechaActual();
