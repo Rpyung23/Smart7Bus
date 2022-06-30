@@ -11,7 +11,7 @@
           <div class="cardTextoRPagosVehiculoProduccion">
             <!--<el-autocomplete
               class="inline-input"
-              v-model="itemUnidadContadorPasajero"
+              v-model="itemUnidadContadorPasajeroVuetas"
               :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo"
               style="margin-right: 0.5rem"
               placeholder="Unidad"
@@ -21,7 +21,7 @@
             ></el-autocomplete>-->
 
             <el-select
-              v-model="itemUnidadContadorPasajero"
+              v-model="itemUnidadContadorPasajeroVuetas"
               multiple
               filterable
               style="margin-right: 0.5rem"
@@ -49,7 +49,7 @@
                 @on-close="blur"
                 :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker"
-                v-model="fechaInicialConteoPasajeros"
+                v-model="fechaInicialConteoPasajerosVueltas"
               >
               </flat-picker>
             </base-input>
@@ -61,7 +61,7 @@
                 @on-close="blur"
                 :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker"
-                v-model="fechaFinalConteoPasajeros"
+                v-model="fechaFinalConteoPasajerosVueltas"
               >
               </flat-picker>
             </base-input>
@@ -78,7 +78,7 @@
               class="btn btn-outline-success"
               outline
               :header="headerExcelRPagosVehiculoProduccion"
-              :data="tableDataRecaudoContadorPasajeros"
+              :data="tableDataRecaudoContadorPasajerosVueltas"
               :fields="json_fields_excelRPagosVehiculoProduccion"
               :worksheet="WorksheetExcelRPagosVehiculoProduccion"
               :name="FileNameExcelRPagosVehiculoProduccion"
@@ -103,7 +103,7 @@
         >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
             <el-select
-              v-model="mSelectRutaContadorPasajero"
+              v-model="mSelectRutaContadorPasajeroVueltas"
               multiple
               collapse-tags
               placeholder="Lineas"
@@ -129,10 +129,10 @@
         >
           <div>
             <el-table
-              v-loading="loadingUnidadesContadorPasajerosPasajeros"
+              v-loading="loadingUnidadesContadorPasajerosPasajerosVueltas"
               element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading"
-              :data="tableDataRecaudoContadorPasajeros"
+              :data="tableDataRecaudoContadorPasajerosVueltas"
               row-key="id"
               height="440"
               style="width: 100%"
@@ -140,6 +140,9 @@
               header-row-class-name="thead-dark"
             >
               <el-table-column prop="unidad" label="Unidad" minWidth="110">
+              </el-table-column>
+
+              <el-table-column prop="salida_m_id" label="N° Salida" minWidth="140">
               </el-table-column>
 
               <el-table-column
@@ -261,15 +264,15 @@ export default {
   data() {
     return {
       mListaUnidadesContadorPasajeros: [],
-      tableDataRecaudoContadorPasajeros: [],
+      tableDataRecaudoContadorPasajerosVueltas: [],
       mListLineasContadorPasajeros: [],
       loadingUnidadesContadorPasajeros: false,
-      loadingUnidadesContadorPasajerosPasajeros: false,
-      mSelectRutaContadorPasajero: [],
-      itemUnidadContadorPasajero: [],
+      loadingUnidadesContadorPasajerosPasajerosVueltas: false,
+      mSelectRutaContadorPasajeroVueltas: [],
+      itemUnidadContadorPasajeroVuetas: [],
       token: this.$cookies.get("token"),
-      fechaInicialConteoPasajeros: "",
-      fechaFinalConteoPasajeros: "",
+      fechaInicialConteoPasajerosVueltas: "",
+      fechaFinalConteoPasajerosVueltas: "",
       WorksheetExcelRPagosVehiculoProduccion: "",
       FileNameExcelRPagosVehiculoProduccion: "",
       headerExcelRPagosVehiculoProduccion: [],
@@ -309,7 +312,7 @@ export default {
       }
     },
 
-    initFechaActualContadorPasajeros() {
+    initFechaActualContadorPasajerosVueltas() {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
       var day = fecha.getDate();
@@ -320,10 +323,10 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialConteoPasajeros = format;
-      this.fechaFinalConteoPasajeros = format;
+      this.fechaInicialConteoPasajerosVueltas = format;
+      this.fechaFinalConteoPasajerosVueltas = format;
     },
-    async readAllUnidadesContadorPasajeros() {
+    async readAllUnidadesContadorPasajerosVueltas() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
         token: this.token,
       });
@@ -336,7 +339,7 @@ export default {
         }
       }
     },
-    async readAllLineasContadorPasajeros() {
+    async readAllLineasContadorPasajerosVueltas() {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
       });
@@ -345,33 +348,33 @@ export default {
       }
     },
     async readConteoPasajeros() {
-      if (this.loadingUnidadesContadorPasajerosPasajeros) {
+      if (this.loadingUnidadesContadorPasajerosPasajerosVueltas) {
         Notification.info({
           title: "Conteo de Pasajeros",
           message: "Por favor espere un momento, consulta en proceso.",
         });
       } else {
-        this.loadingUnidadesContadorPasajerosPasajeros = true;
-        this.tableDataRecaudoContadorPasajeros = [];
+        this.loadingUnidadesContadorPasajerosPasajerosVueltas = true;
+        this.tableDataRecaudoContadorPasajerosVueltas = [];
         try {
-          /*console.log(this.itemUnidadContadorPasajero)
-          console.log(this.mSelectRutaContadorPasajero)*/
+          /*console.log(this.itemUnidadContadorPasajeroVuetas)
+          console.log(this.mSelectRutaContadorPasajeroVueltas)*/
           var body = {
             token: this.token,
             unidades:
-              this.itemUnidadContadorPasajero.length == 0
+              this.itemUnidadContadorPasajeroVuetas.length == 0
                 ? "*"
-                : this.itemUnidadContadorPasajero,
+                : this.itemUnidadContadorPasajeroVuetas,
             rutas:
-              this.mSelectRutaContadorPasajero.length == 0
+              this.mSelectRutaContadorPasajeroVueltas.length == 0
                 ? "*"
-                : this.mSelectRutaContadorPasajero,
-            fechaI: this.fechaInicialConteoPasajeros + " 01:00:00",
-            fechaF: this.fechaFinalConteoPasajeros + " 23:59:59",
+                : this.mSelectRutaContadorPasajeroVueltas,
+            fechaI: this.fechaInicialConteoPasajerosVueltas + " 01:00:00",
+            fechaF: this.fechaFinalConteoPasajerosVueltas + " 23:59:59",
           };
           //console.log(body)
           var datos = await this.$axios.post(
-            process.env.baseUrl + "/contadorPasajerosFecha",
+            process.env.baseUrl + "/contadorPasajerosFechaVueltas",
             body,
             {
               timeout: 600000,
@@ -380,7 +383,7 @@ export default {
           console.log(datos.data)
           if (datos.data.status_code == 200) 
           {
-            this.tableDataRecaudoContadorPasajeros.push(...datos.data.datos);
+            this.tableDataRecaudoContadorPasajerosVueltas.push(...datos.data.datos);
           } else if (datos.data.status_code == 300) {
             Notification.info({
               title: "Conteo de Pasajeros",
@@ -399,14 +402,14 @@ export default {
               message: error.toString(),
             });
         }
-        this.loadingUnidadesContadorPasajerosPasajeros = false;
+        this.loadingUnidadesContadorPasajerosPasajerosVueltas = false;
       }
     },
   },
   mounted() {
-    this.readAllUnidadesContadorPasajeros();
-    this.initFechaActualContadorPasajeros();
-    this.readAllLineasContadorPasajeros();
+    this.readAllUnidadesContadorPasajerosVueltas();
+    this.initFechaActualContadorPasajerosVueltas();
+    this.readAllLineasContadorPasajerosVueltas();
   },
 };
 </script>

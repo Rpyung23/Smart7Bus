@@ -29,7 +29,9 @@
             icon: 'ni ni-book-bookmark text-blank',
           }"
         >
-          <sidebar-item :link="{ name: 'Contador Pasajeros', path: './rcontador' }" />
+          <sidebar-item :link="{ name: 'C. Pasajeros', path: './rcontador' }" />
+          <sidebar-item :link="{ name: 'C. Pasajeros (Vueltas)', path: './rcontadorvueltas' }" />
+          
         </sidebar-item>
 
         <sidebar-item
