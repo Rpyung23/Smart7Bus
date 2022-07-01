@@ -668,6 +668,7 @@ export default {
       this.isLoadingRecorridoSalidaPanelBusqueda = true;
       this.mListPosicionesHistorialSalidasPanelBusqueda = [];
       this.mListPosicionesHistorialMarcSalidasPanelBusqueda = [];
+      console.log(this.filaSelectionCurrentSalidaPanelBusqueda)
 
       try {
         console.log("INICIAR HISTORIAL RECORRIDO");
@@ -677,6 +678,7 @@ export default {
             token: this.token,
             unidad: this.filaSelectionCurrentSalidaPanelBusqueda.CodiVehiSali_m,
             salida: this.filaSelectionCurrentSalidaPanelBusqueda.idSali_m,
+            fechaI: this.filaSelectionCurrentSalidaPanelBusqueda.HoraSaliProgSali_mF
           }
         );
         console.log("RECORRIDO SALIDA");
