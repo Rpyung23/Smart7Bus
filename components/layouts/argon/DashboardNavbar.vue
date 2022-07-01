@@ -129,7 +129,7 @@
       >
         <template>
           <div class="row shortcuts px-4">
-            <a href="#!" class="col-4 shortcut-item" v-if="permisos == null || permisos.despacho.active">
+            <a href="./despacho/panelDespacho" class="col-4 shortcut-item" v-if="permisos == null || permisos.despacho.active">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-red"
               >
@@ -161,7 +161,7 @@
               </span>
               <small>Liquidación</small>
             </a>
-            <a href="#!" class="col-4 shortcut-item" v-if="permisos == null || permisos.historial.active">
+            <a href="./historial/recorrido" class="col-4 shortcut-item" v-if="permisos == null || permisos.historial.active">
               <span
                 class="shortcut-media avatar rounded-circle bg-gradient-purple"
               >
