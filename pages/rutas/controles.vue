@@ -49,7 +49,7 @@
       <div class="containerDrawer">
         <base-button block type="primary">Crear nuevo control</base-button><br>
         <el-table :data="mListRutasEditControles" style="width: 100%">
-          <el-table-column prop="DescCtrl" label="Nombre" width="275">
+          <el-table-column prop="DescCtrl" label="Nombre" width="235">
           </el-table-column>
           <el-table-column label="Actions">
             <template slot-scope="scope">
