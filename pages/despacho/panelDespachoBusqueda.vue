@@ -2,69 +2,34 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-select
-              v-model="itemUnidadSalidasPanelBusqueda"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesSalidasPanelBusqueda"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadSalidasPanelBusqueda" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+              <el-option v-for="item in optionsUnidadesSalidasPanelBusqueda" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialSalidasPanelBusqueda"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaInicialSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalSalidasPanelBusqueda"
-              >
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaFinalSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button
-              icon
-              type="primary"
-              @click="readSalidasPanelBusqueda()"
-            >
-              <span class="btn-inner--icon"
-                ><i class="el-icon-search"></i
-              ></span>
+            <base-button icon type="primary" @click="readSalidasPanelBusqueda()">
+              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               <span class="btn-inner--text">Buscar</span>
             </base-button>
             <!--<download-excel
@@ -82,65 +47,36 @@
               <span class="btn-inner--text"> Excel</span>
             </download-excel>-->
             <base-button outline type="danger">
-              <span class="btn-inner--icon"
-                ><i class="ni ni-cloud-download-95"></i
-              ></span>
+              <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
               <span class="btn-inner--text"> Descargas</span>
             </base-button>
 
             <base-button outline type="success" v-if="isVisibleRecorrido">
               <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
-              <span
-                class="btn-inner--text"
-                @click="showRecorridoSalidasPanelBusqueda()"
-              >
-                Recorrido</span
-              >
+              <span class="btn-inner--text" @click="showRecorridoSalidasPanelBusqueda()">
+                Recorrido</span>
             </base-button>
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
-            <el-select
-              v-model="mSelectRutaSalidaPanelBusqueda"
-              multiple
-              collapse-tags
-              placeholder="Lineas"
-            >
-              <el-option
-                v-for="item in mListLineasSalidasPanelBusqueda"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
+            <el-select v-model="mSelectRutaSalidaPanelBusqueda" multiple collapse-tags placeholder="Lineas">
+              <el-option v-for="item in mListLineasSalidasPanelBusqueda" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
               </el-option>
             </el-select>
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
             <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
-              <el-checkbox
-                label="2"
-                style="background-color: hsla(226, 88%, 61%, 0.301)"
-                >EN RUTA</el-checkbox
-              >
-              <el-checkbox
-                label="4"
-                style="background-color: rgba(252, 143, 143, 0.692)"
-                >ANULADOS</el-checkbox
-              >
+              <el-checkbox label="2" style="background-color: hsla(226, 88%, 61%, 0.301)">EN RUTA</el-checkbox>
+              <el-checkbox label="4" style="background-color: rgba(252, 143, 143, 0.692)">ANULADOS</el-checkbox>
               <el-checkbox label="3">FINALIZADOS</el-checkbox>
-              <el-checkbox
-                label="0,1"
-                style="background-color: hsla(115, 100%, 59%, 0.301)"
-                >SALIDAS DIFERIDAS</el-checkbox
-              >
+              <el-checkbox label="0,1" style="background-color: hsla(115, 100%, 59%, 0.301)">SALIDAS DIFERIDAS
+              </el-checkbox>
               <!--<el-checkbox
                 label="31"
                 disabled="false"
@@ -151,32 +87,21 @@
           </div>
         </card>
 
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1"
-          footer-classes="pb-2"
-        >
+        <card class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1" footer-classes="pb-2">
           <div>
-            <el-table
-              v-loading="loadingTableUnidadesSalidasPanelBusqueda"
-              element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading"
-              :data="mListaSalidasPanelBusqueda"
-              row-key="id"
-              class="tablePanelControlProduccion"
-              :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-              header-row-class-name="thead-dark"
-              :height="mListaSalidasPanelBusqueda.length > 0 ? 900 : 150"
-              highlight-current-row
-              @current-change="handleCurrentChangeSelectionFilaSalidaBusqueda"
-            >
+            <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
+              element-loading-spinner="el-icon-loading" :data="mListaSalidasPanelBusqueda" row-key="id"
+              class="tablePanelControlProduccion" :row-class-name="tableRowClassNameSalidasPanelBusqueda"
+              header-row-class-name="thead-dark" :height="mListaSalidasPanelBusqueda.length > 0 ? 900 : 150"
+              highlight-current-row @current-change="handleCurrentChangeSelectionFilaSalidaBusqueda">
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="130">
               </el-table-column>
 
               <el-table-column prop="idSali_m" label="Salida" width="140">
                 <template slot-scope="scope">
-                  <el-button slot="reference" style="cursor: pointer">
+                  <el-button slot="reference" @click="showTarjetaSalidasPanelBusqueda(scope.row)"
+                    style="cursor: pointer">
                     <u>{{ scope.row.idSali_m }}</u>
                   </el-button>
 
@@ -197,18 +122,10 @@
                 </template>
               </el-table-column>
 
-              <el-table-column
-                v-for="column in tableColumnsUnidadesFlotaVehicular"
-                :key="column.label"
-                v-bind="column"
-              >
+              <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
               </el-table-column>
 
-              <el-table-column
-                label="Estado"
-                min-width="270px"
-                prop="EstaSali_m"
-              >
+              <el-table-column label="Estado" min-width="270px" prop="EstaSali_m">
                 <template v-slot="{ row }">
                   <badge class="badge-dot mr-4" type="">
                     <!--<i
@@ -220,20 +137,12 @@
                           : 'success'
                       }`"
                     ></i>-->
-                    <span class="status"
-                      ><strong>{{
-                        row.EstaSali_m <= 1
-                          ? "DIFERIDA"
-                          : row.EstaSali_m == 4
-                          ? "ANULADO"
-                          : row.EstaSali_m == 2
-                          ? "EN RUTA"
-                          : row.EstaSali_m == 3 &&
-                            parseFloat(row.PenaCtrlSali_d) > 0
-                          ? "FINALIZADO CON PENALIDAD"
-                          : "FINALIZADA SIN PENALIDAD"
-                      }}</strong></span
-                    >
+                    <span class="status"><strong>{{
+                        row.EstaSali_m <= 1 ? "DIFERIDA" : row.EstaSali_m == 4 ? "ANULADO" : row.EstaSali_m == 2 ? "EN RUTA"
+                          : row.EstaSali_m == 3 && parseFloat(row.PenaCtrlSali_d) > 0
+                            ? "FINALIZADO CON PENALIDAD"
+                            : "FINALIZADA SIN PENALIDAD"
+                    }}</strong></span>
                   </badge>
                 </template>
               </el-table-column>
@@ -246,142 +155,82 @@
     </base-header>
 
     <!--Form modal-->
-    <modal
-      :show.sync="modalSalidasPanelDespachoBusqueda"
-      size="xl"
-      body-classes="p-0"
-    >
-      <card
-        type="secondary"
-        header-classes="bg-transparent pb-5"
-        class="border-0 mb-0"
-      >
-        <GmapMap
-          map-type-id="roadmap"
-          class="mapa"
-          :center="oCenter"
-          :zoom="oZoom"
-          :options="{
-            zoomControl: false,
-            scaleControl: false,
-            mapTypeControl: false,
-            streetViewControl: false,
-            rotateControl: false,
-            fullscreenControl: false,
-            disableDefaultUi: true,
-          }"
-        >
-          <GmapMarker
-            v-for="marker in mListPosicionesHistorialSalidasPanelBusqueda"
-            :key="marker.idHistEve"
-            :position="{
-              lat: parseFloat(marker.LatiHistEven),
-              lng: parseFloat(marker.LongHistEven),
-            }"
-            :icon="marker.icono"
-            :clickable="false"
-            :draggable="false"
-            :optimized="true"
-          />
+    <modal :show.sync="modalSalidasPanelDespachoBusqueda" size="xl" body-classes="p-0">
+      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
+        <GmapMap map-type-id="roadmap" class="mapa" :center="oCenter" :zoom="oZoom" :options="{
+          zoomControl: false,
+          scaleControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+          rotateControl: false,
+          fullscreenControl: false,
+          disableDefaultUi: true,
+        }">
+          <GmapMarker v-for="marker in mListPosicionesHistorialSalidasPanelBusqueda" :key="marker.idHistEve" :position="{
+            lat: parseFloat(marker.LatiHistEven),
+            lng: parseFloat(marker.LongHistEven),
+          }" :icon="marker.icono" :clickable="false" :draggable="false" :optimized="true" />
 
           <!--MARCADORES CON MARCACION-->
-          <GmapMarker
-            v-for="marker in mListPosicionesHistorialMarcSalidasPanelBusqueda"
-            :key="marker.idHistEve"
+          <GmapMarker v-for="marker in mListPosicionesHistorialMarcSalidasPanelBusqueda" :key="marker.idHistEve"
             :position="{
               lat: parseFloat(marker.LatiHistEven),
               lng: parseFloat(marker.LongHistEven),
-            }"
-            icon="static/img/control/control.png"
-            :clickable="false"
-            :draggable="false"
-            :optimized="true"
-            :options="{
-              label: {
-                text:
-                  'RUTA : ' +
-                  marker.DescRutaSali_m +
-                  '\nPROG : ' +
-                  marker.HoraProgSali_d +
-                  ' MARC : ' +
-                  marker.HoraMarcSali_d,
-                color: '#008000',
-                className: 'paddingLabelControlMarc',
-              },
-            }"
-          />
+            }" icon="static/img/control/control.png" :clickable="false" :draggable="false" :optimized="true" :options="{
+  label: {
+    text:
+      'RUTA : ' +
+      marker.DescRutaSali_m +
+      '\nPROG : ' +
+      marker.HoraProgSali_d +
+      ' MARC : ' +
+      marker.HoraMarcSali_d,
+    color: '#008000',
+    className: 'paddingLabelControlMarc',
+  },
+}" />
 
 
           <!--TODOS LOS MARCADORES-->
 
-          <GmapPolygon
-            v-for="control in mListControlesSalidaPanelBusquedaDespacho"
-            :key="control.CodiCtrl"
-            :options="{
-              strokeColor: '#F71313',
-              fillColor: '#F7131380',
-              strokeOpacity: 1.0,
-              strokeWeight: 2,
-            }"
-            :strokeOpacity="0.5"
-            :strokeWeight="1"
-            :paths="control.calculator.coordinates"
-          />
+          <GmapPolygon v-for="control in mListControlesSalidaPanelBusquedaDespacho" :key="control.CodiCtrl" :options="{
+            strokeColor: '#F71313',
+            fillColor: '#F7131380',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+          }" :strokeOpacity="0.5" :strokeWeight="1" :paths="control.calculator.coordinates" />
 
-          <GmapMarker
-            v-for="(control, index) in mListControlesSalidaPanelBusquedaDespacho"
-            :key="control.DescCtrl + index"
-            :position="{
+          <GmapMarker v-for="(control, index) in mListControlesSalidaPanelBusquedaDespacho"
+            :key="control.DescCtrl + index" :position="{
               lat: parseFloat(control.Lati1Ctrl),
               lng: parseFloat(control.Long1Ctrl),
-            }"
-            :optimized="true"
-            icon="static/img/control/control.png"
-            :options="{
-              label: {
-                text: control.DescCtrl,
-                color: '#F71313',
-                className: 'paddingLabelControl',
-              },
-            }"
-          />
+            }" :optimized="true" icon="static/img/control/control.png" :options="{
+  label: {
+    text: control.DescCtrl,
+    color: '#F71313',
+    className: 'paddingLabelControl',
+  },
+}" />
 
 
         </GmapMap>
 
-        <div
-          class="loadingRecorridoSalidaBusquedaPanel"
-          v-if="isLoadingRecorridoSalidaPanelBusqueda"
-        >
+        <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingRecorridoSalidaPanelBusqueda">
           <div class="circleProgress"></div>
         </div>
       </card>
     </modal>
 
     <!--Form modal TICKET SALIDA-->
-    <modal
-      :show.sync="modalSalidasTarjetaPanelDespachoBusqueda"
-      size="sm"
-      body-classes="p-0"
-    >
-      <card
-        type="secondary"
-        header-classes="bg-transparent pb-5"
-        class="border-0 mb-0"
-      >
-        <PSPDFKitContainer :pdfFile="pdfFile" @loaded="handleLoaded" />
-
-        <div
-          class="loadingRecorridoSalidaBusquedaPanel"
-          v-if="isLoadingRecorridoSalidaPanelBusqueda"
-        >
-          <div class="circleProgress"></div>
-        </div>
+    <modal :show.sync="modalSalidasTarjetaPanelDespachoBusqueda" size="sm" body-classes="p-0">
+      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
+        <iframe :src="baseURlPDFPanelDespachoTarjeta" style="width: 100%; height: 33rem"></iframe>
       </card>
     </modal>
   </div>
 </template>
 <script>
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import {
@@ -405,11 +254,11 @@ import {
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
-import PSPDFKitContainer from "@/components/PSPDFKitContainer.vue";
 
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
+import { FechaStringToHour } from "../../util/fechas"
 
 export default {
   mixins: [clientPaginationMixin],
@@ -420,7 +269,6 @@ export default {
     BasePagination,
     flatPicker,
     RouteBreadCrumb,
-    PSPDFKitContainer,
     [DatePicker.name]: DatePicker,
     [Select.name]: Select,
     [Option.name]: Option,
@@ -438,6 +286,7 @@ export default {
   },
   data() {
     return {
+      baseURlPDFPanelDespachoTarjeta: "",
       mListaUnidadesSalidasPanelBusqueda: [],
       mListLineasSalidasPanelBusqueda: [],
       loadingTableUnidadesSalidasPanelBusquedaloading: false,
@@ -448,25 +297,7 @@ export default {
       fechaInicialSalidasPanelBusqueda: "",
       fechaFinalSalidasPanelBusqueda: "",
       radioEstadoRSalidasPanelBusqueda: [],
-      WorksheetExcelRPagosVehiculoProduccion: "",
-      FileNameExcelRPagosVehiculoProduccion: "",
-      headerExcelRPagosVehiculoProduccion: [],
       optionsUnidadesSalidasPanelBusqueda: [],
-      json_fields_excelRPagosVehiculoProduccion: {
-        Unidad: "vehiculo_codigo",
-        Salida: "salida_id",
-        "Linea - Ruta": "DescRutaSali_m",
-        "Fecha Salida": "HoraSaliProgSali_m",
-        "Fecha Creación": "fecha_creacion",
-        "Fecha Pago": "fecha_pago",
-        "Minutos ($)": "montoControles",
-        "Minutos Just($)": "montoControlesDesc",
-        "Detalle Rubro": "descripcion_rubro",
-        "Rubros ($)": "montoMultas",
-        "Rubros Jus ($)": "montoMultasDesc",
-        "Monto Pagado": "monto_pagado",
-        Estado: "estado",
-      },
       modalSalidasPanelDespachoBusqueda: false,
       tableColumnsUnidadesFlotaVehicular: [
         {
@@ -531,7 +362,6 @@ export default {
       filaSelectionCurrentSalidaPanelBusqueda: null,
       isLoadingRecorridoSalidaPanelBusqueda: false,
       modalSalidasTarjetaPanelDespachoBusqueda: false,
-      pdfFile: this.pdfFile || "/document.pdf",
       mListControlesSalidaPanelBusquedaDespacho: []
     };
   },
@@ -664,6 +494,10 @@ export default {
       this.modalSalidasPanelDespachoBusqueda = true;
       this.readHistorialSalidaPanelBusqueda();
     },
+    showTarjetaSalidasPanelBusqueda(salida) {
+      this.modalSalidasTarjetaPanelDespachoBusqueda = true;
+      this.readDetalleSalidaDPanelBusqueda(salida)
+    },
     async readHistorialSalidaPanelBusqueda() {
       this.isLoadingRecorridoSalidaPanelBusqueda = true;
       this.mListPosicionesHistorialSalidasPanelBusqueda = [];
@@ -691,11 +525,11 @@ export default {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
             fillColor:
               (obj.HoraMarcSali_d != null && obj.HoraProgSali_d != null) ? "green" :
-              obj.EvenExceVeloHistEven == 1
-                ? "yellow"
-                : obj.OutRoutHistEven == 1
-                ? "red"
-                : "green",
+                obj.EvenExceVeloHistEven == 1
+                  ? "yellow"
+                  : obj.OutRoutHistEven == 1
+                    ? "red"
+                    : "green",
             fillOpacity: 1,
             strokeWeight: 0,
             rotation: obj.RumbHistEven,
@@ -761,10 +595,177 @@ export default {
         this.isVisibleRecorrido = false;
       }
     },
-    handleLoaded(instance) {
-      console.log("PSPDFKit has loaded: ", instance);
-      // Do something.
-    },
+    async readDetalleSalidaDPanelBusqueda(salida) {
+
+      var datos = await this.$axios.post(process.env.baseUrl + "/detalleSalida", {
+        token: this.token,
+        idsalida: salida.idSali_m
+      })
+
+      const pdfDoc = await PDFDocument.create()
+      const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+      const TimesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
+
+      const page = pdfDoc.addPage()
+      page.setWidth(230)
+      const { width, height } = page.getSize()
+      const fontSize = 10
+
+      page.drawText("     "+this.$cookies.get("nameEmpresa").toUpperCase().substring(0,28), {
+        x: 20,
+        y: height - 2 * fontSize,
+        size: fontSize,
+        font: TimesRomanBold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Unidad       "+ "Salida #"+salida.idSali_m+"         Ruta     Vue.", {
+        x: 20,
+        y: height - 3.5 * fontSize,
+        size: fontSize,
+        font: TimesRomanBold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("    "+salida.CodiVehiSali_m + "          " 
+                          + FechaStringToHour(salida.HoraSaliProgSali_mF) + "         " 
+                          + (salida.LetraRutaSali_m.length > 2 ? salida.LetraRutaSali_m : "  "+salida.LetraRutaSali_m)+"           "+ salida.NumeVuelSali_m, {
+        x: 20,
+        y: height - 4.5 * fontSize,
+        size: fontSize,
+        font: timesRomanFont,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText('FREC : '+salida.DescFrec.substring(0,26), {
+        x: 20,
+        y: height - 5.6 * fontSize,
+        size: fontSize,
+        font: timesRomanFont,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("---------------------------------------------------------", {
+        x: 20,
+        y: height - 6.6 * fontSize,
+        size: fontSize,
+        font: timesRomanFont,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("RELOJ             PROG   MARC  FALT  PEN", {
+        x: 20,
+        y: height - 7.6 * fontSize,
+        size: fontSize,
+        font: timesRomanFont,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("---------------------------------------------------------", {
+        x: 20,
+        y: height - 8.6 * fontSize,
+        size: fontSize,
+        font: timesRomanFont,
+        color: rgb(0, 0, 0),
+      })
+      var heightAux = 9.7
+      var sumFalt = 0
+      var penFalt = 0
+      for (var i = 0; i < datos.data.data.length; i++) 
+      {
+
+        heightAux = heightAux + 1
+       if(datos.data.data[i].FaltSali_d > 0){
+         sumFalt = sumFalt + datos.data.data[i].FaltSali_d
+       }
+
+       if(datos.data.data[i].isCtrlRefeSali_d == 0)
+       {
+        var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
+        penFalt = penFalt + pen  
+       }
+
+        var space = "                       "
+        /**datos.data.data[i].DescCtrlSali_d.substring(0, 9)**/
+
+        var texto =  space+ "  "+datos.data.data[i].HoraProgSali_d.substring(0, 5)+"   "
+                        +(datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '              ' : datos.data.data[i].HoraMarcSali_d)+"    "+(datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '    ' : datos.data.data[i].FaltSali_d )+"        "
+                        +(datos.data.data[i].isCtrlRefeSali_d == 1 ? "REF" : datos.data.data[i].PenaCtrlSali_d == '0.00' ? '      ' : datos.data.data[i].PenaCtrlSali_d)
+        
+        page.drawText(texto, {
+          x: 20,
+          y: height - heightAux * 9,
+          size: 9,
+          color: rgb(0, 0, 0),
+        })
+
+        page.drawText(datos.data.data[i].DescCtrlSali_d.substring(0, 8), {
+          x: 20,
+          y: height - (heightAux) * 9,
+          size: 9,
+          color: rgb(0, 0, 0),
+        })
+
+
+      }
+      heightAux  = heightAux - 0.5
+
+
+      page.drawText("---------------------------------------------------------", {
+        x: 20,
+        y: height - (heightAux - 0.2) * fontSize,
+        size: fontSize,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Chofer : ", {
+        x: 20,
+        y: height - (heightAux + 1) * fontSize,
+        size: 8.5,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Cobrador : ", {
+        x: 20,
+        y: height - (heightAux + 2) * fontSize,
+        size: 8.5,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Adelante : " + salida.adelantoTime, {
+        x: 20,
+        y: height - (heightAux + 3) * fontSize,
+        size: 8.5,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Atrasos : " + salida.atrasoTime, {
+        x: 20,
+        y: height - (heightAux + 4) * fontSize,
+        size: 8.5,
+        color: rgb(0, 0, 0),
+      })
+
+      let bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
+
+      page.drawText("TOTAL Faltas  : +"+sumFalt, {
+        x: 20,
+        y: height - (heightAux + 5) * fontSize,
+        size: 10,
+        font:bold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("TOTAL Dinero  : "+Number(penFalt).toFixed(2), {
+        x: 20,
+        y: height - (heightAux + 6) * fontSize,
+        size: 10,
+        font:bold,
+        color: rgb(0, 0, 0),
+      })
+
+      this.baseURlPDFPanelDespachoTarjeta = await pdfDoc.saveAsBase64({ dataUri: true });
+    }
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
@@ -773,7 +774,7 @@ export default {
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllLineasContadorSalidasPanelBusqueda();
     this.readSalidasPanelBusqueda();
-    
+
   },
 };
 </script>
@@ -800,52 +801,13 @@ export default {
   border-radius: 1rem;
 }
 
-.loadingRecorridoSalidaBusquedaPanel {
-  height: 98%;
-  width: 98%;
-  background-color: rgba(0, 0, 0, 0.253);
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-  border-radius: 1rem;
-}
-.circleProgress {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-  background-color: transparent;
-  border-right-color: blue;
-  border-left-color: white;
-  border-top-color: white;
-  border-bottom-color: white;
-  border-width: 0.3rem;
-  border-radius: 50%;
-  border-style: solid;
-  height: 3.5rem;
-  width: 3.5rem;
-  animation: girarLoading 1s ease-in infinite;
-}
 
-@keyframes girarLoading {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
 
 .current-row {
   background-color: rgba(0, 0, 0, 0.178);
 }
 
-.el-table__body tr.current-row > td.el-table__cell {
+.el-table__body tr.current-row>td.el-table__cell {
   background-color: rgba(0, 0, 0, 0.178) !important;
 }
 
@@ -857,6 +819,7 @@ export default {
 .form-group {
   margin-bottom: 0rem;
 }
+
 .form-controlPersonal {
   display: block;
   width: 100%;
@@ -875,20 +838,25 @@ export default {
   box-shadow: 0 3px 2px rgba(233, 236, 239, 0.05);
   transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
+
 .el-loading-text {
   color: black !important;
 }
+
 .el-icon-loading {
   color: black !important;
 }
+
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
 }
+
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
   display: flex;
   justify-content: space-between;
 }
+
 .el-table .warning-row-panelControlProduccion {
   background: rgba(252, 143, 143, 0.692) !important;
 }
@@ -896,6 +864,7 @@ export default {
 .el-table .success-row-panelControlProduccion {
   background: hsla(34, 93%, 61%, 0.479) !important;
 }
+
 .el-table .finalizado-row-panelControlProduccion {
   background: hsla(115, 100%, 59%, 0.301) !important;
 }
@@ -903,9 +872,11 @@ export default {
 .el-table .diferido-row-panelControlProduccion {
   background: hsla(226, 88%, 61%, 0.301) !important;
 }
+
 .no-border-card .card-footer {
   border-top: 0;
 }
+
 .card-bodyRPagosVehiculoProduccion {
   padding: 0rem !important;
   height: calc(100vh - 13rem);

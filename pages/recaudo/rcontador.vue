@@ -432,12 +432,7 @@ export default {
   box-shadow: 0 3px 2px rgba(233, 236, 239, 0.05);
   transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
-.el-loading-text {
-  color: black !important;
-}
-.el-icon-loading {
-  color: black !important;
-}
+
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;

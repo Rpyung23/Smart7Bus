@@ -50,8 +50,8 @@
         v-for="control in mListControlesMonitoreoAux"
         :key="control.CodiCtrl"
         :options="{
-          strokeColor: '#F71313',
-          fillColor: '#F7131380',
+          strokeColor: '#172b4d',
+          fillColor: '#172b4d80',
           strokeOpacity: 1.0,
           strokeWeight: 2,
         }"
@@ -72,7 +72,7 @@
         :options="{
           label: {
             text: control.DescCtrl,
-            color: '#F71313',
+            color: '#172b4d',
             className: 'paddingLabelControl',
           },
         }"

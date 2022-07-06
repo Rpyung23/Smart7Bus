@@ -58,15 +58,15 @@
                 <span class="btn-inner--icon"><i class="ni ni-ruler-pencil"></i></span>
               </base-button>
               <base-button v-if="scope.row.EstaCtrl == 0 ? true : false" class="btnActionsDrawerControl" icon size="sm"
-                type="success">
+                @click="activarControl(scope.row)" type="success">
                 <span class="btn-inner--icon"><i class="ni ni-check-bold"></i></span>
               </base-button>
               <base-button class="btnActionsDrawerControl" icon size="sm" type="primary"
                 @click="centrarControlEdit(scope.row)">
                 <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
               </base-button>
-              <base-button v-if="scope.row.EstaCtrl == 0 ? false : true" @click="deleteControlEdit(scope.row)" class="btnActionsDrawerControl" icon size="sm"
-                type="danger">
+              <base-button v-if="scope.row.EstaCtrl == 0 ? false : true" @click="deleteControlEdit(scope.row)"
+                class="btnActionsDrawerControl" icon size="sm" type="danger">
                 <span class="btn-inner--icon"><i class="ni ni-scissors"></i></span>
               </base-button>
             </template>
@@ -157,6 +157,15 @@ export default {
     showControlesDrawer() {
       this.isVisibleControlesEdit = this.isVisibleControlesEdit ? false : true
     },
+    showNotification(msm,type,icon)
+    {
+      this.$notify({
+          message:msm,
+          timeout: 2000,
+          icon: icon,
+          type
+        });
+    },
     async initControles() {
       try {
         var datos = await this.$axios.post(
@@ -179,14 +188,74 @@ export default {
       this.oCenter = { lat: parseFloat(control.Lati1Ctrl), lng: parseFloat(control.Long1Ctrl) }
       this.oZoom = 19
     },
+    async desactivarControl(control) 
+    {
+      var url = process.env.baseUrl + "/DeleteControl"
+      console.log(url)
+      try {
+        var datos = await this.$axios.delete( url, {data:{
+        token: this.token,
+        control: control.CodiCtrl
+      }})
+
+      if (datos.data.status_code == 200) {
+        this.showNotification(datos.data.msm,'danger','ni ni-check-bold')
+        for(var i = 0;i < this.mListRutasEditControles.length;i++)
+        {
+          if(this.mListRutasEditControles[i].CodiCtrl == control.CodiCtrl)
+          {
+            this.mListRutasEditControles[i].EstaCtrl = 0
+          }
+        }
+      } else {
+        this.showNotification(datos.data.msm,'danger','ni ni-fat-remove')
+      }
+      } catch (error) {
+        this.showNotification(error.toString(),'danger','ni ni-fat-remove')
+      }
+    },
+    async activarControl(control) 
+    {
+      var url = process.env.baseUrl + "/ActiveControl"
+      console.log(url)
+      try {
+        var datos = await this.$axios.put( url, {
+        token: this.token,
+        control: control.CodiCtrl
+      })
+
+      if (datos.data.status_code == 200) {
+        this.showNotification(datos.data.msm,'success','ni ni-check-bold')
+        for(var i = 0;i < this.mListRutasEditControles.length;i++)
+        {
+          if(this.mListRutasEditControles[i].CodiCtrl == control.CodiCtrl)
+          {
+            this.mListRutasEditControles[i].EstaCtrl = 1
+          }
+        }
+      } else {
+        this.showNotification(datos.data.msm,'error','ni ni-fat-remove')
+      }
+      } catch (error) {
+        this.showNotification(error.toString(),'error','ni ni-fat-remove')
+      }
+    },
     deleteControlEdit(control) {
       this.oCenter = { lat: parseFloat(control.Lati1Ctrl), lng: parseFloat(control.Long1Ctrl) }
-      this.oZoom = 19
+      this.oZoom = 18
       Swal.fire({
-        title: 'Error!',
-        text: 'Do you want to continue',
-        icon: 'error',
-        confirmButtonText: 'Cool'
+        title: 'Desactivar Control',
+        text: control.DescCtrl,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Si, desactivar.'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.desactivarControl(control)
+        }
       })
     },
   },

@@ -575,6 +575,56 @@ License - nucleoapp.com/license/
     display: none;
 }
 
+.loadingRecorridoSalidaBusquedaPanel {
+    height: 98%;
+    width: 98%;
+    background-color: rgba(0, 0, 0, 0.253);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border-radius: 1rem;
+  }
+  
+  .circleProgress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: transparent;
+    border-right-color: blue;
+    border-left-color: white;
+    border-top-color: white;
+    border-bottom-color: white;
+    border-width: 0.3rem;
+    border-radius: 50%;
+    border-style: solid;
+    height: 3.5rem;
+    width: 3.5rem;
+    animation: girarLoading 1s ease-in infinite;
+  }
+  
+  @keyframes girarLoading {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+.el-loading-text {
+    color: black !important;
+  }
+  .el-icon-loading {
+    color: black !important;
+  }
+  
 .label_marker {
     background-color: black;
     padding: 0.1rem;

@@ -4,88 +4,43 @@
       <div class="row align-items-center py-4">
         <div class="col">
           <br />
-          <card
-            class="no-border-card"
-            body-classes="px-0 pb-1"
-            footer-classes="pb-2"
-          >
+          <card class="no-border-card" body-classes="px-0 pb-1" footer-classes="pb-2">
             <div>
-              <el-table
-                :data="tableDataTramosExVelocidad"
-                row-key="id"
-                header-row-class-name="thead-dark"
-              >
-                <el-table-column
-                  v-for="column in tableColumnsTramosExVelocidad"
-                  :key="column.label"
-                  v-bind="column"
-                >
+              <el-table :data="tableDataTramosExVelocidad" row-key="id" header-row-class-name="thead-dark">
+                <el-table-column v-for="column in tableColumnsTramosExVelocidad" :key="column.label" v-bind="column">
                 </el-table-column>
 
-                <el-table-column
-                  label="Estado"
-                  min-width="150px"
-                  prop="estado"
-                  sortable
-                >
+                <el-table-column label="Estado" min-width="150px" prop="estado" sortable>
                   <template v-slot="{ row }">
                     <badge class="badge-dot mr-4" type="">
-                      <i
-                        :class="`bg-${row.estado == 0 ? 'danger' : 'success'}`"
-                      ></i>
+                      <i :class="`bg-${row.estado == 0 ? 'danger' : 'success'}`"></i>
                       <span class="status">{{
-                        row.estado == 0 ? "Inactivo" : "Activo"
+                          row.estado == 0 ? "Inactivo" : "Activo"
                       }}</span>
                     </badge>
                   </template>
                 </el-table-column>
 
-                <el-table-column
-                  min-width="180px"
-                  align="right"
-                  label="Actions"
-                >
+                <el-table-column min-width="180px" align="right" label="Actions">
                   <div slot-scope="{ $index, row }" class="d-flex">
-                    <base-button
-                      @click.native="handleViewMapaExVelocidad($index, row)"
-                      class="edit"
-                      type="default"
-                      size="sm"
-                      icon
-                    >
+                    <base-button @click.native="handleViewMapaExVelocidad($index, row)" class="edit" type="default"
+                      size="sm" icon>
                       <i class="text-white ni ni-world"></i>
                     </base-button>
-                    <base-button
-                      @click.native="handleEdit($index, row)"
-                      class="edit"
-                      type="success"
-                      size="sm"
-                      icon
-                    >
-                      <i class="text-white ni ni-ruler-pencil"></i>
-                    </base-button>
-                    <base-button
-                      @click.native="handleDelete($index, row)"
-                      class="remove btn-link"
-                      type="danger"
-                      size="sm"
-                      icon
-                    >
+                    <base-button @click.native="handleDelete($index, row)" class="remove btn-link" type="danger"
+                      size="sm" icon>
                       <i class="text-white ni ni-fat-remove"></i>
                     </base-button>
                   </div>
                 </el-table-column>
               </el-table>
             </div>
-            <div
-              slot="footer"
-              class="
+            <div slot="footer" class="
                 col-12
                 d-flex
                 justify-content-center justify-content-sm-between
                 flex-wrap
-              "
-            ></div>
+              "></div>
           </card>
         </div>
       </div>
@@ -93,38 +48,44 @@
 
     <!--Form modal-->
     <modal :show.sync="modalTramosExVelocidad" size="xl" body-classes="p-0">
-      <card
-        type="secondary"
-        header-classes="bg-transparent pb-5"
-        class="border-0 mb-0"
-      >
-        <GmapMap
-          map-type-id="roadmap"
-          class="mapaTramas"
-          :center="oCenter"
-          :zoom="oZoom"
-          :options="{
-            zoomControl: false,
-            scaleControl: false,
-            mapTypeControl: false,
-            streetViewControl: false,
-            rotateControl: false,
-            fullscreenControl: false,
-            disableDefaultUi: true,
-          }"
-        >
-          <GmapPolygon
-            :options="{
-              strokeColor: '#F71313',
-              fillColor: '#F7131380',
-              strokeOpacity: 1.0,
-              strokeWeight: 2,
-            }"
-            :editable="true"
-            :strokeOpacity="0.5"
-            :strokeWeight="1"
-            :paths="mTrazadoTramaExVelocidad"
-          />
+      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
+        <GmapMap map-type-id="roadmap" class="mapaTramas" :center="oCenter" :zoom="oZoom" :options="{
+          zoomControl: false,
+          scaleControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+          rotateControl: false,
+          fullscreenControl: false,
+          disableDefaultUi: true,
+        }">
+          <GmapPolygon :options="{
+            strokeColor: '#F71313',
+            fillColor: '#F7131380',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+          }" :editable="true" :strokeOpacity="0.5" :strokeWeight="1" :paths="mTrazadoTramaExVelocidad" />
+
+          <GmapPolygon v-for="control in mListControlesMonitoreoAux" :key="control.CodiCtrl" :options="{
+            strokeColor: '#172b4d',
+            fillColor: '#172b4d80',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+          }" :strokeOpacity="0.5" :strokeWeight="1" :paths="control.calculator.coordinates" />
+
+          <GmapMarker v-for="(control, index) in mListControlesMonitoreoAux" :key="control.DescCtrl + index" :position="{
+            lat: parseFloat(control.Lati1Ctrl),
+            lng: parseFloat(control.Long1Ctrl),
+          }" :optimized="true" icon="static/img/control/control.png" :options="{
+  label: {
+    text: control.DescCtrl,
+    color: '#172b4d',
+    className: 'paddingLabelControl',
+  },
+}" />
+
+
+
+
         </GmapMap>
 
         <!--<div class="botonesMapaTramas">
@@ -235,10 +196,10 @@ export default {
     },
     async readTrazadoTramaExVelocidad(tramo) {
       var body = {
-          token: this.token,
-          tramo: tramo,
-        }
-      
+        token: this.token,
+        tramo: tramo,
+      }
+
       var datos = await this.$axios.post(
         process.env.baseUrl + "/readTrazadoTramosExVelocidad",
         body
@@ -246,14 +207,13 @@ export default {
       console.log(datos.data)
       var mList = []
 
-      for(var i = 0;i<datos.data.datos.length;i++)
-      {
-        var obj = {lat:datos.data.datos[i].latitud,lng:datos.data.datos[i].longitud}
-        if(i==0){
+      for (var i = 0; i < datos.data.datos.length; i++) {
+        var obj = { lat: datos.data.datos[i].latitud, lng: datos.data.datos[i].longitud }
+        if (i == 0) {
           this.oCenter = obj
           this.oZoom = 16
         }
-        mList.push(obj)  
+        mList.push(obj)
       }
       console.log(mList)
       this.mTrazadoTramaExVelocidad = mList

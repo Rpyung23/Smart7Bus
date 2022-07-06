@@ -83,7 +83,8 @@
             icon: 'ni ni-ungroup text-orange',
           }"
         >
-          <sidebar-item :link="{ name: 'Recorrido', path: '/pricing' }" />
+          <sidebar-item :link="{ name: 'Recorrido', path: '/rdistancia' }" />
+          <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" />
           <sidebar-item
             :link="{ name: 'Indicador Incumplimiento', path: '/login' }"
           />

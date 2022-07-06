@@ -167,6 +167,7 @@ export default {
             if (result.isConfirmed) 
             {
               this.$cookies.set("empresa",this.empresa)
+              this.$cookies.set("nameEmpresa",this.sub_empresa_texto)
               this.$cookies.set("token",obj.token)
               this.$cookies.set("namesUsuario",obj.names)
               this.$cookies.set("logo",this.logo_empresa)

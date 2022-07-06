@@ -11,40 +11,7 @@
                 body-classes="px-0 pb-1"
                 footer-classes="pb-2"
               >
-                <div>
-                  <div
-                    class="
-                      col-12
-                      d-flex
-                      justify-content-center justify-content-sm-between
-                      flex-wrap
-                    "
-                  >
-                    <el-select
-                      class="select-primary pagination-select"
-                      v-model="pagination.perPage"
-                      placeholder="Per page"
-                    >
-                      <el-option
-                        class="select-primary"
-                        v-for="item in pagination.perPageOptions"
-                        :key="item"
-                        :label="item"
-                        :value="item"
-                      >
-                      </el-option>
-                    </el-select>
-
-                    <div>
-                      <base-input
-                        v-model="searchQuery"
-                        prepend-icon="fas fa-search"
-                        placeholder="Buscando..."
-                      >
-                      </base-input>
-                    </div>
-                  </div>
-                  <el-table
+              <el-table
                     :data="tableData"
                     row-key="id"
                     header-row-class-name="thead-dark"
@@ -97,33 +64,6 @@
                       </div>
                     </el-table-column>
                   </el-table>
-                </div>
-                <div
-                  slot="footer"
-                  class="
-                    col-12
-                    d-flex
-                    justify-content-center justify-content-sm-between
-                    flex-wrap
-                  "
-                >
-                  <div class="">
-                    <p class="card-category">
-                      Showing {{ from + 1 }} to {{ to }} of {{ total }} entries
-
-                      <span v-if="selectedRows.length">
-                        &nbsp; &nbsp; {{ selectedRows.length }} rows selected
-                      </span>
-                    </p>
-                  </div>
-                  <base-pagination
-                    class="pagination-no-border"
-                    v-model="pagination.currentPage"
-                    :per-page="pagination.perPage"
-                    :total="total"
-                  >
-                  </base-pagination>
-                </div>
               </card>
             </tab-pane>
             <tab-pane title="Frecuencias"></tab-pane>

@@ -19,24 +19,6 @@
                 footer-classes="pb-2"
               >
                 <div>
-                  <div
-                    class="
-                      col-12
-                      d-flex
-                      justify-content-center justify-content-sm-between
-                      flex-wrap
-                    "
-                  >
-                    <div>
-                      <base-input
-                        v-model="searchQuery"
-                        prepend-icon="fas fa-search"
-                        placeholder="Buscando..."
-                      >
-                      </base-input>
-                    </div>
-                  </div>
-                  <br>
                   <el-table
                     v-loading="loadingUnidadesFlotaVehicular"
                     element-loading-text="Cargando..."
@@ -121,12 +103,6 @@
                       </div>
                     </el-table-column>
                   </el-table>
-                </div>
-                <div class="card-footer py-4 d-flex justify-content-end">
-                  <base-pagination
-                    v-model="currentPageUnidadesFlotaVehicular"
-                    :total="50"
-                  ></base-pagination>
                 </div>
               </card>
             </tab-pane>
@@ -235,24 +211,7 @@
                 footer-classes="pb-2"
               >
                 <div>
-                  <div
-                    class="
-                      col-12
-                      d-flex
-                      justify-content-center justify-content-sm-between
-                      flex-wrap
-                    "
-                  >
-                    <div>
-                      <base-input
-                        v-model="searchQuery"
-                        prepend-icon="fas fa-search"
-                        placeholder="Buscando..."
-                      >
-                      </base-input>
-                    </div>
-                  </div>
-                  <br>
+
                   <el-table
                     v-loading="loadingPropietariosFlotaVehicular"
                     element-loading-text="Cargando..."
