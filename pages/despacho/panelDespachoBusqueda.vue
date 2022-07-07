@@ -185,7 +185,7 @@
       marker.HoraProgSali_d +
       ' MARC : ' +
       marker.HoraMarcSali_d,
-    color: '#008000',
+    color: '#055eb1',
     className: 'paddingLabelControlMarc',
   },
 }" />
@@ -524,7 +524,7 @@ export default {
           obj.icono = {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
             fillColor:
-              (obj.HoraMarcSali_d != null && obj.HoraProgSali_d != null) ? "green" :
+              (obj.HoraMarcSali_d != null && obj.HoraProgSali_d != null) ? "#055eb1" :
                 obj.EvenExceVeloHistEven == 1
                   ? "yellow"
                   : obj.OutRoutHistEven == 1
@@ -732,14 +732,14 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Adelante : " + salida.adelantoTime, {
+      page.drawText("Adelanto : " + (salida.adelantoTime == null ? '00:00:00' :  salida.adelantoTime), {
         x: 20,
         y: height - (heightAux + 3) * fontSize,
         size: 8.5,
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Atrasos : " + salida.atrasoTime, {
+      page.drawText("Atrasos : " + (salida.atrasoTime == null ? '00:00:00' :  salida.atrasoTime), {
         x: 20,
         y: height - (heightAux + 4) * fontSize,
         size: 8.5,
@@ -792,7 +792,7 @@ export default {
 
 .paddingLabelControlMarc {
   margin-top: 2.5rem;
-  border-color: #008000;
+  border-color: #055eb1;
   border-style: solid;
   border-width: 1px;
   background-color: white;

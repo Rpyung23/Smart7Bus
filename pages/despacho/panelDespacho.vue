@@ -7,13 +7,9 @@
         footer-classes="pb-2">
 
         <div class="cardTextoRPagosVehiculoProduccion">
-          <base-button icon type="primary" @click="showReporteLlegadaSAlidaSalida()">
-            <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-            <span class="btn-inner--text">Salida</span>
-          </base-button>
           <base-button icon type="primary" @click="showReporteLlegadaSAlida()">
             <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-            <span class="btn-inner--text">Llegada</span>
+            <span class="btn-inner--text">Tarjeta</span>
           </base-button>
 
           <base-button icon type="default">
@@ -142,7 +138,7 @@ import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPag
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
-import { getFecha_dd_mm_yyyy,FechaStringToHour  } from '../../util/fechas'
+import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import { text } from "d3";
 
@@ -186,21 +182,32 @@ export default {
       mSelectRutaFrecuenciaPanelDespacho: null,
       modalSalidasTarjetaPanelDespacho: false,
       baseURlPDFPanelDespachoTarjetaSalida: null,
-      selectedRowSalida : null
+      selectedRowSalida: null
     };
   },
   methods: {
-    myGridOnRowSelect: function (event) 
-    {
+    myGridOnRowSelect: function (event) {
       this.selectedRowSalida = event.args.row
+      this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(this.selectedRowSalida.idSali_m)
     },
-    showReporteLlegadaSAlida()
+    getHoraSaliProgSali_mF(id_salida) 
     {
-      this.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida,1)
+
+      for(var i=0;i<this.mListDespachosPanel.length;i++)
+      {
+        if(this.mListDespachosPanel[i].idSali_m == id_salida)
+        {
+          return this.mListDespachosPanel[i].HoraSaliProgSali_mF
+        }
+      }
+
+      return '1998-06-06 11:00:00'
     },
-    showReporteLlegadaSAlidaSalida()
-    {
-      this.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida,0)
+    showReporteLlegadaSAlida() {
+      this.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida, 1)
+    },
+    showReporteLlegadaSAlidaSalida() {
+      this.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida, 0)
     },
     async readFrecuenciasSalidasPanel() {
       this.mListRutasFrecuencias = []
@@ -461,8 +468,7 @@ export default {
         this.optionsUnidadesSalidasPanelSalidas = [];
       }
     },
-    async readDetalleSalidaDPanelBusqueda(salida,bandera) 
-    {
+    async readDetalleSalidaDPanelBusqueda(salida, bandera) {
       //console.log(salida)
 
       this.modalSalidasTarjetaPanelDespacho = true
@@ -544,30 +550,29 @@ export default {
       for (var i = 0; i < datos.data.data.length; i++) {
 
         heightAux = heightAux + 1
-        if(bandera == 1){
+        if (bandera == 1) {
           if (datos.data.data[i].FaltSali_d > 0) {
-          sumFalt = sumFalt + datos.data.data[i].FaltSali_d
-        }
+            sumFalt = sumFalt + datos.data.data[i].FaltSali_d
+          }
 
-        if (datos.data.data[i].isCtrlRefeSali_d == 0) {
-          var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
-          penFalt = penFalt + pen
-        }
+          if (datos.data.data[i].isCtrlRefeSali_d == 0) {
+            var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
+            penFalt = penFalt + pen
+          }
         }
 
         var space = "                       "
         /**datos.data.data[i].DescCtrlSali_d.substring(0, 9)**/
         var texto = ''
-        if(bandera == 1)
-        {
+        if (bandera == 1) {
           texto = space + "  " + datos.data.data[i].HoraProgSali_d.substring(0, 5) + "   "
-          + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '              ' : datos.data.data[i].HoraMarcSali_d) + "    " + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '    ' : datos.data.data[i].FaltSali_d) + "        "
-          + (datos.data.data[i].isCtrlRefeSali_d == 1 ? "REF" : datos.data.data[i].PenaCtrlSali_d == '0.00' ? '      ' : datos.data.data[i].PenaCtrlSali_d)
+            + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '              ' : datos.data.data[i].HoraMarcSali_d) + "    " + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '    ' : datos.data.data[i].FaltSali_d) + "        "
+            + (datos.data.data[i].isCtrlRefeSali_d == 1 ? "REF" : datos.data.data[i].PenaCtrlSali_d == '0.00' ? '      ' : datos.data.data[i].PenaCtrlSali_d)
 
-        }else{
+        } else {
           texto = space + "  " + datos.data.data[i].HoraProgSali_d.substring(0, 5)
         }
-         
+
         page.drawText(texto, {
           x: 20,
           y: height - heightAux * 9,

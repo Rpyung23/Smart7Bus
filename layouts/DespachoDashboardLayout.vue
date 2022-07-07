@@ -3,30 +3,33 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-        <sidebar-item
-          :link="{
-            name: 'Despacho',
-            icon: 'ni ni-calendar-grid-58 text-success',
-            path: './panelDespacho',
-          }"
-        >
+        <sidebar-item :link="{
+          name: 'Despacho',
+          icon: 'ni ni-calendar-grid-58 text-success',
+          path: './panelDespacho',
+        }">
         </sidebar-item>
 
-        <sidebar-item
-          :link="{
-            name: 'Despacho Busqueda',
-            icon: 'ni ni-collection text-primary',
-            path: './panelDespachoBusqueda',
-          }"
-        >
+        <sidebar-item :link="{
+          name: 'Despacho Busqueda',
+          icon: 'ni ni-collection text-primary',
+          path: './panelDespachoBusqueda',
+        }">
         </sidebar-item>
+
+
+        <sidebar-item :link="{
+          name: 'Reportes',
+          icon: 'ni ni-ungroup text-blank',
+        }">
+          <sidebar-item :link="{ name: 'R. Salidas', path: './rSalidas' }" />
+        </sidebar-item>
+
 
       </template>
     </side-bar>
     <div class="main-content">
-      <dashboard-navbar
-        :type="$route.name === 'alternative' ? 'light' : 'default'"
-      ></dashboard-navbar>
+      <dashboard-navbar :type="$route.name === 'alternative' ? 'light' : 'default'"></dashboard-navbar>
 
       <div @click="$sidebar.displaySidebar(false)">
         <nuxt></nuxt>
