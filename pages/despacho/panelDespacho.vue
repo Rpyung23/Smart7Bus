@@ -30,6 +30,28 @@
             <span class="btn-inner--text">Chofer</span>
           </base-button>
         </div>
+
+        <div class="containerTiposDespachos">
+
+
+          <el-radio-group v-model="radioTipoDespacho">
+
+            <div class="table1" style="height: 20px;width: 100%;">
+              <el-radio :label="3">Salida Normal.</el-radio>
+              <el-radio :label="9">Generar Tarjeta</el-radio>
+            </div>
+            <div class="table2" style="height: 20px;width: 100%;">
+              <el-radio :label="6">Salida Diferida</el-radio>
+              <el-radio :label="7">Salida de Apoyo</el-radio>
+            </div>
+
+
+
+          </el-radio-group>
+        </div>
+
+
+
       </card>
 
       <card class="no-border-card col" style="margin-bottom: 0.5rem"
@@ -129,7 +151,10 @@
   </div>
 </template>
 <script>
-import { Table, TableColumn, Select, Option, Notification, DatePicker, Button, Dropdown } from "element-ui";
+import {
+  Table, TableColumn, Select, Option, Notification,
+  DatePicker, RadioButton, RadioGroup, Radio, Button, Dropdown
+} from "element-ui";
 import JqxGrid from "jqwidgets-scripts/jqwidgets-vue/vue_jqxgrid.vue";
 import JqxMenu from "jqwidgets-scripts/jqwidgets-vue/vue_jqxmenu.vue";
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -140,7 +165,6 @@ import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-import { text } from "d3";
 
 export default {
   mixins: [clientPaginationMixin],
@@ -156,6 +180,9 @@ export default {
     [Option.name]: Option,
     [Table.name]: Table,
     [Button.name]: Button,
+    [RadioButton.name]: RadioButton,
+    [RadioGroup.name]: RadioGroup,
+    [Radio.name]: Radio,
     [DatePicker.name]: DatePicker,
     [TableColumn.name]: TableColumn,
     [Notification.name]: Notification,
@@ -182,7 +209,8 @@ export default {
       mSelectRutaFrecuenciaPanelDespacho: null,
       modalSalidasTarjetaPanelDespacho: false,
       baseURlPDFPanelDespachoTarjetaSalida: null,
-      selectedRowSalida: null
+      selectedRowSalida: null,
+      radioTipoDespacho: 3
     };
   },
   methods: {
@@ -190,13 +218,10 @@ export default {
       this.selectedRowSalida = event.args.row
       this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(this.selectedRowSalida.idSali_m)
     },
-    getHoraSaliProgSali_mF(id_salida) 
-    {
+    getHoraSaliProgSali_mF(id_salida) {
 
-      for(var i=0;i<this.mListDespachosPanel.length;i++)
-      {
-        if(this.mListDespachosPanel[i].idSali_m == id_salida)
-        {
+      for (var i = 0; i < this.mListDespachosPanel.length; i++) {
+        if (this.mListDespachosPanel[i].idSali_m == id_salida) {
           return this.mListDespachosPanel[i].HoraSaliProgSali_mF
         }
       }
@@ -658,6 +683,12 @@ export default {
 };
 </script>
 <style>
+.containerTiposDespachos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
 }
