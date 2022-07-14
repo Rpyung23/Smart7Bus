@@ -11,8 +11,9 @@
           <div class="cardTextoRPagosVehiculoProduccion">
             <el-select
               v-model="mSelectItemOperadorProduccion"
-              style="margin-right: 0.5rem"
-              collapse-tags
+              style="margin-right: 0.5rem;width:22rem;"
+              multiple
+    collapse-tags
               placeholder="Operador"
             >
               <el-option
@@ -116,19 +117,20 @@
               element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading"
               :data="tableDatosCobrosOperadorProduccion"
+              :height="tableDatosCobrosOperadorProduccion.length > 0 ? 455 : 150" 
               row-key="id"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
               :row-class-name="tableRowClassCobrosOperadorProduccion"
             >
-              <el-table-column prop="id" label="Recibo N°" minWidth="110">
+              <el-table-column prop="numero_cobro" label="Recibo N°" minWidth="110">
               </el-table-column>
 
-              <el-table-column prop="unidad" label="Unidad" minWidth="110">
-              </el-table-column>
+              <!--<el-table-column prop="unidad" label="Unidad" minWidth="110">
+              </el-table-column>-->
 
               <el-table-column
-                prop="fecha"
+                prop="fecha_cobro"
                 label="Fecha Cobro"
                 minWidth="180"
                 sortable="true"
@@ -143,7 +145,7 @@
               >
               </el-table-column>
 
-              <el-table-column prop="monto" label="Monto Pagado" minWidth="190">
+              <el-table-column prop="total_cobro" label="Monto Cobrado" minWidth="190">
               </el-table-column>
 
               <el-table-column
@@ -208,7 +210,7 @@ export default {
       tableDatosCobrosOperadorProduccion: [],
       radioEstadoRPagosVehiculo: "*",
       mListCobradoresAllProduccion: [],
-      mSelectItemOperadorProduccion: "*",
+      mSelectItemOperadorProduccion: [],
       token: this.$cookies.get("token"),
       fechaInicialCobrosOperadorProduccion: "",
       fechaFinalCobrosOperadorProduccion: "",
@@ -219,11 +221,10 @@ export default {
       FileNameExcelRCobrosOperadorProduccion:"",
       headerExcelRCobrosOperadorProduccion:[],
       json_fields_ExcelRCobrosOperadorProduccion: {
-        "Recibo N°": "id",
-        "Unidad": "unidad",
-        "Fecha Cobro": "fecha",
+        "Recibo N°": "numero_cobro",
+        "Fecha Cobro": "fecha_cobro",
         "Atención": "NombApellUsua",
-        "Monto Pagado": "monto",
+        "Monto Cobrado": "total_cobro",
         "Estado": "estado",
       },
     };
@@ -259,12 +260,8 @@ export default {
           token: this.token,
         }
       );
-      this.mListCobradoresAllProduccion.push({
-        CodiUsua: "*",
-        NombApellUsua: "Todos los Operadores",
-      });
       if (datos.data.status_code == 200) {
-        this.mListCobradoresAllProduccion.push(...datos.data.datos);
+        this.mListCobradoresAllProduccion.push(...datos.data.data);
       }
     },
     async readAllCobrosRealizadosOperadorProduccion() 
@@ -288,12 +285,12 @@ export default {
           this.tableDatosCobrosOperadorProduccion = [];
           var body = {
             token: this.token,
-            operador: this.mSelectItemOperadorProduccion,
-            inicio: this.fechaInicialCobrosOperadorProduccion,
-            final: this.fechaFinalCobrosOperadorProduccion,
+            operador: this.mSelectItemOperadorProduccion.length <= 0 ? "*" : this.mSelectItemOperadorProduccion,
+            fechaI: this.fechaInicialCobrosOperadorProduccion,
+            fechaF: this.fechaFinalCobrosOperadorProduccion,
           };
           var datos = await this.$axios.post(
-            process.env.baseUrl + "/cobros_operador_produccion",
+            process.env.baseUrl + "/ProduccionCobrosPorOperador",
             body
           );
 
@@ -309,11 +306,7 @@ export default {
             this.tableDatosCobrosOperadorProduccion.push(...datos.data.datos);
 
             for (var i = 0; i < datos.data.datos.length; i++) {
-              if (datos.data.datos[i].estado == 1) {
-                pagado = pagado + parseFloat(datos.data.datos[i].monto);
-              } else {
-                anulado = anulado + parseFloat(datos.data.datos[i].monto);
-              }
+              pagado = pagado + parseFloat(datos.data.datos[i].total_cobro);
             }
 
             this.mPagadosOperadorProduccion = Number(pagado).toFixed(2);

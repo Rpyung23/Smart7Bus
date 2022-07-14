@@ -2,25 +2,26 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-autocomplete
-              class="inline-input"
-              v-model="itemUnidadProduccionRPagoVehiculorecibo"
-              :fetch-suggestions="
+
+
+            <!--<el-autocomplete class="inline-input" v-model="itemUnidadProduccionRPagoVehiculorecibo" multiple
+              collapse-tags :fetch-suggestions="
                 querySearchUnidadProduccionRPagoVehiculoRecibo
-              "
-              style="margin-right: 0.5rem"
-              placeholder="Unidad"
-              prefix-icon="ni ni-bus-front-12"
-              :trigger-on-focus="false"
-              @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"
-            ></el-autocomplete>
+              " style="margin-right: 0.5rem" placeholder="Unidad" prefix-icon="ni ni-bus-front-12"
+              :trigger-on-focus="false" @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"></el-autocomplete>-->
+
+            <el-select v-model="itemUnidadProduccionRPagoVehiculorecibo" multiple filterable remote 
+              placeholder="Unidades" prefix-icon="ni ni-bus-front-12"  style="margin-right: 0.5rem"
+              :remote-method="remoteMethodUnidadesRecibosProduccion" 
+              :loading="loadingTableUnidadesRecibosVehiculoProduccion">
+              <el-option v-for="item in optionsUnidadesProduccionPagosVehiculo" :key="item.CodiVehi" :label="item.CodiVehi" :value="item.CodiVehi">
+              </el-option>
+            </el-select>
+
 
             <base-input
               addon-left-icon="ni ni-calendar-grid-58"
@@ -77,7 +78,7 @@
           footer-classes="pb-2"
         >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
-            <el-radio v-model="radioEstadoRPagosVehiculoRecibo" label="*"
+            <!--<el-radio v-model="radioEstadoRPagosVehiculoRecibo" label="*"
               >TODOS</el-radio
             >
             <el-radio v-model="radioEstadoRPagosVehiculoRecibo" label="2"
@@ -85,7 +86,7 @@
             >
             <el-radio v-model="radioEstadoRPagosVehiculoRecibo" label="1"
               >ANULADOS</el-radio
-            >
+            >-->
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
@@ -116,17 +117,17 @@
               header-row-class-name="thead-dark"
               :row-class-name="tableRowClassNameRPagosVehiculoProduccionRecibo"
             >
-              <el-table-column prop="id" label="N° Recibo" minWidth="100">
+              <el-table-column prop="numero_cobro" label="N° Recibo" minWidth="100">
               </el-table-column>
 
               <el-table-column
-                prop="fecha"
-                label="Fecha Pagado"
+                prop="fecha_cobro"
+                label="Fecha de Cobro"
                 minWidth="170"
               >
               </el-table-column>
 
-              <el-table-column prop="unidad" label="Unidad" minWidth="100">
+              <el-table-column prop="Unidad" label="Unidad" minWidth="100">
               </el-table-column>
               <el-table-column
                 prop="NombApellUsua"
@@ -135,10 +136,10 @@
               >
               </el-table-column>
 
-              <el-table-column prop="monto" label="Total ($)" minWidth="100">
+              <el-table-column prop="DeudaTotal" label="Total ($)" minWidth="100">
               </el-table-column>
 
-              <el-table-column
+              <!--<el-table-column
                 prop="estado"
                 label="Estado"
                 minWidth="120"
@@ -147,7 +148,7 @@
               <template slot-scope="scope">
                 {{scope.row.estado == 1 ? "PAGADO" : "ANULADO"}}
               </template>
-              </el-table-column>
+              </el-table-column>-->
 
               <el-table-column label="Acciones" width="140">
                 <template slot-scope="scope">
@@ -272,34 +273,32 @@ export default {
       itemModalIdReciboPagoVehiculoProduccion: "",
       itemModalUnidadReciboPagoVehiculoProduccion: "",
       itemModalTotalReciboPagoVehiculoProduccion: "",
+      optionsUnidadesProduccionPagosVehiculo:[],
+      loadingTableUnidadesRecibosVehiculoProduccion:false
     };
   },
   methods: {
-    querySearchUnidadProduccionRPagoVehiculoRecibo(queryString, cb) {
-      var results = queryString
-        ? this.mListaUnidadesPagosVehiculoProduccionRecibo.filter(
-            this.createFilterUnidadProduccionRPagoVehiculoRecibo(queryString)
-          )
-        : this.mListaUnidadesPagosVehiculoProduccionRecibo;
-      // call callback function to return suggestions
-      cb(results);
-    },
-    createFilterUnidadProduccionRPagoVehiculoRecibo(queryString) {
-      return (unidad) => {
-        return (
-          unidad.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        );
-      };
-    },
-    handleSelectUnidadProduccionRPagoVehiculoRecibo(item) {
-      console.log(item);
-    },
-    tableRowClassNameRPagosVehiculoProduccionRecibo({ row, rowIndex }) 
-    {
+        remoteMethodUnidadesRecibosProduccion(query) {
+      if (query !== "") {
+        this.loadingTableUnidadesRecibosVehiculoProduccion = true;
+        setTimeout(() => {
+          this.loadingTableUnidadesRecibosVehiculoProduccion = false;
+          this.optionsUnidadesProduccionPagosVehiculo =
+            this.mListaUnidadesPagosVehiculoProduccionRecibo.filter((item) => {
+              return (
+                item.CodiVehi.toLowerCase().indexOf(query.toLowerCase()) > -1
+              );
+            });
+        }, 200);
+      } else {
+        this.optionsUnidadesProduccionPagosVehiculo = [];
+      }
+      },
+    tableRowClassNameRPagosVehiculoProduccionRecibo({ row, rowIndex }) {
       if (row.estado == 0) {
         //row.estado = "ANULADO";
         return "warning-row-panelControlProduccion";
-      } else if(row.estado == 1) {
+      } else if (row.estado == 1) {
         //row.estado = "PAGADO";
         return "success-row-panelControlProduccion";
       }
@@ -325,17 +324,16 @@ export default {
 
       console.log(datos.data);
 
-      if (datos.data.status_code == 200) {
-        for (var i = 0; i < datos.data.data.length; i++) {
-          this.mListaUnidadesPagosVehiculoProduccionRecibo[i] =
-            datos.data.data[i];
-          this.mListaUnidadesPagosVehiculoProduccionRecibo[i].value =
-            datos.data.data[i].CodiVehi;
+      if (datos.data.status_code == 200) 
+      {
+                for (var i = 0; i < datos.data.data.length; i++) {
+          var obj = datos.data.data[i];
+          obj.value = obj.CodiVehi;
+          this.mListaUnidadesPagosVehiculoProduccionRecibo.push(obj);
         }
       }
     },
-    async readAllRPagosVehiculoProduccionRecibos() 
-    {
+    async readAllRPagosVehiculoProduccionRecibos() {
       this.mPagadoRPagosVehiculoRecibo = "0.00"
       this.mAnuladoRPagosVehiculoRecibo = "0.00"
 
@@ -351,7 +349,7 @@ export default {
           this.tableDataRPagosVEhiculoProduccionRecibo = [];
           var body = {
             token: this.token,
-            unidad: this.itemUnidadProduccionRPagoVehiculorecibo == "" ? "*" : this.itemUnidadProduccionRPagoVehiculorecibo,
+            unidad: this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemUnidadProduccionRPagoVehiculorecibo,
             inicio: this.fechaInicialRPagosVehiculoProduccionRecibo,
             final: this.fechaFinalRPagosVehiculoProduccionRecibo,
             tipo: this.radioEstadoRPagosVehiculoRecibo,
@@ -374,20 +372,14 @@ export default {
             this.tableDataRPagosVEhiculoProduccionRecibo.push(
               ...datos.data.datos
             );
-          for(var i = 0;i<datos.data.datos.length;i++)
-          {
-            if(datos.data.datos[i].estado  == 1)
-            {
-              pagado = pagado + parseFloat(datos.data.datos[i].monto)
-            }else{
-              anulado = anulado + parseFloat(datos.data.datos[i].monto)
+            for (var i = 0; i < datos.data.datos.length; i++) {
+              pagado = pagado + parseFloat(datos.data.datos[i].DeudaTotal)
             }
-          }
-          
-          this.mPagadoRPagosVehiculoRecibo = Number(pagado).toFixed(2)
-          this.mAnuladoRPagosVehiculoRecibo = Number(anulado).toFixed(2)
 
-          this.loadingRPagosVehiculoRecibo = false;
+            this.mPagadoRPagosVehiculoRecibo = Number(pagado).toFixed(2)
+            this.mAnuladoRPagosVehiculoRecibo = Number(anulado).toFixed(2)
+
+            this.loadingRPagosVehiculoRecibo = false;
           } else if (datos.data.status_code == 300) {
             this.loadingRPagosVehiculoRecibo = false;
             Notification.info({
@@ -449,6 +441,7 @@ export default {
 .form-group {
   margin-bottom: 0rem;
 }
+
 .form-controlPersonal {
   display: block;
   width: 100%;
@@ -467,20 +460,25 @@ export default {
   box-shadow: 0 3px 2px rgba(233, 236, 239, 0.05);
   transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
+
 .el-loading-text {
   color: black !important;
 }
+
 .el-icon-loading {
   color: black !important;
 }
+
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
 }
+
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
   display: flex;
   justify-content: space-between;
 }
+
 .el-table .warning-row-panelControlProduccion {
   background: rgba(252, 143, 143, 0.692) !important;
 }
@@ -492,6 +490,7 @@ export default {
 .no-border-card .card-footer {
   border-top: 0;
 }
+
 .card-bodyRPagosVehiculoReciboProduccion {
   padding: 0rem !important;
   height: calc(100vh - 12rem);

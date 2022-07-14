@@ -3,101 +3,55 @@
     <base-header class="pb-6">
       <div class="row align-items-center py-4">
         <div class="col">
-          <tabs
-            tabNavClasses="nav-fill flex-column flex-sm-row"
-            :centered="true"
-          >
+          <tabs tabNavClasses="nav-fill flex-column flex-sm-row" :centered="true">
             <tab-pane>
               <div slot="title" @click="initUnidadesFlotaVEhicular()">
                 Unidades
               </div>
 
               <br />
-              <card
-                class="no-border-card"
-                body-classes="px-0 pb-1"
-                footer-classes="pb-2"
-              >
+              <card class="no-border-card" body-classes="px-0 pb-1" footer-classes="pb-2">
                 <div>
-                  <el-table
-                    v-loading="loadingUnidadesFlotaVehicular"
-                    element-loading-text="Cargando..."
-                    element-loading-spinner="el-icon-loading"
-                    element-loading-background="rgba(0, 0, 0, 0.8)"
-                    class="table-responsive table-flush"
-                    :data="mListUnidadesFlotaVehicular"
-                    header-row-class-name="thead-dark"
-                  >
+                  <el-table v-loading="loadingUnidadesFlotaVehicular" element-loading-text="Cargando..."
+                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    class="table-responsive table-flush" :data="mListUnidadesFlotaVehicular"
+                    header-row-class-name="thead-dark">
                     <div slot="empty"></div>
-                    <el-table-column
-                      v-for="column in tableColumnsUnidadesFlotaVehicular"
-                      :key="column.label"
-                      v-bind="column"
-                    >
+                    <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label"
+                      v-bind="column">
                     </el-table-column>
 
-                    <el-table-column
-                      label="Estado"
-                      min-width="150px"
-                      prop="idEstaVehi"
-                      sortable
-                    >
+                    <el-table-column label="Estado" min-width="150px" prop="idEstaVehi" sortable>
                       <template v-slot="{ row }">
                         <badge class="badge-dot mr-4" type="">
-                          <i
-                            :class="`bg-${
-                              row.idEstaVehi == 1 ? 'success' : 'danger'
-                            }`"
-                          ></i>
+                          <i :class="`bg-${row.idEstaVehi == 1 ? 'success' : 'danger'
+                          }`"></i>
                           <span class="status">{{
-                            row.idEstaVehi == 1 ? "ACTIVO" : "INACTIVO"
+                              row.idEstaVehi == 1 ? "ACTIVO" : "INACTIVO"
                           }}</span>
                         </badge>
                       </template>
                     </el-table-column>
 
-                    <el-table-column
-                      label="Informate"
-                      min-width="170px"
-                      prop="InfoCtrlVehi"
-                      sortable
-                    >
+                    <el-table-column label="Informate" min-width="170px" prop="InfoCtrlVehi" sortable>
                       <template v-slot="{ row }">
                         <badge class="badge-dot mr-4" type="">
-                          <i
-                            :class="`bg-${
-                              row.InfoCtrlVehi == 1 ? 'success' : 'danger'
-                            }`"
-                          ></i>
+                          <i :class="`bg-${row.InfoCtrlVehi == 1 ? 'success' : 'danger'
+                          }`"></i>
                           <span class="status">{{
-                            row.InfoCtrlVehi == 1 ? "SI" : "NO"
+                              row.InfoCtrlVehi == 1 ? "SI" : "NO"
                           }}</span>
                         </badge>
                       </template>
                     </el-table-column>
 
-                    <el-table-column
-                      min-width="180px"
-                      align="right"
-                      label="Actions"
-                    >
+                    <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button
-                          @click.native="handleEdit($index, row)"
-                          class="edit"
-                          type="success"
-                          size="sm"
-                          icon
-                        >
+                        <base-button @click.native="handleEdit($index, row)" class="edit" type="success" size="sm" icon>
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button
-                          @click.native="handleDelete($index, row)"
-                          class="remove btn-link"
-                          type="danger"
-                          size="sm"
-                          icon
-                        >
+                        <base-button @click.native="handleDelete($index, row)" class="remove btn-link" type="danger"
+                          size="sm" icon>
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
                       </div>
@@ -109,89 +63,48 @@
             <tab-pane>
               <div slot="title" @click="initGruposFlotaVehicular()">Grupos</div>
               <br />
-              <card
-                class="no-border-card"
-                body-classes="px-0 pb-1"
-                footer-classes="pb-2"
-              >
+              <card class="no-border-card" body-classes="px-0 pb-1" footer-classes="pb-2">
                 <div>
-                  <div
-                    class="
+                  <div class="
                       col-12
                       d-flex
                       justify-content-center justify-content-sm-between
                       flex-wrap
-                    "
-                  >
+                    ">
                     <div>
-                      <base-input
-                        v-model="searchQuery"
-                        prepend-icon="fas fa-search"
-                        placeholder="Buscando..."
-                      >
+                      <base-input v-model="searchQuery" prepend-icon="fas fa-search" placeholder="Buscando...">
                       </base-input>
                     </div>
                   </div>
                   <br>
-                  <el-table
-                    v-loading="loadingGruposFlotaVehicular"
-                    element-loading-text="Cargando..."
-                    element-loading-spinner="el-icon-loading"
-                    element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListGruposFlotaVehicular"
-                    header-row-class-name="thead-dark"
-                  >
+                  <el-table v-loading="loadingGruposFlotaVehicular" element-loading-text="Cargando..."
+                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    :data="mListGruposFlotaVehicular" header-row-class-name="thead-dark">
                     <div slot="empty"></div>
 
-                    <el-table-column
-                      v-for="column in tableColumnsGruposFlotaVehicular"
-                      :key="column.label"
-                      v-bind="column"
-                    >
+                    <el-table-column v-for="column in tableColumnsGruposFlotaVehicular" :key="column.label"
+                      v-bind="column">
                     </el-table-column>
 
-                    <el-table-column
-                      label="Estado"
-                      min-width="150px"
-                      prop="activo"
-                      sortable
-                    >
+                    <el-table-column label="Estado" min-width="150px" prop="activo" sortable>
                       <template v-slot="{ row }">
                         <badge class="badge-dot mr-4" type="">
-                          <i
-                            :class="`bg-${
-                              row.activo == 1 ? 'success' : 'danger'
-                            }`"
-                          ></i>
+                          <i :class="`bg-${row.activo == 1 ? 'success' : 'danger'
+                          }`"></i>
                           <span class="status">{{
-                            row.activo == 1 ? "ACTIVO" : "INACTIVO"
+                              row.activo == 1 ? "ACTIVO" : "INACTIVO"
                           }}</span>
                         </badge>
                       </template>
                     </el-table-column>
 
-                    <el-table-column
-                      min-width="180px"
-                      align="right"
-                      label="Actions"
-                    >
+                    <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button
-                          @click.native="handleEdit($index, row)"
-                          class="edit"
-                          type="success"
-                          size="sm"
-                          icon
-                        >
+                        <base-button @click.native="handleEdit($index, row)" class="edit" type="success" size="sm" icon>
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button
-                          @click.native="handleDelete($index, row)"
-                          class="remove btn-link"
-                          type="danger"
-                          size="sm"
-                          icon
-                        >
+                        <base-button @click.native="handleDelete($index, row)" class="remove btn-link" type="danger"
+                          size="sm" icon>
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
                       </div>
@@ -205,70 +118,35 @@
                 Propietarios
               </div>
               <br />
-              <card
-                class="no-border-card"
-                body-classes="px-0 pb-1"
-                footer-classes="pb-2"
-              >
+              <card class="no-border-card" body-classes="px-0 pb-1" footer-classes="pb-2">
                 <div>
 
-                  <el-table
-                    v-loading="loadingPropietariosFlotaVehicular"
-                    element-loading-text="Cargando..."
-                    element-loading-spinner="el-icon-loading"
-                    element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListPropietariosFlotaVehicular"
-                    header-row-class-name="thead-dark"
-                  >
+                  <el-table v-loading="loadingPropietariosFlotaVehicular" element-loading-text="Cargando..."
+                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    :data="mListPropietariosFlotaVehicular" header-row-class-name="thead-dark">
                     <div slot="empty"></div>
-                    <el-table-column
-                      v-for="column in tableColumnsPropietariosFlotaVehicular"
-                      :key="column.label"
-                      v-bind="column"
-                    >
+                    <el-table-column v-for="column in tableColumnsPropietariosFlotaVehicular" :key="column.label"
+                      v-bind="column">
                     </el-table-column>
-                    <el-table-column
-                      label="Estado"
-                      min-width="150px"
-                      prop="activo"
-                      sortable
-                    >
+                    <el-table-column label="Estado" min-width="150px" prop="activo" sortable>
                       <template v-slot="{ row }">
                         <badge class="badge-dot mr-4" type="">
-                          <i
-                            :class="`bg-${
-                              row.activo == 1 ? 'success' : 'danger'
-                            }`"
-                          ></i>
+                          <i :class="`bg-${row.activo == 1 ? 'success' : 'danger'
+                          }`"></i>
                           <span class="status">{{
-                            row.activo == 1 ? "ACTIVO" : "INACTIVO"
+                              row.activo == 1 ? "ACTIVO" : "INACTIVO"
                           }}</span>
                         </badge>
                       </template>
                     </el-table-column>
 
-                    <el-table-column
-                      min-width="180px"
-                      align="right"
-                      label="Actions"
-                    >
+                    <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button
-                          @click.native="handleEdit($index, row)"
-                          class="edit"
-                          type="success"
-                          size="sm"
-                          icon
-                        >
+                        <base-button @click.native="handleEdit($index, row)" class="edit" type="success" size="sm" icon>
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button
-                          @click.native="handleDelete($index, row)"
-                          class="remove btn-link"
-                          type="danger"
-                          size="sm"
-                          icon
-                        >
+                        <base-button @click.native="handleDelete($index, row)" class="remove btn-link" type="danger"
+                          size="sm" icon>
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
                       </div>
@@ -282,78 +160,28 @@
                 Usuarios Admin..
               </div>
               <br />
-              <card
-                class="no-border-card"
-                body-classes="px-0 pb-1"
-                footer-classes="pb-2"
-              >
+              <card class="no-border-card" body-classes="px-0 pb-1" footer-classes="pb-2">
                 <div>
-                  <div
-                    class="
-                      col-12
-                      d-flex
-                      justify-content-center justify-content-sm-between
-                      flex-wrap
-                    "
-                  >
-                    <div>
-                      <base-input
-                        v-model="searchQuery"
-                        prepend-icon="fas fa-search"
-                        placeholder="Buscando..."
-                      >
-                      </base-input>
-                    </div>
-                  </div>
-                  <br>
-                  <el-table
-                    v-loading="loadingAdministrativosFlotaVehicular"
-                    element-loading-text="Cargando..."
-                    element-loading-spinner="el-icon-loading"
-                    element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListAdministrativosFlotaVehicular"
-                    header-row-class-name="thead-dark"
-                  >
+                  <el-table v-loading="loadingAdministrativosFlotaVehicular" element-loading-text="Cargando..."
+                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    :data="mListAdministrativosFlotaVehicular" header-row-class-name="thead-dark">
                     <div slot="empty"></div>
-                    <el-table-column
-                      v-for="column in tableColumnsAdministrativosFlotaVehicular"
-                      :key="column.label"
-                      v-bind="column"
-                    >
+                    <el-table-column v-for="column in tableColumnsAdministrativosFlotaVehicular" :key="column.label"
+                      v-bind="column">
                     </el-table-column>
 
-                    <el-table-column
-                      min-width="180px"
-                      align="right"
-                      label="Actions"
-                    >
+                    <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button
-                          @click.native="handleEdit($index, row)"
-                          class="edit"
-                          type="success"
-                          size="sm"
-                          icon
-                        >
+                        <base-button @click.native="handleEdit($index, row)" class="edit" type="success" size="sm" icon>
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button
-                          @click.native="handleDelete($index, row)"
-                          class="remove btn-link"
-                          type="danger"
-                          size="sm"
-                          icon
-                        >
+                        <base-button @click.native="handleDelete($index, row)" class="remove btn-link" type="danger"
+                          size="sm" icon>
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
-                        
-                        <base-button
-                          @click.native="handleDelete($index, row)"
-                          class="remove btn-link"
-                          type="warning"
-                          size="sm"
-                          icon
-                        >
+
+                        <base-button @click.native="showModalPermisosFlotaVehicular($index, row)" class="remove btn-link" type="warning"
+                          size="sm" icon>
                           <i class="text-white ni ni-key-25"></i>
                         </base-button>
                       </div>
@@ -367,13 +195,41 @@
         </div>
       </div>
     </base-header>
+
+
+    <!--Classic modal-->
+    <modal :show.sync="modalPermisosUsuariosAdminFlotaVehicular">
+      <h6 slot="header" class="modal-title">Type your modal title</h6>
+
+      <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the
+        blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language
+        ocean.</p>
+      <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a
+        paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
+
+
+      <template slot="footer">
+        <base-button type="primary">Save changes</base-button>
+        <base-button type="link" class="ml-auto" @click="modalPermisosUsuariosAdminFlotaVehicular = false">Close</base-button>
+      </template>
+
+    </modal>
+
+
+
+
+
+
+
+
+
   </div>
 </template>
 <script>
 import { Table, TableColumn, Select, Option, Notification } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
-import { BasePagination } from "@/components/argon-core";
+import { Modal,BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
@@ -384,6 +240,7 @@ export default {
   layout: "DashboardLayout",
   components: {
     Tabs,
+    Modal,
     TabPane,
     BasePagination,
     RouteBreadCrumb,
@@ -396,11 +253,12 @@ export default {
   data() {
     return {
       token: this.$cookies.get("token"),
-      currentPageUnidadesFlotaVehicular:1,
+      currentPageUnidadesFlotaVehicular: 1,
       loadingUnidadesFlotaVehicular: false,
       loadingGruposFlotaVehicular: false,
       loadingPropietariosFlotaVehicular: false,
       loadingAdministrativosFlotaVehicular: false,
+      modalPermisosUsuariosAdminFlotaVehicular:false,
       tableColumnsUnidadesFlotaVehicular: [
         {
           prop: "CodiVehi",
@@ -632,10 +490,13 @@ export default {
       }
       this.loadingAdministrativosFlotaVehicular = false;
     },
-    handleLike(index, row) {},
-    handleEdit(index, row) {},
-    handleDelete(index, row) {},
-    deleteRow(row) {},
+    showModalPermisosFlotaVehicular(index,row){
+      this.modalPermisosUsuariosAdminFlotaVehicular =  this.modalPermisosUsuariosAdminFlotaVehicular ? false : true
+    },
+    handleLike(index, row) { },
+    handleEdit(index, row) { },
+    handleDelete(index, row) { },
+    deleteRow(row) { },
     selectionChange(selectedRows) {
       this.selectedRowsUnidadesFlotaVehicular = selectedRows;
     },

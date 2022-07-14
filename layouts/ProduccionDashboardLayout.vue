@@ -6,8 +6,17 @@
         <sidebar-item
           :link="{
             name: 'Tablero',
-            icon: 'ni ni-collection text-success',
+            icon: 'ni ni-collection text-default',
             path: './tablero',
+          }"
+        >
+        </sidebar-item>
+
+      <sidebar-item
+          :link="{
+            name: 'Tablero Cobros',
+            icon: 'ni ni-money-coins text-success',
+            path: './tableroCobros',
           }"
         >
         </sidebar-item>

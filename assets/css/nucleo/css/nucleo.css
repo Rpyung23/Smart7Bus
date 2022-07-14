@@ -571,6 +571,14 @@ License - nucleoapp.com/license/
 
 /* all icon font classes list here */
 /**********CSS INCORPPORADOS POR NELSON P YUNGA G************/
+
+.el-checkbox__inner{
+    border: 1px solid #909399 !important;
+}
+
+
+
+
 ::-webkit-scrollbar {
     display: none;
 }
