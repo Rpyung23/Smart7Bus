@@ -58,7 +58,7 @@
             <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="mListRSalidas" row-key="id"
               :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-              header-row-class-name="thead-dark" :height="mListRSalidas.length > 0 ? 900 : 150"
+              header-row-class-name="thead-dark" :height="mListRSalidas.length > 0 ? 480 : 150"
               >
               <el-table-column v-for="column in tableRSalidasDespachos" :key="column.label" v-bind="column">
               </el-table-column>
@@ -162,7 +162,7 @@ export default {
         {
           prop: "NumeVuelSali_m",
           label: "Vuelta",
-          minWidth: 120,
+          minWidth: 110,
         },
         {
           prop: "DescFrec",
@@ -172,7 +172,7 @@ export default {
         {
           prop: "atencion",
           label: "Atención",
-          minWidth: 160,
+          minWidth: 150,
         },
         {
           prop: "MontInfrUnidSali_m",
@@ -182,7 +182,7 @@ export default {
         {
           prop: "recaudo",
           label: "Recaudo ($)",
-          minWidth: 170
+          minWidth: 150
         },
       ],
       mListaSalidasPanelBusqueda: [],

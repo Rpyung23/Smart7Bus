@@ -93,7 +93,7 @@
             <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="mListaSalidasPanelBusqueda" row-key="id"
               class="tablePanelControlProduccion" :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-              header-row-class-name="thead-dark" :height="mListaSalidasPanelBusqueda.length > 0 ? 900 : 150"
+              header-row-class-name="thead-dark" :height="mListaSalidasPanelBusqueda.length > 0 ? 440 : 150"
               highlight-current-row @current-change="handleCurrentChangeSelectionFilaSalidaBusqueda">
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="130">
               </el-table-column>

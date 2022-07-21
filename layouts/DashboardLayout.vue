@@ -62,6 +62,7 @@
           <sidebar-item :link="{ name: 'Recorrido', path: '/rdistancia' }" />
           <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" />
           <sidebar-item :link="{ name: 'ANT', path: './rant' }" />
+          <sidebar-item :link="{ name: 'Controles - Tiempo', path: './rant' }" />
         </sidebar-item>
 
         <sidebar-item v-if="permisos == null || permisos.historial.active" :link="{

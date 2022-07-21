@@ -74,8 +74,8 @@
           </div>
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="card-bodyRCobrosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
+        <card id="cardTableroCobros" class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="cardTableroCobros card-bodyRCobrosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
           <div>
 
             <div class="row row-example">
@@ -163,7 +163,7 @@ import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPag
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
-
+import {convertSecondtoTimeString} from '../../util/fechas'
 export default {
   mixins: [clientPaginationMixin],
   layout: "ProduccionDashboardLayout",
@@ -474,10 +474,99 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Fecha Pago : " + this.initFechaActualTicket(), {
+
+      var atrasos_falta = 0
+      var adelantos_falta = 0
+      var atrasos_justificaciones = 0
+      var adelantos_justificaciones = 0
+      var rubros_falta = 0
+      var rubros_justificaciones = 0
+      var ex_velocidad_falta = 0
+      var ex_velocidad_justificaciones = 0
+      var tarjeta = 0
+
+      for(var i = 0;i<mLista.length;i++)
+      {
+          atrasos_falta = atrasos_falta + mLista[i].AtrasoFTiempo
+          adelantos_falta = adelantos_falta + mLista[i].AdelantoFTiempo
+          atrasos_justificaciones = atrasos_justificaciones + mLista[i].AtrasoJTiempo
+          adelantos_justificaciones = adelantos_justificaciones + mLista[i].AdelantoJTiempo
+          rubros_falta = rubros_falta + parseFloat(mLista[i].RubroFalta)
+          rubros_justificaciones = rubros_justificaciones + parseFloat(mLista[i].RubroJustificacion)
+          ex_velocidad_falta = ex_velocidad_falta + parseFloat(mLista[i].VelocidadFalta)
+          ex_velocidad_justificaciones = ex_velocidad_justificaciones + parseFloat(mLista[i].VelocidadJustificacion)
+          tarjeta = tarjeta + parseFloat(mLista[i].TarjetaDiaria)
+      }
+
+      page.drawText("Atrasos Falta : "+convertSecondtoTimeString(atrasos_falta), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
+        font: bold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Atrasos Justificados : "+convertSecondtoTimeString(atrasos_justificaciones), {
+        x: 20,
+        y: height - (heightAux++) * fontSize,
+        size: 7.5,
+        font: bold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Adelantos Falta : "+convertSecondtoTimeString(adelantos_falta), {
+        x: 20,
+        y: height - (heightAux++) * fontSize,
+        size: 7.5,
+        font: bold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Adelantos Justificados : "+convertSecondtoTimeString(adelantos_justificaciones), {
+        x: 20,
+        y: height - (heightAux++) * fontSize,
+        size: 7.5,
+        font: bold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Rubros : "+Number(rubros_falta).toFixed(2), {
+        x: 20,
+        y: height - (heightAux++) * fontSize,
+        size: 7.5,
+        font: bold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Rubros Justificados : "+Number(rubros_justificaciones).toFixed(2), {
+        x: 20,
+        y: height - (heightAux++) * fontSize,
+        size: 7.5,
+        font: bold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Ex. Velocidad : "+Number(ex_velocidad_falta).toFixed(2), {
+        x: 20,
+        y: height - (heightAux++) * fontSize,
+        size: 7.5,
+        font: bold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Ex. Velocidad Justificados : "+Number(ex_velocidad_justificaciones).toFixed(2), {
+        x: 20,
+        y: height - (heightAux++) * fontSize,
+        size: 7.5,
+        font: bold,
+        color: rgb(0, 0, 0),
+      })
+
+      page.drawText("Tarjeta : "+Number(tarjeta).toFixed(2), {
+        x: 20,
+        y: height - (heightAux++) * fontSize,
+        size: 7.5,
+        font: bold,
         color: rgb(0, 0, 0),
       })
 
@@ -487,6 +576,19 @@ export default {
         size: 7.5,
         color: rgb(0, 0, 0),
       })
+
+
+      
+
+
+      page.drawText("Fecha Pago : " + this.initFechaActualTicket(), {
+        x: 20,
+        y: height - (heightAux++) * fontSize,
+        size: 7.5,
+        color: rgb(0, 0, 0),
+      })
+
+      
 
       page.drawText("Fecha Impresión : " + this.initFechaActualTicket(), {
         x: 20,
@@ -503,7 +605,7 @@ export default {
         y: height - (heightAux + 0.5) * fontSize,
         size: 10,
         font: bold,
-        color: rgb(0, 0, 0),
+        color: rgb(1, 0, 0),
       })
 
       this.baseURlPDFComprobanteIngresoTableroCobro = await pdfDoc.saveAsBase64({ dataUri: true });
@@ -518,6 +620,11 @@ export default {
 };
 </script>
 <style>
+
+.cardTableroCobros::-webkit-scrollbar {
+    display: none;
+}
+
 .form-group {
   margin-bottom: 0rem;
 }

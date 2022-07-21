@@ -97,11 +97,11 @@
 
           <div class="cardTextoRPagosVehiculoProduccion">
             <strong style="color: green; margin-right: 0.5rem"
-              >Recaudado : {{ mPagadosOperadorProduccion }} $</strong
+              >Dinero Recaudado : {{ mPagadosOperadorProduccion }} $</strong
             >
-            <strong style="color: red"
+            <!--<strong style="color: red"
               >Anulado : {{ mAnuladoOperadorProduccion }} $</strong
-            >
+            >-->
           </div>
         </card>
 
@@ -338,8 +338,7 @@ export default {
               "Reporte Cobros Operador : "+(this.mSelectItemOperadorProduccion == "*" ? "TODAS LOS OPERADORES" : 
               this.mSelectItemOperadorProduccion),
               "Fechas : "+this.fechaInicialCobrosOperadorProduccion +" hasta "+this.fechaFinalCobrosOperadorProduccion,
-              "Dinero Recaudado : "+this.mPagadosOperadorProduccion,
-              "Dinero Anulado : "+this.mAnuladoOperadorProduccion
+              "Dinero Recaudado : "+this.mPagadosOperadorProduccion
             ]
         this.loadingCobrosOperadorProduccion = false;
       }
@@ -392,7 +391,7 @@ export default {
 }
 
 .el-table .success-row-panelControlProduccion {
-  background: #8fed8fbb !important;
+  background: #8fed8f94 !important;
 }
 
 .no-border-card .card-footer {

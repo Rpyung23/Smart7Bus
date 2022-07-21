@@ -169,6 +169,7 @@ export default {
               this.$cookies.set("empresa",this.empresa)
               this.$cookies.set("nameEmpresa",this.sub_empresa_texto)
               this.$cookies.set("token",obj.token)
+              this.$cookies.set("permisos",obj.permisos)
               this.$cookies.set("namesUsuario",obj.names)
               this.$cookies.set("logo",this.logo_empresa)
               this.$router.push("/monitoreo");

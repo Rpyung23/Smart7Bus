@@ -683,6 +683,12 @@ export default {
 };
 </script>
 <style>
+
+
+.container-rutas::-webkit-scrollbar {
+    display: none;
+}
+
 .containerTiposDespachos {
   display: flex;
   flex-direction: column;

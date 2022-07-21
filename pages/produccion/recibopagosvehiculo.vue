@@ -62,12 +62,12 @@
               ></span>
               <span class="btn-inner--text">Buscar</span>
             </base-button>
-            <base-button outline type="success">
+            <!--<base-button outline type="success">
               <span class="btn-inner--icon"
                 ><i class="ni ni-collection"></i
               ></span>
               <span class="btn-inner--text"> Exportar Excel</span>
-            </base-button>
+            </base-button>-->
           </div>
         </card>
 
@@ -93,9 +93,9 @@
             <strong style="color: green; margin-right: 0.5rem"
               >Dinero Recaudado : {{ mPagadoRPagosVehiculoRecibo }} $</strong
             >
-            <strong style="color: red; margin-right: 0.5rem"
+            <!--<strong style="color: red; margin-right: 0.5rem"
               >Dinero Anulado : {{ mAnuladoRPagosVehiculoRecibo }} $</strong
-            >
+            >-->
           </div>
         </card>
 
@@ -176,40 +176,12 @@
 
     <!--Form modal-->
     <modal :show.sync="modalsReciboProduccion" size="sm" body-classes="p-0">
-      <card
-        type="secondary"
-        header-classes="bg-transparent pb-5"
-        class="border-0 mb-0"
-      >
-        <template slot="header">
-          <div class="row">
-            <div class="col">
-              <strong>
-                Recibo N° {{ itemModalIdReciboPagoVehiculoProduccion }}  Unidad
-              N° {{ itemModalUnidadReciboPagoVehiculoProduccion }}
-              </strong>
-            </div>
-            <div class="col">
-              <strong style="color:green"
-                >Total :
-                {{ itemModalTotalReciboPagoVehiculoProduccion }} $</strong
-              >
-            </div>
-          </div>
-        </template>
-        <el-table
-          :data="tableDataDetalleReciboPAgoVehiculoProduccion"
-          border=""
-        >
-          <el-table-column prop="rubro_descripcion" label="Detalle" width="160">
-          </el-table-column>
-          <el-table-column prop="cantidad" label="Cant" width="100">
-          </el-table-column>
-          <el-table-column prop="total" label="Total($)" width="120">
-          </el-table-column>
-        </el-table>
+      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
+        <iframe :src="baseURlPDFPanelDetalleRecibo" style="width: 100%; height: 33rem"></iframe>
       </card>
     </modal>
+
+
   </div>
 </template>
 <script>
@@ -274,7 +246,8 @@ export default {
       itemModalUnidadReciboPagoVehiculoProduccion: "",
       itemModalTotalReciboPagoVehiculoProduccion: "",
       optionsUnidadesProduccionPagosVehiculo:[],
-      loadingTableUnidadesRecibosVehiculoProduccion:false
+      loadingTableUnidadesRecibosVehiculoProduccion:false,
+      baseURlPDFPanelDetalleRecibo:'',
     };
   },
   methods: {
@@ -350,13 +323,12 @@ export default {
           var body = {
             token: this.token,
             unidad: this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemUnidadProduccionRPagoVehiculorecibo,
-            inicio: this.fechaInicialRPagosVehiculoProduccionRecibo,
-            final: this.fechaFinalRPagosVehiculoProduccionRecibo,
-            tipo: this.radioEstadoRPagosVehiculoRecibo,
+            fechaI: this.fechaInicialRPagosVehiculoProduccionRecibo,
+            fechaF: this.fechaFinalRPagosVehiculoProduccionRecibo
           };
           console.log(body);
           var datos = await this.$axios.post(
-            process.env.baseUrl + "/reporte_pagos_vehiculo_recibo",
+            process.env.baseUrl + "/ProduccionRecibosPagosVehiculo",
             body
           );
 
@@ -406,22 +378,19 @@ export default {
     },
     async readAllDetalleReciboPagosVehiculoProduccion(index, item) {
       this.modalsReciboProduccion = true;
-      this.tableDataDetalleReciboPAgoVehiculoProduccion = [];
-      this.itemModalUnidadReciboPagoVehiculoProduccion = item.unidad;
-      this.itemModalIdReciboPagoVehiculoProduccion = item.id;
-      this.itemModalTotalReciboPagoVehiculoProduccion = item.monto;
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/reporte_detalle_recibo_pagos_vehiculo",
+          process.env.baseUrl + "/ProduccionDetalleRecibosPagosVehiculo",
           {
             token: this.token,
-            item: item.id,
+            recibo: item.numero_cobro,
+            nameEmpresa: this.$cookies.get('nameEmpresa'),
+            unidad: item.Unidad,
+            fechaPago: item.fecha_cobro,
           }
         );
 
-        this.tableDataDetalleReciboPAgoVehiculoProduccion.push(
-          ...datos.data.datos
-        );
+        this.baseURlPDFPanelDetalleRecibo = "data:application/pdf;base64,"+datos.data.datos
       } catch (error) {
         Notification.error({
           title: "ERROR CATCH Reporte Pagos Vehiculo",

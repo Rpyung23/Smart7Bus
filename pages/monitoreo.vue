@@ -342,6 +342,14 @@
   width: 15.5rem;
 }
 
+.ListadoUnidades::-webkit-scrollbar {
+    display: none;
+}
+.itemsRuta::-webkit-scrollbar {
+    display: none;
+}
+
+
 .min-max {
   display: flex;
   width: 100%;

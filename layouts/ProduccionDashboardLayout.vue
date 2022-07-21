@@ -42,25 +42,19 @@
           }"
         >
           <sidebar-item
-            :link="{ name: 'Minutos y Tarjetas', path: '/forms/elements' }"
+            :link="{ name: 'Minutos y Tarjetas', path: './rminutostarjeta' }"
           />
-          <sidebar-item :link="{ name: 'Pagos Vehiculo', path: './rpagosvehiculo' }" />
           <sidebar-item
+            :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: './rminutostarjetaResumido' }"
+          />
+          <sidebar-item :link="{ name: 'Resumidos Vehiculo', path: './resumidovehiculo' }" />
+          
+          <!--<sidebar-item
             :link="{ name: 'Pagos Vehiculo Resumido', path: './rpagosvehiculoresumido' }"
-          />
-          <sidebar-item
-            :link="{ name: 'Cobros Operador', path: './rcobrosoperador' }"
-          />
+          />-->
+
         </sidebar-item>
 
-        <sidebar-item
-          :link="{
-            name: 'Trabajando',
-            icon: 'ni ni-calendar-grid-58 text-red',
-            path: '/calendar',
-          }"
-        >
-        </sidebar-item>
       </template>
     </side-bar>
     <div class="main-content">

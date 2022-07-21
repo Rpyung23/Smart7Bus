@@ -66,12 +66,12 @@
         </card>
 
         <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
+          body-classes="card-bodyRPagosVehiculoProduccionPCTablero px-0 pb-1" footer-classes="pb-2">
           <div>
             <el-table v-loading="loadingRTableroProduccion" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="tableDataPanelControlProduccion" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
-              :height="tableDataPanelControlProduccion.length > 0 ? 900 : 150" style="width: 100%">
+              :height="tableDataPanelControlProduccion.length > 0 ? 455 : 150" style="width: 100%">
 
 
 
@@ -381,7 +381,7 @@ export default {
   border-top: 0;
 }
 
-.card-bodyRPagosVehiculoProduccionPC {
+.card-bodyRPagosVehiculoProduccionPCTablero {
   padding: 0rem !important;
   height: calc(100vh - 12em);
   overflow: auto;
