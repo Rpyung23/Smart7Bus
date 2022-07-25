@@ -175,7 +175,7 @@
             <span>Support</span>
           </a>
           <div class="dropdown-divider"></div>-->
-          <a href="./" class="dropdown-item" @click="cerrarSession()">
+          <a :href="hrefLogOut" class="dropdown-item" @click="cerrarSession()">
             <i class="ni ni-user-run"></i>
             <span>Logout</span>
           </a>
@@ -246,6 +246,7 @@ export default {
       showMenu: false,
       searchModalVisible: false,
       visibleBadgeNotification: false,
+      hrefLogOut:"./",
       searchQuery: "",
       permisos: null
     };
@@ -349,7 +350,8 @@ export default {
     this.decodedPermisosNavBar()
 
     /*this.mueveReloj();*/
-    this.nameUsuario = this.$cookies.get("namesUsuario");
+    this.nameUsuario = this.$cookies.get("namesUsuario")
+    this.hrefLogOut = "./"+this.$cookies.get("empresa");
     /*setInterval(() => {
       this.mueveReloj();
     }, 1000);*/

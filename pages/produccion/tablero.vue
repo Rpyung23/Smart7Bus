@@ -15,8 +15,8 @@
             <el-select v-model="itemUnidadPanelProduccion" multiple filterable style="margin-right: 0.5rem" remote
               placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
               :loading="loadingTableUnidadesPanelProduccoionLoading">
-              <el-option v-for="item in optionsUnidadesPanelProduccion" :key="item.CodiVehi"
-                :label="item.CodiVehi" :value="item.CodiVehi">
+              <el-option v-for="item in optionsUnidadesPanelProduccion" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
@@ -79,7 +79,7 @@
 
                 <template slot-scope="scope">
                   <!--<base-button size="sm" title="Recorrido Salida" type="success"><i class="ni ni-world"></i></base-button>-->
-                  <base-button size="sm" @click="showVisibleModalTableroProduccion()" title="Justificar Unidad"
+                  <base-button size="sm" @click="showVisibleModalTableroProduccion(scope.row)" title="Justificar Unidad"
                     type="primary"><i class="ni ni-like-2"></i></base-button>
                 </template>
               </el-table-column>
@@ -122,18 +122,17 @@
 
         <!--Classic modal-->
         <modal :show.sync="isObservacionesTableroProduccion" size="xl">
-          <h6 slot="header" class="modal-title">Type your modal title</h6>
+          <h6 slot="header" class="modal-title">JUSTIFICACION</h6>
 
-          <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the
-            blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language
-            ocean.</p>
-          <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a
-            paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
+          <JqxGrid ref="myGridDespachoPanel" @cellbeginedit="cellBeginEditEventTablero($event)" :height="'100%'"
+            @cellendedit="cellEndEditEventTablero($event)" :columns="columnsInfo" :source="dataAdapter" :editable="true"
+            :enabletooltips="true" :width="getWidth">
+          </JqxGrid>
 
 
           <template slot="footer">
-            <base-button type="primary">Save changes</base-button>
-            <base-button type="link" class="ml-auto" @click="modals.classic = false">Close</base-button>
+            <base-button type="primary">Guardar Cambios</base-button>
+            <base-button type="link" class="ml-auto" @click="modals.classic = false">Cancelar</base-button>
           </template>
 
         </modal>
@@ -148,6 +147,9 @@
 
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import JqxGrid from "jqwidgets-scripts/jqwidgets-vue/vue_jqxgrid.vue";
+import JqxSlider from "jqwidgets-scripts/jqwidgets-vue/vue_jqxslider.vue";
+import JqxDateTimeInput from "jqwidgets-scripts/jqwidgets-vue/vue_jqxdatetimeinput.vue";
 
 import {
   Table,
@@ -179,6 +181,9 @@ export default {
     flatPicker,
     BasePagination,
     RouteBreadCrumb,
+    JqxGrid,
+    JqxSlider,
+    JqxDateTimeInput,
     [Select.name]: Select,
     [Option.name]: Option,
     [Table.name]: Table,
@@ -207,12 +212,62 @@ export default {
       loadingTableUnidadesPanelProduccoionLoading: false,
       optionsUnidadesPanelProduccion: [],
       itemUnidadPanelProduccion: [],
-      isObservacionesTableroProduccion: false
+      isObservacionesTableroProduccion: false,
+      dataAdapter: new jqx.dataAdapter([]),
+      getWidth: "100%",
+      columnsInfo: [{ text: 'Control', datafield: 'DescripcionControl', width: 200 },
+      { text: 'PROG', datafield: 'Programado', width: 90 },
+      { text: 'MARC', datafield: 'Marcado', width: 90 },
+      { text: 'Atraso Tiempo', datafield: 'AtrasoFTiempo', width: 110 },
+      { text: 'Adelanto Tiempo', datafield: 'AdelantoFTiempo', width: 120 },
+      {
+        text: 'Atraso Jus.', datafield: 'AtrasoJTiempo', width: 150, columntype: 'custom',
+        createeditor: (row, cellvalue, editor, cellText, width, height) => {
+          editor.jqxDateTimeInput({ width: "250", height: "25", formatString: "T", showTimeButton: true, showCalendarButton: false })
+        },
+        initeditor: (row, cellvalue, editor, celltext, pressedkey) => {
+          editor.jqxDateTimeInput({ width: "250", height: "25", formatString: "T", showTimeButton: true, showCalendarButton: false })
+        },
+        geteditorvalue: (row, cellvalue, editor) => {
+          // return the editor's value.
+          return editor.val();
+        }
+      },
+      {
+        text: 'Adelanto Jus.', datafield: 'AdelantoJTiempo', width: 150, columntype: 'custom',
+        createeditor: (row, cellvalue, editor, cellText, width, height) => {
+          editor.jqxDateTimeInput({ width: "250", height: "25", formatString: "T", showTimeButton: true, showCalendarButton: false })
+        },
+        initeditor: (row, cellvalue, editor, celltext, pressedkey) => {
+          editor.jqxDateTimeInput({ width: "250", height: "25", formatString: "T", showTimeButton: true, showCalendarButton: false })
+        },
+        geteditorvalue: (row, cellvalue, editor) => {
+          // return the editor's value.
+          return editor.val();
+        }
+      },
+      { text: 'Rubros', datafield: 'RubroFalta', width: 60 },
+      { text: 'Rubros Jus.', datafield: 'RubroJustificacion', width: 100 },
+      { text: 'Velo', datafield: 'VelocidadFalta', width: 70 },
+      { text: 'Velo Jus.', datafield: 'VelocidadJustificacion', width: 70 },
+      { text: 'Tarjeta', datafield: 'TarjetaTrabajo', width: 70 },
+      { text: 'Usuario Justificador', datafield: 'NombApellUsua', width: 250 },
+      { text: 'Motivo', datafield: 'Motivo', width: 250 },
+      { text: 'Notas', datafield: 'Notas', width: 250 }]
     };
   },
   methods: {
 
-        remoteMethodUnidadesPanelProduccionJustificacion(query) {
+    cellBeginEditEventTablero: function (event) {
+      let args = event.args;
+      //this.$refs.beginEdit.innerHTML = 'Event Type: cellbeginedit, Column: ' + args.datafield + ', Row: ' + (1 + args.rowindex) + ', Value: ' + args.value;
+    },
+    cellEndEditEventTablero: function (event) {
+      let args = event.args;
+      //this.$refs.endEdit.innerHTML = 'Event Type: cellendedit, Column: ' + args.datafield + ', Row: ' + (1 + args.rowindex) + ', Value: ' + args.value;
+    },
+
+    remoteMethodUnidadesPanelProduccionJustificacion(query) {
       if (query !== "") {
         this.loadingTableUnidadesPanelProduccoionLoading = true;
         setTimeout(() => {
@@ -263,7 +318,7 @@ export default {
         token: this.token,
         fecha: this.fechaInicialTableroProduccion,
         rutas: this.mSelectLineasValueTablero.length <= 0 ? '*' : this.mSelectLineasValueTablero,
-        unidades:this.itemUnidadPanelProduccion.length <= 0 ? '*' : this.itemUnidadPanelProduccion
+        unidades: this.itemUnidadPanelProduccion.length <= 0 ? '*' : this.itemUnidadPanelProduccion
       })
 
       //console.log(datos.data)
@@ -311,20 +366,65 @@ export default {
 
         if (datos.data.status_code == 200) {
 
-          for (var i = 0; i < datos.data.data.length; i++) 
-          {
-                      var obj = datos.data.data[i];
-          obj.value = obj.CodiVehi;
-          this.mListaUnidadesPanelProduccion.push(obj);
+          for (var i = 0; i < datos.data.data.length; i++) {
+            var obj = datos.data.data[i];
+            obj.value = obj.CodiVehi;
+            this.mListaUnidadesPanelProduccion.push(obj);
           }
         }
       } catch (error) {
         console.log(error)
       }
     },
-    showVisibleModalTableroProduccion() {
+    async showVisibleModalTableroProduccion(item) {
       this.isObservacionesTableroProduccion = this.isObservacionesTableroProduccion == true ? false : true
-    }
+      await this.readDetalleTableroProduccion(item)
+    },
+    async readDetalleTableroProduccion(item) {
+
+      console.log(item)
+
+      var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionDetallePanelControl", {
+        token: this.token,
+        codigoPanel: item.Codigo
+      }
+      )
+
+
+
+
+
+      var obj = {
+        localdata: datos.data.datos,
+        datatype: 'array',
+        datafields: [
+          { name: 'DescripcionControl', type: 'string' },
+          { name: 'Programado', type: 'string' },
+          { name: 'Marcado', type: 'string' },
+          { name: 'AtrasoFTiempo', type: 'datetime' },
+          { name: 'AdelantoFTiempo', type: 'datetime' },
+          { name: 'AtrasoJTiempo', type: 'datetime' },
+          { name: 'AdelantoJTiempo', type: 'datetime' },
+          { name: 'RubroFalta', type: 'string' },
+          { name: 'RubroJustificacion', type: 'string' },
+          { name: 'VelocidadFalta', type: 'string' },
+          { name: 'VelocidadJustificacion', type: 'string' },
+          { name: 'TarjetaTrabajo', type: 'string' },
+          { name: 'NombApellUsua', type: 'string' },
+          { name: 'Motivo', type: 'string' },
+          { name: 'Notas', type: 'string' }
+
+        ]
+      }
+
+      this.$refs.myGridDespachoPanel.setOptions
+        ({
+          source: obj,
+          columns: this.columnsInfo
+        });
+      this.isLoadingDespachoSalidaPanelBusqueda = false
+      this.$refs.myGridDespachoPanel.endupdate();
+    },
   }, mounted() {
     this.readUnidadesTableroProduccion()
     this.readLineasTableroProduccion()
