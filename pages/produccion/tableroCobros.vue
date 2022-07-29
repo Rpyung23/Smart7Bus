@@ -42,7 +42,7 @@
               <span class="btn-inner--text">Buscar</span>
             </base-button>
 
-            <base-button icon type="default">
+            <base-button icon type="default" @click="realizarCobro()">
               <span class="btn-inner--icon"><i class="el-icon-money"></i></span>
               <span class="btn-inner--text">Pagar</span>
             </base-button>
@@ -156,14 +156,14 @@ import {
   Notification,
   Button
 } from "element-ui";
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { PDFDocument, StandardFonts, rgb, degrees, rgba } from 'pdf-lib'
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
-import {convertSecondtoTimeString} from '../../util/fechas'
+import { convertSecondtoTimeString } from '../../util/fechas'
 export default {
   mixins: [clientPaginationMixin],
   layout: "ProduccionDashboardLayout",
@@ -204,7 +204,8 @@ export default {
       itemUnidadPanelProduccion: [],
       isObservacionesTableroProduccion: false,
       baseURlPDFComprobanteIngresoTableroCobro: "",
-      multipleSelectionProduccionCobros: []
+      multipleSelectionProduccionCobros: [],
+      banderaMarcoAguaRecibo: true,
     };
   },
   methods: {
@@ -228,7 +229,7 @@ export default {
     handleSelectionChangeTableCobros(val) {
       if (val != undefined && val != null) {
         this.multipleSelectionProduccionCobros = val
-        this.crearPreviewReciboIngresoPanelCobro(this.multipleSelectionProduccionCobros)
+        this.crearPreviewReciboIngresoPanelCobro()
       }
     },
     initFechaActualProduccionPanelControl() {
@@ -326,7 +327,8 @@ export default {
     showVisibleModalTableroProduccion() {
       this.isObservacionesTableroProduccion = this.isObservacionesTableroProduccion == true ? false : true
     },
-    async crearPreviewReciboIngresoPanelCobro(mLista) {
+    async crearPreviewReciboIngresoPanelCobro() {
+      var mLista = this.multipleSelectionProduccionCobros
       var dineroCobrado = 0
 
       const pdfDoc = await PDFDocument.create()
@@ -339,7 +341,21 @@ export default {
       /**PAGINA 2**/
       const page2 = pdfDoc.addPage()
       page2.setWidth(230)
-      /********************/
+      /**********MARCO DE AGUA*********/
+
+      if (this.banderaMarcoAguaRecibo) {
+        page.drawText("RECIBO SOLO DE MUESTRA(SIN PAGAR)", {
+          x: 20,
+          y: height - 2 * 10,
+          size: 13,
+          font: bold,
+          color: rgb(0.95, 0.1, 0.1),
+          rotate: degrees(-45),
+        })
+      }
+
+
+      /*******************************/
       const fontSize = 10
 
       page.drawText("     " + this.$cookies.get("nameEmpresa").toUpperCase().substring(0, 28), {
@@ -464,7 +480,7 @@ export default {
 
         dineroCobrado = dineroCobrado + parseFloat(mLista[i].DeudaTotal)
       }
-    
+
 
       page.drawText("---------------------------------------------------------", {
         x: 20,
@@ -485,20 +501,19 @@ export default {
       var ex_velocidad_justificaciones = 0
       var tarjeta = 0
 
-      for(var i = 0;i<mLista.length;i++)
-      {
-          atrasos_falta = atrasos_falta + mLista[i].AtrasoFTiempo
-          adelantos_falta = adelantos_falta + mLista[i].AdelantoFTiempo
-          atrasos_justificaciones = atrasos_justificaciones + mLista[i].AtrasoJTiempo
-          adelantos_justificaciones = adelantos_justificaciones + mLista[i].AdelantoJTiempo
-          rubros_falta = rubros_falta + parseFloat(mLista[i].RubroFalta)
-          rubros_justificaciones = rubros_justificaciones + parseFloat(mLista[i].RubroJustificacion)
-          ex_velocidad_falta = ex_velocidad_falta + parseFloat(mLista[i].VelocidadFalta)
-          ex_velocidad_justificaciones = ex_velocidad_justificaciones + parseFloat(mLista[i].VelocidadJustificacion)
-          tarjeta = tarjeta + parseFloat(mLista[i].TarjetaDiaria)
+      for (var i = 0; i < mLista.length; i++) {
+        atrasos_falta = atrasos_falta + mLista[i].AtrasoFTiempo
+        adelantos_falta = adelantos_falta + mLista[i].AdelantoFTiempo
+        atrasos_justificaciones = atrasos_justificaciones + mLista[i].AtrasoJTiempo
+        adelantos_justificaciones = adelantos_justificaciones + mLista[i].AdelantoJTiempo
+        rubros_falta = rubros_falta + parseFloat(mLista[i].RubroFalta)
+        rubros_justificaciones = rubros_justificaciones + parseFloat(mLista[i].RubroJustificacion)
+        ex_velocidad_falta = ex_velocidad_falta + parseFloat(mLista[i].VelocidadFalta)
+        ex_velocidad_justificaciones = ex_velocidad_justificaciones + parseFloat(mLista[i].VelocidadJustificacion)
+        tarjeta = tarjeta + parseFloat(mLista[i].TarjetaDiaria)
       }
 
-      page.drawText("Atrasos Falta : "+convertSecondtoTimeString(atrasos_falta), {
+      page.drawText("Atrasos Falta : " + convertSecondtoTimeString(atrasos_falta), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
@@ -506,7 +521,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Atrasos Justificados : "+convertSecondtoTimeString(atrasos_justificaciones), {
+      page.drawText("Atrasos Justificados : " + convertSecondtoTimeString(atrasos_justificaciones), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
@@ -514,7 +529,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Adelantos Falta : "+convertSecondtoTimeString(adelantos_falta), {
+      page.drawText("Adelantos Falta : " + convertSecondtoTimeString(adelantos_falta), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
@@ -522,7 +537,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Adelantos Justificados : "+convertSecondtoTimeString(adelantos_justificaciones), {
+      page.drawText("Adelantos Justificados : " + convertSecondtoTimeString(adelantos_justificaciones), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
@@ -530,7 +545,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Rubros : "+Number(rubros_falta).toFixed(2), {
+      page.drawText("Rubros : " + Number(rubros_falta).toFixed(2), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
@@ -538,7 +553,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Rubros Justificados : "+Number(rubros_justificaciones).toFixed(2), {
+      page.drawText("Rubros Justificados : " + Number(rubros_justificaciones).toFixed(2), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
@@ -546,7 +561,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Ex. Velocidad : "+Number(ex_velocidad_falta).toFixed(2), {
+      page.drawText("Ex. Velocidad : " + Number(ex_velocidad_falta).toFixed(2), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
@@ -554,7 +569,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Ex. Velocidad Justificados : "+Number(ex_velocidad_justificaciones).toFixed(2), {
+      page.drawText("Ex. Velocidad Justificados : " + Number(ex_velocidad_justificaciones).toFixed(2), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
@@ -562,7 +577,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Tarjeta : "+Number(tarjeta).toFixed(2), {
+      page.drawText("Tarjeta : " + Number(tarjeta).toFixed(2), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
@@ -578,17 +593,17 @@ export default {
       })
 
 
-      
 
 
-      page.drawText("Fecha Pago : " + this.initFechaActualTicket(), {
+
+      page.drawText("Fecha Pago : " + (this.banderaMarcoAguaRecibo ? 'RECIBO SIN PAGAR' : this.initFechaActualTicket()), {
         x: 20,
         y: height - (heightAux++) * fontSize,
         size: 7.5,
         color: rgb(0, 0, 0),
       })
 
-      
+
 
       page.drawText("Fecha Impresión : " + this.initFechaActualTicket(), {
         x: 20,
@@ -609,7 +624,54 @@ export default {
       })
 
       this.baseURlPDFComprobanteIngresoTableroCobro = await pdfDoc.saveAsBase64({ dataUri: true });
-    }
+      this.banderaMarcoAguaRecibo = true
+    },
+    async realizarCobro() {
+
+      var unidades = []
+      var codigos = []
+      var totalC = 0
+      for (var i = 0; i < this.multipleSelectionProduccionCobros.length; i++) {
+        unidades.push(this.multipleSelectionProduccionCobros[i].Unidad)
+        codigos.push(this.multipleSelectionProduccionCobros[i].Codigo)
+        totalC = totalC + parseFloat(this.multipleSelectionProduccionCobros[i].DeudaTotal)
+      }
+
+
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/RegistrarProduccionPagos", {
+          token: this.token,
+          unidades: unidades,
+          total: totalC,
+          codigos: codigos
+        })
+
+        if (datos.data.status_code == 200) {
+          if (datos.data.code == 200) {
+            this.banderaMarcoAguaRecibo = false
+            this.crearPreviewReciboIngresoPanelCobro()
+            this.readlPanelTableroProduccion()
+            this.notifyVue('default',datos.data.msm+"\n <strong>Listo para imprimir</strong>",'ni ni-check-bold',2500)
+          } else {
+            this.notifyVue('warning',datos.data.msm,'ni ni-fat-remove',3000)
+          }
+        } else {
+          this.notifyVue('danger',datos.data.msm,'ni ni-settings',3000)
+        }
+
+      } catch (error) {
+        this.notifyVue('danger',error.toString(),'ni ni-notification-70',3000)
+      }
+    },
+    notifyVue(type, mensaje, icono, tiempo = 4000) {
+      this.$notify({
+        message:
+          mensaje,
+        timeout: tiempo,
+        icon: icono,
+        type
+      });
+    },
   }, mounted() {
     this.crearPreviewReciboIngresoPanelCobro([])
     this.readUnidadesTableroProduccion()
@@ -620,9 +682,8 @@ export default {
 };
 </script>
 <style>
-
 .cardTableroCobros::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .form-group {

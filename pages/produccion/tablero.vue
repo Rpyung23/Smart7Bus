@@ -78,9 +78,10 @@
               <el-table-column label="Acciones" minWidth="120">
 
                 <template slot-scope="scope">
-                  <!--<base-button size="sm" title="Recorrido Salida" type="success"><i class="ni ni-world"></i></base-button>-->
                   <base-button size="sm" @click="showVisibleModalTableroProduccion(scope.row)" title="Justificar Unidad"
                     type="primary"><i class="ni ni-like-2"></i></base-button>
+                  <base-button size="sm" title="Recorrido Salida" type="success"><i class="ni ni-world"></i>
+                  </base-button>
                 </template>
               </el-table-column>
 
@@ -88,9 +89,9 @@
               <el-table-column prop="Unidad" label="Unidad" minWidth="110">
               </el-table-column>
               <!--<el-table-column prop="idSali_m" label="Salida" minWidth="130">
-              </el-table-column>-->
-              <el-table-column prop="DescRuta" label="Ruta - Linea" minWidth="200">
               </el-table-column>
+              <el-table-column prop="DescRuta" label="Ruta - Linea" minWidth="200">
+              </el-table-column>-->
               <el-table-column prop="DeudaTotal" label="Total($)" minWidth="120">
                 <template slot-scope="scope">
                   <strong style="color:black;">{{ scope.row.DeudaTotal }}</strong>
@@ -122,18 +123,75 @@
 
         <!--Classic modal-->
         <modal :show.sync="isObservacionesTableroProduccion" size="xl">
-          <h6 slot="header" class="modal-title">JUSTIFICACION</h6>
 
-          <JqxGrid ref="myGridDespachoPanel" @cellbeginedit="cellBeginEditEventTablero($event)" :height="'100%'"
-            @cellendedit="cellEndEditEventTablero($event)" :columns="columnsInfo" :source="dataAdapter" :editable="true"
+          <template slot="header" style="background-color: #2dce89;">
+          </template>
+
+          <div class="barraResumen">
+            <strong style="color: white;font-size: 1.2rem;">UNIDAD N° {{ oUnidadModalTitle }}</strong>
+
+            <strong style="color: white;font-size: 1.2rem;">{{ oRutaModalTitle }}</strong>
+
+            <strong style="color: white;font-size: 1.7rem;">{{ oPriceModalTitle }} $</strong>
+          </div>
+
+
+          <div class="topModalJustificaciones">
+
+            <div class="containerLeftTopNavbarModal">
+              <div class="navbarModal" style="margin-bottom: 0.5rem;">
+                <strong style="color:red;">{{ oTiempoFalta }}</strong>
+                <div class="containerButtonMasMenos">
+                  <button class="circleButtonMasMenos danger">
+                    <i class="ni ni-fat-delete"></i>
+                  </button> <input type="text" maxlength="2" class="inputTimer" :disabled="oBanderaHora == 1"
+                    v-model="oHora"><strong style="color: black;">:</strong>
+                  <input type="text" maxlength="2" class="inputTimer" :disabled="oBanderaMinutos == 1"
+                    v-model="oMinutos"><strong style="color: black;">:</strong>
+                  <input type="text" maxlength="2" class="inputTimer" :disabled="oBanderaSegundos == 1"
+                    v-model="oSegundos">
+                  <button class="circleButtonMasMenos">
+                    <i class="ni ni-fat-add"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="navbarModal">
+                <strong style="color: red;">{{ oPriceFalta }} $</strong>
+                <div class="containerButtonMasMenos">
+                  <button class="circleButtonMasMenos danger">
+                    <i class="ni ni-fat-delete"></i>
+                  </button> <strong style="color: black;">0.00</strong>
+                  <button class="circleButtonMasMenos">
+                    <i class="ni ni-fat-add"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="containerRigthTopNavbarModal">
+              <textarea class="textAreaCustom" v-model="oMotivoString"></textarea>
+
+              <base-button title="Enviar Justificación"  @click="sendJustify()" style="height: fit-content" type="primary"><i
+                  class="ni ni-check-bold"></i></base-button>
+            </div>
+
+          </div>
+
+          <JqxGrid ref="myGridDespachoPanelOtros" :height="'150px'" :columns="columnsInfoOtros" :source="dataAdapterOtros"
             :enabletooltips="true" :width="getWidth">
+          </JqxGrid>
+          <br>
+
+          <JqxGrid ref="myGridDespachoPanel" :height="'200px'" @rowselect="myGridOnRowSelect($event)"
+            :columns="columnsInfo" :source="dataAdapter" :enabletooltips="true" :width="getWidth">
           </JqxGrid>
 
 
-          <template slot="footer">
+          <!--<template slot="footer">
             <base-button type="primary">Guardar Cambios</base-button>
             <base-button type="link" class="ml-auto" @click="modals.classic = false">Cancelar</base-button>
-          </template>
+          </template>-->
 
         </modal>
 
@@ -214,6 +272,7 @@ export default {
       itemUnidadPanelProduccion: [],
       isObservacionesTableroProduccion: false,
       dataAdapter: new jqx.dataAdapter([]),
+      dataAdapterOtros: new jqx.dataAdapter([]),
       getWidth: "100%",
       columnsInfo: [{ text: 'Control', datafield: 'DescripcionControl', width: 200 },
       { text: 'PROG', datafield: 'Programado', width: 90 },
@@ -221,30 +280,10 @@ export default {
       { text: 'Atraso Tiempo', datafield: 'AtrasoFTiempo', width: 110 },
       { text: 'Adelanto Tiempo', datafield: 'AdelantoFTiempo', width: 120 },
       {
-        text: 'Atraso Jus.', datafield: 'AtrasoJTiempo', width: 150, columntype: 'custom',
-        createeditor: (row, cellvalue, editor, cellText, width, height) => {
-          editor.jqxDateTimeInput({ width: "250", height: "25", formatString: "T", showTimeButton: true, showCalendarButton: false })
-        },
-        initeditor: (row, cellvalue, editor, celltext, pressedkey) => {
-          editor.jqxDateTimeInput({ width: "250", height: "25", formatString: "T", showTimeButton: true, showCalendarButton: false })
-        },
-        geteditorvalue: (row, cellvalue, editor) => {
-          // return the editor's value.
-          return editor.val();
-        }
+        text: 'Atraso Jus.', datafield: 'AtrasoJTiempo', width: 150
       },
       {
-        text: 'Adelanto Jus.', datafield: 'AdelantoJTiempo', width: 150, columntype: 'custom',
-        createeditor: (row, cellvalue, editor, cellText, width, height) => {
-          editor.jqxDateTimeInput({ width: "250", height: "25", formatString: "T", showTimeButton: true, showCalendarButton: false })
-        },
-        initeditor: (row, cellvalue, editor, celltext, pressedkey) => {
-          editor.jqxDateTimeInput({ width: "250", height: "25", formatString: "T", showTimeButton: true, showCalendarButton: false })
-        },
-        geteditorvalue: (row, cellvalue, editor) => {
-          // return the editor's value.
-          return editor.val();
-        }
+        text: 'Adelanto Jus.', datafield: 'AdelantoJTiempo', width: 150
       },
       { text: 'Rubros', datafield: 'RubroFalta', width: 60 },
       { text: 'Rubros Jus.', datafield: 'RubroJustificacion', width: 100 },
@@ -253,20 +292,25 @@ export default {
       { text: 'Tarjeta', datafield: 'TarjetaTrabajo', width: 70 },
       { text: 'Usuario Justificador', datafield: 'NombApellUsua', width: 250 },
       { text: 'Motivo', datafield: 'Motivo', width: 250 },
-      { text: 'Notas', datafield: 'Notas', width: 250 }]
+      { text: 'Notas', datafield: 'Notas', width: 250 }],
+      columnsInfoOtros: [{ text: 'Hora', datafield: 'fecha_creacion', width: 200 },
+      { text: 'Rubro', datafield: 'descripcion', width: 150 },
+      { text: 'Nota', datafield: 'anotaciones', width: 850 }],
+      oTiempoFalta: "00:00:00",
+      oPriceFalta: "0.00",
+      oHora: '00',
+      oMinutos: '00',
+      oSegundos: '00',
+      oBanderaHora: 1,
+      oBanderaMinutos: 1,
+      oBanderaSegundos: 1,
+      oUnidadModalTitle: '',
+      oRutaModalTitle: '',
+      oPriceModalTitle: '0.00',
+      oMotivoString:''
     };
   },
   methods: {
-
-    cellBeginEditEventTablero: function (event) {
-      let args = event.args;
-      //this.$refs.beginEdit.innerHTML = 'Event Type: cellbeginedit, Column: ' + args.datafield + ', Row: ' + (1 + args.rowindex) + ', Value: ' + args.value;
-    },
-    cellEndEditEventTablero: function (event) {
-      let args = event.args;
-      //this.$refs.endEdit.innerHTML = 'Event Type: cellendedit, Column: ' + args.datafield + ', Row: ' + (1 + args.rowindex) + ', Value: ' + args.value;
-    },
-
     remoteMethodUnidadesPanelProduccionJustificacion(query) {
       if (query !== "") {
         this.loadingTableUnidadesPanelProduccoionLoading = true;
@@ -306,6 +350,49 @@ export default {
         (day < 10 ? "0" + day : day);
 
       this.fechaInicialTableroProduccion = format;
+    },
+    myGridOnRowSelect: function (event) {
+      var obj = event.args.row
+      if (obj != null && obj != undefined) 
+      {
+      
+
+        if (parseInt(obj.Tipo) <= 2) {
+          this.oMotivoString = obj.Motivo
+
+          this.oTiempoFalta = obj.AtrasoFTiempo == '00:00:00' ? obj.AdelantoFTiempo : obj.AtrasoFTiempo
+
+          var tiempo = this.oTiempoFalta.split(':')
+          console.log("*************************")
+          console.log(tiempo)
+
+          this.oHora = tiempo[0]
+          this.oMinutos = tiempo[1]
+          this.oSegundos = tiempo[2]
+
+          this.oBanderaHora = tiempo[0] == '00' ? 1 : 0
+          this.oBanderaMinutos = tiempo[1] == '00' ? 1 : 0
+          this.oBanderaSegundos = tiempo[2] == '00' ? 1 : 0
+
+        } else {
+
+          this.oMotivoString = obj.Notas
+
+          if (obj.RubroFalta == '0.00') {
+            if (obj.TarjetaTrabajo == '0.00') {
+              if (obj.VelocidadFalta == '0.00') {
+                this.oPriceFalta = '0.00'
+              } else {
+                this.oPriceFalta = obj.obj.VelocidadFalta
+              }
+            } else {
+              this.oPriceFalta = obj.TarjetaTrabajo
+            }
+          } else {
+            this.oPriceFalta = obj.RubroFalta
+          }
+        }
+      }
     },
     selectionChange(selectedRows) {
       this.selectedRows = selectedRows;
@@ -378,24 +465,39 @@ export default {
     },
     async showVisibleModalTableroProduccion(item) {
       this.isObservacionesTableroProduccion = this.isObservacionesTableroProduccion == true ? false : true
+      this.readDetalleTableroProduccionAnotaciones(item)
       await this.readDetalleTableroProduccion(item)
     },
     async readDetalleTableroProduccion(item) {
+      this.oUnidadModalTitle = item.Unidad
+      this.oRutaModalTitle = item.DescRuta
+  
 
-      console.log(item)
+      var mList = []
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionDetallePanelControl", {
+          token: this.token,
+          codigoPanel: item.Codigo
+        }
+        )
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionDetallePanelControl", {
-        token: this.token,
-        codigoPanel: item.Codigo
+        if(datos.data.datos.length > 0){
+          this.oPriceModalTitle = datos.data.datos[0].DeudaTotal
+        }
+        mList.push(...datos.data.datos)
+
+      } catch (error) {
+        mList = []
       }
-      )
+
+
 
 
 
 
 
       var obj = {
-        localdata: datos.data.datos,
+        localdata: mList,
         datatype: 'array',
         datafields: [
           { name: 'DescripcionControl', type: 'string' },
@@ -412,7 +514,8 @@ export default {
           { name: 'TarjetaTrabajo', type: 'string' },
           { name: 'NombApellUsua', type: 'string' },
           { name: 'Motivo', type: 'string' },
-          { name: 'Notas', type: 'string' }
+          { name: 'Notas', type: 'string' },
+          { name: 'Tipo', type: 'string' }
 
         ]
       }
@@ -424,7 +527,48 @@ export default {
         });
       this.isLoadingDespachoSalidaPanelBusqueda = false
       this.$refs.myGridDespachoPanel.endupdate();
+
     },
+    async readDetalleTableroProduccionAnotaciones(item) {
+
+      var mListOtros = []
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionPanelControlAnotaciones", {
+          token: this.token,
+          unidad: item.Unidad,
+          fecha: this.fechaInicialTableroProduccion
+        }
+        )
+
+        mListOtros.push(...datos.data.datos)
+
+      } catch (error) {
+        mListOtros = []
+      }
+
+      var obj = {
+        localdata: mListOtros,
+        datatype: 'array',
+        datafields: [
+          { name: 'fecha_creacion', type: 'string' },
+          { name: 'anotaciones', type: 'string' },
+          { name: 'descripcion', type: 'string' },
+
+        ]
+      }
+
+      this.$refs.myGridDespachoPanelOtros.setOptions
+        ({
+          source: obj,
+          columns: this.columnsInfoOtros
+        });
+      this.$refs.myGridDespachoPanelOtros.endupdate();
+
+    },
+    sendJustify(){
+      var tiempo = this.oHora+":"+this.oMinutos+":"+this.oSegundos
+      console.log("JUSTIFICACION ENVIADA : "+tiempo)
+    }
   }, mounted() {
     this.readUnidadesTableroProduccion()
     this.readLineasTableroProduccion()
@@ -435,6 +579,100 @@ export default {
 };
 </script>
 <style>
+.inputTimer {
+  width: 1.4rem !important;
+  background-color: transparent;
+  outline: none;
+  border-width: 0rem;
+  padding: 0rem !important;
+}
+
+.barraResumen {
+  width: 100%;
+  height: 3rem;
+  background-color: #2dce89;
+  border-radius: 0.5rem;
+  border-style: solid;
+  border-width: 0rem;
+  margin-bottom: 00.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.textAreaCustom {
+  resize: none;
+  width: 100%;
+  margin-right: 00.5rem;
+  outline: none;
+}
+
+.textWhite {
+  color: white;
+}
+
+.containerRigthTopNavbarModal {
+  display: flex;
+  background-color: #2dce89;
+  padding: 10px;
+  width: 75%;
+  align-items: center;
+}
+
+.containerLeftTopNavbarModal {
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+  margin-right: 2rem;
+  justify-content: center;
+}
+
+.navbarModal {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.danger {
+  background-color: #f5365c !important;
+}
+
+.containerButtonMasMenos {
+  background-color: #2dce89;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  height: fit-content;
+  width: fit-content;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-radius: 1rem;
+}
+
+.circleButtonMasMenos {
+  color: white;
+  background-color: #5e72e4;
+  height: 1.5rem;
+  width: 1.5rem;
+  padding-left: 4px;
+  border-radius: 100%;
+  border-width: 0rem;
+  border-style: solid;
+}
+
+.topModalJustificaciones {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.5rem;
+  max-height: 5rem;
+}
+
+
+
 .form-group {
   margin-bottom: 0rem;
 }
