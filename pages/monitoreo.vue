@@ -543,7 +543,7 @@
 #resizerXY {
   height: 97%;
   width: 0.4rem;
-  background-color: #32325d;
+  /*background-color: #32325d;*/
   position: absolute;
   left: 0;
 }

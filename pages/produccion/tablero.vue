@@ -75,7 +75,7 @@
 
 
 
-              <el-table-column label="Acciones" minWidth="120">
+              <el-table-column label="Acciones" minWidth="170">
 
                 <template slot-scope="scope">
                   <base-button size="sm" @click="showVisibleModalTableroProduccion(scope.row)" title="Justificar Unidad"

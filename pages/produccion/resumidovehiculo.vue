@@ -112,7 +112,7 @@
 
               </el-table-column>
 
-              <el-table-column prop="fecha_cobro" label="F. Pago" minWidth="140">
+              <el-table-column prop="fecha_cobro" label="F. Pago" minWidth="180">
               </el-table-column>
               <el-table-column prop="AtrasoFTiempo" label="Atrasos Falta" minWidth="160">
               </el-table-column>

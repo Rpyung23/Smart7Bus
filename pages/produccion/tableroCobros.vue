@@ -42,7 +42,8 @@
               <span class="btn-inner--text">Buscar</span>
             </base-button>
 
-            <base-button icon type="default" @click="realizarCobro()">
+            <base-button icon type="default" @click="realizarCobro()"
+              v-if="multipleSelectionProduccionCobros.length > 0">
               <span class="btn-inner--icon"><i class="el-icon-money"></i></span>
               <span class="btn-inner--text">Pagar</span>
             </base-button>
@@ -69,8 +70,10 @@
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: dark; margin-right: 0.5rem">Pendiente : {{ mPagadoRPagosVehiculo }} $</strong>
-            <strong style="color: green">Total a Cobrar: {{ mTotalRPagosVehiculo }} $</strong>
+            <strong style="color: dark; margin-right: 0.5rem">Pendiente : {{ mPendienteRPagosVehiculo }} $</strong>
+            <strong style="color: green">Total a Cobrar: {{ multipleSelectionProduccionCobros.length > 0 ?
+                mTotalRPagosVehiculo : '0.00'
+            }} $</strong>
           </div>
         </card>
 
@@ -81,7 +84,7 @@
             <div class="row row-example">
 
 
-              <el-table v-loading="loadingRTableroProduccionCobranzas"
+              <el-table v-loading="loadingRTableroProduccionCobranzas" ref="multipleTableCobrosPagar"
                 @selection-change="handleSelectionChangeTableCobros" element-loading-text="Cargando Datos..."
                 element-loading-spinner="el-icon-loading" :data="tableDataPanelControlProduccion" row-key="id"
                 class="col-12 col-md-8 tablePanelControlProduccion" header-row-class-name="thead-dark"
@@ -156,7 +159,7 @@ import {
   Notification,
   Button
 } from "element-ui";
-import { PDFDocument, StandardFonts, rgb, degrees, rgba } from 'pdf-lib'
+import { PDFDocument, StandardFonts, rgb, degrees, ParseSpeeds } from 'pdf-lib'
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
@@ -191,7 +194,6 @@ export default {
       fechaInicialTableroProduccion: "",
       fechaFinalTableroProduccion: "",
       mTotalRPagosVehiculo: "0.00",
-      mPagadoRPagosVehiculo: "0.00",
       mPendienteRPagosVehiculo: "0.00",
       loadingRTableroProduccionCobranzas: false,
       mListRubrosTableroProduccion: [],
@@ -228,8 +230,15 @@ export default {
     },
     handleSelectionChangeTableCobros(val) {
       if (val != undefined && val != null) {
-        this.multipleSelectionProduccionCobros = val
-        this.crearPreviewReciboIngresoPanelCobro()
+        if (this.banderaMarcoAguaRecibo) {
+          this.multipleSelectionProduccionCobros = val
+          var dinero = 0
+          for (var i = 0; i < this.multipleSelectionProduccionCobros.length; i++) {
+            dinero = dinero + parseFloat(this.multipleSelectionProduccionCobros[i].DeudaTotal)
+          }
+          this.mTotalRPagosVehiculo = (dinero).toFixed(2)
+          this.crearPreviewReciboIngresoPanelCobro(this.multipleSelectionProduccionCobros)
+        }
       }
     },
     initFechaActualProduccionPanelControl() {
@@ -286,6 +295,11 @@ export default {
       //console.log(datos.data)
 
       if (datos.data.status_code == 200) {
+        var dinero = 0
+        for (var i = 0; i < datos.data.datos.length; i++) {
+          dinero = dinero + parseFloat(datos.data.datos[i].DeudaTotal)
+        }
+        this.mPendienteRPagosVehiculo = dinero.toFixed(2)
         this.tableDataPanelControlProduccion.push(...datos.data.datos)
       }
 
@@ -327,20 +341,17 @@ export default {
     showVisibleModalTableroProduccion() {
       this.isObservacionesTableroProduccion = this.isObservacionesTableroProduccion == true ? false : true
     },
-    async crearPreviewReciboIngresoPanelCobro() {
-      var mLista = this.multipleSelectionProduccionCobros
+    async crearPreviewReciboIngresoPanelCobro(mLista) {
       var dineroCobrado = 0
 
-      const pdfDoc = await PDFDocument.create()
+      const pdfDoc = await PDFDocument.create(ParseSpeeds.Slow)
       const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
       const TimesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
       let bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
       const page = pdfDoc.addPage()
       page.setWidth(230)
       const { width, height } = page.getSize()
-      /**PAGINA 2**/
-      const page2 = pdfDoc.addPage()
-      page2.setWidth(230)
+
       /**********MARCO DE AGUA*********/
 
       if (this.banderaMarcoAguaRecibo) {
@@ -627,6 +638,8 @@ export default {
       this.banderaMarcoAguaRecibo = true
     },
     async realizarCobro() {
+      var mListaCobrosAuxiliar = []
+      mListaCobrosAuxiliar.push(... this.multipleSelectionProduccionCobros)
 
       var unidades = []
       var codigos = []
@@ -648,22 +661,48 @@ export default {
 
         if (datos.data.status_code == 200) {
           if (datos.data.code == 200) {
-            this.banderaMarcoAguaRecibo = false
-            this.crearPreviewReciboIngresoPanelCobro()
-            this.readlPanelTableroProduccion()
-            this.notifyVue('default',datos.data.msm+"\n <strong>Listo para imprimir</strong>",'ni ni-check-bold',2500)
+            this.reloadStoreTableCobros(mListaCobrosAuxiliar)
+
+            //await this.readlPanelTableroProduccion()
+            this.notifyVue('default', datos.data.msm + "\n <strong>Listo para imprimir</strong>", 'ni ni-check-bold', 3000)
+            this.crearPreviewReciboIngresoPanelCobro(mListaCobrosAuxiliar)
           } else {
-            this.notifyVue('warning',datos.data.msm,'ni ni-fat-remove',3000)
+            this.notifyVue('warning', datos.data.msm, 'ni ni-fat-remove', 4500)
           }
         } else {
-          this.notifyVue('danger',datos.data.msm,'ni ni-settings',3000)
+          this.notifyVue('danger', datos.data.msm, 'ni ni-settings', 4500)
         }
 
       } catch (error) {
-        this.notifyVue('danger',error.toString(),'ni ni-notification-70',3000)
+        this.notifyVue('danger', error.toString(), 'ni ni-notification-70', 4500)
       }
     },
-    notifyVue(type, mensaje, icono, tiempo = 4000) {
+    async reloadStoreTableCobros(mListaCobrosAuxiliar) {
+      var mListaTablaAuxiliar = []
+
+      this.banderaMarcoAguaRecibo = false
+      this.multipleSelectionProduccionCobros = []
+      for (var contadorListaAux = 0; contadorListaAux < mListaCobrosAuxiliar.length; contadorListaAux++) {
+        for (var contadorListaTable = 0; contadorListaTable < this.tableDataPanelControlProduccion.length; contadorListaTable++) {
+          if (mListaCobrosAuxiliar[contadorListaAux].Codigo == this.tableDataPanelControlProduccion[contadorListaTable].Codigo) {
+            console.log("DELETE : " + contadorListaTable)
+            this.tableDataPanelControlProduccion.splice(contadorListaTable, 1)
+          }
+        }
+      }
+
+      mListaTablaAuxiliar.push(...this.tableDataPanelControlProduccion)
+      this.tableDataPanelControlProduccion = []
+      this.tableDataPanelControlProduccion.push(...mListaTablaAuxiliar)
+
+       var dinero = 0
+        for (var i = 0; i <  this.tableDataPanelControlProduccion.length; i++) {
+          dinero = dinero + parseFloat( this.tableDataPanelControlProduccion[i].DeudaTotal)
+        }
+         this.mPendienteRPagosVehiculo = dinero.toFixed(2)
+
+    },
+    notifyVue(type, mensaje, icono, tiempo = 4500) {
       this.$notify({
         message:
           mensaje,
