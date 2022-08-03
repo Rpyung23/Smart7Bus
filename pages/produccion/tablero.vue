@@ -58,10 +58,11 @@
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: dark; margin-right: 0.5rem">Recaudados : {{ mPagadoRPagosVehiculo }} $</strong>
-            <strong style="color: lightseagreen; margin-right: 0.5rem">Descuentos : {{ mPendienteRPagosVehiculo }}
+            <strong style="color: dark; margin-right: 0.5rem">Recaudado : {{ (parseFloat(mPagadoRPagosVehiculo) + parseFloat(mJustificadoRPagosVehiculo)).toFixed(2) }} $</strong>
+            <strong style="color: lightseagreen; margin-right: 0.5rem">Descuentos : {{ mJustificadoRPagosVehiculo }}
               $</strong>
-            <strong style="color: green">Total : {{ mTotalRPagosVehiculo }} $</strong>
+            <strong style="color: green; margin-right: 0.5rem">Total : {{ mPagadoRPagosVehiculo }}
+              $</strong>
           </div>
         </card>
 
@@ -258,9 +259,8 @@ export default {
       selectedRows: [],
       token: this.$cookies.get("token"),
       fechaInicialTableroProduccion: "",
-      mTotalRPagosVehiculo: "0.00",
       mPagadoRPagosVehiculo: "0.00",
-      mPendienteRPagosVehiculo: "0.00",
+      mJustificadoRPagosVehiculo: "0.00",
       loadingRTableroProduccion: false,
       mListRubrosTableroProduccion: [],
       mSelectRubroValueTablero: [],
@@ -398,7 +398,9 @@ export default {
       this.selectedRows = selectedRows;
     },
     async readlPanelTableroProduccion() {
-      console.log(this.itemUnidadPanelProduccion)
+      this.mPagadoRPagosVehiculo = "0.00"
+      this.mJustificadoRPagosVehiculo = "0.00"
+      
       this.loadingRTableroProduccion = true
       this.tableDataPanelControlProduccion = []
       var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionPanelControl", {
@@ -411,10 +413,23 @@ export default {
       //console.log(datos.data)
 
       if (datos.data.status_code == 200) {
+        this.CalcularTotales(datos.data.datos)
         this.tableDataPanelControlProduccion.push(...datos.data.datos)
       }
 
       this.loadingRTableroProduccion = false
+    },
+    async CalcularTotales(datos)
+    {
+      var total = 0
+      var descuentos = 0
+      for(var i = 0;i<datos.length;i++)
+      {
+        total = total + parseFloat(datos[i].DeudaTotal)
+        descuentos = descuentos + (parseFloat(datos[i].AdelantoJPenalidad) + parseFloat(datos[i].AtrasoJPenalidad) + parseFloat(datos[i].VelocidadJustificacion) + parseFloat(datos[i].RubroJustificacion))
+      }
+       this.mPagadoRPagosVehiculo = total.toFixed(2)
+       this.mJustificadoRPagosVehiculo = descuentos.toFixed(2)
     },
     async readRubrosTableroProduccion() {
       this.mListRubrosTableroProduccion = []

@@ -100,8 +100,8 @@
               <el-table-column prop="Unidad" label="Unidad" minWidth="110">
               </el-table-column>
 
-              <el-table-column prop="Fecha" label="F. Creación" minWidth="140">
-              </el-table-column>
+              <!--<el-table-column prop="Fecha" label="F. Creación" minWidth="140">
+              </el-table-column>-->
 
               <el-table-column prop="DeudaTotal" label="Total ($)" minWidth="150">
 
@@ -368,7 +368,7 @@ export default {
       if (row.EstadoCobro == 0) {
         row.estado = "PENDIENTE";
         return "warning-row-panelControlProduccion";
-      } else {
+      }else {
         row.estado = "PAGADO";
         return "success-row-panelControlProduccion";
       }
@@ -452,30 +452,10 @@ export default {
               message: "Datos consultados con éxito.",
               duration: 2500,
             });
-            var total = 0;
-            var pendiente = 0;
-            var pagado = 0;
-
+            this.CalcularTotalesResumidoVehiculo(datos.data.datos)
             this.tableDataResumidoVehiculos.push(...datos.data.datos);
-            for (var i = 0; i < datos.data.datos.length; i++) {
-              if (datos.data.datos[i].EstadoCobro == 1) {
-                pagado = pagado + parseFloat(datos.data.datos[i].DeudaTotal);
-              } else {
-                pendiente = pendiente + parseFloat(datos.data.datos[i].DeudaTotal)
-              }
-            }
-
-            this.mPagadoRPagosVehiculo = Number(pagado).toFixed(2);
-            this.mPendienteRPagosVehiculo = Number(pendiente).toFixed(2);
-            this.mTotalRPagosVehiculo = Number(pendiente + pagado).toFixed(2);
-            this.headerExcelRPagosVehiculoProduccion = [
-              "Reporte Pagos : " + (this.itemUnidadProduccionResumidoVehiculos.length <= 0 ? "TODAS LAS UNIDADES" :
-                this.itemUnidadProduccionResumidoVehiculos),
-              "Fechas : " + this.fechaInicialRPagosVehiculoProduccion + " hasta " + this.fechaFinalRPagosVehiculoProduccion,
-              "Dinero Recaudado : " + this.mPagadoRPagosVehiculo,
-              "Dinero Pendiente : " + this.mPendienteRPagosVehiculo,
-              "Total : " + this.mTotalRPagosVehiculo,
-            ]
+            
+            
 
             this.loadingRPagosVehiculo = false;
           } else if (datos.data.status_code == 300) {
@@ -502,6 +482,32 @@ export default {
         this.loadingRPagosVehiculo = false;
       }
     },
+    async CalcularTotalesResumidoVehiculo(datos)
+    {
+      var total = 0;
+      var pendiente = 0;
+      var pagado = 0;
+
+      for (var i = 0; i < datos.length; i++) {
+              if (datos[i].EstadoCobro == 1) {
+                pagado = pagado + parseFloat(datos[i].DeudaTotal);
+              } else {
+                pendiente = pendiente + parseFloat(datos[i].DeudaTotal)
+              }
+            }
+
+            this.mPagadoRPagosVehiculo = Number(pagado).toFixed(2);
+            this.mPendienteRPagosVehiculo = Number(pendiente).toFixed(2);
+            this.mTotalRPagosVehiculo = Math.abs(pendiente + pagado).toFixed(2);
+            this.headerExcelRPagosVehiculoProduccion = [
+              "Reporte Pagos : " + (this.itemUnidadProduccionResumidoVehiculos.length <= 0 ? "TODAS LAS UNIDADES" :
+                this.itemUnidadProduccionResumidoVehiculos),
+              "Fechas : " + this.fechaInicialRPagosVehiculoProduccion + " hasta " + this.fechaFinalRPagosVehiculoProduccion,
+              "Dinero Recaudado : " + this.mPagadoRPagosVehiculo,
+              "Dinero Pendiente : " + this.mPendienteRPagosVehiculo,
+              "Total : " + this.mTotalRPagosVehiculo,
+            ]
+    }
   },
   mounted() {
     this.readAllUnidadesPagosVehiculoProduccion();

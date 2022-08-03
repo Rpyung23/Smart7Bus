@@ -208,6 +208,8 @@ export default {
       baseURlPDFComprobanteIngresoTableroCobro: "",
       multipleSelectionProduccionCobros: [],
       banderaMarcoAguaRecibo: true,
+      pngUrl : 'https://res.cloudinary.com/virtualcode7/image/upload/v1659468163/marcoAgua_oibpny.png',
+      pngImageBytes : null
     };
   },
   methods: {
@@ -295,11 +297,13 @@ export default {
       //console.log(datos.data)
 
       if (datos.data.status_code == 200) {
-        var dinero = 0
-        for (var i = 0; i < datos.data.datos.length; i++) {
-          dinero = dinero + parseFloat(datos.data.datos[i].DeudaTotal)
+        let dinero = 0
+        for (var i = 0; i < datos.data.datos.length; i++) 
+        {
+          dinero = dinero + (datos.data.datos[i].DeudaTotal == null ? 0 : parseFloat(datos.data.datos[i].DeudaTotal) )
         }
-        this.mPendienteRPagosVehiculo = dinero.toFixed(2)
+        console.log("DINERO : "+dinero)
+        this.mPendienteRPagosVehiculo = dinero
         this.tableDataPanelControlProduccion.push(...datos.data.datos)
       }
 
@@ -348,21 +352,39 @@ export default {
       const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
       const TimesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
       let bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
+
+      
+
       const page = pdfDoc.addPage()
       page.setWidth(230)
       const { width, height } = page.getSize()
 
       /**********MARCO DE AGUA*********/
+      
+      if (this.banderaMarcoAguaRecibo) 
+      {
 
-      if (this.banderaMarcoAguaRecibo) {
-        page.drawText("RECIBO SOLO DE MUESTRA(SIN PAGAR)", {
+        const pngUrl = 'https://res.cloudinary.com/virtualcode7/image/upload/v1659468163/marcoAgua_oibpny.png'
+      const pngImageBytes = await fetch(pngUrl).then((res) => res.arrayBuffer())
+      const pngImage = await pdfDoc.embedPng(pngImageBytes)
+      const pngDims = pngImage.scale(0.20)
+
+        page.drawImage(pngImage, {
+        x: 20,
+        y: height - 20 * 10,
+        width: pngDims.width,
+        height: pngDims.height,
+        })
+
+
+        /*page.drawText("RECIBO SOLO DE MUESTRA(SIN PAGAR)", {
           x: 20,
           y: height - 2 * 10,
           size: 13,
           font: bold,
           color: rgb(0.95, 0.1, 0.1),
           rotate: degrees(-45),
-        })
+        })*/
       }
 
 
@@ -695,11 +717,13 @@ export default {
       this.tableDataPanelControlProduccion = []
       this.tableDataPanelControlProduccion.push(...mListaTablaAuxiliar)
 
-       var dinero = 0
-        for (var i = 0; i <  this.tableDataPanelControlProduccion.length; i++) {
-          dinero = dinero + parseFloat( this.tableDataPanelControlProduccion[i].DeudaTotal)
-        }
-         this.mPendienteRPagosVehiculo = dinero.toFixed(2)
+      var dinero = 0
+      for (var i = 0; i < this.tableDataPanelControlProduccion.length; i++) 
+      {
+        
+        dinero = dinero + parseFloat(this.tableDataPanelControlProduccion[i].DeudaTotal)
+      }
+      this.mPendienteRPagosVehiculo = dinero.toFixed(2)
 
     },
     notifyVue(type, mensaje, icono, tiempo = 4500) {
@@ -711,7 +735,11 @@ export default {
         type
       });
     },
+    async dowloadImage(){
+      this.pngImageBytes = await fetch(this.pngUrl).then((res) => res.arrayBuffer())
+    }
   }, mounted() {
+    this.dowloadImage()
     this.crearPreviewReciboIngresoPanelCobro([])
     this.readUnidadesTableroProduccion()
     this.readLineasTableroProduccion()
