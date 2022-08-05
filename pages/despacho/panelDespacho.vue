@@ -755,21 +755,25 @@ export default {
   padding-left: 0.25rem;
   margin-top: 0.5rem;
 }
+
 .estadofinalizadoDespacho
 {
   background-color:#ffffff ;
   color: black;
 }
+
 .estadoenrutaDespacho
 {
   background-color:rgba(78, 135, 242, 0.369);
   color: black;  
 }
+
 .estadoanuladoDespacho
 {
   background-color: rgba(245, 97, 97, 0.369);
   color: black;
 }
+
 .estadodiferidoDespacho
 {
   background-color:rgba(92, 237, 84, 0.369);
