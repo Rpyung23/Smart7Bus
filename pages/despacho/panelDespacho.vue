@@ -11,7 +11,7 @@
             <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
             <span class="btn-inner--text">Tarjeta</span>
           </base-button>
-
+          
           <base-button icon type="default">
             <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
             <span class="btn-inner--text">Recalificar</span>
@@ -25,33 +25,19 @@
             <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
             <span class="btn-inner--text">Finalizar</span>
           </base-button>
+
           <base-button icon type="info">
             <span class="btn-inner--icon"><i class="ni ni-single-02"></i></span>
             <span class="btn-inner--text">Chofer</span>
           </base-button>
         </div>
 
-        <div class="containerTiposDespachos">
-
-
-          <el-radio-group v-model="radioTipoDespacho">
-
-            <div class="table1" style="height: 20px;width: 100%;">
-              <el-radio :label="3">Salida Normal.</el-radio>
-              <el-radio :label="9">Generar Tarjeta</el-radio>
-            </div>
-            <div class="table2" style="height: 20px;width: 100%;">
-              <el-radio :label="6">Salida Diferida</el-radio>
-              <el-radio :label="7">Salida de Apoyo</el-radio>
-            </div>
-
-
-
-          </el-radio-group>
+        <div>
+           <base-button icon type="primary" @click="showModalSalidasDespacho()">
+            <span class="btn-inner--icon"><i class="ni ni-bullet-list-67"></i></span>
+            <span class="btn-inner--text"></span>
+          </base-button>
         </div>
-
-
-
       </card>
 
       <card class="no-border-card col" style="margin-bottom: 0.5rem"
@@ -95,10 +81,12 @@
         </div>
       </card>
 
+      
+
 
       <div class="containerTablero">
         <div class="container-rutas">
-          <div class="itemrutaDespacho" v-for="ruta in mListRutasDespacho" :id="ruta.LetrRuta" :key="ruta.LetrRuta"
+          <div :class="index == 0 ? 'itemrutaDespacho activeRutaDespacho' : 'itemrutaDespacho'" v-for="(ruta,index) in mListRutasDespacho" :id="ruta.LetrRuta" :key="ruta.LetrRuta"
             @click="lecturaDespacho(ruta)">
             {{ ruta.DescRuta }}
           </div>
@@ -147,6 +135,21 @@
       </card>
     </modal>
 
+    <!--Form modal Salidas -->
+  <modal :show.sync="modalSalidasDespacho" size="sm">
+          <div class="containerTiposDespachos">
+          <el-radio-group v-model="radioTipoDespacho">
+              <el-radio :label="3">Salida Normal.</el-radio>
+              <el-radio :label="9">Generar Tarjeta</el-radio>
+              <el-radio :label="6">Salida Diferida</el-radio>
+              <el-radio :label="7">Salida de Apoyo</el-radio>
+          </el-radio-group>
+          <base-checkbox v-model="checkboxOrdenamientoDespacho" class="mb-3">
+            Checked
+          </base-checkbox>
+        </div>
+        
+    </modal>
 
   </div>
 </template>
@@ -208,12 +211,25 @@ export default {
       mSelectRutaSalidaPanelDespacho: null,
       mSelectRutaFrecuenciaPanelDespacho: null,
       modalSalidasTarjetaPanelDespacho: false,
+      modalSalidasDespacho:false,
       baseURlPDFPanelDespachoTarjetaSalida: null,
       selectedRowSalida: null,
-      radioTipoDespacho: 3
+      radioTipoDespacho: 3,
+      checkboxOrdenamientoDespacho: false
     };
   },
   methods: {
+    cellclassname (row, column, value, data) {
+      if (data.EstaSali_m == 'DIFERIDO') {
+        return "estadodiferidoDespacho";
+      }else if (data.EstaSali_m == 'EN RUTA' ) {
+        return "estadoenrutaDespacho"
+      }else if (data.EstaSali_m == 'FINALIZADO') {
+        return "estadofinalizadoDespacho";
+      }else if (data.EstaSali_m == 'ANULADO') {
+        return "estadoanuladoDespacho";
+      }     
+    },
     myGridOnRowSelect: function (event) {
       this.selectedRowSalida = event.args.row
       this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(this.selectedRowSalida.idSali_m)
@@ -312,18 +328,18 @@ export default {
       this.$refs.myGridDespachoPanel.beginupdate();
       this.columnsInfo = []
 
-      this.columnsInfo[0] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70 }
-      this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 90 }
-      this.columnsInfo[2] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90 }
-      this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100 }
-      this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150 }
-      this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70 }
-      this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50 }
-      this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40 }
-      this.columnsInfo[8] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250 }
-      this.columnsInfo[9] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100 }
-      this.columnsInfo[10] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100 }
-      this.columnsInfo[11] = { text: 'Chofer', datafield: 'Country23', width: 150 }
+      this.columnsInfo[0] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname }
+      this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 90, cellclassname: this.cellclassname }
+      this.columnsInfo[2] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname }
+      this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname }
+      this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname }
+      this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname }
+      this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname }
+      this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname }
+      this.columnsInfo[8] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname }
+      this.columnsInfo[9] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname }
+      this.columnsInfo[10] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname }
+      this.columnsInfo[11] = { text: 'Chofer', datafield: 'Country23', width: 150, cellclassname: this.cellclassname }
 
 
       this.$refs.myGridDespachoPanel.setOptions
@@ -344,6 +360,7 @@ export default {
     },
     activeRutaDespacho(ruta) {
       console.log(ruta)
+      console.log(ruta.LetrRuta)
       $("#" + ruta.LetrRuta).addClass("activeRutaDespacho")
       this.createHeaderTable(ruta)
     },
@@ -360,12 +377,13 @@ export default {
           process.env.baseUrlPanel + "/rutes",
           {
             token: this.token,
+            tipo:1
           }
         );
 
         if (datos.data.status_code == 200) {
           this.mListRutasDespacho.push(...datos.data.data);
-          this.activeRutaDespacho(this.mListRutasDespacho[0])
+          this.activeRutaDespacho(datos.data.data[0])
         } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Rutas Despacho",
@@ -385,6 +403,9 @@ export default {
       var tiempoString = ''
       var minutosString = ''
       var mListHora = []
+      var ListaLlena = []
+      var ListaVacia = []
+      var ListaCompleta = []
       var inter = 0
       for (var hora = 4; hora <= 23; hora++) {
         tiempoString = (hora < 10 ? "0" + hora : hora)
@@ -410,19 +431,21 @@ export default {
           } : (obj)
 
           if (obj == null) {
+            ListaVacia.push(objD)  
             inter++
           } else {
             objD.Intervalo = inter
             inter = 0
+            ListaLlena.push(obj)
           }
-
-
           mListHora.push(objD)
+          console.log(mListHora);
 
         }
       }
+      ListaCompleta = ListaLlena.concat(ListaVacia)
       return {
-        localdata: mListHora,
+        localdata: ListaCompleta,
         datatype: 'array',
         datafields: [{ name: 'LetraRutaSali_m', type: 'string' },
         { name: 'CodiVehiSali_m', type: 'string' },
@@ -671,7 +694,10 @@ export default {
       })
 
       this.baseURlPDFPanelDespachoTarjetaSalida = await pdfDoc.saveAsBase64({ dataUri: true });
-    }
+    },
+    showModalSalidasDespacho() {
+      this.modalSalidasDespacho = true;
+    },
   },
   mounted() {
     this.readAllUnidadesSalidasPanelBusqueda()
@@ -692,7 +718,7 @@ export default {
 .containerTiposDespachos {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
@@ -787,7 +813,7 @@ export default {
 
 .containerTablero {
   background-color: #2dce89;
-  height: calc(100vh - 13rem);
+  height: calc(100vh - 13.17rem);
   display: flex;
 }
 
@@ -799,5 +825,29 @@ export default {
   padding-right: 0.25rem !important;
   padding-left: 0.25rem;
   margin-top: 0.5rem;
+}
+
+.estadofinalizadoDespacho
+{
+  background-color:#ffffff ;
+  color: black;
+}
+
+.estadoenrutaDespacho
+{
+  background-color:rgba(78, 135, 242, 0.369);
+  color: black;  
+}
+
+.estadoanuladoDespacho
+{
+  background-color: rgba(245, 97, 97, 0.369);
+  color: black;
+}
+
+.estadodiferidoDespacho
+{
+  background-color:rgba(92, 237, 84, 0.369);
+  color: black;
 }
 </style>
