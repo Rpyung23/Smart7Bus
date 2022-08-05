@@ -313,7 +313,8 @@ export default {
       this.mListLineasTableroProduccion = []
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
-          token: this.token
+          token: this.token,
+          tipo:3
         })
 
         if (datos.data.status_code == 200) {

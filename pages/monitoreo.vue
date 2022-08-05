@@ -729,7 +729,7 @@ export default {
         var datos = await this.$axios.post(
           process.env.baseUrlPanel + "/readRutasMonitoreo",
           {
-            token: this.token,
+            token: this.token
           }
         );
 

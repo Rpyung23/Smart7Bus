@@ -58,7 +58,9 @@
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: dark; margin-right: 0.5rem">Recaudado : {{ (parseFloat(mPagadoRPagosVehiculo) + parseFloat(mJustificadoRPagosVehiculo)).toFixed(2) }} $</strong>
+            <strong style="color: dark; margin-right: 0.5rem">Recaudado : {{ (parseFloat(mPagadoRPagosVehiculo) +
+                parseFloat(mJustificadoRPagosVehiculo)).toFixed(2)
+            }} $</strong>
             <strong style="color: lightseagreen; margin-right: 0.5rem">Descuentos : {{ mJustificadoRPagosVehiculo }}
               $</strong>
             <strong style="color: green; margin-right: 0.5rem">Total : {{ mPagadoRPagosVehiculo }}
@@ -76,12 +78,17 @@
 
 
 
-              <el-table-column label="Acciones" minWidth="170">
+              <el-table-column label="Acciones" minWidth="200">
 
                 <template slot-scope="scope">
                   <base-button size="sm" @click="showVisibleModalTableroProduccion(scope.row)" title="Justificar Unidad"
                     type="primary"><i class="ni ni-like-2"></i></base-button>
-                  <base-button size="sm" title="Recorrido Salida" type="success"><i class="ni ni-world"></i>
+                  <base-button size="sm" @click="showVisibleModalRecorridoTableroProduccion(scope.row)"
+                    title="Recorrido Salida" type="success"><i class="ni ni-world"></i>
+                  </base-button>
+                  <base-button size="sm" v-if="scope.row.VelocidadPenalidad != '0.00' ? true : false"
+                    @click="showVisibleModalExVelocidadTableroProduccion(scope.row)" title="Excesos de Velocidad"
+                    type="danger"><i class="ni ni-delivery-fast"></i>
                   </base-button>
                 </template>
               </el-table-column>
@@ -173,14 +180,14 @@
             <div class="containerRigthTopNavbarModal">
               <textarea class="textAreaCustom" v-model="oMotivoString"></textarea>
 
-              <base-button title="Enviar Justificación"  @click="sendJustify()" style="height: fit-content" type="primary"><i
-                  class="ni ni-check-bold"></i></base-button>
+              <base-button title="Enviar Justificación" @click="sendJustify()" style="height: fit-content"
+                type="primary"><i class="ni ni-check-bold"></i></base-button>
             </div>
 
           </div>
 
-          <JqxGrid ref="myGridDespachoPanelOtros" :height="'150px'" :columns="columnsInfoOtros" :source="dataAdapterOtros"
-            :enabletooltips="true" :width="getWidth">
+          <JqxGrid ref="myGridDespachoPanelOtros" :height="'150px'" :columns="columnsInfoOtros"
+            :source="dataAdapterOtros" :enabletooltips="true" :width="getWidth">
           </JqxGrid>
           <br>
 
@@ -188,6 +195,79 @@
             :columns="columnsInfo" :source="dataAdapter" :enabletooltips="true" :width="getWidth">
           </JqxGrid>
 
+
+          <!--<template slot="footer">
+            <base-button type="primary">Guardar Cambios</base-button>
+            <base-button type="link" class="ml-auto" @click="modals.classic = false">Cancelar</base-button>
+          </template>-->
+
+        </modal>
+
+        <!--Classic modal RECORRIDO-->
+        <modal :show.sync="isRecorridoTableroProduccion" size="xl">
+
+          <template slot="header" style="background-color: #2dce89;">
+          </template>
+
+
+
+          <!--<template slot="footer">
+            <base-button type="primary">Guardar Cambios</base-button>
+            <base-button type="link" class="ml-auto" @click="modals.classic = false">Cancelar</base-button>
+          </template>-->
+
+        </modal>
+
+
+        <!--Classic modal EX VELOCIDAD-->
+        <modal :show.sync="isExVelocidadTableroProduccion" size="xl">
+
+          <template slot="header" style="background-color: #2dce89;">
+          </template>
+
+          <GmapMap map-type-id="roadmap" class="mapa" :center="oCenterTableroExVelocidad"
+            :zoom="oZoomTableroExVelocidad" :options="{
+              zoomControl: false,
+              scaleControl: false,
+              mapTypeControl: false,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false,
+              disableDefaultUi: true,
+            }">
+
+
+            <GmapPolygon :key="index" v-for="(item, index) in mListaTrazadoAllTramsExVelocidad" :options="{
+              strokeColor: '#000000',
+              fillColor: '#00000040',
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+            }" :editable="false" :strokeOpacity="0.5" :strokeWeight="1" :paths="item.posiciones" />
+
+            <GmapMarker v-for="marker in oHistorialExVelocidad" :key="marker.idHistEve" :position="{
+              lat: parseFloat(marker.LatHistTrama),
+              lng: parseFloat(marker.LongHistTrama),
+            }" :icon="marker.icono" :clickable="false" :draggable="false" :optimized="true" />
+
+            <!--MARCADORES CON MARCACION-->
+            <GmapMarker v-for="(marker, index) in oHistorialExVelocidad" :key="index" :position="{
+              lat: parseFloat(marker.LatHistTrama),
+              lng: parseFloat(marker.LongHistTrama),
+            }" icon="../static/img/control/control.png" :clickable="false" :draggable="false" :optimized="true"
+              :options="{
+                label: {
+                  text: 'UNIDAD : ' + marker.CodiVehiHistTrama + '... VEL : ' + marker.VeloHistTrama + ' ... FECHA : ' + marker.FechaHistTrama,
+                  color: '#c70808',
+                  className: 'paddingLabelTramaExVelocidad',
+                },
+              }" />
+
+
+          </GmapMap>
+
+          <!--<div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingRecorridoSalidaPanelBusqueda">
+            <div class="circleProgress"></div>
+          </div>-->
 
           <!--<template slot="footer">
             <base-button type="primary">Guardar Cambios</base-button>
@@ -257,6 +337,7 @@ export default {
     return {
       tableDataPanelControlProduccion: [],
       selectedRows: [],
+      mListaTrazadoAllTramsExVelocidad: [],
       token: this.$cookies.get("token"),
       fechaInicialTableroProduccion: "",
       mPagadoRPagosVehiculo: "0.00",
@@ -271,6 +352,8 @@ export default {
       optionsUnidadesPanelProduccion: [],
       itemUnidadPanelProduccion: [],
       isObservacionesTableroProduccion: false,
+      isRecorridoTableroProduccion: false,
+      isExVelocidadTableroProduccion: false,
       dataAdapter: new jqx.dataAdapter([]),
       dataAdapterOtros: new jqx.dataAdapter([]),
       getWidth: "100%",
@@ -307,7 +390,10 @@ export default {
       oUnidadModalTitle: '',
       oRutaModalTitle: '',
       oPriceModalTitle: '0.00',
-      oMotivoString:''
+      oMotivoString: '',
+      oCenterTableroExVelocidad: { lat: -1.249546, lng: -78.585376 },
+      oZoomTableroExVelocidad: 7,
+      oHistorialExVelocidad: [],
     };
   },
   methods: {
@@ -353,9 +439,8 @@ export default {
     },
     myGridOnRowSelect: function (event) {
       var obj = event.args.row
-      if (obj != null && obj != undefined) 
-      {
-      
+      if (obj != null && obj != undefined) {
+
 
         if (parseInt(obj.Tipo) <= 2) {
           this.oMotivoString = obj.Motivo
@@ -400,36 +485,54 @@ export default {
     async readlPanelTableroProduccion() {
       this.mPagadoRPagosVehiculo = "0.00"
       this.mJustificadoRPagosVehiculo = "0.00"
-      
+
       this.loadingRTableroProduccion = true
       this.tableDataPanelControlProduccion = []
-      var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionPanelControl", {
-        token: this.token,
-        fecha: this.fechaInicialTableroProduccion,
-        rutas: this.mSelectLineasValueTablero.length <= 0 ? '*' : this.mSelectLineasValueTablero,
-        unidades: this.itemUnidadPanelProduccion.length <= 0 ? '*' : this.itemUnidadPanelProduccion
-      })
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionPanelControl", {
+          token: this.token,
+          fecha: this.fechaInicialTableroProduccion,
+          rutas: this.mSelectLineasValueTablero.length <= 0 ? '*' : this.mSelectLineasValueTablero,
+          unidades: this.itemUnidadPanelProduccion.length <= 0 ? '*' : this.itemUnidadPanelProduccion
+        })
 
-      //console.log(datos.data)
+        //console.log(datos.data)
 
-      if (datos.data.status_code == 200) {
-        this.CalcularTotales(datos.data.datos)
-        this.tableDataPanelControlProduccion.push(...datos.data.datos)
+        if (datos.data.status_code == 200) {
+          this.CalcularTotales(datos.data.datos)
+          this.tableDataPanelControlProduccion.push(...datos.data.datos)
+        } else {
+          this.$notify({
+            message:
+              datos.data.msm,
+            timeout: 3000,
+            icon: datos.data.status_code == 300 ? 'ni ni-fat-delete' : 'ni ni-fat-remove',
+            type: datos.data.status_code == 300 ? 'default' : 'danger'
+          });
+        }
+
+
+      } catch (error) {
+        console.log(error)
+        this.$notify({
+            message:error.toString(),
+            timeout: 3000,
+            icon: 'ni ni-fat-remove',
+            type: 'danger'
+          });
       }
 
       this.loadingRTableroProduccion = false
     },
-    async CalcularTotales(datos)
-    {
+    async CalcularTotales(datos) {
       var total = 0
       var descuentos = 0
-      for(var i = 0;i<datos.length;i++)
-      {
+      for (var i = 0; i < datos.length; i++) {
         total = total + parseFloat(datos[i].DeudaTotal)
         descuentos = descuentos + (parseFloat(datos[i].AdelantoJPenalidad) + parseFloat(datos[i].AtrasoJPenalidad) + parseFloat(datos[i].VelocidadJustificacion) + parseFloat(datos[i].RubroJustificacion))
       }
-       this.mPagadoRPagosVehiculo = total.toFixed(2)
-       this.mJustificadoRPagosVehiculo = descuentos.toFixed(2)
+      this.mPagadoRPagosVehiculo = total.toFixed(2)
+      this.mJustificadoRPagosVehiculo = descuentos.toFixed(2)
     },
     async readRubrosTableroProduccion() {
       this.mListRubrosTableroProduccion = []
@@ -449,7 +552,8 @@ export default {
       this.mListLineasTableroProduccion = []
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
-          token: this.token
+          token: this.token,
+          tipo:3
         })
 
         if (datos.data.status_code == 200) {
@@ -483,10 +587,17 @@ export default {
       this.readDetalleTableroProduccionAnotaciones(item)
       await this.readDetalleTableroProduccion(item)
     },
+    async showVisibleModalExVelocidadTableroProduccion(item) {
+      this.isExVelocidadTableroProduccion = this.isExVelocidadTableroProduccion == true ? false : true
+      this.readHISTORIALTrazadoAllTramosTableroProduccion(item)
+    },
+    async showVisibleModalRecorridoTableroProduccion(item) {
+      this.isRecorridoTableroProduccion = this.isRecorridoTableroProduccion == true ? false : true
+    },
     async readDetalleTableroProduccion(item) {
       this.oUnidadModalTitle = item.Unidad
       this.oRutaModalTitle = item.DescRuta
-  
+
 
       var mList = []
       try {
@@ -496,7 +607,7 @@ export default {
         }
         )
 
-        if(datos.data.datos.length > 0){
+        if (datos.data.datos.length > 0) {
           this.oPriceModalTitle = datos.data.datos[0].DeudaTotal
         }
         mList.push(...datos.data.datos)
@@ -580,11 +691,72 @@ export default {
       this.$refs.myGridDespachoPanelOtros.endupdate();
 
     },
-    sendJustify(){
-      var tiempo = this.oHora+":"+this.oMinutos+":"+this.oSegundos
-      console.log("JUSTIFICACION ENVIADA : "+tiempo)
+    sendJustify() {
+      var tiempo = this.oHora + ":" + this.oMinutos + ":" + this.oSegundos
+      console.log("JUSTIFICACION ENVIADA : " + tiempo)
+    },
+    async readTrazadoAllTramosTableroProduccion() {
+      this.mListaTrazadoAllTramsExVelocidad = []
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/readAllTrazadoTramosExVelocidad", {
+          token: this.token
+        })
+
+        if (datos.data.status_code == 200) {
+          this.mListaTrazadoAllTramsExVelocidad = datos.data.datos
+          console.log(this.mListaTrazadoAllTramsExVelocidad)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }, async readHISTORIALTrazadoAllTramosTableroProduccion(item) {
+      this.oCenterTableroExVelocidad = { lat: -1.249546, lng: -78.585376 }
+      this.oZoomTableroExVelocidad = 7
+      this.oHistorialExVelocidad = []
+      try {
+        var obj = {
+          token: this.token,
+          codigoDM: item.Codigo,
+          unidad: item.Unidad
+        }
+        console.log(obj)
+        var datos = await this.$axios.post(process.env.baseUrl + "/readTrazadoHistorialExVelocidad", obj)
+
+        if (datos.data.status_code == 200) {
+          var mList = []
+          for (var i = 0; i < datos.data.datos.length; i++) {
+            var obj = datos.data.datos[i]
+            obj.icono = {
+              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+              fillColor: "red",
+              fillOpacity: 1,
+              strokeWeight: 0,
+              rotation: obj.RumbHistEven,
+              scale: 3,
+              anchor: new google.maps.Point(0, 0),
+            }
+            mList.push(obj)
+          }
+
+          if (mList.length > 0) {
+            this.oCenterTableroExVelocidad = {
+              lat: parseFloat(mList[0].LatHistTrama),
+              lng: parseFloat(mList[0].LongHistTrama)
+            }
+            this.oZoomTableroExVelocidad = 16
+          }
+          this.oHistorialExVelocidad.push(...mList)
+
+        } else {
+
+        }
+      } catch (e) {
+        console.log(e)
+      }
     }
+
   }, mounted() {
+    this.readTrazadoAllTramosTableroProduccion()
     this.readUnidadesTableroProduccion()
     this.readLineasTableroProduccion()
     this.readRubrosTableroProduccion()
@@ -594,6 +766,11 @@ export default {
 };
 </script>
 <style>
+.mapa {
+  width: 100%;
+  height: calc(80vh);
+}
+
 .inputTimer {
   width: 1.4rem !important;
   background-color: transparent;

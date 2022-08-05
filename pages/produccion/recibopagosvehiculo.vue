@@ -32,11 +32,7 @@
               </el-option>
             </el-select>-->
 
-            <el-select style="margin-right: 0.5rem;" v-model="itemCobradoresProduccionRPagoVehiculorecibo" multiple placeholder="Operador">
-              <el-option v-for="item in mListaCobradoresPagosVehiculoProduccionRecibo" :key="item.CodiUsua"
-                :label="item.NombApellUsua" :value="item.CodiUsua">
-              </el-option>
-            </el-select>
+
 
 
             <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
@@ -50,6 +46,11 @@
                 class="form-controlPersonal datepicker" v-model="fechaFinalRPagosVehiculoProduccionRecibo">
               </flat-picker>
             </base-input>
+
+            <!-- DOWNLOAD EXCEL-->
+
+
+
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
@@ -57,6 +58,15 @@
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               <span class="btn-inner--text">Buscar</span>
             </base-button>
+
+            <download-excel v-if="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? true : false" class="btn btn-outline-success" outline :header="RecibosheaderExcelRPagosVehiculoProduccion"
+              :data="tableDataRPagosVEhiculoProduccionRecibo" :fields="json_fields_excelRecibosPagosVehiculoProduccion"
+              :worksheet="RecibosWorksheetExcelRPagosVehiculoProduccion"
+              :name="RecibosFileNameExcelRPagosVehiculoProduccion">
+              <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
+              <span class="btn-inner--text"> Exportar Excel</span>
+            </download-excel>
+
             <!--<base-button outline type="success">
               <span class="btn-inner--icon"
                 ><i class="ni ni-collection"></i
@@ -79,6 +89,14 @@
             <el-radio v-model="radioEstadoRPagosVehiculoRecibo" label="1"
               >ANULADOS</el-radio
             >-->
+
+            <el-select style="margin-right: 0.5rem;" collapse-tags v-model="itemCobradoresProduccionRPagoVehiculorecibo" multiple
+              placeholder="Operador">
+              <el-option v-for="item in mListaCobradoresPagosVehiculoProduccionRecibo" :key="item.CodiUsua"
+                :label="item.NombApellUsua" :value="item.CodiUsua">
+              </el-option>
+            </el-select>
+
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
@@ -95,7 +113,7 @@
           <div>
             <el-table v-loading="loadingRPagosVehiculoRecibo" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="tableDataRPagosVEhiculoProduccionRecibo" row-key="id"
-              :height="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? 455 : 150" style="width: 100%"
+              :height="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? 440 : 150" style="width: 100%"
               :default-sort="{ prop: 'estado', order: 'descending' }" class="tablePanelControlProduccion"
               header-row-class-name="thead-dark" :row-class-name="tableRowClassNameRPagosVehiculoProduccionRecibo">
               <el-table-column prop="numero_cobro" label="N° Recibo" minWidth="100">
@@ -221,6 +239,14 @@ export default {
       loadingTableUnidadesRecibosVehiculoProduccion: false,
       loadingTableCobradoresRecibosVehiculoProduccion: false,
       baseURlPDFPanelDetalleRecibo: '',
+      RecibosWorksheetExcelRPagosVehiculoProduccion: "",
+      RecibosFileNameExcelRPagosVehiculoProduccion: "",
+      json_fields_excelRecibosPagosVehiculoProduccion: {
+        "UNIDAD": "Unidad",
+        "DEUDA PAGADA": "DeudaTotal",
+        "FECHA DE COBRO": "fecha_cobro",
+        "ATENCIÓN": "NombApellUsua"
+      },
     };
   },
   methods: {
@@ -278,20 +304,22 @@ export default {
         }
       }
     },
-    async readAllCobradoresPagosVehiculoProduccionRecibo() 
-    {
+    async readAllCobradoresPagosVehiculoProduccionRecibo() {
       this.mListaCobradoresPagosVehiculoProduccionRecibo = []
 
       var datos = await this.$axios.post(process.env.baseUrl + "/readallCobradores", {
         token: this.token,
       });
 
-      if (datos.data.status_code == 200) 
-      {
+      if (datos.data.status_code == 200) {
         this.mListaCobradoresPagosVehiculoProduccionRecibo.push(...datos.data.data)
       }
     },
     async readAllRPagosVehiculoProduccionRecibos() {
+
+      this.RecibosWorksheetExcelRPagosVehiculoProduccion = "RRPV_W_" + Date.now()
+      this.RecibosFileNameExcelRPagosVehiculoProduccion = "RRPV_" + Date.now() + ".xls"
+
       this.mPagadoRPagosVehiculoRecibo = "0.00"
       this.mAnuladoRPagosVehiculoRecibo = "0.00"
 
@@ -310,7 +338,7 @@ export default {
             unidades: this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemUnidadProduccionRPagoVehiculorecibo,
             fechaI: this.fechaInicialRPagosVehiculoProduccionRecibo,
             fechaF: this.fechaFinalRPagosVehiculoProduccionRecibo,
-            operadores: this.itemCobradoresProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemCobradoresProduccionRPagoVehiculorecibo 
+            operadores: this.itemCobradoresProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemCobradoresProduccionRPagoVehiculorecibo
           };
           console.log(body);
           var datos = await this.$axios.post(
@@ -319,11 +347,11 @@ export default {
           );
 
           if (datos.data.status_code == 200) {
-            Notification.success({
+            /*Notification.success({
               title: "Reporte Pagos Vehiculo",
               message: "Datos consultados con éxito.",
               duration: 2500,
-            });
+            });*/
             var anulado = 0;
             var pagado = 0;
 
@@ -338,6 +366,18 @@ export default {
             this.mAnuladoRPagosVehiculoRecibo = Number(anulado).toFixed(2)
 
             this.loadingRPagosVehiculoRecibo = false;
+
+            this.RecibosheaderExcelRPagosVehiculoProduccion = [
+              "Reporte Pagos : " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" :
+                this.itemUnidadProduccionRPagoVehiculorecibo),
+              "Fechas : " + this.fechaInicialRPagosVehiculoProduccionRecibo + " hasta " + this.fechaFinalRPagosVehiculoProduccionRecibo,
+              "Operador : " + (this.itemCobradoresProduccionRPagoVehiculorecibo.length <= 0 ? "TODOS LOS OPERADORES" : this.itemCobradoresProduccionRPagoVehiculorecibo.NombApellUsua),
+              "Total : " + this.mPagadoRPagosVehiculoRecibo,
+            ]
+
+
+
+
           } else if (datos.data.status_code == 300) {
             this.loadingRPagosVehiculoRecibo = false;
             Notification.info({
@@ -449,7 +489,7 @@ export default {
 
 .card-bodyRPagosVehiculoReciboProduccion {
   padding: 0rem !important;
-  height: calc(100vh - 12rem);
+  height: calc(100vh - 13rem);
   overflow: auto;
 }
 

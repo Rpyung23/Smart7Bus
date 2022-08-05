@@ -212,6 +212,7 @@ Toast.fire({
     async readAllRutas() {
       var datos = await this.$axios.post(process.env.baseUrlPanel + "/rutes", {
         token: this.token,
+        tipo:3
       });
 
       if (datos.data.status_code == 200) 
