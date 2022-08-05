@@ -208,6 +208,7 @@ export default {
     async readAllLineasContadorSalidasPanelBusqueda() {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
+        tipo:3
       });
       if (datos.data.status_code == 200) {
         this.mListLineasSalidasPanelBusqueda.push(...datos.data.data);

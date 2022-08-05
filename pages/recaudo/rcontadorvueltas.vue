@@ -342,6 +342,7 @@ export default {
     async readAllLineasContadorPasajerosVueltas() {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
+        tipo:1
       });
       if (datos.data.status_code == 200) {
         this.mListLineasContadorPasajeros.push(...datos.data.data);

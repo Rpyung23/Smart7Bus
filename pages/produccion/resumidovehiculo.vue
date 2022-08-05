@@ -86,7 +86,7 @@
               element-loading-spinner="el-icon-loading" :data="tableDataResumidoVehiculos" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               :row-class-name="tableRowClassNameRPagosVehiculoProduccion"
-              :height="tableDataResumidoVehiculos.length > 0 ? 455 : 150" style="width: 100%">
+              :height="tableDataResumidoVehiculos.length > 0 ? 459 : 250" style="width: 100%">
 
 
               <el-table-column label="Acciones" minWidth="140">
@@ -182,10 +182,10 @@
         <el-table-column prop="Unidad" label="Unidad" minWidth="110">
         </el-table-column>
 
-        <el-table-column prop="DescripcionControl" label="Descripcion" minWidth="180">
+        <el-table-column prop="DescripcionControl" label="Descripcion" minWidth="240">
         </el-table-column>
 
-        <el-table-column prop="Programado" label="Prog" minWidth="100">
+        <el-table-column prop="Programado" label="Prog" minWidth="170">
         </el-table-column>
 
         <el-table-column prop="Marcado" label="Marc" minWidth="100">
@@ -332,9 +332,13 @@ export default {
         this.titleModalResumidoVehiculos = "Unidad : "+item.Unidad+" Deuda Total ($) : "+item.DeudaTotal
         var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionDetalleResumidoVehiculos", {
           token: this.token,
-          codigoResumido: item.Codigo
+          unidad: item.Unidad,
+          fechaI: item.fechaIB,
+          fechaF: item.fechaFB,
+          estadoCobro: item.EstadoCobro
         })
-        console.log(datos.data.datos)
+
+        //console.log(datos.data.datos)
 
         this.tableDataDetalleResumidoVehiculos.push(...datos.data.datos)
 
@@ -575,6 +579,10 @@ export default {
   height: calc(100vh - 12rem);
   overflow: auto;
 }
+
+/*.card-bodyResumidoVehiculos::-webkit-scrollbar {
+    display: none;
+}*/
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
