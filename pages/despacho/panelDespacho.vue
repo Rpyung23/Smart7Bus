@@ -32,11 +32,15 @@
           </base-button>
         </div>
 
-        <div>
-           <base-button icon type="primary" @click="showModalSalidasDespacho()">
+        <div class="buttonsAdicionalesDespacho">
+           <base-button icon type="primary" title="Tipos de Despachos" size="sm" @click="showModalSalidasDespacho()">
             <span class="btn-inner--icon"><i class="ni ni-bullet-list-67"></i></span>
-            <span class="btn-inner--text"></span>
           </base-button>
+
+          <base-button icon type="danger" title="Salidas Anuladas" size="sm" @click="showModalSalidasDespacho()">
+            <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
+          </base-button>
+
         </div>
       </card>
 
@@ -98,7 +102,7 @@
               @cellbeginedit="cellBeginEditEvent($event)" :height="'100%'" style="margin-right: 50rem !important;"
               @cellendedit="cellEndEditEvent($event)" :columns="columnsInfo" :source="dataAdapter" :editable="true"
               @rowselect="myGridOnRowSelect($event,)" :selectionmode="'singlerow'" :enabletooltips="true"
-              :width="getWidth">
+              :width="getWidth" >
             </JqxGrid>
 
             <JqxMenu ref="myMenu" @itemclick="myMenuOnItemClick($event)" :width="200" :height="200" :mode="'popup'"
@@ -144,9 +148,10 @@
               <el-radio :label="6">Salida Diferida</el-radio>
               <el-radio :label="7">Salida de Apoyo</el-radio>
           </el-radio-group>
-          <base-checkbox v-model="checkboxOrdenamientoDespacho" class="mb-3">
-            Checked
-          </base-checkbox>
+          <div>
+
+ 
+      </div>
         </div>
         
     </modal>
@@ -156,7 +161,8 @@
 <script>
 import {
   Table, TableColumn, Select, Option, Notification,
-  DatePicker, RadioButton, RadioGroup, Radio, Button, Dropdown
+  DatePicker, RadioButton, RadioGroup, Radio, Button, Dropdown,
+  Checkbox
 } from "element-ui";
 import JqxGrid from "jqwidgets-scripts/jqwidgets-vue/vue_jqxgrid.vue";
 import JqxMenu from "jqwidgets-scripts/jqwidgets-vue/vue_jqxmenu.vue";
@@ -168,6 +174,7 @@ import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { timingSafeEqual } from "crypto";
 export default {
   mixins: [clientPaginationMixin],
   layout: "DespachoDashboardLayout",
@@ -185,6 +192,7 @@ export default {
     [RadioButton.name]: RadioButton,
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
+    [Checkbox.name]:Checkbox,
     [DatePicker.name]: DatePicker,
     [TableColumn.name]: TableColumn,
     [Notification.name]: Notification,
@@ -214,7 +222,9 @@ export default {
       baseURlPDFPanelDespachoTarjetaSalida: null,
       selectedRowSalida: null,
       radioTipoDespacho: 3,
-      checkboxOrdenamientoDespacho: false
+      checkboxOrdenamientoDespacho: false,
+      checkboxOSalidasAnuladasDespacho: false,
+      oLetraRuta:''
     };
   },
   methods: {
@@ -306,22 +316,27 @@ export default {
         this.$refs.myGridDespachoPanel.deleterow(rowid);
       }
     },
-    async createHeaderTable(oRuta) {
+    async createHeaderTable(oRuta) 
+    {
+      try {
+        this.mListDespachosPanel = []
+      this.mListDespachosPanelAuxiliar = [] 
       this.isLoadingDespachoSalidaPanelBusqueda = true
       var datos = await this.$axios.post(process.env.baseUrl + "/readSalidasPanelDespacho", {
         token: this.token,
         ruta: oRuta.LetrRuta,
-        fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho)
+        fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
+        anuladas: 0
       })
       this.mListDespachosPanel.push(...datos.data.datos)
       this.mListDespachosPanelAuxiliar.push(...datos.data.datos)
       this.$refs.myGridDespachoPanel.beginupdate();
       this.columnsInfo = []
       this.columnsInfo[0] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname }
-      this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 90, cellclassname: this.cellclassname }
+      this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname }
       this.columnsInfo[2] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname }
       this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname }
-      this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname }
+      this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname,}
       this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname }
       this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname }
       this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname }
@@ -336,6 +351,9 @@ export default {
         });
       this.isLoadingDespachoSalidaPanelBusqueda = false
       this.$refs.myGridDespachoPanel.endupdate();
+      } catch (error) {
+        console.log(error)
+      }
     },
     cellBeginEditEvent: function (event) {
       let args = event.args;
@@ -348,6 +366,7 @@ export default {
     activeRutaDespacho(ruta) {
       console.log(ruta)
       console.log(ruta.LetrRuta)
+      this.oLetraRuta = ruta
       $("#" + ruta.LetrRuta).addClass("activeRutaDespacho")
       this.createHeaderTable(ruta)
     },
@@ -388,17 +407,20 @@ export default {
     createBodyDespacho(despachos) {
       var tiempoString = ''
       var minutosString = ''
-      var mListHora = []
       var ListaLlena = []
       var ListaVacia = []
       var ListaCompleta = []
       var inter = 0
+
+
       for (var hora = 4; hora <= 23; hora++) {
         tiempoString = (hora < 10 ? "0" + hora : hora)
         for (var minuto = 0; minuto <= 59; minuto++) {
           minutosString = (minuto < 10 ? "0" + minuto : minuto)
           var HS = tiempoString + ":" + minutosString + ":00"
-          var obj = this.getObjetoSalidaDespacho(HS)
+          var HSa_ = tiempoString + ":" + minutosString + ":00 (A)"
+
+          var obj = this.getObjetoSalidaDespacho(HS,HSa_)
           var objD = (obj == null) ? {
             LetraRutaSali_m: "",
             CodiVehiSali_m: "",
@@ -414,16 +436,21 @@ export default {
             SumaMinuPosiSali_m: '',
             Intervalo: ""
           } : (obj)
+
+          
+
+
           if (obj == null) {
             ListaVacia.push(objD)  
             inter++
           } else {
-            objD.Intervalo = inter
+            var estado = obj.EstaSali_mCode == 4 ? HSa_ : HS
+            obj.HoraSaliProgSali_m = estado
+            obj.Intervalo = inter
             inter = 0
             ListaLlena.push(obj)
           }
-          mListHora.push(objD)
-          console.log(mListHora);
+
         }
       }
       ListaCompleta = ListaLlena.concat(ListaVacia)
@@ -439,20 +466,22 @@ export default {
         { name: 'idFrecSali_m', type: 'string' },
         { name: 'Intervalo', type: 'string' },
         { name: 'DescFrec', type: 'string' },
-        { name: 'EstaSali_m', type: 'string' },
         { name: 'MontInfrUnidSali_m', type: 'string' },
         { name: 'VeloMaxiSali_m', type: 'string' },
         { name: 'NumeVuelSali_m', type: 'string' },
         { name: 'SumaMinuPosiSali_m', type: 'string' }]
       }
     },
-    getObjetoSalidaDespacho(tiempo) {
+    getObjetoSalidaDespacho(tiempo,tiempoA) 
+    {
+      //console.log("TAMANIO : "+this.mListDespachosPanelAuxiliar.length )
       if (this.mListDespachosPanelAuxiliar.length > 0) {
         for (var i = 0; i < this.mListDespachosPanelAuxiliar.length; i++) {
-          if (tiempo == this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m) {
-            console.log("ENCONTRADO")
+          if (tiempo == this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m) 
+          {
             var obj = this.mListDespachosPanelAuxiliar[i]
-            obj.Intervalo = 450
+            obj.Intervalo = 0
+            obj.EstaSali_mCode  = obj.EstaSali_m
             obj.EstaSali_m = obj.EstaSali_m == 4 ? 'ANULADO' : (obj.EstaSali_m == 1 || obj.EstaSali_m == 0) ? 'DIFERIDO' : obj.EstaSali_m == 2 ? 'EN RUTA' : 'FINALIZADO'
             this.mListDespachosPanelAuxiliar.splice(i, 1)
             return obj
@@ -650,6 +679,14 @@ export default {
     showModalSalidasDespacho() {
       this.modalSalidasDespacho = true;
     },
+    showPanelDespachoSalidasAnuladas()
+    {
+      //alert(this.oLetraRuta)
+      this.createHeaderTable(this.oLetraRuta)
+    },
+    changeSalidasANuladas(){
+      this.createHeaderTable(this.oLetraRuta)
+    }
   },
   mounted() {
     this.readAllUnidadesSalidasPanelBusqueda()
@@ -661,6 +698,15 @@ export default {
 };
 </script>
 <style>
+
+
+.buttonsAdicionalesDespacho{
+  margin: auto;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
 .container-rutas::-webkit-scrollbar {
     display: none;
 }
