@@ -52,6 +52,33 @@ export function FechaStringToHour(fecha)
     return fecha_.getDate()+" DE "+mesTexto+", "+fecha_.getFullYear()
 }
 
+export function getformatFechatoTime(fecha)
+{
+    var fecha_ = new Date(fecha)
+
+
+    var hora = fecha_.getHours();
+
+    var minutos = fecha_.getMinutes();
+    var segundos = fecha_.getSeconds();
+
+
+
+    if(hora<10)
+    {
+        hora = "0"+hora;
+    }
+    if(minutos<10)
+    {
+        minutos = "0"+minutos;
+    }
+    if(segundos<10)
+    {
+        segundos = "0"+segundos;
+    }
+
+    return hora+":"+minutos+":"+segundos
+}
 
 
 export function getFecha_dd_mm_yyyy(fecha)

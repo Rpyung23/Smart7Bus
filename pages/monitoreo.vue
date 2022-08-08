@@ -1,89 +1,51 @@
 <template>
   <!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
   <div id="rezizeArea">
-    <GmapMap
-      :center="oCenter"
-      :zoom="oZoom"
-      :map-type-id="radioMapaMonitoreo"
-      class="mapa"
-      :options="{
-        zoomControl: false,
-        scaleControl: false,
-        mapTypeControl: false,
-        streetViewControl: false,
-        rotateControl: false,
-        fullscreenControl: false,
-        disableDefaultUi: true,
-      }"
-    >
-      <GmapMarker
-        v-for="(unidad, index) in mListUnidades"
-        :key="unidad.CodiVehiMoni"
-        v-if="unidad.isvisible"
-        :position="{
-          lat: parseFloat(unidad.UltiLatiMoni),
-          lng: parseFloat(unidad.UltiLongMoni),
-        }"
-        :clickable="true"
-        :draggable="false"
-        :optimized="true"
-        :icon="unidad.icono.imagen"
-        @click="showInfoWindows(unidad, index)"
-        :options="{
+    <GmapMap :center="oCenter" :zoom="oZoom" :map-type-id="radioMapaMonitoreo" class="mapa" :options="{
+      zoomControl: false,
+      scaleControl: false,
+      mapTypeControl: false,
+      streetViewControl: false,
+      rotateControl: false,
+      fullscreenControl: false,
+      disableDefaultUi: true,
+    }">
+      <GmapMarker v-for="(unidad, index) in mListUnidades" :key="unidad.CodiVehiMoni" v-if="unidad.isvisible" :position="{
+        lat: parseFloat(unidad.UltiLatiMoni),
+        lng: parseFloat(unidad.UltiLongMoni),
+      }" :clickable="true" :draggable="false" :optimized="true" :icon="unidad.icono.imagen"
+        @click="showInfoWindows(unidad, index)" :options="{
           label: {
             text: unidad.CodiVehiMoni,
             color: unidad.icono.color,
             className: 'paddingLabel',
           },
-        }"
-      />
-      <GmapInfoWindow
-        :options="infoOptions"
-        :position="infoWindowPos"
-        :opened="infoWinOpen"
-        @closeclick="infoWinOpen = false"
-      >
+        }" />
+      <GmapInfoWindow :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen"
+        @closeclick="infoWinOpen = false">
         <div v-html="infoContent"></div>
       </GmapInfoWindow>
 
-      <GmapPolygon
-        v-for="control in mListControlesMonitoreoAux"
-        :key="control.CodiCtrl"
-        :options="{
-          strokeColor: '#172b4d',
-          fillColor: '#172b4d80',
-          strokeOpacity: 1.0,
-          strokeWeight: 2,
-        }"
-        :strokeOpacity="0.5"
-        :strokeWeight="1"
-        :paths="control.calculator.coordinates"
-      />
+      <GmapPolygon v-for="control in mListControlesMonitoreoAux" :key="control.CodiCtrl" :options="{
+        strokeColor: '#172b4d',
+        fillColor: '#172b4d80',
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+      }" :strokeOpacity="0.5" :strokeWeight="1" :paths="control.calculator.coordinates" />
 
-      <GmapMarker
-        v-for="(control, index) in mListControlesMonitoreoAux"
-        :key="control.DescCtrl + index"
-        :position="{
-          lat: parseFloat(control.Lati1Ctrl),
-          lng: parseFloat(control.Long1Ctrl),
-        }"
-        :optimized="true"
-        icon="static/img/control/control.png"
-        :options="{
-          label: {
-            text: control.DescCtrl,
-            color: '#172b4d',
-            className: 'paddingLabelControl',
-          },
-        }"
-      />
+      <GmapMarker v-for="(control, index) in mListControlesMonitoreoAux" :key="control.DescCtrl + index" :position="{
+        lat: parseFloat(control.Lati1Ctrl),
+        lng: parseFloat(control.Long1Ctrl),
+      }" :optimized="true" icon="static/img/control/control.png" :options="{
+  label: {
+    text: control.DescCtrl,
+    color: '#172b4d',
+    className: 'paddingLabelControl',
+  },
+}" />
     </GmapMap>
 
-    <div
-      id="element2"
-      class="container_unidades_monitoreo"
-      :style="anchoPanelMonitoreoClickMinMax"
-    >
+    <div id="element2" class="container_unidades_monitoreo" :style="anchoPanelMonitoreoClickMinMax">
       <div id="resizerXY"></div>
       <div class="min-max">
         <i class="bx-min-max bx bx-checkbox-minus" @click="minPanel()"></i>
@@ -91,106 +53,85 @@
       </div>
       <div class="searchInput">
         <i class="bx bx-search"></i>
-        <input
-          type="text"
-          class="inputSearchTexto"
-          name=""
-          id=""
-          v-model="unidadInput"
-          placeholder="Unidad"
-          @keypress.enter="centrarUnidadInput()"
-        />
+        <input type="text" class="inputSearchTexto" name="" id="" v-model="unidadInput" placeholder="Unidad"
+          @keypress.enter="centrarUnidadInput()" />
       </div>
       <div class="ListadoUnidades">
-        <div
-          class="itemMonitoreoUnidad"
-          :key="unidad.CodiVehiMoni"
-          v-for="unidad in mListUnidades"
-          v-if="unidad.isvisible"
-          @click="ubicarUnidad(unidad)"
-        >
+        <div class="itemMonitoreoUnidad" :key="unidad.CodiVehiMoni" v-for="unidad in mListUnidades"
+          v-if="unidad.isvisible" @click="ubicarUnidad(unidad)">
           <div class="itemContainerMonitoreo">
             <div class="imagenitem">
               <img :src="unidad.icono.imagenLista" />
             </div>
             <div class="detalle">
-              <strong>Unidad : </strong>{{ unidad.CodiVehiMoni }} ({{
-                unidad.PlacVehiMoni
-              }})<br />
+              <div class="containerUnidadTitulo">
+                <div class="unidadTitle">
+                  <strong>Unidad : </strong>{{ unidad.CodiVehiMoni }} ({{
+                    unidad.PlacVehiMoni
+                }})
+                </div>
+
+                <div class="iconosEventos">
+                  <i class="bx bx-broadcast" style="color: green"></i>
+                  <strong style="color: green">{{ unidad.SateContMoni }}</strong>
+                </div>
+
+              </div>
               <strong>Ruta : </strong>
               {{
-                unidad.DescRuta == null || unidad.DescRuta == ""
-                  ? "SIN RUTA"
-                  : unidad.DescRuta.substring(0, 23)
+                  unidad.DescRuta == null || unidad.DescRuta == ""
+                    ? "SIN RUTA"
+                    : unidad.DescRuta.substring(0, 23)
               }}<br />
               <strong>Estado : </strong>{{ unidad.icono.detalle }}<br />
               <strong>Fecha : </strong>{{ unidad.UltiFechMoni }}<br />
-              <span class="dispositivo"
-                >{{ unidad.DescDispTipo }} {{ unidad.VersDispMoni }}</span
-              ><br />
+              <span class="dispositivo">{{ unidad.DescDispTipo }} {{ unidad.VersDispMoni }}</span><br />
             </div>
           </div>
 
           <div class="detalleIconos">
             <div class="iconosEventos">
               <i class="bx bx-tachometer" style="color: green"></i>
-              <strong style="color: green"
-                >{{ unidad.UltiVeloMoni }} KM/H</strong
-              >
+              <strong style="color: green">{{ unidad.UltiVeloMoni }} KM/H</strong>
             </div>
             <div class="iconosEventos">
-              <i
-                class="bx bx-time"
-                :style="
-                  unidad.CtrlCounMoni >= 0
-                    ? 'color:midnightblue;'
-                    : 'color:red;'
-                "
-              ></i>
-              <strong
-                :style="
-                  unidad.CtrlCounMoni >= 0
-                    ? 'color:midnightblue;'
-                    : 'color:red;'
-                "
-                >{{
-                  unidad.CtrlCounMoni > 0 ? unidad.CtrlCounMoni : "E.C"
-                }}</strong
-              >
+              <i class="bx bx-time" :style="
+                unidad.CtrlCounMoni >= 0
+                  ? 'color:midnightblue;'
+                  : 'color:red;'
+              "></i>
+              <strong :style="
+                unidad.CtrlCounMoni >= 0
+                  ? 'color:midnightblue;'
+                  : 'color:red;'
+              ">{{
+    unidad.CtrlCounMoni > 0 ? unidad.CtrlCounMoni : "E.C"
+}}</strong>
             </div>
             <div class="iconosEventos">
-              <i
-                class="bx bx-wifi"
-                :style="
-                  unidad.AlarAnteGPSDescMoni == 1
-                    ? 'color:red;'
-                    : 'color:green;'
-                "
-              ></i>
+              <i class="bx bx-wifi" :style="
+                unidad.AlarAnteGPSDescMoni == 1
+                  ? 'color:red;'
+                  : 'color:green;'
+              "></i>
               <strong style="color: red">{{
-                unidad.AlarAnteGPSDescMoni == 1 ? "GPS" : ""
+                  unidad.AlarAnteGPSDescMoni == 1 ? "GPS" : ""
               }}</strong>
             </div>
             <div class="iconosEventos">
-              <i
-                class="bx bxs-car-battery"
-                :style="
-                  unidad.AlarCortAlimBateExteMoni == 1
-                    ? 'color:red;'
-                    : 'color:darkblue;'
-                "
-              ></i>
+              <i class="bx bxs-car-battery" :style="
+                unidad.AlarCortAlimBateExteMoni == 1
+                  ? 'color:red;'
+                  : 'color:darkblue;'
+              "></i>
               <strong style="color: red">{{
-                unidad.AlarCortAlimBateExteMoni == 1 ? "BAT" : ""
+                  unidad.AlarCortAlimBateExteMoni == 1 ? "BAT" : ""
               }}</strong>
             </div>
             <div class="iconosEventos">
-              <i
-                class="bx bx-key"
-                :style="
-                  unidad.AlarEnceChapMoni == 1 ? 'color:yellow;' : 'color:dark;'
-                "
-              ></i>
+              <i class="bx bx-key" :style="
+                unidad.AlarEnceChapMoni == 1 ? 'color:yellow;' : 'color:dark;'
+              "></i>
             </div>
           </div>
         </div>
@@ -200,53 +141,38 @@
     <div id="PanelRutas" class="container_otrosPaneles">
       <div class="searchInput">
         <i class="bx bx-search"></i>
-        <input
-          type="text"
-          class="inputSearchTexto"
-          name=""
-          id=""
-          placeholder="Ruta"
-        />
+        <input type="text" class="inputSearchTexto" name="" id="" placeholder="Ruta" />
       </div>
       <div class="itemsRuta">
         <div class="cardRuta" v-for="ruta in mListRutas" :key="ruta.LetrRuta">
           <div class="checkboxRuta">
-            <input
-              type="checkbox"
-              :value="ruta.LetrRuta"
-              v-model="mListRutasMonitoreo"
-              @change="selectedRutaMonitoreo()"
-            />
+            <input type="checkbox" :value="ruta.LetrRuta" v-model="mListRutasMonitoreo"
+              @change="selectedRutaMonitoreo()" />
           </div>
           <div class="DetalleRuta">
             <div class="titleRuta">
               <span class="spanTitle">{{
-                ruta.DescRuta.substring(0, 17)
+                  ruta.DescRuta.substring(0, 17)
               }}</span>
               <div class="btn-iconos">
                 <i class="bx bx-time" style="color: green"></i>
-                <strong
-                  ><span
-                    style="
+                <strong><span style="
                       color: green;
                       margin-right: 0.5rem;
                       font-size: 0.8rem;
-                    "
-                    >{{ ruta.controles }}</span
-                  ></strong
-                >
+                    ">{{ ruta.controles }}</span></strong>
                 <i class="bx bx-git-merge"></i>
               </div>
             </div>
 
             <div class="footerRuta">
               <div>
-                <strong class="spanHoras">Hora Inicio : </strong
-                ><span class="spanHoras">{{ ruta.HoraInicSaliProgRuta }}</span>
+                <strong class="spanHoras">Hora Inicio : </strong><span class="spanHoras">{{ ruta.HoraInicSaliProgRuta
+                }}</span>
               </div>
               <div>
-                <strong class="spanHoras">Hora Final : </strong
-                ><span class="spanHoras">{{ ruta.HoraFinaSaliProgRuta }}</span>
+                <strong class="spanHoras">Hora Final : </strong><span class="spanHoras">{{ ruta.HoraFinaSaliProgRuta
+                }}</span>
               </div>
             </div>
           </div>
@@ -257,35 +183,18 @@
     <div id="PanelControles" class="container_otrosPaneles">
       <div class="searchInput" style="margin-bottom: 0.5rem">
         <i class="bx bx-search"></i>
-        <input
-          type="text"
-          class="inputSearchTexto"
-          name=""
-          id=""
-          placeholder="Control"
-        />
+        <input type="text" class="inputSearchTexto" name="" id="" placeholder="Control" />
       </div>
       <div>
-        <input
-          type="checkbox"
-          style="margin-bottom: 0.7rem"
-          :checked="false"
-          @change="showControles($event)"
-        />
+        <input type="checkbox" style="margin-bottom: 0.7rem" :checked="false" @change="showControles($event)" />
         Visualizar Controles (Mapa)
       </div>
       <div class="itemsRuta">
-        <div
-          class="cardRuta"
-          v-for="control in mListControlesMonitoreo"
-          :key="control.CodiCtrl"
-          @click="centrarControl(control)"
-        >
+        <div class="cardRuta" v-for="control in mListControlesMonitoreo" :key="control.CodiCtrl"
+          @click="centrarControl(control)">
           <div class="DetalleRuta">
             <div class="titleControl">
-              <span class="spanTitle"
-                >({{ control.CodiCtrl }}) {{ control.DescCtrl }}</span
-              >
+              <span class="spanTitle">({{ control.CodiCtrl }}) {{ control.DescCtrl }}</span>
             </div>
           </div>
         </div>
@@ -294,26 +203,15 @@
 
     <div id="PanelConfigMapaMonitoreo" class="container_otrosPaneles">
       <div class="RadioTiposMapaMonitoreo">
-        <el-radio v-model="radioMapaMonitoreo" label="roadmap" border
-          >Mapa Vial</el-radio
-        >
-        <el-radio v-model="radioMapaMonitoreo" label="satellite" border
-          >Mapa Satelital</el-radio
-        >
-        <el-radio v-model="radioMapaMonitoreo" label="hybrid" border
-          >Mapa Hibrido</el-radio
-        >
-        <el-radio v-model="radioMapaMonitoreo" label="terrain" border
-          >Mapa Terrestre</el-radio
-        >
+        <el-radio v-model="radioMapaMonitoreo" label="roadmap" border>Mapa Vial</el-radio>
+        <el-radio v-model="radioMapaMonitoreo" label="satellite" border>Mapa Satelital</el-radio>
+        <el-radio v-model="radioMapaMonitoreo" label="hybrid" border>Mapa Hibrido</el-radio>
+        <el-radio v-model="radioMapaMonitoreo" label="terrain" border>Mapa Terrestre</el-radio>
       </div>
     </div>
 
     <div id="tabOptionsMonitoreo" class="tabOptionsMonitoreo">
-      <div
-        id="itemMonitoreo"
-        class="itemOptionMonitoreo itemOptionMonitoreoActive"
-      >
+      <div id="itemMonitoreo" class="itemOptionMonitoreo itemOptionMonitoreoActive">
         <i class="bx bx-bus"></i>
       </div>
       <div id="itemControles" class="itemOptionMonitoreo">
@@ -332,21 +230,31 @@
   </div>
 </template>
 <style>
+.containerUnidadTitulo {
+  display: flex;
+  width: 13rem !important;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+}
+
 .RadioTiposMapaMonitoreo {
   display: flex;
   flex-direction: column;
   width: 15.5rem;
 }
+
 .is-bordered {
   margin-left: 0px !important;
   width: 15.5rem;
 }
 
 .ListadoUnidades::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
+
 .itemsRuta::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 
@@ -358,10 +266,12 @@
   margin-bottom: 00.5rem;
   color: #48494b8f;
 }
+
 .bx-min-max:hover {
   cursor: pointer;
   color: #172b4d;
 }
+
 .cardRuta {
   width: 15.5rem;
   border-radius: 0.5rem;
@@ -379,6 +289,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .DetalleRuta {
   flex-basis: calc(90%);
   padding-top: 0.5rem;
@@ -386,16 +297,19 @@
   display: flex;
   flex-direction: column;
 }
+
 .titleRuta {
   display: flex;
   justify-content: space-between;
 }
+
 .titleControl {
   display: flex;
   justify-content: space-between;
   padding-right: 0.5rem;
   padding-left: 0.5rem;
 }
+
 .spanTitle {
   font-size: 0.8rem;
   font-weight: 600;
@@ -424,23 +338,27 @@
   font-size: 00.7rem;
   font-family: Arial, Helvetica, sans-serif;
 }
+
 .iconosEventos {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .itemContainerMonitoreo {
   display: flex;
 
   align-items: center;
   justify-items: center;
 }
+
 .inputSearchTexto {
   border-width: 0rem;
   outline: none;
   border-color: transparent;
   caret-color: #172b4d;
 }
+
 .searchInput {
   height: 2.5rem !important;
   min-height: 2.5rem !important;
@@ -455,6 +373,7 @@
   align-items: center;
   border: 1px solid rgb(117, 111, 111);
 }
+
 .ListadoUnidades {
   height: 100%;
   width: calc(100%);
@@ -464,6 +383,7 @@
   grid-template-columns: repeat(auto-fit, 16rem);
   justify-content: center;
 }
+
 .itemMonitoreoUnidad {
   border-width: 1px;
   border-style: solid;
@@ -479,22 +399,27 @@
   justify-content: center;
   cursor: pointer;
 }
+
 .imagenitem {
   margin-right: 0.2rem;
   margin-left: 0.2rem;
 }
+
 #rezizeArea {
   width: 100%;
   overflow: auto;
   position: relative;
 }
+
 .bx {
   font-size: 1.2rem;
 }
+
 .mapa {
   width: 100%;
   height: calc(100vh - 3.56rem);
 }
+
 .tabOptionsMonitoreo {
   height: 3.3rem;
   width: 11rem;
@@ -530,6 +455,7 @@
   margin-bottom: 2.9rem;
   font-weight: bold;
 }
+
 .paddingLabelControl {
   margin-bottom: 2.9rem;
   font-weight: bold;
@@ -540,6 +466,7 @@
   padding-left: 0.5rem;
   border-radius: 1rem;
 }
+
 #resizerXY {
   height: 97%;
   width: 0.4rem;
@@ -566,9 +493,11 @@
   align-items: center;
   border-radius: 0.5rem;
 }
+
 .itemsRuta {
   overflow: auto;
 }
+
 .container_unidades_monitoreo {
   position: absolute;
   height: calc(100vh - 9em);
@@ -588,6 +517,7 @@
   align-items: center;
   border-radius: 0.5rem;
 }
+
 .strongLetrasInfoWindows {
   font-weight: bold;
   color: black;
@@ -597,6 +527,7 @@
   color: #172b4d;
   font-size: 1.5rem;
 }
+
 .detalleIconos {
   display: flex;
   justify-content: space-between;
@@ -686,8 +617,8 @@ export default {
         var datos = null;
         var rutaApi = "/monitoring";
         var bodyApi = {
-            token: this.token,
-          },
+          token: this.token,
+        },
           datos = await this.$axios.post(
             process.env.baseUrlPanel + rutaApi,
             bodyApi
@@ -870,39 +801,34 @@ export default {
     async getInfoWindowContent(unidad) {
       var dir = await this.$axios.get(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-          parseFloat(unidad.UltiLatiMoni) +
-          "," +
-          parseFloat(unidad.UltiLongMoni) +
-          "&key=AIzaSyCMR83z2AyaiNJTfUHKechVpGh_MjLQvHA"
+        parseFloat(unidad.UltiLatiMoni) +
+        "," +
+        parseFloat(unidad.UltiLongMoni) +
+        "&key=AIzaSyCMR83z2AyaiNJTfUHKechVpGh_MjLQvHA"
       );
       var result = dir.data.results;
       return `<div style="width:300px;padding:0.50rem">
-              <strong class="strongLetrasInfoWindows">UNIDAD N° : </strong> ${
-                unidad.CodiVehiMoni
-              }<br>
-              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
-                unidad.UltiFechMoni
-              }<br>
+              <strong class="strongLetrasInfoWindows">UNIDAD N° : </strong> ${unidad.CodiVehiMoni
+        }<br>
+              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${unidad.UltiFechMoni
+        }<br>
               <strong class="strongLetrasInfoWindows">RUTA : </strong> ${(unidad.LetrRutaMoni =
-                !""
-                  ? unidad.DescRuta == null
-                    ? "SIN RUTA"
-                    : unidad.DescRuta
-                  : "SIN RUTA")}<br>
-              <strong class="strongLetrasInfoWindows">EVENTO : </strong> ${
-                unidad.AlarAnteGPSDescMoni == 1
-                  ? "ALERTA GPS"
-                  : unidad.AlarFuerRutaMoni == null ||
-                    unidad.AlarFuerRutaMoni == 1
-                  ? "FUERA DE RUTA"
-                  : "EN RUTA"
-              }<br>
-              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
-                unidad.UltiVeloMoni
-              } <strong>KM/H</strong><br>
-              <strong class="strongLetrasInfoWindows">DIR : </strong> ${
-                result.length > 0 ? result[0].formatted_address : "SIN NOMBRES"
-              }
+          !""
+            ? unidad.DescRuta == null
+              ? "SIN RUTA"
+              : unidad.DescRuta
+            : "SIN RUTA")}<br>
+              <strong class="strongLetrasInfoWindows">EVENTO : </strong> ${unidad.AlarAnteGPSDescMoni == 1
+          ? "ALERTA GPS"
+          : unidad.AlarFuerRutaMoni == null ||
+            unidad.AlarFuerRutaMoni == 1
+            ? "FUERA DE RUTA"
+            : "EN RUTA"
+        }<br>
+              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${unidad.UltiVeloMoni
+        } <strong>KM/H</strong><br>
+              <strong class="strongLetrasInfoWindows">DIR : </strong> ${result.length > 0 ? result[0].formatted_address : "SIN NOMBRES"
+        }<br><strong class="strongLetrasInfoWindows">SATELITES : </strong> ${unidad.SateContMoni}
             </div>`;
     },
     async showInfoWindows(unidad, idx) {

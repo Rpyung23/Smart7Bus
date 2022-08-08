@@ -86,7 +86,7 @@
               element-loading-spinner="el-icon-loading" :data="tableDataResumidoVehiculos" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               :row-class-name="tableRowClassNameRPagosVehiculoProduccion"
-              :height="tableDataResumidoVehiculos.length > 0 ? 459 : 250" style="width: 100%">
+              :height="460" style="width: 100%">
 
 
               <el-table-column label="Acciones" minWidth="140">
@@ -451,11 +451,11 @@ export default {
           );
 
           if (datos.data.status_code == 200) {
-            Notification.success({
+            /*Notification.success({
               title: "Reporte Pagos Vehiculo",
               message: "Datos consultados con éxito.",
               duration: 2500,
-            });
+            });*/
             this.CalcularTotalesResumidoVehiculo(datos.data.datos)
             this.tableDataResumidoVehiculos.push(...datos.data.datos);
             

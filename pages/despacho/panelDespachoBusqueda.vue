@@ -50,12 +50,6 @@
               <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
               <span class="btn-inner--text"> Descargas</span>
             </base-button>
-
-            <base-button outline type="success" v-if="isVisibleRecorrido">
-              <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
-              <span class="btn-inner--text" @click="showRecorridoSalidasPanelBusqueda()">
-                Recorrido</span>
-            </base-button>
           </div>
         </card>
 
@@ -73,10 +67,11 @@
           <div class="cardTextoRPagosVehiculoProduccion">
             <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
               <el-checkbox label="2" style="background-color: hsla(226, 88%, 61%, 0.301)">EN RUTA</el-checkbox>
-              <el-checkbox label="4" style="background-color: rgba(252, 143, 143, 0.692)">ANULADOS</el-checkbox>
-              <el-checkbox label="3">FINALIZADOS</el-checkbox>
               <el-checkbox label="0,1" style="background-color: hsla(115, 100%, 59%, 0.301)">SALIDAS DIFERIDAS
               </el-checkbox>
+              <el-checkbox label="5">FINALIZADOS</el-checkbox>
+              <el-checkbox label="3" style="background-color: hsla(34, 93%, 61%, 0.479)">PENALIZADAS</el-checkbox>
+              <el-checkbox label="4" style="background-color: rgba(252, 143, 143, 0.692)">ANULADOS</el-checkbox>
               <!--<el-checkbox
                 label="31"
                 disabled="false"
@@ -93,33 +88,28 @@
             <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="mListaSalidasPanelBusqueda" row-key="id"
               class="tablePanelControlProduccion" :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-              header-row-class-name="thead-dark" :height="mListaSalidasPanelBusqueda.length > 0 ? 440 : 150"
-              highlight-current-row @current-change="handleCurrentChangeSelectionFilaSalidaBusqueda">
+              header-row-class-name="thead-dark" :height="mListaSalidasPanelBusqueda.length > 0 ? 445 : 150"
+              >
+
+
+              <el-table-column label="Actions" width="170">
+
+                <template slot-scope="scope">
+                  <base-button size="sm" title="Tarjeta" @click="showTarjetaSalidasPanelBusqueda(scope.row)"
+                    type="primary"><i class="ni ni-ungroup"></i></base-button>
+                    <base-button size="sm" title="Recorrido" @click="showRecorridoSalidasPanelBusqueda(scope.row)"
+                    type="success"><i class="ni ni-world"></i></base-button>
+                </template>
+
+              </el-table-column>
+
+
+
+              
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="130">
               </el-table-column>
 
               <el-table-column prop="idSali_m" label="Salida" width="140">
-                <template slot-scope="scope">
-                  <el-button slot="reference" @click="showTarjetaSalidasPanelBusqueda(scope.row)"
-                    style="cursor: pointer">
-                    <u>{{ scope.row.idSali_m }}</u>
-                  </el-button>
-
-                  <!--<el-popover
-                    placement="bottom"
-                    :title="scope.row.idSali_m"
-                    width="200"
-                    trigger="click"
-                  >
-                  
-                    <ul>
-                      <li @click="showRecorridoSalidasPanelBusqueda()">Recorrido</li>
-                      <li>Tarjeta Reporte</li>
-                      <li>Tarjeta (Ticket)</li>
-                    </ul>
-                    <el-button slot="reference" style="cursor:pointer;"><u>{{scope.row.idSali_m}}</u></el-button>
-                  </el-popover>-->
-                </template>
               </el-table-column>
 
               <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
@@ -308,7 +298,7 @@ export default {
         {
           prop: "DescFrec",
           label: "Frecuencia",
-          minWidth: 200,
+          minWidth: 300,
         },
         {
           prop: "NumeVuelSali_m",
@@ -491,15 +481,15 @@ export default {
         return "";
       }
     },
-    showRecorridoSalidasPanelBusqueda() {
+    showRecorridoSalidasPanelBusqueda(item) {
       this.modalSalidasPanelDespachoBusqueda = true;
-      this.readHistorialSalidaPanelBusqueda();
+      this.readHistorialSalidaPanelBusqueda(item);
     },
     showTarjetaSalidasPanelBusqueda(salida) {
       this.modalSalidasTarjetaPanelDespachoBusqueda = true;
       this.readDetalleSalidaDPanelBusqueda(salida)
     },
-    async readHistorialSalidaPanelBusqueda() {
+    async readHistorialSalidaPanelBusqueda(item) {
       this.isLoadingRecorridoSalidaPanelBusqueda = true;
       this.mListPosicionesHistorialSalidasPanelBusqueda = [];
       this.mListPosicionesHistorialMarcSalidasPanelBusqueda = [];
@@ -511,9 +501,9 @@ export default {
           process.env.baseUrl + "/historialUnidadSalida",
           {
             token: this.token,
-            unidad: this.filaSelectionCurrentSalidaPanelBusqueda.CodiVehiSali_m,
-            salida: this.filaSelectionCurrentSalidaPanelBusqueda.idSali_m,
-            fechaI: this.filaSelectionCurrentSalidaPanelBusqueda.HoraSaliProgSali_mF
+            unidad: item.CodiVehiSali_m,
+            salida: item.idSali_m,
+            fechaI: item.HoraSaliProgSali_mF
           }
         );
         console.log("RECORRIDO SALIDA");
@@ -586,14 +576,6 @@ export default {
         }
       } catch (error) {
         console.log(error);
-      }
-    },
-    handleCurrentChangeSelectionFilaSalidaBusqueda(val) {
-      if (val != null) {
-        this.isVisibleRecorrido = true;
-        this.filaSelectionCurrentSalidaPanelBusqueda = val;
-      } else {
-        this.isVisibleRecorrido = false;
       }
     },
     async readDetalleSalidaDPanelBusqueda(salida) {
@@ -780,27 +762,6 @@ export default {
 };
 </script>
 <style>
-.paddingLabelControl {
-  margin-bottom: 2.9rem;
-  font-weight: bold;
-  border-color: #f71313;
-  border-width: 1px;
-  background-color: white;
-  padding-right: 0.5rem;
-  padding-left: 0.5rem;
-  border-radius: 1rem;
-}
-
-.paddingLabelControlMarc {
-  margin-top: 2.5rem;
-  border-color: #055eb1;
-  border-style: solid;
-  border-width: 1px;
-  background-color: white;
-  padding-right: 0.5rem;
-  padding-left: 0.5rem;
-  border-radius: 1rem;
-}
 
 
 

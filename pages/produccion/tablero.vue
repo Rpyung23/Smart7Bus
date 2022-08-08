@@ -74,7 +74,7 @@
             <el-table v-loading="loadingRTableroProduccion" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="tableDataPanelControlProduccion" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
-              :height="tableDataPanelControlProduccion.length > 0 ? 455 : 150" style="width: 100%">
+              :height="tableDataPanelControlProduccion.length > 0 ? 460 : 150" style="width: 100%">
 
 
 
@@ -209,6 +209,71 @@
           <template slot="header" style="background-color: #2dce89;">
           </template>
 
+          <GmapMap map-type-id="roadmap" class="mapa" :center="oCenterTableroExVelocidad"
+            :zoom="oZoomTableroExVelocidad" :options="{
+              zoomControl: false,
+              scaleControl: false,
+              mapTypeControl: false,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false,
+              disableDefaultUi: true,
+            }">
+            <GmapMarker v-for="marker in mListPosicionesHistorialSalidasPanelBusqueda" :key="marker.idHistEve"
+              :position="{
+                lat: parseFloat(marker.LatiHistEven),
+                lng: parseFloat(marker.LongHistEven),
+              }" :icon="marker.icono" :clickable="false" :draggable="false" :optimized="true" />
+
+            <!--MARCADORES CON MARCACION-->
+            <GmapMarker v-for="marker in mListPosicionesHistorialMarcSalidasPanelBusqueda" :key="marker.idHistEve"
+              :position="{
+                lat: parseFloat(marker.LatiHistEven),
+                lng: parseFloat(marker.LongHistEven),
+              }" icon="static/img/control/control.png" :clickable="false" :draggable="false" :optimized="true"
+              :options="{
+                label: {
+                  text:
+                    'RUTA : ' +
+                    marker.DescRutaSali_m +
+                    '\nPROG : ' +
+                    marker.HoraProgSali_d +
+                    ' MARC : ' +
+                    marker.HoraMarcSali_d,
+                  color: '#055eb1',
+                  className: 'paddingLabelControlMarc',
+                },
+              }" />
+
+
+            <!--TODOS LOS MARCADORES-->
+
+            <GmapPolygon v-for="control in mListControlesSalidaPanelBusquedaDespacho" :key="control.CodiCtrl" :options="{
+              strokeColor: '#1d1c1c',
+              fillColor: '#1d1c1c80',
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+            }" :strokeOpacity="0.5" :strokeWeight="1" :paths="control.calculator.coordinates" />
+
+            <GmapMarker v-for="(control, index) in mListControlesSalidaPanelBusquedaDespacho"
+              :key="control.DescCtrl + index" :position="{
+                lat: parseFloat(control.Lati1Ctrl),
+                lng: parseFloat(control.Long1Ctrl),
+              }" :optimized="true" icon="static/img/control/control.png" :options="{
+                    label: {
+                    text: control.DescCtrl,
+                    color: '#1d1c1c',
+                    className: 'paddingLabelControl',
+                  },
+                }" />
+
+
+          </GmapMap>
+
+          <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingRecorridoSalidaPanelBusqueda">
+            <div class="circleProgress"></div>
+          </div>
+
 
 
           <!--<template slot="footer">
@@ -337,6 +402,9 @@ export default {
     return {
       tableDataPanelControlProduccion: [],
       selectedRows: [],
+      mListPosicionesHistorialSalidasPanelBusqueda: [],
+      mListPosicionesHistorialMarcSalidasPanelBusqueda: [],
+      isLoadingRecorridoSalidaPanelBusqueda: false,
       mListaTrazadoAllTramsExVelocidad: [],
       token: this.$cookies.get("token"),
       fechaInicialTableroProduccion: "",
@@ -394,6 +462,7 @@ export default {
       oCenterTableroExVelocidad: { lat: -1.249546, lng: -78.585376 },
       oZoomTableroExVelocidad: 7,
       oHistorialExVelocidad: [],
+      mListControlesSalidaPanelBusquedaDespacho:[]
     };
   },
   methods: {
@@ -515,11 +584,11 @@ export default {
       } catch (error) {
         console.log(error)
         this.$notify({
-            message:error.toString(),
-            timeout: 3000,
-            icon: 'ni ni-fat-remove',
-            type: 'danger'
-          });
+          message: error.toString(),
+          timeout: 3000,
+          icon: 'ni ni-fat-remove',
+          type: 'danger'
+        });
       }
 
       this.loadingRTableroProduccion = false
@@ -553,7 +622,7 @@ export default {
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
           token: this.token,
-          tipo:3
+          tipo: 3
         })
 
         if (datos.data.status_code == 200) {
@@ -593,6 +662,7 @@ export default {
     },
     async showVisibleModalRecorridoTableroProduccion(item) {
       this.isRecorridoTableroProduccion = this.isRecorridoTableroProduccion == true ? false : true
+      this.readHistorialSalidaPanelBusqueda(item)
     },
     async readDetalleTableroProduccion(item) {
       this.oUnidadModalTitle = item.Unidad
@@ -709,7 +779,8 @@ export default {
       } catch (e) {
         console.log(e)
       }
-    }, async readHISTORIALTrazadoAllTramosTableroProduccion(item) {
+    }, 
+    async readHISTORIALTrazadoAllTramosTableroProduccion(item) {
       this.oCenterTableroExVelocidad = { lat: -1.249546, lng: -78.585376 }
       this.oZoomTableroExVelocidad = 7
       this.oHistorialExVelocidad = []
@@ -753,7 +824,95 @@ export default {
       } catch (e) {
         console.log(e)
       }
-    }
+    },
+    async readHistorialSalidaPanelBusqueda(item) {
+      this.isLoadingRecorridoSalidaPanelBusqueda = true;
+      this.mListPosicionesHistorialSalidasPanelBusqueda = [];
+      this.mListPosicionesHistorialMarcSalidasPanelBusqueda = [];
+
+      try {
+        console.log("INICIAR HISTORIAL RECORRIDO");
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/historialTramasPanelProduccionTablero",
+          {
+            token: this.token,
+            unidad: item.Unidad,
+            codigoProduccion: item.Codigo,
+          }
+        );
+        console.log("RECORRIDO SALIDA");
+        console.log(datos);
+
+        for (var i = 0; i < datos.data.datos.length; i++) {
+          var obj = datos.data.datos[i];
+
+          obj.icono = {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            fillColor:
+              (obj.HoraMarcSali_d != '' && obj.HoraProgSali_d != '') ? "#055eb1" :
+                obj.EvenExceVeloHistEven == 1
+                  ? "yellow"
+                  : obj.OutRoutHistEven == 1
+                    ? "red"
+                    : "green",
+            fillOpacity: 1,
+            strokeWeight: 0,
+            rotation: obj.RumbHistEven,
+            scale: 3,
+            anchor: new google.maps.Point(0, 0),
+          };
+
+          this.mListPosicionesHistorialSalidasPanelBusqueda.push(obj);
+
+          if (
+            datos.data.datos[i].HoraMarcSali_d != '' &&
+            datos.data.datos[i].HoraProgSali_d != ''
+          ) {
+            this.mListPosicionesHistorialMarcSalidasPanelBusqueda.push(
+              datos.data.datos[i]
+            );
+          }
+
+          if (i == 0) {
+            this.oCenterTableroExVelocidad.lat = parseFloat(
+              this.mListPosicionesHistorialSalidasPanelBusqueda[0].LatiHistEven
+            );
+            this.oCenterTableroExVelocidad.lng = parseFloat(
+              this.mListPosicionesHistorialSalidasPanelBusqueda[0].LongHistEven
+            );
+            this.oZoomTableroExVelocidad = 17;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        Notification.error({
+          title: "Error TRYCTACH",
+          msm: error.toString(),
+        });
+      }
+      this.isLoadingRecorridoSalidaPanelBusqueda = false;
+    },
+
+    async initControlesPanelTableroProduccion() {
+      console.log("INICIANDO CONTROLES");
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/AllControles",
+          {
+            token: this.token,
+          }
+        );
+        if (datos.data.status_code == 200) {
+          this.mListControlesSalidaPanelBusquedaDespacho = [];
+          for (var i = 0; i < datos.data.data.length; i++) {
+            this.mListControlesSalidaPanelBusquedaDespacho[i] = datos.data.data[i];
+            //this.mListControlesMonitoreoAux[i] = datos.data.data[i];
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
 
   }, mounted() {
     this.readTrazadoAllTramosTableroProduccion()
@@ -762,6 +921,7 @@ export default {
     this.readRubrosTableroProduccion()
     this.initFechaActualProduccionPanelControl()
     this.readlPanelTableroProduccion()
+    this.initControlesPanelTableroProduccion()
   }
 };
 </script>
