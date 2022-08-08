@@ -20,7 +20,8 @@
         v-for="(marker, index) in mListPosicionesRecorrido"
         :key="marker.idHistEve"
         :icon="marker.icono"
-        @click="showInfoWindowsRecorrido(marker, index)"
+        @mouseover="showInfoWindowsRecorrido(marker, index)"
+        @mouseout="closeInfoWindowsRecorrido()"
         :position="{
           lat: parseFloat(marker.LatiHistEven),
           lng: parseFloat(marker.LongHistEven),
@@ -33,7 +34,8 @@
         v-for="(marker, index) in mListPosicionesFRutaRecorridoHistorial"
         :key="marker.idHistEve"
         :icon="marker.icono"
-        @click="showInfoWindowsRecorrido(marker, index)"
+        @mouseover="showInfoWindowsRecorrido(marker, index)"
+        @mouseout="closeInfoWindowsRecorrido()"
         :position="{
           lat: parseFloat(marker.LatiHistEven),
           lng: parseFloat(marker.LongHistEven),
@@ -46,7 +48,8 @@
         v-for="(marker, index) in mListPosicionesFRutaRecorridoHistorial"
         :key="marker.idHistEve"
         :icon="marker.icono"
-        @click="showInfoWindowsRecorrido(marker, index)"
+        @mouseover ="showInfoWindowsRecorrido(marker, index)"
+        @mouseout="closeInfoWindowsRecorrido()"
         :position="{
           lat: parseFloat(marker.LatiHistEven),
           lng: parseFloat(marker.LongHistEven),
@@ -72,27 +75,27 @@
               marker.HoraProgSali_d +
               ' MARC : ' +
               marker.HoraMarcSali_d,
-            color: '#008000',
+            color: '#055eb1',
             className: 'paddingLabelControlMarc',
           },
         }"
       />
 
       <GmapInfoWindow
-        :options="infoOptionsRecorrido"
-        :position="infoWindowPosRecorrido"
-        :opened="infoWinOpenRecorrido"
-        @closeclick="infoWinOpenRecorrido = false"
+        :options="infoOptions"
+        :position="infoWindowPos"
+        :opened="infoWinOpen"
+        @closeclick="infoWinOpen = false"
       >
-        <div v-html="infoContentRecorrido"></div>
+        <div v-html="infoContent"></div>
       </GmapInfoWindow>
 
       <GmapPolygon
         v-for="control in mListControlesRecorrido"
         :key="control.CodiCtrl"
         :options="{
-          strokeColor: '#F71313',
-          fillColor: '#F7131380',
+          strokeColor: '#1d1c1c',
+          fillColor: '#1d1c1c80',
           strokeOpacity: 1.0,
           strokeWeight: 2,
         }"
@@ -113,7 +116,7 @@
         :options="{
           label: {
             text: control.DescCtrl,
-            color: '#F71313',
+            color: '#1d1c1c',
             className: 'paddingLabelControl',
           },
         }"
@@ -164,7 +167,7 @@
     <div id="PanelControlesRecorrido" class="container_Recorrido">
       <base-button
         block
-        type="success"
+        type="primary"
         v-for="control in mListPosicionesMarcRecorridoHistorial"
         :key="control.CodiCtrlHistEven"
         @click="centrarMapaHistorial(control)"
@@ -249,7 +252,7 @@
 .paddingLabelControl {
   margin-bottom: 2.9rem;
   font-weight: bold;
-  border-color: #f71313;
+  border-color: #1d1c1c;
   border-width: 1px;
   background-color: white;
   padding-right: 0.5rem;
@@ -276,7 +279,7 @@
   top: 0px;
   margin-top: 8.3rem;
   margin-right: 1rem;
-  background-color: whitesmoke;
+  background-color: white;
   display: flex;
   flex-direction: column;
   /*align-items: center;*/
@@ -353,7 +356,7 @@ import {
   Select,
   Option,
 } from "element-ui";
-import { FechaStringToHour } from "../../util/fechas";
+import { getformatFechatoTime } from "../../util/fechas";
 import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
@@ -377,20 +380,14 @@ export default {
   data() {
     return {
       token: this.$cookies.get("token"),
-      infoWindowPosRecorrido: {
+      infoContent: "",
+      infoWindowPos: {
         lat: 0,
         lng: 0,
       },
-      infoContentRecorrido: null,
+      infoWinOpen: false,
+      currentMidx: null,
       fechaActualRecorrido: null,
-      infoWinOpenRecorrido: false,
-      infoOptionsRecorrido: {
-        pixelOffset: {
-          width: 0,
-          height: -35,
-        },
-      },
-      currentMinxRecorrido: null,
       itemUnidadSelectRecorrido: [],
       mListUnidadesRecorrido: [],
       mListPosicionesRecorrido: [],
@@ -407,52 +404,15 @@ export default {
       oZoom: 7,
       optionsUnidadesRecorrido: [],
       mListControlesRecorrido: [],
+      infoOptions: {
+        pixelOffset: {
+          width: 0,
+          height: -17,
+        },
+      },
     };
   },
   methods: {
-    async showInfoWindowsRecorrido(unidad, idx) {
-      this.infoWindowPosRecorrido = {
-        lat: parseFloat(unidad.LatiHistEven),
-        lng: parseFloat(unidad.LongHistEven),
-      };
-      this.infoContentRecorrido = await this.getInfoWindowContentRecorrido(
-        unidad
-      );
-
-      //check if its the same marker that was selected if yes toggle
-      if (this.currentMinxRecorrido == idx) {
-        this.infoWinOpenRecorrido = !this.infoWinOpenRecorrido;
-      }
-      //if different marker set infowindow to open and reset current marker index
-      else {
-        this.infoWinOpenRecorrido = true;
-        this.currentMinxRecorrido = idx;
-      }
-    },
-    async getInfoWindowContentRecorrido(unidad) {
-      var dir = await this.$axios.get(
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-          parseFloat(unidad.LatiHistEven) +
-          "," +
-          parseFloat(unidad.LongHistEven) +
-          "&key=AIzaSyDOAdi7ZLdoctlCRA3_gYTeeIAjEHsTTY4"
-      );
-      var result = dir.data.results;
-      return `<div style="width:250px;padding:0.5rem">
-              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
-                unidad.FechHistEven
-              }<br>
-              <strong class="strongLetrasInfoWindows">EVENTO : </strong> ${
-                unidad.OutRoutHistEven == 1 ? "FUERA DE RUTA" : "EN RUTA"
-              } <strong>KM/H</strong><br>
-              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
-                unidad.VeloHistEven
-              } <strong>KM/H</strong><br>
-              <strong class="strongLetrasInfoWindows">DIR : </strong> ${
-                result.length > 0 ? result[0].formatted_address : "SIN NOMBRES"
-              }
-            </div>`;
-    },
     initFechaActual() {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
@@ -509,7 +469,7 @@ export default {
         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
         fillColor:
           unidad.HoraMarcSali_d != null
-            ? "green"
+            ? "blue"
             : unidad.EvenExceVeloHistEven == 1
             ? "yellow"
             : unidad.OutRoutHistEven == 1
@@ -527,17 +487,18 @@ export default {
       this.mListPosicionesExVelocidadRecorridoHistorial = [];
       this.mListPosicionesMarcRecorridoHistorial = [];
       this.mListPosicionesFRutaRecorridoHistorial = []
+      console.log(this.RangeHorasRecorrido)
       var body = {
         token: this.token,
         unidades: this.itemUnidadSelectRecorrido,
         fechaI:
           this.fechaActualRecorrido +
           " " +
-          FechaStringToHour(this.RangeHorasRecorrido[0]),
+          getformatFechatoTime(this.RangeHorasRecorrido[0]),
         fechaF:
           this.fechaActualRecorrido +
           " " +
-          FechaStringToHour(this.RangeHorasRecorrido[1]),
+          getformatFechatoTime(this.RangeHorasRecorrido[1]),
       };
       console.log(body);
       try {
@@ -546,15 +507,20 @@ export default {
           body
         );
 
-        if (datos.data.status_code == 200) {
-          Notification.success({
-            title: "Recorrido",
-            message: "Datos consultados con éxito.",
-          });
+        if (datos.data.status_code == 200) 
+        {
+          this.dialogFormVisible = false
+
+          
 
           for (var i = 0; i < datos.data.datos.length; i++) 
           {
             var obj = datos.data.datos[i];
+            
+            if(i == 0){
+              this.oCenter = {lat:parseFloat(obj.LatiHistEven),lng:parseFloat(obj.LongHistEven)}
+              this.oZoom = 17
+            }
             obj.icono = this.getIconoRecorrido(datos.data.datos[i]);
             
             if (obj.OutRoutHistEven == 1) 
@@ -628,7 +594,45 @@ export default {
     {
       this.oZoom = 18
       this.oCenter = {lat:parseFloat(item.LatiHistEven),lng:parseFloat(item.LongHistEven)}
-    }
+    },
+
+    async getInfoWindowContentRecorrido(unidad) 
+    {
+      return `<div style="width:300px;padding:0.50rem">
+              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
+                unidad.FechHistEven
+              }<br>
+              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
+                unidad.VeloHistEven
+              } <strong>KM/H</strong><br>
+              <strong class="strongLetrasInfoWindows">SATELITES : </strong> ${
+                unidad.SateHistEven
+              }
+            </div>`;
+    },
+    async closeInfoWindowsRecorrido()
+    {
+      this.infoWinOpen = false
+    },
+    async showInfoWindowsRecorrido(unidad, idx) {
+      this.infoWindowPos = {
+        lat: parseFloat(unidad.LatiHistEven),
+        lng: parseFloat(unidad.LongHistEven),
+      };
+      this.infoContent = await this.getInfoWindowContentRecorrido(unidad);
+
+      //check if its the same marker that was selected if yes toggle
+      if (this.currentMidx == idx) {
+        this.infoWinOpen = !this.infoWinOpen;
+      }
+      //if different marker set infowindow to open and reset current marker index
+      else {
+        this.infoWinOpen = true;
+        this.currentMidx = idx;
+      }
+    },
+
+
   },
   mounted() {
     this.initFechaActual();

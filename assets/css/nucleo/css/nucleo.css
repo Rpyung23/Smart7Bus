@@ -678,3 +678,26 @@ body::-webkit-scrollbar{
     padding-left: 0.5rem;
     border-radius: 1rem;
   }
+
+  .paddingLabelControl {
+    margin-bottom: 2.9rem;
+    font-weight: bold;
+    border-color: #1d1c1c;
+    border-width: 1px;
+    background-color: white;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    border-radius: 1rem;
+  }
+  
+  .paddingLabelControlMarc {
+    margin-top: 2.5rem;
+    border-color: #055eb1;
+    border-style: solid;
+    border-width: 1px;
+    background-color: white;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    border-radius: 1rem;
+  }
+  
