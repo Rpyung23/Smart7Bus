@@ -47,6 +47,7 @@
           <sidebar-item
             :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: './rminutostarjetaResumido' }"
           />
+          <sidebar-item :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
           <sidebar-item :link="{ name: 'Resumidos Vehiculo', path: './resumidovehiculo' }" />
           
           <!--<sidebar-item
