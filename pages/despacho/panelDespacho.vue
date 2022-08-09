@@ -33,11 +33,11 @@
         </div>
 
         <div class="buttonsAdicionalesDespacho">
-           <base-button icon type="primary" title="Tipos de Despachos" size="sm" @click="showModalSalidasDespacho()">
+           <base-button icon type="primary" title="Tipos de Despachos" size="sm" @click="showmodalTiposDespacho()">
             <span class="btn-inner--icon"><i class="ni ni-bullet-list-67"></i></span>
           </base-button>
 
-          <base-button icon type="danger" title="Salidas Anuladas" size="sm" @click="showModalSalidasDespacho()">
+          <base-button icon type="danger" title="Salidas Anuladas" size="sm" @click="showModalDespachoSalidasAnuladas()">
             <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
           </base-button>
 
@@ -100,8 +100,8 @@
             footer-classes="pb-2">
             <JqxGrid ref="myGridDespachoPanel" @contextmenu="myGridOnContextMenu()" @rowclick="myGridOnRowClick($event)"
               @cellbeginedit="cellBeginEditEvent($event)" :height="'100%'" style="margin-right: 50rem !important;"
-              @cellendedit="cellEndEditEvent($event)" :columns="columnsInfo" :source="dataAdapter" :editable="true"
-              @rowselect="myGridOnRowSelect($event,)" :selectionmode="'singlerow'" :enabletooltips="true"
+              @cellendedit="cellEndEditEvent($event)" :columns="columnsInfo" :source="dataAdapter" :editable="true" 
+              @rowselect="myGridOnRowSelect($event)" :selectionmode="'singlerow'" :enabletooltips="true"
               :width="getWidth" >
             </JqxGrid>
 
@@ -139,23 +139,77 @@
       </card>
     </modal>
 
-    <!--Form modal Salidas -->
-  <modal :show.sync="modalSalidasDespacho" size="sm">
-          <div class="containerTiposDespachos">
+      <!--Form modal Tipos de Despacho -->
+      <modal :show.sync="modalTiposDespacho" size="sm">
+        <div class="containerTiposDespachos">
           <el-radio-group v-model="radioTipoDespacho">
-              <el-radio :label="3">Salida Normal.</el-radio>
-              <el-radio :label="9">Generar Tarjeta</el-radio>
-              <el-radio :label="6">Salida Diferida</el-radio>
-              <el-radio :label="7">Salida de Apoyo</el-radio>
+            <el-radio :label="3">Salida Normal.</el-radio>
+            <el-radio :label="9">Generar Tarjeta</el-radio>
+            <el-radio :label="6">Salida Diferida</el-radio>
+            <el-radio :label="7">Salida de Apoyo</el-radio>
           </el-radio-group>
-          <div>
-
- 
+        <div>
       </div>
-        </div>
-        
-    </modal>
+    </div>
+      </modal>
 
+      <!--Form modal Despacho Salidas Anuladas-->
+    <modal :show.sync="modalDespachoSalidasAnuladas" size="xl" body-classes="p-0">
+    <h6 slot="header" class="modal-title">Despacho Salidas Anuladas</h6>
+      <card class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="card-bodyDSalidasAnuladas p-0">
+          <div>
+            <el-table v-loading="isLoadingDespachoSalidaPanelBusqueda" element-loading-text="Cargando Datos..."
+              element-loading-spinner="el-icon-loading" :data="mListDespachosSalidasAnuladas" row-key="id"
+              :height="mListDespachosSalidasAnuladas.length > 0 ? 550 : 150" style="width: 100%"
+              header-row-class-name="thead-dark" :default-sort="{ prop: 'HoraSaliProgSali_m', order: 'ascending' }"
+              :row-class-name="tableRowClassNameDSalidasAnuladas">
+
+            <el-table-column prop="CodiVehiSali_m" label="Unidad" min-width="110px">
+            </el-table-column>
+
+            <el-table-column prop="HoraSaliProgSali_m" label="H.Salida" min-width="120px">
+            </el-table-column>
+            <el-table-column prop="HoraLlegProgSali_m" label="H.LLegada" min-width="130px">
+            </el-table-column>
+            <el-table-column prop="idSali_m" label="N° Salida" min-width="130px">
+            </el-table-column>
+
+            <el-table-column prop="EstaSali_m" label="Estado" min-width="130px">
+              <template v-slot="{ row }">
+                <span>{{row.EstaSali_m == 4  ? "ANULADO" : ""}}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="NumeVuelSali_m" label="Vuelta" min-width="110px">
+            </el-table-column>
+            <el-table-column prop="SumaMinuPosiSali_m" label="Falta" min-width="100px">
+            </el-table-column>
+
+            <el-table-column prop="Intervalo" label="Inte." min-width="100px">
+               <template v-slot="{ row }">
+                <span>{{row.Intervalo = 0}}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="DescFrec" label="Frecuencia Salida" min-width="270px">
+            </el-table-column>
+
+            <el-table-column prop="MontInfrUnidSali_m" label="Multa" min-width="100px">
+            </el-table-column>
+
+            <el-table-column prop="VeloMaxiSali_m" label="KM/H" min-width="100px">
+            </el-table-column>
+
+            <el-table-column prop="Country23" label="Chofer" min-width="150px">
+            </el-table-column>
+          <div slot="empty">
+            <span>No existen Salidas Anuladas</span>
+          </div>
+          </el-table>
+        </div>
+      </card>  
+    </modal>
   </div>
 </template>
 <script>
@@ -207,6 +261,7 @@ export default {
       mListControlesPorRuta: [],
       mListDespachosPanel: [],
       mListDespachosPanelAuxiliar: [],
+      mListDespachosSalidasAnuladas: [],
       rowsToColor: [],
       isLoadingDespachoSalidaPanelBusqueda: true,
       fechaActualSalidasPanelDespacho: '',
@@ -218,30 +273,20 @@ export default {
       mSelectRutaSalidaPanelDespacho: null,
       mSelectRutaFrecuenciaPanelDespacho: null,
       modalSalidasTarjetaPanelDespacho: false,
-      modalSalidasDespacho:false,
+      modalTiposDespacho:false,
       baseURlPDFPanelDespachoTarjetaSalida: null,
       selectedRowSalida: null,
       radioTipoDespacho: 3,
       checkboxOrdenamientoDespacho: false,
       checkboxOSalidasAnuladasDespacho: false,
-      oLetraRuta:''
+      modalDespachoSalidasAnuladas:false
     };
   },
   methods: {
-    cellclassname (row, column, value, data) {
-      if (data.EstaSali_m == 'DIFERIDO') {
-        return "estadodiferidoDespacho";
-      }else if (data.EstaSali_m == 'EN RUTA' ) {
-        return "estadoenrutaDespacho"
-      }else if (data.EstaSali_m == 'FINALIZADO') {
-        return "estadofinalizadoDespacho";
-      }else if (data.EstaSali_m == 'ANULADO') {
-        return "estadoanuladoDespacho";
-      }     
-    },
     myGridOnRowSelect: function (event) {
       this.selectedRowSalida = event.args.row
       this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(this.selectedRowSalida.idSali_m)
+      this.selectedRowSalida.idSali_m = this.selectedRowSalida.idSali_m
     },
     getHoraSaliProgSali_mF(id_salida) {
       for (var i = 0; i < this.mListDespachosPanel.length; i++) {
@@ -332,18 +377,18 @@ export default {
       this.mListDespachosPanelAuxiliar.push(...datos.data.datos)
       this.$refs.myGridDespachoPanel.beginupdate();
       this.columnsInfo = []
-      this.columnsInfo[0] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname }
-      this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname }
-      this.columnsInfo[2] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname }
-      this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname }
-      this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname,}
-      this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname }
-      this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname }
-      this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname }
-      this.columnsInfo[8] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname }
-      this.columnsInfo[9] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname }
-      this.columnsInfo[10] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname }
-      this.columnsInfo[11] = { text: 'Chofer', datafield: 'Country23', width: 150, cellclassname: this.cellclassname }
+      this.columnsInfo[0] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit}
+      this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+      this.columnsInfo[2] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+      this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+      this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit}
+      this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+      this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+      this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+      this.columnsInfo[8] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+      this.columnsInfo[9] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+      this.columnsInfo[10] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+      this.columnsInfo[11] = { text: 'Chofer', datafield: 'Country23', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit}
       this.$refs.myGridDespachoPanel.setOptions
         ({
           source: this.createBodyDespacho(this.mListDespachosPanelAuxiliar),
@@ -366,9 +411,9 @@ export default {
     activeRutaDespacho(ruta) {
       console.log(ruta)
       console.log(ruta.LetrRuta)
-      this.oLetraRuta = ruta
       $("#" + ruta.LetrRuta).addClass("activeRutaDespacho")
       this.createHeaderTable(ruta)
+      this.readDespachoSalidasAnuladas(ruta)
     },
     removeAllRutaNoSelect() {
       for (var i = 0; i < this.mListRutasDespacho.length; i++) {
@@ -411,15 +456,12 @@ export default {
       var ListaVacia = []
       var ListaCompleta = []
       var inter = 0
-
-
       for (var hora = 4; hora <= 23; hora++) {
         tiempoString = (hora < 10 ? "0" + hora : hora)
         for (var minuto = 0; minuto <= 59; minuto++) {
           minutosString = (minuto < 10 ? "0" + minuto : minuto)
           var HS = tiempoString + ":" + minutosString + ":00"
           var HSa_ = tiempoString + ":" + minutosString + ":00 (A)"
-
           var obj = this.getObjetoSalidaDespacho(HS,HSa_)
           var objD = (obj == null) ? {
             LetraRutaSali_m: "",
@@ -434,12 +476,9 @@ export default {
             VeloMaxiSali_m: '',
             NumeVuelSali_m: '',
             SumaMinuPosiSali_m: '',
+            Country23 : '',
             Intervalo: ""
           } : (obj)
-
-          
-
-
           if (obj == null) {
             ListaVacia.push(objD)  
             inter++
@@ -448,9 +487,9 @@ export default {
             obj.HoraSaliProgSali_m = estado
             obj.Intervalo = inter
             inter = 0
+            
             ListaLlena.push(obj)
           }
-
         }
       }
       ListaCompleta = ListaLlena.concat(ListaVacia)
@@ -469,7 +508,8 @@ export default {
         { name: 'MontInfrUnidSali_m', type: 'string' },
         { name: 'VeloMaxiSali_m', type: 'string' },
         { name: 'NumeVuelSali_m', type: 'string' },
-        { name: 'SumaMinuPosiSali_m', type: 'string' }]
+        { name: 'SumaMinuPosiSali_m', type: 'string' },
+        { name: 'Country23', type: 'string' }]
       }
     },
     getObjetoSalidaDespacho(tiempo,tiempoA) 
@@ -676,16 +716,75 @@ export default {
       })
       this.baseURlPDFPanelDespachoTarjetaSalida = await pdfDoc.saveAsBase64({ dataUri: true });
     },
-    showModalSalidasDespacho() {
-      this.modalSalidasDespacho = true;
+    cellclassname (row, column, value, data) {
+      if (data.EstaSali_m == 'DIFERIDO') {
+        return "estadodiferidoDespacho";
+      }else if (data.EstaSali_m == 'EN RUTA' ) {
+        return "estadoenrutaDespacho"
+      }else if (data.EstaSali_m == 'FINALIZADO') {
+        return "estadofinalizadoDespacho";
+      }     
     },
-    showPanelDespachoSalidasAnuladas()
-    {
-      //alert(this.oLetraRuta)
-      this.createHeaderTable(this.oLetraRuta)
+    showmodalTiposDespacho() {
+      this.modalTiposDespacho = true;
     },
-    changeSalidasANuladas(){
-      this.createHeaderTable(this.oLetraRuta)
+    showModalDespachoSalidasAnuladas(){
+      this.modalDespachoSalidasAnuladas = true;
+    },
+    async readDespachoSalidasAnuladas(ruta) {
+    try {
+      this.isLoadingDespachoSalidaPanelBusqueda = true;
+      this.mListDespachosSalidasAnuladas = [];
+      var datos = await this.$axios.post(process.env.baseUrl + "/readSalidasPanelDespacho", {
+        token: this.token,
+        ruta: ruta.LetrRuta,
+        fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
+        anuladas: 1
+      })
+      if (datos.data.status_code == 200) {
+        this.mListDespachosSalidasAnuladas.push(...datos.data.datos);
+        this.isLoadingDespachoSalidaPanelBusqueda = false;
+          } else if (datos.data.status_code == 300) {
+            this.isLoadingDespachoSalidaPanelBusqueda = false;
+            Notification.info({
+              title: "Despacho Salidas Anuladas",
+              message: "No existen datos disponibles",
+              duration: 2500,
+            });
+          } else {
+            Notification.error({
+              title: "API ERROR",
+              message: datos.data.msm,
+              duration: 2500,
+            });
+          }
+        } catch (error) {
+          Notification.error({
+            title: "ERROR CATCH",
+            message: error.toString(),
+            duration: 2500,
+          });
+        }
+        this.loadingRPagosVehiculo = false; 
+    },
+    tableRowClassNameDSalidasAnuladas({ row }) {
+      if (row.EstaSali_m == 4) {
+        return "estadoanuladoDespacho";
+      } 
+    },
+    cellbeginedit: function (row, column, value, data) {
+      if(data == ""){
+        console.log(column)
+        var rowNoEdit = row;
+        if (row == rowNoEdit){
+          if (column == "idSali_m" || column == "EstaSali_m" || column == "NumeVuelSali_m" 
+          || column == "SumaMinuPosiSali_m" || column == "Intervalo" || column == "MontInfrUnidSali_m" || column == "VeloMaxiSali_m") {
+            return false;
+          }
+        } 
+      }else{
+        return false;
+      }
     }
   },
   mounted() {
@@ -816,7 +915,7 @@ export default {
 
 .estadoanuladoDespacho
 {
-  background-color: rgba(245, 97, 97, 0.369);
+  background-color: rgba(245, 97, 97, 0.369) !important;
   color: black;
 }
 

@@ -63,7 +63,10 @@
           <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" />
           <sidebar-item :link="{ name: 'ANT', path: './rant' }" />
           <sidebar-item :link="{ name: 'Controles - Tiempo', path: './rant' }" />
+          
         </sidebar-item>
+
+        <sidebar-item :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidad' }" />
 
         <sidebar-item v-if="permisos == null || permisos.historial.active" :link="{
           name: 'Historial',
@@ -72,12 +75,6 @@
         }">
         </sidebar-item>
 
-        <sidebar-item v-if="permisos == null || permisos.movilidad.active" :link="{
-          name: 'Movilidad',
-          icon: 'ni ni-building text-default',
-          path: './produccion/tablero',
-        }">
-        </sidebar-item>
 
       </template>
 
