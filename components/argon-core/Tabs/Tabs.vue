@@ -1,9 +1,18 @@
 <template>
   <div>
+    <!--
+
+      :class="[
+        { 'col-md-4': vertical && !tabNavWrapperClasses },
+        { 'col-md-': centered && !tabNavWrapperClasses },
+        tabNavWrapperClasses
+      ]"
+
+    -->
     <div
       :class="[
         { 'col-md-4': vertical && !tabNavWrapperClasses },
-        { 'col-12': centered && !tabNavWrapperClasses },
+        { '': centered && !tabNavWrapperClasses },
         tabNavWrapperClasses
       ]"
     >

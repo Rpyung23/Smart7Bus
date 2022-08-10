@@ -33,11 +33,14 @@
 
 
       <!--<span class="reloj">{{ hora }}</span>-->
+      <div class="espacio" v-if="oEspacio" style="margin-right:0.8rem;">
+
+      </div>
 
       <base-dropdown class="nav-item" tag="li" title-classes="nav-link" title-tag="a" icon="ni ni-bell-55"
         :visibleBadge="visibleBadgeNotification" :hasToggle="false"
         menu-classes="dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden"
-        v-if="permisos == null || permisos.notification.active">
+        v-if="permisos != null && permisos.notification != null && permisos.notification.active != null && permisos.notification.active">
         <template>
           <!-- Dropdown header -->
           <div class="px-3 py-3">
@@ -95,40 +98,40 @@
         <template>
           <div class="row shortcuts px-4">
             <a href="./despacho/panelDespacho" class="col-4 shortcut-item"
-              v-if="permisos == null || permisos.despacho.active">
+              v-if="permisos != null && permisos.despacho != null && permisos.despacho.active != null && permisos.despacho.active">
               <span class="shortcut-media avatar rounded-circle bg-gradient-red">
                 <i class="ni ni-calendar-grid-58"></i>
               </span>
               <small>Despacho</small>
             </a>
-            <a href="./monitoreo" class="col-4 shortcut-item" v-if="permisos == null || permisos.monitoreo.active">
+            <a href="./monitoreo" class="col-4 shortcut-item" v-if="permisos != null && permisos.monitoreo != null && permisos.monitoreo.active != null && permisos.monitoreo.active">
               <span class="shortcut-media avatar rounded-circle bg-gradient-orange">
                 <i class="ni ni-bus-front-12"></i>
               </span>
               <small>Monitoreo</small>
             </a>
             <a href="./produccion/tablero" class="col-4 shortcut-item"
-              v-if="permisos == null || permisos.produccion.active">
+              v-if="permisos != null && permisos.produccion != null && permisos.produccion.active != null && permisos.produccion.active">
               <span class="shortcut-media avatar rounded-circle bg-gradient-info">
                 <i class="ni ni-credit-card"></i>
               </span>
               <small>Producción</small>
             </a>
-            <a href="#!" class="col-4 shortcut-item" v-if="permisos == null || permisos.liquidacion.active">
+            <a href="#!" class="col-4 shortcut-item" v-if="permisos != null && permisos.liquidacion != null && permisos.liquidacion.active != null && permisos.liquidacion.active">
               <span class="shortcut-media avatar rounded-circle bg-gradient-green">
                 <i class="ni ni-money-coins"></i>
               </span>
               <small>Liquidación</small>
             </a>
             <a href="./historial/recorrido" class="col-4 shortcut-item"
-              v-if="permisos == null || permisos.historial.active">
+              v-if="permisos != null && permisos.historial != null && permisos.historial.active != null && permisos.historial.active">
               <span class="shortcut-media avatar rounded-circle bg-gradient-purple">
                 <i class="ni ni-pin-3"></i>
               </span>
               <small>Historial</small>
             </a>
             <a href="./recaudo/rcontador" class="col-4 shortcut-item"
-              v-if="permisos == null || permisos.recaudo.active">
+              v-if="permisos != null && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active">
               <span class="shortcut-media avatar rounded-circle bg-gradient-yellow">
                 <i class="ni ni-single-02"></i>
               </span>
@@ -147,9 +150,7 @@
               <img alt="Image placeholder" :src="logo" />
             </span>
             <div class="media-body ml-2 d-none d-lg-block">
-              <span class="mb-0 text-sm font-weight-bold">{{
-                  nameUsuario
-              }}</span>
+              <span class="mb-0 text-sm font-weight-bold"></span>
             </div>
           </div>
         </a>
@@ -169,12 +170,14 @@
           <a href="#!" class="dropdown-item">
             <i class="ni ni-calendar-grid-58"></i>
             <span>Activity</span>
-          </a>
-          <a href="#!" class="dropdown-item">
-            <i class="ni ni-support-16"></i>
-            <span>Support</span>
-          </a>
-          <div class="dropdown-divider"></div>-->
+          </a>-->
+          <li class="dropdown-item">
+            <i class="ni ni-circle-08"></i>
+            <span>{{
+                  nameUsuario
+              }}</span>
+          </li>
+          <div class="dropdown-divider"></div>
           <a :href="hrefLogOut" class="dropdown-item" @click="cerrarSession()">
             <i class="ni ni-user-run"></i>
             <span>Logout</span>
@@ -248,7 +251,8 @@ export default {
       visibleBadgeNotification: false,
       hrefLogOut:"./",
       searchQuery: "",
-      permisos: null
+      permisos: null,
+      oEspacio:false
     };
   },
   methods: {
@@ -336,8 +340,9 @@ export default {
       }
     },
     decodedPermisosNavBar() {
-      var decodeBase64 = window.atob(this.$cookies.get("token"))
-      this.permisos = jwt_decode(decodeBase64).PermisosJSON
+      /*var decodeBase64 = window.atob(this.$cookies.get("token"))*/
+      this.permisos = this.$cookies.get("permisos")
+      this.oEspacio = (this.permisos != null && this.permisos.notification != null && this.permisos.notification.active != null && this.permisos.notification.active) ? false : true
       /*if(this.permisos!=null && this.permisos.notification.active){
             this.readNotificacionesAlertaDipositivos();
     setInterval(() => {

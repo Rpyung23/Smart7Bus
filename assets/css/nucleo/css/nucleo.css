@@ -591,6 +591,10 @@ body::-webkit-scrollbar{
     display: none;
 }
 
+.modal-HeaderDisplayNone{
+    display: none !important;
+}
+
 .loadingRecorridoSalidaBusquedaPanel {
     height: 98%;
     width: 98%;

@@ -37,13 +37,13 @@
 
             <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaInicialRPagosVehiculoProduccionRecibo">
+                class="form-controlPersonal datepicker" v-model="fechaInicialIndicadorCalidad">
               </flat-picker>
             </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaFinalRPagosVehiculoProduccionRecibo">
+                class="form-controlPersonal datepicker" v-model="fechaFinalIndicadorCalidad">
               </flat-picker>
             </base-input>
 
@@ -54,18 +54,10 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readAllRPagosVehiculoProduccionRecibos()">
+            <base-button icon type="primary" @click="readAllIndicadoresCalidad()">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               <span class="btn-inner--text">Buscar</span>
             </base-button>
-
-            <download-excel v-if="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? true : false" class="btn btn-outline-success" outline :header="RecibosheaderExcelRPagosVehiculoProduccion"
-              :data="tableDataRPagosVEhiculoProduccionRecibo" :fields="json_fields_excelRecibosPagosVehiculoProduccion"
-              :worksheet="RecibosWorksheetExcelRPagosVehiculoProduccion"
-              :name="RecibosFileNameExcelRPagosVehiculoProduccion">
-              <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-              <span class="btn-inner--text"> Exportar Excel</span>
-            </download-excel>
 
             <!--<base-button outline type="success">
               <span class="btn-inner--icon"
@@ -104,56 +96,14 @@
           </div>
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
+
+         <card class="no-border-card" style="margin-bottom: 0rem"
+           body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
           <div>
-            <el-table v-loading="loadingRPagosVehiculoRecibo" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="tableDataRPagosVEhiculoProduccionRecibo" row-key="id"
-              :height="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? 440 : 150" style="width: 100%"
-              class="tablePanelControlProduccion"
-              header-row-class-name="thead-dark" >
-              <el-table-column prop="numero_cobro" label="N° Recibo" minWidth="100">
-              </el-table-column>
-
-              <el-table-column prop="fecha_cobro" label="Fecha de Cobro" minWidth="170">
-              </el-table-column>
-
-              <el-table-column prop="Unidad" label="Unidad" minWidth="100">
-              </el-table-column>
-              <el-table-column prop="NombApellUsua" label="Atención" minWidth="200">
-              </el-table-column>
-
-              <el-table-column prop="DeudaTotal" label="Total ($)" minWidth="100">
-              </el-table-column>
-
-              <!--<el-table-column
-                prop="estado"
-                label="Estado"
-                minWidth="120"
-                sortable
-              >
-              <template slot-scope="scope">
-                {{scope.row.estado == 1 ? "PAGADO" : "ANULADO"}}
-              </template>
-              </el-table-column>-->
-
-              <el-table-column label="Acciones" width="140">
-                <template slot-scope="scope">
-                  <el-button type="primary" @click="
-                    readAllDetalleReciboPagosVehiculoProduccion(
-                      scope.$index,
-                      scope.row
-                    )
-                  " size="small">
-                    Ver Detalle
-                  </el-button>
-                </template>
-              </el-table-column>
-
-              <div slot="empty"></div>
-            </el-table>
+            <iframe :src="oBase64IndicadoresCalidad" style="width: 100%; height: 33rem"></iframe>
           </div>
         </card>
+
       </div>
     </base-header>
 
@@ -210,8 +160,8 @@ export default {
       itemUnidadProduccionRPagoVehiculorecibo: [],
       itemRutasIndicadoresCalidad: [],
       token: this.$cookies.get("token"),
-      fechaInicialRPagosVehiculoProduccionRecibo: "",
-      fechaFinalRPagosVehiculoProduccionRecibo: "",
+      fechaInicialIndicadorCalidad: "",
+      fechaFinalIndicadorCalidad: "",
       loadingRPagosVehiculoRecibo: false,
       Base64PdfRECIBOPDFPRODUCCION: "",
       tableDataDetalleReciboPAgoVehiculoProduccion: [],
@@ -220,6 +170,7 @@ export default {
       loadingTableUnidadesRecibosVehiculoProduccion: false,
       loadingTableCobradoresRecibosVehiculoProduccion: false,
       baseURlPDFPanelDetalleRecibo: '',
+      oBase64IndicadoresCalidad:""
     }
   },
   methods: {
@@ -250,8 +201,8 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialRPagosVehiculoProduccionRecibo = format;
-      this.fechaFinalRPagosVehiculoProduccionRecibo = format;
+      this.fechaInicialIndicadorCalidad = format;
+      this.fechaFinalIndicadorCalidad = format;
     },
     async readAllUnidadesPagosVehiculoProduccionRecibo() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
@@ -280,8 +231,33 @@ export default {
         this.mListaRutasIndicadoresCalidad.push(...datos.data.data)
       }
     },
-    async readAllRPagosVehiculoProduccionRecibos() {
-    }
+    async readAllIndicadoresCalidad() 
+    {
+      this.oBase64IndicadoresCalidad = ""
+
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl+"/IndicadoresCalidad",{
+          token: this.token,
+          unidades: "*",
+          rutas:"*",
+          fechaI: this.fechaInicialIndicadorCalidad,
+          fechaF: this.fechaFinalIndicadorCalidad,
+          nameEmpresa:this.$cookies.get("nameEmpresa")
+      })
+
+      console.log(datos)
+
+      if(datos.data.status_code == 300)
+      {
+        this.oBase64IndicadoresCalidad = "data:application/pdf;base64,"+datos.data.datos
+      }
+      } catch (error) {
+       console.log(error) 
+      }
+
+
+    },
+
   },
   mounted() {
     this.readAllRutasIndicadoresCalidad()
@@ -291,6 +267,13 @@ export default {
 };
 </script>
 <style>
+
+
+.card-bodyRPagosVehiculoReciboProduccion::-webkit-scrollbar{
+  display: none;
+}
+
+
 .form-group {
   margin-bottom: 0rem;
 }
