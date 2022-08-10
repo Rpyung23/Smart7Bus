@@ -4,58 +4,65 @@
     <side-bar>
       <template slot-scope="props" slot="links">
 
-        <sidebar-item v-if="permisos == null || permisos.monitoreo.active" :link="{
+        <sidebar-item v-if="permisos != null  && permisos.monitoreo != null && permisos.monitoreo.active != null && permisos.monitoreo.active" :link="{
           name: 'Monitoreo',
           icon: 'ni ni-world text-success',
           path: './monitoreo',
         }">
         </sidebar-item>
 
-        <sidebar-item v-if="permisos == null || permisos.flota_vehicular.active" :link="{
+        <sidebar-item v-if="permisos != null && permisos.flota_vehicular != null && permisos.flota_vehicular.active != null && permisos.flota_vehicular.active" :link="{
           name: 'Flota Vehicular',
           icon: 'ni ni-bus-front-12 text-primary',
           path: '/flotavehicular',
         }">
         </sidebar-item>
 
-        <sidebar-item v-if="permisos == null || permisos.despacho.active" :link="{
+        <sidebar-item v-if="permisos != null && permisos.despacho != null && permisos.despacho.active != null && permisos.despacho.active" :link="{
           name: 'Despacho',
           icon: 'ni ni-calendar-grid-58 text-dark',
           path: '/despacho/panelDespacho',
         }">
         </sidebar-item>
 
-        <sidebar-item v-if="permisos == null || permisos.editor_rutas.active" :link="{
+        <sidebar-item v-if="permisos != null && permisos.editor_rutas != null && permisos.editor_rutas.active != null && permisos.editor_rutas.active" :link="{
           name: 'Editor de Rutas',
           icon: 'ni ni-vector text-danger',
           path: './rutas/controles',
         }">
         </sidebar-item>
 
+        <sidebar-item v-if="permisos != null && permisos.cajaComun != null && permisos.cajaComun.active != null && permisos.cajaComun.active" :link="{
+          name: 'Caja Común',
+          icon: 'ni ni-lock-circle-open text-green',
+          path: './produccion/tablero',
+              }">
+        </sidebar-item>
 
 
-        <sidebar-item v-if="permisos == null || permisos.produccion.active" :link="{
+        <sidebar-item v-if="permisos != null && permisos.produccion != null && permisos.produccion.active != null && permisos.produccion.active" :link="{
           name: 'Producción',
           icon: 'ni ni-money-coins text-green',
           path: './produccion/tablero',
         }">
         </sidebar-item>
+        
 
-        <sidebar-item v-if="permisos == null || permisos.liquidacion.active" :link="{
+        <sidebar-item v-if="permisos != null && permisos.liquidacion != null && permisos.liquidacion.active != null && permisos.liquidacion.active" :link="{
           name: 'Liquidación',
           icon: 'ni ni-money-coins text-green',
           path: './produccion/tablero',
         }">
         </sidebar-item>
 
-        <sidebar-item v-if="permisos == null || permisos.recaudo.active" :link="{
+        <sidebar-item v-if="permisos != null  && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active" :link="{
           name: 'Recaudo',
           icon: 'ni ni-single-02 text-orange',
           path: './recaudo/rcontador',
         }">
         </sidebar-item>
 
-        <sidebar-item v-if="permisos == null || permisos.reportes.active" :link="{
+        <sidebar-item v-if="permisos != null  && permisos.reportes != null && permisos.reportes.active != null && permisos.reportes.active" :link="{
           name: 'Reportes',
           icon: 'ni ni-ungroup text-orange',
         }">
@@ -66,9 +73,10 @@
           
         </sidebar-item>
 
-        <sidebar-item :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidad' }" />
+        <sidebar-item v-if="permisos != null && permisos.iCalidad != null && permisos.iCalidad.active != null && permisos.iCalidad.active" 
+              :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidad' }" />
 
-        <sidebar-item v-if="permisos == null || permisos.historial.active" :link="{
+        <sidebar-item v-if="permisos != null && permisos.historial != null && permisos.historial.active != null && permisos.historial.active" :link="{
           name: 'Historial',
           icon: 'ni ni-pin-3 text-info',
           path: './historial/recorrido',
@@ -80,7 +88,7 @@
 
     </side-bar>
     <div class="main-content">
-      <dashboard-navbar :type="$route.name === 'alternative' ? 'light' : 'default'"></dashboard-navbar>
+      <dashboard-navbar :type="$route.name == 'alternative' ? 'light' : 'default'"></dashboard-navbar>
 
       <div @click="$sidebar.displaySidebar(false)">
         <nuxt></nuxt>
@@ -134,7 +142,7 @@ export default {
     decodedPermisos() {
       var decodeBase64 = window.atob(this.$cookies.get("token"))
       console.log("PERMISOS")
-      this.permisos = jwt_decode(decodeBase64).PermisosJSON
+      this.permisos = this.$cookies.get("permisos")
     }
   },
   mounted() {
