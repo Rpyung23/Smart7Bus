@@ -705,3 +705,9 @@ body::-webkit-scrollbar{
     border-radius: 1rem;
   }
   
+
+  .buttonCenterEndDerecha{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
