@@ -233,6 +233,24 @@ export default {
     },
     async readAllIndicadoresCalidad() 
     {
+
+            swal.fire({
+        title: "Generando Reporte ...",
+        width: 600,
+        padding: "3em",
+        background: "#fff",
+        showCancelButton: false,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        allowOutsideClick: false,
+        backdrop: `
+                    rgba(0, 0, 0, 0.5)
+                    left top
+                    no-repeat
+                  `
+      });
+
       this.oBase64IndicadoresCalidad = ""
 
       try {
@@ -255,6 +273,7 @@ export default {
        console.log(error) 
       }
 
+      swal.close()
 
     },
 
