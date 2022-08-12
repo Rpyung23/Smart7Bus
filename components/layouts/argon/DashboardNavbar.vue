@@ -22,11 +22,11 @@
         </div>
       </li>
 
-      <li class="nav-item d-sm-none">
+      <!--<li class="nav-item d-sm-none">
         <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">
           <i class="ni ni-zoom-split-in"></i>
         </a>
-      </li>
+      </li>-->
 
       <iframe id="reloj" src="https://free.timeanddate.com/clock/i8cxjbwb/n4622/fn8/fs18/fcfff/tc2a8d62/pa6/th1/ta1"
         frameborder="0" width="142" height="32"></iframe>
@@ -88,7 +88,7 @@
         </template>
       </base-dropdown>
 
-      <base-button size="sm" type="secondary" @click="showAjustes()" style="margin-right: 0rem; color:#172b4d">
+      <base-button size="sm" v-if="permisos != null && permisos.ajustes != null && permisos.ajustes.active != null && permisos.ajustes.active" type="secondary" @click="showAjustes()" style="margin-right: 0rem; color:#172b4d">
         <span class="btn-inner--icon"><i class="ni ni-settings-gear-65" style="font-size: 1rem;"></i></span>
       </base-button>
 
