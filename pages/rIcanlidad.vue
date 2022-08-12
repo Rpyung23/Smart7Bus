@@ -275,7 +275,8 @@ export default {
           fechaI: this.fechaInicialIndicadorCalidad,
           fechaF: this.fechaFinalIndicadorCalidad,
           rutasString: rutasString,
-          nameEmpresa: this.$cookies.get("nameEmpresa")
+          nameEmpresa: this.$cookies.get("nameEmpresa"),
+          usuarioName: this.$cookies.get("namesUsuario")
         })
 
         //console.log(datos)
@@ -284,10 +285,12 @@ export default {
           this.oBase64IndicadoresCalidad = "data:application/pdf;base64," + datos.data.datos
         }
       } catch (error) {
-        this.$notify.error({
-          title: 'Error',
-          message: error.toString()
-        });
+        console.log(error)
+        Notification.error({
+              title: "ERROR",
+              message: error.toString(),
+              duration: 2500,
+            });
       }
 
       swal.close()
