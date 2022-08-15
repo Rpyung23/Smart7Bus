@@ -84,21 +84,21 @@
 
             <el-select style="margin-right: 0.5rem;" collapse-tags v-model="itemRutasIndicadoresCalidad" multiple
               placeholder="Rutas">
-              <el-option v-for="item in mListaRutasIndicadoresCalidad" :key="item.LetrRuta"
-                :label="item.DescRuta" :value="item.LetrRuta">
+              <el-option v-for="item in mListaRutasIndicadoresCalidad" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.idRuta">
               </el-option>
             </el-select>
 
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-  
+
           </div>
         </card>
 
 
-         <card class="no-border-card" style="margin-bottom: 0rem"
-           body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
+        <card class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
           <div>
             <iframe :src="oBase64IndicadoresCalidad" style="width: 100%; height: 33rem"></iframe>
           </div>
@@ -170,7 +170,7 @@ export default {
       loadingTableUnidadesRecibosVehiculoProduccion: false,
       loadingTableCobradoresRecibosVehiculoProduccion: false,
       baseURlPDFPanelDetalleRecibo: '',
-      oBase64IndicadoresCalidad:""
+      oBase64IndicadoresCalidad: ""
     }
   },
   methods: {
@@ -224,37 +224,76 @@ export default {
 
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
-        tipo:1
+        tipo: 1
       });
 
       if (datos.data.status_code == 200) {
         this.mListaRutasIndicadoresCalidad.push(...datos.data.data)
       }
     },
-    async readAllIndicadoresCalidad() 
-    {
+    async readAllIndicadoresCalidad() {
+
+      swal.fire({
+        title: "Generando Reporte ...",
+        width: 600,
+        padding: "3em",
+        background: "#fff",
+        showCancelButton: false,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        allowOutsideClick: false,
+        backdrop: `
+                    rgba(0, 0, 0, 0.5)
+                    left top
+                    no-repeat
+                  `
+      });
+
       this.oBase64IndicadoresCalidad = ""
 
       try {
-        var datos = await this.$axios.post(process.env.baseUrl+"/IndicadoresCalidad",{
+        var rutasString = []
+        if (this.itemRutasIndicadoresCalidad.length <= 0) {
+          rutasString.push("Todas las rutas")
+        } else {
+          for (var j = 0; j < this.itemRutasIndicadoresCalidad.length; j++) {
+            for (var i = 0; i < this.mListaRutasIndicadoresCalidad.length; i++) {
+              if (this.mListaRutasIndicadoresCalidad[i].idRuta == this.itemRutasIndicadoresCalidad[j]) {
+                rutasString.push(this.mListaRutasIndicadoresCalidad[i].DescRuta)
+              }
+            }
+          }
+        }
+
+
+
+        var datos = await this.$axios.post(process.env.baseUrl + "/IndicadoresCalidad", {
           token: this.token,
-          unidades: "*",
-          rutas:"*",
+          unidades: this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemUnidadProduccionRPagoVehiculorecibo,
+          rutas: this.itemRutasIndicadoresCalidad.length <= 0 ? "*" : this.itemRutasIndicadoresCalidad,
           fechaI: this.fechaInicialIndicadorCalidad,
           fechaF: this.fechaFinalIndicadorCalidad,
-          nameEmpresa:this.$cookies.get("nameEmpresa")
-      })
+          rutasString: rutasString,
+          nameEmpresa: this.$cookies.get("nameEmpresa"),
+          usuarioName: this.$cookies.get("namesUsuario")
+        })
 
-      console.log(datos)
+        //console.log(datos)
 
-      if(datos.data.status_code == 300)
-      {
-        this.oBase64IndicadoresCalidad = "data:application/pdf;base64,"+datos.data.datos
-      }
+        if (datos.data.status_code == 200) {
+          this.oBase64IndicadoresCalidad = "data:application/pdf;base64," + datos.data.datos
+        }
       } catch (error) {
-       console.log(error) 
+        console.log(error)
+        Notification.error({
+              title: "ERROR",
+              message: error.toString(),
+              duration: 2500,
+            });
       }
 
+      swal.close()
 
     },
 
@@ -267,9 +306,7 @@ export default {
 };
 </script>
 <style>
-
-
-.card-bodyRPagosVehiculoReciboProduccion::-webkit-scrollbar{
+.card-bodyRPagosVehiculoReciboProduccion::-webkit-scrollbar {
   display: none;
 }
 

@@ -28,11 +28,11 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readSalidasPanelBusqueda()">
-              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
-            </base-button>
-            <!--<download-excel
+            <div class="buttonCenterEndDerecha">
+              <base-button icon type="primary" size="sm" @click="readSalidasPanelBusqueda()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              </base-button>
+              <!--<download-excel
               class="btn btn-outline-success"
               outline
               :header="headerExcelRPagosVehiculoProduccion"
@@ -46,10 +46,10 @@
               ></span>
               <span class="btn-inner--text"> Excel</span>
             </download-excel>-->
-            <base-button outline type="danger">
-              <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
-              <span class="btn-inner--text"> Descargas</span>
-            </base-button>
+              <base-button type="danger" size="sm" v-if="mListaSalidasPanelBusqueda.length > 0" @click="exportPdfSalidasPanelBusqueda()" title="Exportar PDF">
+                <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
+              </base-button>
+            </div>
           </div>
         </card>
 
@@ -88,8 +88,7 @@
             <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="mListaSalidasPanelBusqueda" row-key="id"
               class="tablePanelControlProduccion" :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-              header-row-class-name="thead-dark" :height="mListaSalidasPanelBusqueda.length > 0 ? 445 : 150"
-              >
+              header-row-class-name="thead-dark" :height="mListaSalidasPanelBusqueda.length > 0 ? 445 : 150">
 
 
               <el-table-column label="Actions" width="170">
@@ -97,7 +96,7 @@
                 <template slot-scope="scope">
                   <base-button size="sm" title="Tarjeta" @click="showTarjetaSalidasPanelBusqueda(scope.row)"
                     type="primary"><i class="ni ni-ungroup"></i></base-button>
-                    <base-button size="sm" title="Recorrido" @click="showRecorridoSalidasPanelBusqueda(scope.row)"
+                  <base-button size="sm" title="Recorrido" @click="showRecorridoSalidasPanelBusqueda(scope.row)"
                     type="success"><i class="ni ni-world"></i></base-button>
                 </template>
 
@@ -105,7 +104,7 @@
 
 
 
-              
+
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="130">
               </el-table-column>
 
@@ -223,6 +222,10 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs
+
 import {
   Table,
   TableColumn,
@@ -244,7 +247,6 @@ import {
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
-
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
@@ -402,7 +404,7 @@ export default {
     async readAllLineasContadorSalidasPanelBusqueda() {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
-        tipo:3
+        tipo: 3
       });
       if (datos.data.status_code == 200) {
         this.mListLineasSalidasPanelBusqueda.push(...datos.data.data);
@@ -436,10 +438,10 @@ export default {
           );
 
           if (datos.data.status_code == 200) {
-            Notification.success({
+            /*Notification.success({
               title: "Panel Salidas",
               message: "Datos consultados con éxito",
-            });
+            });*/
             this.mListaSalidasPanelBusqueda.push(...datos.data.datos);
           } else if (datos.data.status_code == 300) {
             Notification.info({
@@ -594,7 +596,7 @@ export default {
       const { width, height } = page.getSize()
       const fontSize = 10
 
-      page.drawText("     "+this.$cookies.get("nameEmpresa").toUpperCase().substring(0,28), {
+      page.drawText("     " + this.$cookies.get("nameEmpresa").toUpperCase().substring(0, 28), {
         x: 20,
         y: height - 2 * fontSize,
         size: fontSize,
@@ -602,7 +604,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Unidad       "+ "Salida #"+salida.idSali_m+"         Ruta     Vue.", {
+      page.drawText("Unidad       " + "Salida #" + salida.idSali_m + "         Ruta     Vue.", {
         x: 20,
         y: height - 3.5 * fontSize,
         size: fontSize,
@@ -610,9 +612,9 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("    "+salida.CodiVehiSali_m + "          " 
-                          + FechaStringToHour(salida.HoraSaliProgSali_mF) + "         " 
-                          + (salida.LetraRutaSali_m.length > 2 ? salida.LetraRutaSali_m : "  "+salida.LetraRutaSali_m)+"           "+ salida.NumeVuelSali_m, {
+      page.drawText("    " + salida.CodiVehiSali_m + "          "
+        + FechaStringToHour(salida.HoraSaliProgSali_mF) + "         "
+        + (salida.LetraRutaSali_m.length > 2 ? salida.LetraRutaSali_m : "  " + salida.LetraRutaSali_m) + "           " + salida.NumeVuelSali_m, {
         x: 20,
         y: height - 4.5 * fontSize,
         size: fontSize,
@@ -620,7 +622,7 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText('FREC : '+salida.DescFrec.substring(0,26), {
+      page.drawText('FREC : ' + salida.DescFrec.substring(0, 26), {
         x: 20,
         y: height - 5.6 * fontSize,
         size: fontSize,
@@ -654,27 +656,25 @@ export default {
       var heightAux = 9.7
       var sumFalt = 0
       var penFalt = 0
-      for (var i = 0; i < datos.data.data.length; i++) 
-      {
+      for (var i = 0; i < datos.data.data.length; i++) {
 
         heightAux = heightAux + 1
-       if(datos.data.data[i].FaltSali_d > 0){
-         sumFalt = sumFalt + datos.data.data[i].FaltSali_d
-       }
+        if (datos.data.data[i].FaltSali_d > 0) {
+          sumFalt = sumFalt + datos.data.data[i].FaltSali_d
+        }
 
-       if(datos.data.data[i].isCtrlRefeSali_d == 0)
-       {
-        var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
-        penFalt = penFalt + pen  
-       }
+        if (datos.data.data[i].isCtrlRefeSali_d == 0) {
+          var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
+          penFalt = penFalt + pen
+        }
 
         var space = "                       "
         /**datos.data.data[i].DescCtrlSali_d.substring(0, 9)**/
 
-        var texto =  space+ "  "+datos.data.data[i].HoraProgSali_d.substring(0, 5)+"   "
-                        +(datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '              ' : datos.data.data[i].HoraMarcSali_d)+"    "+(datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '    ' : datos.data.data[i].FaltSali_d )+"        "
-                        +(datos.data.data[i].isCtrlRefeSali_d == 1 ? "REF" : datos.data.data[i].PenaCtrlSali_d == '0.00' ? '      ' : datos.data.data[i].PenaCtrlSali_d)
-        
+        var texto = space + "  " + datos.data.data[i].HoraProgSali_d.substring(0, 5) + "   "
+          + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '              ' : datos.data.data[i].HoraMarcSali_d) + "    " + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '    ' : datos.data.data[i].FaltSali_d) + "        "
+          + (datos.data.data[i].isCtrlRefeSali_d == 1 ? "REF" : datos.data.data[i].PenaCtrlSali_d == '0.00' ? '      ' : datos.data.data[i].PenaCtrlSali_d)
+
         page.drawText(texto, {
           x: 20,
           y: height - heightAux * 9,
@@ -691,7 +691,7 @@ export default {
 
 
       }
-      heightAux  = heightAux - 0.5
+      heightAux = heightAux - 0.5
 
 
       page.drawText("---------------------------------------------------------", {
@@ -715,14 +715,14 @@ export default {
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Adelanto : " + (salida.adelantoTime == null ? '00:00:00' :  salida.adelantoTime), {
+      page.drawText("Adelanto : " + (salida.adelantoTime == null ? '00:00:00' : salida.adelantoTime), {
         x: 20,
         y: height - (heightAux + 3) * fontSize,
         size: 8.5,
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("Atrasos : " + (salida.atrasoTime == null ? '00:00:00' :  salida.atrasoTime), {
+      page.drawText("Atrasos : " + (salida.atrasoTime == null ? '00:00:00' : salida.atrasoTime), {
         x: 20,
         y: height - (heightAux + 4) * fontSize,
         size: 8.5,
@@ -731,23 +731,76 @@ export default {
 
       let bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
 
-      page.drawText("TOTAL Faltas  : +"+sumFalt, {
+      page.drawText("TOTAL Faltas  : +" + sumFalt, {
         x: 20,
         y: height - (heightAux + 5) * fontSize,
         size: 10,
-        font:bold,
+        font: bold,
         color: rgb(0, 0, 0),
       })
 
-      page.drawText("TOTAL Dinero  : "+Number(penFalt).toFixed(2), {
+      page.drawText("TOTAL Dinero  : " + Number(penFalt).toFixed(2), {
         x: 20,
         y: height - (heightAux + 6) * fontSize,
         size: 10,
-        font:bold,
+        font: bold,
         color: rgb(0, 0, 0),
       })
 
       this.baseURlPDFPanelDespachoTarjeta = await pdfDoc.saveAsBase64({ dataUri: true });
+    }, exportPdfSalidasPanelBusqueda() {
+      var empresa = [{ text: 'Empresa : ', fontSize: 8.5, bold: true,alignment:"left" }]
+      var unidad = [{ text: 'Flota Vehicular : ', fontSize: 8.5, bold: true,alignment:"left" }]
+      var ruta = [{ text: 'Rutas : ', fontSize: 8.5, bold: true,alignment:"left" }]
+      var desde_hasta = [{ text: 'Fecha : '+this.fechaInicialSalidasPanelBusqueda+" hasta "+this.fechaFinalSalidasPanelBusqueda, fontSize: 8.5, bold: true,alignment:"left" }]
+      
+      var resultadoString = [[{ text: 'Unidad', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'Salida', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'Ruta', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'N° Vuelta', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'H.Salida', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'H. Llegada', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'T. Atraso', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'T. Adelanto', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'V. Max', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'PEN ($)', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" },{ text: 'ESTADO', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }]]
+
+      for (var i = 0; i < this.mListaSalidasPanelBusqueda.length; i++) 
+      {
+        var estado = this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1 ? "DIFERIDA" : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 4 ? "ANULADO" : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2 ? "EN RUTA"
+                          : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 && parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d) > 0
+                            ? "FINALIZADO CON PENALIDAD"
+                            : "FINALIZADA SIN PENALIDAD"
+        var arrys = [{ text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m, fontSize: 8.5 },
+        { text: this.mListaSalidasPanelBusqueda[i].idSali_m, fontSize: 8.5 },
+        { text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m, fontSize: 8.5 },
+        { text: this.mListaSalidasPanelBusqueda[i].NumeVuelSali_m, fontSize: 8.5 },
+        { text: this.mListaSalidasPanelBusqueda[i].HoraSaliProgSali_mF, fontSize: 8.5 },
+        { text: this.mListaSalidasPanelBusqueda[i].HoraLlegProgSali_m, fontSize: 8.5 },
+        { text: this.mListaSalidasPanelBusqueda[i].atrasoTime, fontSize: 8.5 },
+        { text: this.mListaSalidasPanelBusqueda[i].adelantoTime, fontSize: 8.5 },
+        { text: this.mListaSalidasPanelBusqueda[i].VeloMaxiSali_m, fontSize: 8.5 },
+        { text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d, fontSize: 8.5 },
+        { text: estado, fontSize: 8.5 }]
+        resultadoString.push(arrys)
+      }
+
+      var docDefinition = {
+        pageOrientation: 'landscape',
+        pageSize: 'A4',
+        content: [
+          {
+            layout:'noBorders',
+            table: {
+              headerRows: 0,
+              widths: [450,450,450,450],
+              body: [empresa,unidad,ruta,desde_hasta]
+            }
+          },
+          {
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [30, 40, 100, 40, 90, 50, 60, 60, 35, 35,90],
+              body: resultadoString
+            }
+          }
+        ]
+      }
+      var win = window.open('', '_blank');
+      pdfMake.createPdf(docDefinition).open({}, win);
     }
   },
   mounted() {
@@ -762,9 +815,6 @@ export default {
 };
 </script>
 <style>
-
-
-
 .current-row {
   background-color: rgba(0, 0, 0, 0.178);
 }
