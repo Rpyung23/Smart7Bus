@@ -128,7 +128,7 @@
                       }`"
                     ></i>-->
                     <span class="status"><strong>{{
-                        row.EstaSali_m <= 1 ? "DIFERIDA" : row.EstaSali_m == 4 ? "ANULADO" : row.EstaSali_m == 2 ? "EN RUTA"
+                        row.EstaSali_m == 1 ? "DIFERIDA" : row.EstaSali_m == 4 ? "ANULADO" : row.EstaSali_m == 2 ? "EN RUTA"
                           : row.EstaSali_m == 3 && parseFloat(row.PenaCtrlSali_d) > 0
                             ? "FINALIZADO CON PENALIDAD"
                             : "FINALIZADA SIN PENALIDAD"
