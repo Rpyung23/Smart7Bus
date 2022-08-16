@@ -127,7 +127,7 @@
                       }`"
                     ></i>-->
                     <span class="status"><strong>{{
-                        row.EstaSali_m <= 1 ? "DIFERIDA" : row.EstaSali_m == 4 ? "ANULADO" : row.EstaSali_m == 2 ? "EN RUTA"
+                        row.EstaSali_m == 1 ? "DIFERIDA" : row.EstaSali_m == 4 ? "ANULADO" : row.EstaSali_m == 2 ? "EN RUTA"
                           : row.EstaSali_m == 3 && parseFloat(row.PenaCtrlSali_d) > 0
                             ? "FINALIZADO CON PENALIDAD"
                             : "FINALIZADA SIN PENALIDAD"
@@ -749,8 +749,8 @@ export default {
 
       this.baseURlPDFPanelDespachoTarjeta = await pdfDoc.saveAsBase64({ dataUri: true });
     }, exportPdfSalidasPanelBusqueda() {
-      var empresa = [{ text: 'Empresa : ', fontSize: 8.5, bold: true,alignment:"left" }]
-      var unidad = [{ text: 'Flota Vehicular : ', fontSize: 8.5, bold: true,alignment:"left" }]
+      var empresa = [{ text: 'Empresa : '+this.$cookies.get('nameEmpresa'), fontSize: 8.5, bold: true,alignment:"left" }]
+      var unidad = [{ text: 'Flota Vehicular : '+(this.itemUnidadSalidasPanelBusqueda.length > 0 ? this.itemUnidadSalidasPanelBusqueda.toString() : 'Toda la flota'), fontSize: 8.5, bold: true,alignment:"left" }]
       var ruta = [{ text: 'Rutas : ', fontSize: 8.5, bold: true,alignment:"left" }]
       var desde_hasta = [{ text: 'Fecha : '+this.fechaInicialSalidasPanelBusqueda+" hasta "+this.fechaFinalSalidasPanelBusqueda, fontSize: 8.5, bold: true,alignment:"left" }]
       

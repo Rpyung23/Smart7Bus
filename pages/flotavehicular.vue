@@ -10,12 +10,13 @@
               </div>
 
               <br />
-              <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular" footer-classes="pb-2">
+              <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
+                footer-classes="pb-2">
                 <div>
                   <el-table v-loading="loadingUnidadesFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     class="table-responsive table-flush" :data="mListUnidadesFlotaVehicular"
-                    header-row-class-name="thead-dark" :height="mListUnidadesFlotaVehicular.length >0 ? 487 : 150" >
+                    header-row-class-name="thead-dark" :height="mListUnidadesFlotaVehicular.length > 0 ? 487 : 150">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label"
                       v-bind="column">
@@ -47,11 +48,10 @@
 
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button  class="edit" type="success" size="sm" icon>
+                        <base-button class="edit" type="success" size="sm" icon>
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button  class="remove btn-link" type="danger"
-                          size="sm" icon>
+                        <base-button class="remove btn-link" type="danger" size="sm" icon>
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
                       </div>
@@ -63,11 +63,13 @@
             <tab-pane>
               <div slot="title" @click="initGruposFlotaVehicular()">Grupos</div>
               <br />
-              <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular" footer-classes="pb-2">
+              <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
+                footer-classes="pb-2">
                 <div>
                   <el-table v-loading="loadingGruposFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListGruposFlotaVehicular" :height="mListGruposFlotaVehicular.length >0 ? 487 : 150" header-row-class-name="thead-dark">
+                    :data="mListGruposFlotaVehicular" :height="mListGruposFlotaVehicular.length > 0 ? 487 : 150"
+                    header-row-class-name="thead-dark">
                     <div slot="empty"></div>
 
                     <el-table-column v-for="column in tableColumnsGruposFlotaVehicular" :key="column.label"
@@ -88,11 +90,10 @@
 
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button  class="edit" type="success" size="sm" icon>
+                        <base-button class="edit" type="success" size="sm" icon>
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button  class="remove btn-link" type="danger"
-                          size="sm" icon>
+                        <base-button class="remove btn-link" type="danger" size="sm" icon>
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
                       </div>
@@ -106,12 +107,14 @@
                 Propietarios
               </div>
               <br />
-              <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular" footer-classes="pb-2">
+              <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
+                footer-classes="pb-2">
                 <div>
 
                   <el-table v-loading="loadingPropietariosFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListPropietariosFlotaVehicular" :height="mListPropietariosFlotaVehicular.length >0 ? 487 : 150" header-row-class-name="thead-dark">
+                    :data="mListPropietariosFlotaVehicular"
+                    :height="mListPropietariosFlotaVehicular.length > 0 ? 487 : 150" header-row-class-name="thead-dark">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsPropietariosFlotaVehicular" :key="column.label"
                       v-bind="column">
@@ -130,11 +133,10 @@
 
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button  class="edit" type="success" size="sm" icon>
+                        <base-button class="edit" type="success" size="sm" icon>
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button  class="remove btn-link" type="danger"
-                          size="sm" icon>
+                        <base-button class="remove btn-link" type="danger" size="sm" icon>
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
                       </div>
@@ -144,15 +146,18 @@
               </card>
             </tab-pane>
             <tab-pane>
-              <div slot="title"  @click="initAdministrativosFlotaVehicular()">
+              <div slot="title" @click="initAdministrativosFlotaVehicular()">
                 Usuarios Admin..
               </div>
               <br />
-              <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular" footer-classes="pb-2">
+              <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
+                footer-classes="pb-2">
                 <div>
                   <el-table v-loading="loadingAdministrativosFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListAdministrativosFlotaVehicular" :height="mListAdministrativosFlotaVehicular.length >0 ? 487 : 150" header-row-class-name="thead-dark">
+                    :data="mListAdministrativosFlotaVehicular"
+                    :height="mListAdministrativosFlotaVehicular.length > 0 ? 487 : 150"
+                    header-row-class-name="thead-dark">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsAdministrativosFlotaVehicular" :key="column.label"
                       v-bind="column">
@@ -160,16 +165,15 @@
 
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button  class="edit" type="success" size="sm" icon>
+                        <base-button class="edit" type="success" size="sm" icon>
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button  class="remove btn-link" type="danger"
-                          size="sm" icon>
+                        <base-button class="remove btn-link" type="danger" size="sm" icon>
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
 
-                        <base-button @click.native="showModalPermisosFlotaVehicular($index, row)" class="remove btn-link" type="warning"
-                          size="sm" icon>
+                        <base-button @click.native="showModalPermisosFlotaVehicular($index, row)"
+                          class="remove btn-link" type="warning" size="sm" icon>
                           <i class="text-white ni ni-key-25"></i>
                         </base-button>
                       </div>
@@ -178,7 +182,43 @@
                 </div>
               </card>
             </tab-pane>
-            <tab-pane title="Choferes"> </tab-pane>
+
+            <tab-pane title="Choferes">
+              <div slot="title" @click="initChoferesFlotaVehicular()">
+                Choferes
+              </div>
+              <br />
+              <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
+                footer-classes="pb-2">
+                <div>
+                  <el-table v-loading="loadingChoferesFlotaVehicular" element-loading-text="Cargando..."
+                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    :data="mListChoferesFlotaVehicular" :height="mListChoferesFlotaVehicular.length > 0 ? 487 : 150"
+                    header-row-class-name="thead-dark">
+                    <div slot="empty"></div>
+                    <el-table-column v-for="column in tableColumnsChoferesFlotaVehicular" :key="column.label"
+                      v-bind="column">
+                    </el-table-column>
+
+                    <el-table-column min-width="180px" align="right" label="Actions">
+                      <div slot-scope="{ $index, row }" class="d-flex">
+                        <base-button class="edit" type="success" size="sm" icon>
+                          <i class="text-white ni ni-ruler-pencil"></i>
+                        </base-button>
+                        <base-button class="remove btn-link" type="danger" size="sm" icon>
+                          <i class="text-white ni ni-fat-remove"></i>
+                        </base-button>
+
+                        <base-button @click.native="initChoferesUnidadSinAsignacionFlotaVehicular($index, row)"
+                          class="remove btn-link" type="default" size="sm" icon>
+                          <i class="text-white ni ni-bus-front-12"></i>
+                        </base-button>
+                      </div>
+                    </el-table-column>
+                  </el-table>
+                </div>
+              </card>
+            </tab-pane>
           </tabs>
         </div>
       </div>
@@ -188,20 +228,41 @@
     <!--Classic modal-->
     <modal :show.sync="modalPermisosUsuariosAdminFlotaVehicular">
 
-    
+
       <template slot="header">
-        <span>{{otitleModalUsuarioAdmin}}</span>
+        <span>{{ otitleModalUsuarioAdmin }}</span>
       </template>
 
-      <v-jsoneditor v-model="jsonPermisosUsuario"  :plus="false" height="20rem" @error="onError"></v-jsoneditor>
+      <v-jsoneditor v-model="jsonPermisosUsuario" :plus="false" height="20rem" @error="onError"></v-jsoneditor>
 
 
       <template slot="footer">
         <base-button type="primary" @click="updatePermisosJSONAdministrativos()">Guardar Cambios</base-button>
-        <base-button type="link" class="ml-auto" @click="modalPermisosUsuariosAdminFlotaVehicular = false">Cancelar</base-button>
+        <base-button type="link" class="ml-auto" @click="modalPermisosUsuariosAdminFlotaVehicular = false">Cancelar
+        </base-button>
       </template>
 
     </modal>
+
+
+    <!--Form modal-->
+    <modal :show.sync="modalChoferesFlotaVehicular" size="sm" body-classes="p-0">
+      <card type="secondary" header-classes="bg-transparent pb-5" body-classes="px-lg-5 py-lg-5" class="border-0 mb-0">
+        <template slot="header">
+          <div class="text-muted text-center mt-2 mb-3">
+            <el-select  placeholder="Unidades sin chofer">
+              <el-option v-for="item in mListChoferesUnidadesSinAsignacion" :key="item.CodiVehi" :label="item.nombres" :value="item.CodiVehi">
+                <span style="float: left">{{ item.CodiVehi }}</span>
+                <span :style="item.nombres == null ? 'float: right; color: green; font-size: 13px' : 'float: right; color: red; font-size: 13px'">{{ item.nombres == null ? 'Libre' : item.nombres }}</span>
+              </el-option>
+            </el-select>
+          </div>
+
+        </template>
+      </card>
+
+    </modal>
+
 
 
 
@@ -217,7 +278,7 @@
 import { Table, TableColumn, Select, Option, Notification } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
-import { Modal,BasePagination } from "@/components/argon-core";
+import { Modal, BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
@@ -248,7 +309,9 @@ export default {
       loadingGruposFlotaVehicular: false,
       loadingPropietariosFlotaVehicular: false,
       loadingAdministrativosFlotaVehicular: false,
-      modalPermisosUsuariosAdminFlotaVehicular:false,
+      loadingChoferesFlotaVehicular: false,
+      modalPermisosUsuariosAdminFlotaVehicular: false,
+      modalChoferesFlotaVehicular: false,
       tableColumnsUnidadesFlotaVehicular: [
         {
           prop: "CodiVehi",
@@ -356,14 +419,49 @@ export default {
           minWidth: 200,
         },
       ],
+      tableColumnsChoferesFlotaVehicular: [
+        {
+          prop: "usuario",
+          label: "Usuario",
+          minWidth: 150,
+          sortable: true,
+        },
+        {
+          prop: "constrasenia",
+          label: "Contraseña",
+          minWidth: 150,
+        },
+        {
+          prop: "nombres",
+          label: "Nombres y Apellidos",
+          minWidth: 200,
+        },
+        {
+          prop: "email",
+          label: "Email",
+          minWidth: 200,
+        },
+        {
+          prop: "telefono",
+          label: "Teléfono",
+          minWidth: 150,
+        },
+        {
+          prop: "CodiVehi",
+          label: "Unidad",
+          minWidth: 150,
+        },
+      ],
       mListUnidadesFlotaVehicular: [],
       mListGruposFlotaVehicular: [],
       mListPropietariosFlotaVehicular: [],
       mListAdministrativosFlotaVehicular: [],
+      mListChoferesFlotaVehicular: [],
       selectedRowsUnidadesFlotaVehicular: [],
       jsonPermisosUsuario: null,
-      oItemAdministrativoFlotaVehicular:null,
-      otitleModalUsuarioAdmin : ''
+      oItemAdministrativoFlotaVehicular: null,
+      otitleModalUsuarioAdmin: '',
+      mListChoferesUnidadesSinAsignacion : []
     };
   },
   methods: {
@@ -483,43 +581,101 @@ export default {
       }
       this.loadingAdministrativosFlotaVehicular = false;
     },
-    showModalPermisosFlotaVehicular(index,row){
-      this.modalPermisosUsuariosAdminFlotaVehicular =  this.modalPermisosUsuariosAdminFlotaVehicular ? false : true
+    initChoferesFlotaVehicular: async function () {
+      this.loadingChoferesFlotaVehicular = true
+      this.mListChoferesFlotaVehicular = []
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/read_choferes",
+          {
+            token: this.token,
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          this.mListChoferesFlotaVehicular.push(...datos.data.data);
+        } else if (datos.data.status_code == 200) {
+          Notification.info({
+            title: "Choferes",
+            message: "No existen Choferes registradas",
+          });
+        } else {
+          Notification.error({
+            title: "Error Api Choferes",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({ title: "Error Catch", msm: error.toString() });
+      }
+      this.loadingChoferesFlotaVehicular = false;
+    },
+    initChoferesUnidadSinAsignacionFlotaVehicular: async function (index,row) 
+    {
+      this.showModalUnidadesChoferFlotavehicular(index,row)
+    
+      this.mListChoferesUnidadesSinAsignacion = [];
+
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/read_unidades_choferes",
+          {
+            token: this.token,
+            usuario:row.usuario
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          this.mListChoferesUnidadesSinAsignacion.push(...datos.data.data);
+        } else {
+          Notification.error({
+            title: "Error Api Choferes",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({ title: "Error Catch", msm: error.toString() });
+      }
+     
+    },
+    showModalPermisosFlotaVehicular(index, row) {
+      this.modalPermisosUsuariosAdminFlotaVehicular = this.modalPermisosUsuariosAdminFlotaVehicular ? false : true
       this.oItemAdministrativoFlotaVehicular = row
       this.otitleModalUsuarioAdmin = row.NombApellUsua
       this.jsonPermisosUsuario = JSON.parse(row.permisosJSON)
     },
-    onError() {
-            console.log('error')
+    showModalUnidadesChoferFlotavehicular(index, row) {
+      this.modalChoferesFlotaVehicular = this.modalChoferesFlotaVehicular ? false : true
     },
-    async updatePermisosJSONAdministrativos()
-    {
+    onError() {
+      console.log('error')
+    },
+    async updatePermisosJSONAdministrativos() {
       try {
         var item = this.oItemAdministrativoFlotaVehicular
-      var obj = {
-        token:this.token,
-        usuario: item.CodiUsua,
-        permisosJson: this.jsonPermisosUsuario
-      }
-      console.log(obj)
-      var result = await this.$axios.put(process.env.baseUrl+"/updatePermisosAdministratios",obj)
-      if(result.data.status_code == 200)
-      {
-        this.$notify({
-          title: 'Update Permisos',
-          message: result.data.msm,
-          type: 'success'
-        });
+        var obj = {
+          token: this.token,
+          usuario: item.CodiUsua,
+          permisosJson: this.jsonPermisosUsuario
+        }
+        console.log(obj)
+        var result = await this.$axios.put(process.env.baseUrl + "/updatePermisosAdministratios", obj)
+        if (result.data.status_code == 200) {
+          this.$notify({
+            title: 'Update Permisos',
+            message: result.data.msm,
+            type: 'success'
+          });
 
-      }else{
+        } else {
 
-        this.$notify({
-          title: 'Error Update Permisos',
-          message: result.data.msm,
-          type: 'danger'
-        });
+          this.$notify({
+            title: 'Error Update Permisos',
+            message: result.data.msm,
+            type: 'danger'
+          });
 
-      }
+        }
       } catch (error) {
         this.$notify({
           title: 'Error TRY Permisos',
@@ -535,17 +691,17 @@ export default {
 };
 </script>
 <style>
-.cardFlotavehicular{
-  height: calc(100vh - 10rem) !important;
+.cardFlotavehicular {
+  height: calc(100vh - 11rem) !important;
   overflow: auto;
-} 
+}
 
-.cardBodyFlotavehicular{
+.cardBodyFlotavehicular {
   padding: 0%;
-} 
+}
 
-.cardFlotavehicular::-webkit-scrollbar{
-    display: none;
+.cardFlotavehicular::-webkit-scrollbar {
+  display: none;
 }
 
 .no-border-card .card-footer {

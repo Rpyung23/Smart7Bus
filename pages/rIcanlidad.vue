@@ -277,6 +277,8 @@ export default {
           rutasString: rutasString,
           nameEmpresa: this.$cookies.get("nameEmpresa"),
           usuarioName: this.$cookies.get("namesUsuario")
+        },{
+          'Content-Type': 'application/json'
         })
 
         //console.log(datos)
@@ -287,10 +289,10 @@ export default {
       } catch (error) {
         console.log(error)
         Notification.error({
-              title: "ERROR",
-              message: error.toString(),
-              duration: 2500,
-            });
+          title: "ERROR",
+          message: error.toString(),
+          duration: 2500,
+        });
       }
 
       swal.close()

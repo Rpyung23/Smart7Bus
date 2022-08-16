@@ -127,7 +127,7 @@
               <el-table-column prop="NombApellUsua" label="Atención" minWidth="200">
               </el-table-column>
 
-              <el-table-column prop="DeudaTotal" label="Total ($)" minWidth="100">
+              <el-table-column prop="DeudaTotal" sortable label="Total ($)" minWidth="100">
               </el-table-column>
 
               <!--<el-table-column

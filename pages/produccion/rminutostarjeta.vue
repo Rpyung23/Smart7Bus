@@ -136,7 +136,8 @@ export default {
       mListaUnidadesPanelProduccion: [],
       optionsUnidadesPanelProduccion: [],
       itemUnidadPanelProduccion: [],
-      baseURlPDFPanelProduccionMinutosTarjetas: ""
+      baseURlPDFPanelProduccionMinutosTarjetas: "",
+      loadingTableUnidadesPanelProduccoionLoading: false
     };
   },
   methods: {

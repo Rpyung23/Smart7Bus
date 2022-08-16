@@ -6,51 +6,10 @@
         body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
         footer-classes="pb-2">
 
-        <div class="cardTextoRPagosVehiculoProduccion">
-          <base-button icon type="primary" @click="showReporteLlegadaSAlida()">
-            <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-            <span class="btn-inner--text">Tarjeta</span>
-          </base-button>
-          
-          <base-button icon type="default">
-            <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
-            <span class="btn-inner--text">Recalificar</span>
-          </base-button>
-
-          <base-button icon type="danger">
-            <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
-            <span class="btn-inner--text">Anular</span>
-          </base-button>
-          <base-button icon type="warning">
-            <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
-            <span class="btn-inner--text">Finalizar</span>
-          </base-button>
-
-          <base-button icon type="info">
-            <span class="btn-inner--icon"><i class="ni ni-single-02"></i></span>
-            <span class="btn-inner--text">Chofer</span>
-          </base-button>
-        </div>
-
-        <div class="buttonsAdicionalesDespacho">
-           <base-button icon type="primary" title="Tipos de Despachos" size="sm" @click="showmodalTiposDespacho()">
-            <span class="btn-inner--icon"><i class="ni ni-bullet-list-67"></i></span>
-          </base-button>
-
-          <base-button icon type="danger" title="Salidas Anuladas" size="sm" @click="showModalDespachoSalidasAnuladas()">
-            <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
-          </base-button>
-
-        </div>
-      </card>
-
-      <card class="no-border-card col" style="margin-bottom: 0.5rem"
-        body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-        footer-classes="pb-2">
 
         <div class="cardTextoRPagosVehiculoProduccion">
           <el-date-picker type="datetime" placeholder="Select date and time" v-model="fechaActualSalidasPanelDespacho"
-            style="margin-right: 0.5rem">
+            style="margin-right: 0.5rem;width: 15rem;">
           </el-date-picker>
 
           <el-select v-model="itemUnidadSalidasPanelBusqueda" filterable style="margin-right: 0.5rem" remote
@@ -62,35 +21,60 @@
           </el-select>
 
           <el-select v-model="mSelectRutaSalidaPanelDespacho" collapse-tags placeholder="Lineas"
-            @change="readFrecuenciasSalidasPanel()" style="margin-right: 0.5rem">
+            @change="readFrecuenciasSalidasPanel()" style="margin-right: 0.5rem;width: 15rem;">
             <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
               :value="item.idRuta">
             </el-option>
           </el-select>
 
-          <el-select v-model="mSelectRutaFrecuenciaPanelDespacho" collapse-tags placeholder="Frecuencias">
+          <el-select v-model="mSelectRutaFrecuenciaPanelDespacho" collapse-tags placeholder="Frecuencias"
+          style="margin-right: 0.5rem;width: 15rem;">
             <el-option v-for="item in mListRutasFrecuencias" :key="item.idFrec" :label="item.DescFrec"
               :value="item.idFrec">
             </el-option>
           </el-select>
 
-
         </div>
 
-        <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-          <base-button icon type="success">
-            <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
-            <span class="btn-inner--text">Despachar</span>
+
+
+
+
+
+        <div class="buttonsAdicionalesDespacho">
+
+          <base-button icon type="primary" @click="showReporteLlegadaSAlida()" size="sm">
+            <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
           </base-button>
+
+          <base-button icon type="info" size="sm">
+            <span class="btn-inner--icon"><i class="ni ni-single-02"></i></span>
+          </base-button>
+
+          <base-button icon type="primary" title="Tipos de Despachos" size="sm" @click="showmodalTiposDespacho()">
+            <span class="btn-inner--icon"><i class="ni ni-bullet-list-67"></i></span>
+          </base-button>
+
+          <base-button icon type="danger" title="Salidas Anuladas" size="sm"
+            @click="showModalDespachoSalidasAnuladas()">
+            <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
+          </base-button>
+          <base-button icon type="success " size="sm">
+            <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
+          </base-button>
+
         </div>
+
       </card>
 
-      
+
+
 
 
       <div class="containerTablero">
         <div class="container-rutas">
-          <div :class="index == 0 ? 'itemrutaDespacho activeRutaDespacho' : 'itemrutaDespacho'" v-for="(ruta,index) in mListRutasDespacho" :id="ruta.LetrRuta" :key="ruta.LetrRuta"
+          <div :class="index == 0 ? 'itemrutaDespacho activeRutaDespacho' : 'itemrutaDespacho'"
+            v-for="(ruta, index) in mListRutasDespacho" :id="ruta.LetrRuta" :key="ruta.LetrRuta"
             @click="lecturaDespacho(ruta)">
             {{ ruta.DescRuta }}
           </div>
@@ -100,9 +84,9 @@
             footer-classes="pb-2">
             <JqxGrid ref="myGridDespachoPanel" @contextmenu="myGridOnContextMenu()" @rowclick="myGridOnRowClick($event)"
               @cellbeginedit="cellBeginEditEvent($event)" :height="'100%'" style="margin-right: 50rem !important;"
-              @cellendedit="cellEndEditEvent($event)" :columns="columnsInfo" :source="dataAdapter" :editable="true" 
+              @cellendedit="cellEndEditEvent($event)" :columns="columnsInfo" :source="dataAdapter" :editable="true"
               @rowselect="myGridOnRowSelect($event)" :selectionmode="'singlerow'" :enabletooltips="true"
-              :width="getWidth" >
+              :width="getWidth">
             </JqxGrid>
 
             <JqxMenu ref="myMenu" @itemclick="myMenuOnItemClick($event)" :width="200" :height="200" :mode="'popup'"
@@ -139,31 +123,30 @@
       </card>
     </modal>
 
-      <!--Form modal Tipos de Despacho -->
-      <modal :show.sync="modalTiposDespacho" size="sm">
-        <div class="containerTiposDespachos">
-          <el-radio-group v-model="radioTipoDespacho">
-            <el-radio :label="3">Salida Normal.</el-radio>
-            <el-radio :label="9">Generar Tarjeta</el-radio>
-            <el-radio :label="6">Salida Diferida</el-radio>
-            <el-radio :label="7">Salida de Apoyo</el-radio>
-          </el-radio-group>
+    <!--Form modal Tipos de Despacho -->
+    <modal :show.sync="modalTiposDespacho" size="sm">
+      <div class="containerTiposDespachos">
+        <el-radio-group v-model="radioTipoDespacho">
+          <el-radio :label="3">Salida Normal.</el-radio>
+          <el-radio :label="9">Generar Tarjeta</el-radio>
+          <el-radio :label="6">Salida Diferida</el-radio>
+          <el-radio :label="7">Salida de Apoyo</el-radio>
+        </el-radio-group>
         <div>
+        </div>
       </div>
-    </div>
-      </modal>
+    </modal>
 
-      <!--Form modal Despacho Salidas Anuladas-->
+    <!--Form modal Despacho Salidas Anuladas-->
     <modal :show.sync="modalDespachoSalidasAnuladas" size="xl" body-classes="p-0">
-    <h6 slot="header" class="modal-title">Despacho Salidas Anuladas</h6>
-      <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="card-bodyDSalidasAnuladas p-0">
-          <div>
-            <el-table v-loading="isLoadingDespachoSalidaPanelBusqueda" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="mListDespachosSalidasAnuladas" row-key="id"
-              :height="mListDespachosSalidasAnuladas.length > 0 ? 550 : 150" style="width: 100%"
-              header-row-class-name="thead-dark" :default-sort="{ prop: 'HoraSaliProgSali_m', order: 'ascending' }"
-              :row-class-name="tableRowClassNameDSalidasAnuladas">
+      <h6 slot="header" class="modal-title">Despacho Salidas Anuladas</h6>
+      <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyDSalidasAnuladas p-0">
+        <div>
+          <el-table v-loading="isLoadingDespachoSalidaPanelBusqueda" element-loading-text="Cargando Datos..."
+            element-loading-spinner="el-icon-loading" :data="mListDespachosSalidasAnuladas" row-key="id"
+            :height="mListDespachosSalidasAnuladas.length > 0 ? 550 : 150" style="width: 100%"
+            header-row-class-name="thead-dark" :default-sort="{ prop: 'HoraSaliProgSali_m', order: 'ascending' }"
+            :row-class-name="tableRowClassNameDSalidasAnuladas">
 
             <el-table-column prop="CodiVehiSali_m" label="Unidad" min-width="110px">
             </el-table-column>
@@ -177,7 +160,7 @@
 
             <el-table-column prop="EstaSali_m" label="Estado" min-width="130px">
               <template v-slot="{ row }">
-                <span>{{row.EstaSali_m == 4  ? "ANULADO" : ""}}</span>
+                <span>{{ row.EstaSali_m == 4 ? "ANULADO" : "" }}</span>
               </template>
             </el-table-column>
 
@@ -187,8 +170,8 @@
             </el-table-column>
 
             <el-table-column prop="Intervalo" label="Inte." min-width="100px">
-               <template v-slot="{ row }">
-                <span>{{row.Intervalo = 0}}</span>
+              <template v-slot="{ row }">
+                <span>{{ row.Intervalo = 0 }}</span>
               </template>
             </el-table-column>
 
@@ -203,12 +186,14 @@
 
             <el-table-column prop="Country23" label="Chofer" min-width="150px">
             </el-table-column>
-          <div slot="empty">
-            <span>No existen Salidas Anuladas</span>
-          </div>
+
+
+            <div slot="empty">
+              <span>No existen Salidas Anuladas</span>
+            </div>
           </el-table>
         </div>
-      </card>  
+      </card>
     </modal>
   </div>
 </template>
@@ -246,7 +231,7 @@ export default {
     [RadioButton.name]: RadioButton,
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
-    [Checkbox.name]:Checkbox,
+    [Checkbox.name]: Checkbox,
     [DatePicker.name]: DatePicker,
     [TableColumn.name]: TableColumn,
     [Notification.name]: Notification,
@@ -273,13 +258,13 @@ export default {
       mSelectRutaSalidaPanelDespacho: null,
       mSelectRutaFrecuenciaPanelDespacho: null,
       modalSalidasTarjetaPanelDespacho: false,
-      modalTiposDespacho:false,
+      modalTiposDespacho: false,
       baseURlPDFPanelDespachoTarjetaSalida: null,
       selectedRowSalida: null,
       radioTipoDespacho: 3,
       checkboxOrdenamientoDespacho: false,
       checkboxOSalidasAnuladasDespacho: false,
-      modalDespachoSalidasAnuladas:false
+      modalDespachoSalidasAnuladas: false
     };
   },
   methods: {
@@ -298,9 +283,6 @@ export default {
     },
     showReporteLlegadaSAlida() {
       this.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida, 1)
-    },
-    showReporteLlegadaSAlidaSalida() {
-      this.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida, 0)
     },
     async readFrecuenciasSalidasPanel() {
       this.mListRutasFrecuencias = []
@@ -361,41 +343,65 @@ export default {
         this.$refs.myGridDespachoPanel.deleterow(rowid);
       }
     },
-    async createHeaderTable(oRuta) 
-    {
+    async createHeaderTable(oRuta) {
       try {
         this.mListDespachosPanel = []
-      this.mListDespachosPanelAuxiliar = [] 
-      this.isLoadingDespachoSalidaPanelBusqueda = true
-      var datos = await this.$axios.post(process.env.baseUrl + "/readSalidasPanelDespacho", {
-        token: this.token,
-        ruta: oRuta.LetrRuta,
-        fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
-        anuladas: 0
-      })
-      this.mListDespachosPanel.push(...datos.data.datos)
-      this.mListDespachosPanelAuxiliar.push(...datos.data.datos)
-      this.$refs.myGridDespachoPanel.beginupdate();
-      this.columnsInfo = []
-      this.columnsInfo[0] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit}
-      this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-      this.columnsInfo[2] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-      this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-      this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit}
-      this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-      this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-      this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-      this.columnsInfo[8] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-      this.columnsInfo[9] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-      this.columnsInfo[10] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-      this.columnsInfo[11] = { text: 'Chofer', datafield: 'Country23', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit}
-      this.$refs.myGridDespachoPanel.setOptions
-        ({
-          source: this.createBodyDespacho(this.mListDespachosPanelAuxiliar),
-          columns: this.columnsInfo
-        });
-      this.isLoadingDespachoSalidaPanelBusqueda = false
-      this.$refs.myGridDespachoPanel.endupdate();
+        this.mListDespachosPanelAuxiliar = []
+        this.isLoadingDespachoSalidaPanelBusqueda = true
+        var datos = await this.$axios.post(process.env.baseUrl + "/readSalidasPanelDespacho", {
+          token: this.token,
+          ruta: oRuta.LetrRuta,
+          fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
+          anuladas: 0
+        })
+        this.mListDespachosPanel.push(...datos.data.datos)
+        this.mListDespachosPanelAuxiliar.push(...datos.data.datos)
+        this.$refs.myGridDespachoPanel.beginupdate();
+        this.columnsInfo = []
+        this.columnsInfo[0] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[2] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[8] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[9] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[10] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[11] = { text: 'Chofer', datafield: 'Country23', width: 150, cellsalign: 'left', cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+
+        this.columnsInfo[12] = {
+          text: 'Operaciones', datafield: 'Country24', width: 210, cellclassname: this.cellclassname, cellsalign: 'right', createwidget: (row, column, value, htmlElement) => {
+            htmlElement.innerHTML = `<div class="cardTextoRPagosVehiculoProduccion">
+                                          <button data-v-6d3c1b30="" type="button" class="btn btn-icon btn-fab btn-default btn-sm">
+                                              <span data-v-6d3c1b30="" class="btn-inner--icon">
+                                              <i data-v-6d3c1b30="" class="ni ni-cloud-download-95"></i></span> 
+                                              </button> 
+                                          <button data-v-6d3c1b30="" type="button" class="btn btn-icon btn-fab btn-danger btn-sm">
+                                              <span data-v-6d3c1b30="" class="btn-inner--icon"><i data-v-6d3c1b30="" class="ni ni-fat-remove"></i></span> 
+                                              </button> 
+                                          <button data-v-6d3c1b30="" type="button" class="btn btn-icon btn-fab btn-warning btn-sm">
+                                              <span data-v-6d3c1b30="" class="btn-inner--icon"><i data-v-6d3c1b30="" class="ni ni-fat-delete"></i></span> 
+                                              </button> 
+                                          </div>`
+          },
+          initwidget: (row, column, value, htmlElement) => {
+
+          }
+        }
+
+
+
+
+
+        this.$refs.myGridDespachoPanel.setOptions
+          ({
+            source: this.createBodyDespacho(this.mListDespachosPanelAuxiliar),
+            columns: this.columnsInfo
+          });
+        this.isLoadingDespachoSalidaPanelBusqueda = false
+        this.$refs.myGridDespachoPanel.endupdate();
       } catch (error) {
         console.log(error)
       }
@@ -428,7 +434,7 @@ export default {
           process.env.baseUrlPanel + "/rutes",
           {
             token: this.token,
-            tipo:1
+            tipo: 1
           }
         );
         if (datos.data.status_code == 200) {
@@ -462,7 +468,7 @@ export default {
           minutosString = (minuto < 10 ? "0" + minuto : minuto)
           var HS = tiempoString + ":" + minutosString + ":00"
           var HSa_ = tiempoString + ":" + minutosString + ":00 (A)"
-          var obj = this.getObjetoSalidaDespacho(HS,HSa_)
+          var obj = this.getObjetoSalidaDespacho(HS, HSa_)
           var objD = (obj == null) ? {
             LetraRutaSali_m: "",
             CodiVehiSali_m: "",
@@ -476,18 +482,18 @@ export default {
             VeloMaxiSali_m: '',
             NumeVuelSali_m: '',
             SumaMinuPosiSali_m: '',
-            Country23 : '',
+            Country23: '',
             Intervalo: ""
           } : (obj)
           if (obj == null) {
-            ListaVacia.push(objD)  
+            ListaVacia.push(objD)
             inter++
           } else {
             var estado = obj.EstaSali_mCode == 4 ? HSa_ : HS
             obj.HoraSaliProgSali_m = estado
             obj.Intervalo = inter
             inter = 0
-            
+
             ListaLlena.push(obj)
           }
         }
@@ -512,16 +518,14 @@ export default {
         { name: 'Country23', type: 'string' }]
       }
     },
-    getObjetoSalidaDespacho(tiempo,tiempoA) 
-    {
+    getObjetoSalidaDespacho(tiempo, tiempoA) {
       //console.log("TAMANIO : "+this.mListDespachosPanelAuxiliar.length )
       if (this.mListDespachosPanelAuxiliar.length > 0) {
         for (var i = 0; i < this.mListDespachosPanelAuxiliar.length; i++) {
-          if (tiempo == this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m) 
-          {
+          if (tiempo == this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m) {
             var obj = this.mListDespachosPanelAuxiliar[i]
             obj.Intervalo = 0
-            obj.EstaSali_mCode  = obj.EstaSali_m
+            obj.EstaSali_mCode = obj.EstaSali_m
             obj.EstaSali_m = obj.EstaSali_m == 4 ? 'ANULADO' : (obj.EstaSali_m == 1 || obj.EstaSali_m == 0) ? 'DIFERIDO' : obj.EstaSali_m == 2 ? 'EN RUTA' : 'FINALIZADO'
             this.mListDespachosPanelAuxiliar.splice(i, 1)
             return obj
@@ -716,73 +720,73 @@ export default {
       })
       this.baseURlPDFPanelDespachoTarjetaSalida = await pdfDoc.saveAsBase64({ dataUri: true });
     },
-    cellclassname (row, column, value, data) {
+    cellclassname(row, column, value, data) {
       if (data.EstaSali_m == 'DIFERIDO') {
         return "estadodiferidoDespacho";
-      }else if (data.EstaSali_m == 'EN RUTA' ) {
+      } else if (data.EstaSali_m == 'EN RUTA') {
         return "estadoenrutaDespacho"
-      }else if (data.EstaSali_m == 'FINALIZADO') {
+      } else if (data.EstaSali_m == 'FINALIZADO') {
         return "estadofinalizadoDespacho";
-      }     
+      }
     },
     showmodalTiposDespacho() {
       this.modalTiposDespacho = true;
     },
-    showModalDespachoSalidasAnuladas(){
+    showModalDespachoSalidasAnuladas() {
       this.modalDespachoSalidasAnuladas = true;
     },
     async readDespachoSalidasAnuladas(ruta) {
-    try {
-      this.isLoadingDespachoSalidaPanelBusqueda = true;
-      this.mListDespachosSalidasAnuladas = [];
-      var datos = await this.$axios.post(process.env.baseUrl + "/readSalidasPanelDespacho", {
-        token: this.token,
-        ruta: ruta.LetrRuta,
-        fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
-        anuladas: 1
-      })
-      if (datos.data.status_code == 200) {
-        this.mListDespachosSalidasAnuladas.push(...datos.data.datos);
-        this.isLoadingDespachoSalidaPanelBusqueda = false;
-          } else if (datos.data.status_code == 300) {
-            this.isLoadingDespachoSalidaPanelBusqueda = false;
-            Notification.info({
-              title: "Despacho Salidas Anuladas",
-              message: "No existen datos disponibles",
-              duration: 2500,
-            });
-          } else {
-            Notification.error({
-              title: "API ERROR",
-              message: datos.data.msm,
-              duration: 2500,
-            });
-          }
-        } catch (error) {
+      try {
+        this.isLoadingDespachoSalidaPanelBusqueda = true;
+        this.mListDespachosSalidasAnuladas = [];
+        var datos = await this.$axios.post(process.env.baseUrl + "/readSalidasPanelDespacho", {
+          token: this.token,
+          ruta: ruta.LetrRuta,
+          fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
+          anuladas: 1
+        })
+        if (datos.data.status_code == 200) {
+          this.mListDespachosSalidasAnuladas.push(...datos.data.datos);
+          this.isLoadingDespachoSalidaPanelBusqueda = false;
+        } else if (datos.data.status_code == 300) {
+          this.isLoadingDespachoSalidaPanelBusqueda = false;
+          Notification.info({
+            title: "Despacho Salidas Anuladas",
+            message: "No existen datos disponibles",
+            duration: 2500,
+          });
+        } else {
           Notification.error({
-            title: "ERROR CATCH",
-            message: error.toString(),
+            title: "API ERROR",
+            message: datos.data.msm,
             duration: 2500,
           });
         }
-        this.loadingRPagosVehiculo = false; 
+      } catch (error) {
+        Notification.error({
+          title: "ERROR CATCH",
+          message: error.toString(),
+          duration: 2500,
+        });
+      }
+      this.loadingRPagosVehiculo = false;
     },
     tableRowClassNameDSalidasAnuladas({ row }) {
       if (row.EstaSali_m == 4) {
         return "estadoanuladoDespacho";
-      } 
+      }
     },
     cellbeginedit: function (row, column, value, data) {
-      if(data == ""){
+      if (data == "") {
         console.log(column)
         var rowNoEdit = row;
-        if (row == rowNoEdit){
-          if (column == "idSali_m" || column == "EstaSali_m" || column == "NumeVuelSali_m" 
-          || column == "SumaMinuPosiSali_m" || column == "Intervalo" || column == "MontInfrUnidSali_m" || column == "VeloMaxiSali_m") {
+        if (row == rowNoEdit) {
+          if (column == "idSali_m" || column == "EstaSali_m" || column == "NumeVuelSali_m"
+            || column == "SumaMinuPosiSali_m" || column == "Intervalo" || column == "MontInfrUnidSali_m" || column == "VeloMaxiSali_m") {
             return false;
           }
-        } 
-      }else{
+        }
+      } else {
         return false;
       }
     }
@@ -793,13 +797,24 @@ export default {
     /*document.addEventListener('contextmenu', event => event.preventDefault());
     document.oncontextmenu = function () { return false }*/
     this.initFechaActualSalidaDespachoPanel()
+
+
+
+    $(document).on("click", ".idShowTarjeta", function () {
+      this.showReporteLlegadaSAlida()
+    })
+
   },
 };
+
 </script>
+
+
+
+
+
 <style>
-
-
-.buttonsAdicionalesDespacho{
+.buttonsAdicionalesDespacho {
   margin: auto;
   display: flex;
   justify-content: flex-end;
@@ -807,33 +822,43 @@ export default {
 }
 
 .container-rutas::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
+
 .containerTiposDespachos {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
+
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
 }
+
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
   display: flex;
   justify-content: space-between;
 }
+
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  justify-content: center;
+  height: 100%;
 }
+
 .en-ruta {
   background-color: hsla(226, 88%, 61%, 0.301);
 }
+
 .anulados {
   background-color: rgba(252, 143, 143, 0.692);
 }
+
 .diferidas {
   background-color: hsla(115, 100%, 59%, 0.301)
 }
+
 .itemrutaDespacho {
   padding: 0.75rem 1rem;
   margin-right: 0.25rem;
@@ -847,81 +872,89 @@ export default {
   cursor: pointer;
   border-radius: 0.375rem;
 }
+
 .activeRutaDespacho {
   background-color: #5e72e4;
   color: white;
 }
+
 .nav-item-personalizado {
   padding: 0rem 0.25rem 0rem 0.25rem !important;
   margin-bottom: 0.25rem !important;
 }
+
 .alineacion-vertical-tabs {
   display: flex;
   flex-direction: column;
 }
+
 .card-body-sinpadding {
   padding: 0rem !important;
 }
+
 .card-sinborderPanel {
   border: 0rem !important;
   border-radius: 0rem !important;
   height: 100%;
   background-color: transparent;
 }
+
 .col_personalizado {
   flex-basis: 0;
   flex-grow: 1;
   max-width: 100%;
   padding: 0rem !important;
 }
+
 .card-Calendar {
   height: calc(100vh - 6rem);
   scroll-behavior: auto;
 }
+
 .container-rutas {
   height: auto;
   max-width: 8rem;
   min-width: 8rem;
   overflow: auto;
 }
+
 .container-calendario {
   height: 100%;
 }
+
 .containerTablero {
   background-color: #2dce89;
-  height: calc(100vh - 13.17rem);
+  height: calc(100vh - 9rem);
   display: flex;
 }
+
 .no-border-card .card-footer {
   border-top: 0;
 }
+
 .nav-pills .nav-item {
   padding-right: 0.25rem !important;
   padding-left: 0.25rem;
   margin-top: 0.5rem;
 }
 
-.estadofinalizadoDespacho
-{
-  background-color:#ffffff ;
+.estadofinalizadoDespacho {
+  background-color: #ffffff;
   color: black;
 }
 
-.estadoenrutaDespacho
-{
-  background-color:rgba(78, 135, 242, 0.369);
-  color: black;  
+.estadoenrutaDespacho {
+  background-color: rgba(78, 135, 242, 0.369);
+  color: black;
 }
 
-.estadoanuladoDespacho
-{
+.estadoanuladoDespacho {
   background-color: rgba(245, 97, 97, 0.369) !important;
   color: black;
 }
 
-.estadodiferidoDespacho
-{
-  background-color:rgba(92, 237, 84, 0.369);
+.estadodiferidoDespacho {
+  background-color: rgba(92, 237, 84, 0.369);
   color: black;
 }
 </style>
