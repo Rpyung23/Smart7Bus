@@ -100,7 +100,7 @@
                 <el-table-column prop="Fecha" label="Fecha" minWidth="60">
                 </el-table-column>
 
-                <el-table-column prop="DeudaTotal" label="Total($)" minWidth="60">
+                <el-table-column prop="DeudaTotal" sortable label="Total($)" minWidth="70">
                   <template slot-scope="scope">
                     <strong style="color:black;">{{ scope.row.DeudaTotal }}</strong>
                   </template>

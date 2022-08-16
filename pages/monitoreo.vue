@@ -225,7 +225,7 @@
       </div>
     </div>
 
-    <script src="../js/resizerdiv.js"></script>
+    <!--<script src="../js/resizerdiv.js"></script>-->
     <script src="../js/tabButtonsMonitoreo.js"></script>
   </div>
 </template>
@@ -417,7 +417,7 @@
 
 .mapa {
   width: 100%;
-  height: calc(100vh - 3.56rem);
+  height: calc(100vh - 3.8rem);
 }
 
 .tabOptionsMonitoreo {
@@ -804,7 +804,7 @@ export default {
         parseFloat(unidad.UltiLatiMoni) +
         "," +
         parseFloat(unidad.UltiLongMoni) +
-        "&key=AIzaSyCMR83z2AyaiNJTfUHKechVpGh_MjLQvHA"
+        "&key="+process.env.mapaCredencial
       );
       var result = dir.data.results;
       return `<div style="width:300px;padding:0.50rem">

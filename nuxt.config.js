@@ -110,6 +110,7 @@ module.exports = {
   },
   env: {
     baseUrl: process.env.baseUrl || 'http://localhost:3001',
-    baseUrlPanel:  process.env.baseUrlPanel || 'http://localhost:3001'
+    baseUrlPanel:  process.env.baseUrlPanel || 'http://localhost:3001',
+    mapaCredencial: process.env.mapaCredencial || 'AIzaSyCMR83z2AyaiNJTfUHKechVpGh_MjLQvHA'
 }
 }
