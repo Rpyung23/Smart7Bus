@@ -28,7 +28,7 @@
           </el-select>
 
           <el-select v-model="mSelectRutaFrecuenciaPanelDespacho" collapse-tags placeholder="Frecuencias"
-          style="margin-right: 0.5rem;width: 15rem;">
+            style="margin-right: 0.5rem;width: 15rem;">
             <el-option v-for="item in mListRutasFrecuencias" :key="item.idFrec" :label="item.DescFrec"
               :value="item.idFrec">
             </el-option>
@@ -214,6 +214,10 @@ import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import { timingSafeEqual } from "crypto";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs
+
 export default {
   mixins: [clientPaginationMixin],
   layout: "DespachoDashboardLayout",
@@ -283,7 +287,11 @@ export default {
     },
     showReporteLlegadaSAlida() {
       this.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida, 1)
+
     },
+
+
+
     async readFrecuenciasSalidasPanel() {
       this.mListRutasFrecuencias = []
       this.mSelectRutaFrecuenciaPanelDespacho = null
@@ -577,7 +585,165 @@ export default {
         token: this.token,
         idsalida: salida.idSali_m
       })
-      const pdfDoc = await PDFDocument.create()
+
+
+      var docDefinition = {
+
+        // a string or { width: 190, height: number }
+        pageSize: 'C7',
+        pageMargins: [ 15, 15, 15, 15 ],
+        header: [{ text: 'COOPERATIVA SAN MIGUEL', bold: true, alignment:'center'},
+      
+       
+         ],
+        content: [
+
+
+
+
+          
+          {
+           bold: true, 
+          fontSize: 9, 
+          alignment: 'center',
+                
+            layout: 'noBorders', // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 1,
+              widths: [35, 85, 35, 35],
+              body: [
+                ['Unidad', 'Salida #247378', 'Ruta', 'Vde.'],
+              
+              ]
+            }
+
+           } ,
+
+
+          {
+           //bold: true, 
+          fontSize: 9, 
+          alignment: 'center',
+                
+            layout: 'noBorders', // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 1,
+              widths: [35, 85, 35, 35],
+              body: [
+               
+                ['119', '17 DE AGO, 2022', 'FL', ''], 
+              ]
+            }
+
+           } ,
+
+
+           { text: 'FREC: CHUCHUPUNGO SABADO', fontSize: 10},
+           
+
+
+
+
+
+// {
+//     table: {
+//             widths: ['*'],
+//             body: [[" "], [" "]]
+//     },
+//     layout: {
+//         hLineWidth: function(i, node) {
+//             return (i === 0 || i === node.table.body.length) ? 0 : 2;
+//         },
+//         vLineWidth: function(i, node) {
+//             return 0;
+//         },
+//     }
+// },
+// 
+
+           {
+          fontSize: 8.5,
+          lineWidth: 0,
+            layout: 'headerLineOnly', // optional
+            table: {
+             
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 1,
+              widths: ['auto', 'auto', 'auto','auto', 'auto' ],
+              body: [
+               
+                ['RELOJ', 'PROG', 'MARC', 'FALT',  'PEN'],
+                 ['CHUGCHUP', '06:18', '06:15:21', '-3', '' ],
+                 ['MADRE TE', '06:24', '06:21:10', '-3', '' ],
+                 ['COLEGIO', '06:30', '06:26:34', '-4', '' ],
+                  ['MALDONAD', '06:38', '06:35:09', '-3', '' ],
+                   ['TERMINAL', '06:53', '06:47:56', '-6', '' ],
+                    ['FERIA DE', '07:10', '07:03:57', '-7', '' ],
+                 ['MAVESA', '07:23', '07:16:48', '-7', '' ],
+                  ['OLMEDO Y', '07:43', '07:38:59', '-5', '' ],
+                   ['OVIEDO Y', '07:50', '07:44:39', '-6', '' ],
+                     ['CHUGCHUP', '08:10', '', '', 'REF' ]
+
+
+              ]
+            }
+          } ,
+
+
+
+{
+    table: {
+            widths: ['*'],
+            body: [[" "], [" "]]
+    },
+    layout: {
+        hLineWidth: function(i, node) {
+            return (i === 0 || i === node.table.body.length) ? 0 : 2;
+        },
+        vLineWidth: function(i, node) {
+            return 0;
+        },
+    }
+},
+
+
+           {
+           
+          fontSize: 10,
+          bold:true,
+            layout: 'headerLineOnly', // optional
+            table: {
+             
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+             
+              body: [
+               
+                ['TOTAL Faltas: +0'],
+                ['TOTAL Dinero: 0.00'],
+               
+
+              ]
+            }
+          } ,
+        
+        ]
+      };
+
+
+
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        this.baseURlPDFPanelDespachoTarjetaSalida = dataUrl
+      });
+
+      /*const pdfDoc = await PDFDocument.create()
       const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
       const TimesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
       const page = pdfDoc.addPage()
@@ -650,7 +816,7 @@ export default {
           }
         }
         var space = "                       "
-        /**datos.data.data[i].DescCtrlSali_d.substring(0, 9)**/
+        
         var texto = ''
         if (bandera == 1) {
           texto = space + "  " + datos.data.data[i].HoraProgSali_d.substring(0, 5) + "   "
@@ -659,6 +825,7 @@ export default {
         } else {
           texto = space + "  " + datos.data.data[i].HoraProgSali_d.substring(0, 5)
         }
+        
         page.drawText(texto, {
           x: 20,
           y: height - heightAux * 9,
@@ -679,30 +846,6 @@ export default {
         size: fontSize,
         color: rgb(0, 0, 0),
       })
-      /*page.drawText("Chofer : ", {
-        x: 20,
-        y: height - (heightAux + 1) * fontSize,
-        size: 8.5,
-        color: rgb(0, 0, 0),
-      })
-      page.drawText("Cobrador : ", {
-        x: 20,
-        y: height - (heightAux + 2) * fontSize,
-        size: 8.5,
-        color: rgb(0, 0, 0),
-      })*/
-      /*page.drawText("Adelante : " + salida.adelantoTime, {
-        x: 20,
-        y: height - (heightAux + 3) * fontSize,
-        size: 8.5,
-        color: rgb(0, 0, 0),
-      })
-      page.drawText("Atrasos : " + salida.atrasoTime, {
-        x: 20,
-        y: height - (heightAux + 4) * fontSize,
-        size: 8.5,
-        color: rgb(0, 0, 0),
-      })*/
       let bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
       page.drawText("TOTAL Faltas  : +" + sumFalt, {
         x: 20,
@@ -717,8 +860,8 @@ export default {
         size: 10,
         font: bold,
         color: rgb(0, 0, 0),
-      })
-      this.baseURlPDFPanelDespachoTarjetaSalida = await pdfDoc.saveAsBase64({ dataUri: true });
+      })*/
+
     },
     cellclassname(row, column, value, data) {
       if (data.EstaSali_m == 'DIFERIDO') {

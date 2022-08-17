@@ -748,7 +748,8 @@ export default {
       })
 
       this.baseURlPDFPanelDespachoTarjeta = await pdfDoc.saveAsBase64({ dataUri: true });
-    }, exportPdfSalidasPanelBusqueda() {
+    }, exportPdfSalidasPanelBusqueda() 
+    {
       var empresa = [{ text: 'Empresa : '+this.$cookies.get('nameEmpresa'), fontSize: 8.5, bold: true,alignment:"left" }]
       var unidad = [{ text: 'Flota Vehicular : '+(this.itemUnidadSalidasPanelBusqueda.length > 0 ? this.itemUnidadSalidasPanelBusqueda.toString() : 'Toda la flota'), fontSize: 8.5, bold: true,alignment:"left" }]
       var ruta = [{ text: 'Rutas : ', fontSize: 8.5, bold: true,alignment:"left" }]
