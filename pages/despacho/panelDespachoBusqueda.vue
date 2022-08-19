@@ -587,79 +587,43 @@ export default {
         idsalida: salida.idSali_m
       })
 
-      const pdfDoc = await PDFDocument.create()
-      const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
-      const TimesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
+  this.mListSalidasTarjeta = []
+      this.mListSalidasTarjeta.push(...datos.data.data)
+      console.log(salida)
 
-      const page = pdfDoc.addPage()
-      page.setWidth(230)
-      const { width, height } = page.getSize()
-      const fontSize = 10
+      
+      var empresa = [{ text: this.$cookies.get('nameEmpresa').substring(0, 30), fontSize: 12, bold: true, alignment: "center" }]
 
-      page.drawText("     " + this.$cookies.get("nameEmpresa").toUpperCase().substring(0, 28), {
-        x: 20,
-        y: height - 2 * fontSize,
-        size: fontSize,
-        font: TimesRomanBold,
-        color: rgb(0, 0, 0),
-      })
 
-      page.drawText("Unidad       " + "Salida #" + salida.idSali_m + "         Ruta     Vue.", {
-        x: 20,
-        y: height - 3.5 * fontSize,
-        size: fontSize,
-        font: TimesRomanBold,
-        color: rgb(0, 0, 0),
-      })
 
-      page.drawText("    " + salida.CodiVehiSali_m + "          "
-        + FechaStringToHour(salida.HoraSaliProgSali_mF) + "         "
-        + (salida.LetraRutaSali_m.length > 2 ? salida.LetraRutaSali_m : "  " + salida.LetraRutaSali_m) + "           " + salida.NumeVuelSali_m, {
-        x: 20,
-        y: height - 4.5 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
 
-      page.drawText('FREC : ' + salida.DescFrec.substring(0, 26), {
-        x: 20,
-        y: height - 5.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
+      var resultadoString = [[{ text: 'RELOJ', fontSize: 8.5, bold: true, alignment: "center" },
+      { text: 'PROG', fontSize: 8.5, bold: true, alignment: "center" },
+      { text: 'MARC', fontSize: 8.5, bold: true, alignment: "center" },
+      { text: 'FALT', fontSize: 8.5, bold: true, alignment: "center" },
+      { text: 'PEN', fontSize: 8.5, bold: true, alignment: "center" }]]
 
-      page.drawText("---------------------------------------------------------", {
-        x: 20,
-        y: height - 6.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
+      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
 
-      page.drawText("RELOJ             PROG   MARC  FALT  PEN", {
-        x: 20,
-        y: height - 7.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
+        var arrys = [{ text: this.mListSalidasTarjeta[i].DescCtrlSali_d.substring(0, 9), fontSize: 8.5 },
+        { text: this.mListSalidasTarjeta[i].HoraProgSali_d.substring(0, 5), fontSize: 8.5, alignment: "center", },
+        { text: this.mListSalidasTarjeta[i].HoraMarcSali_d == '00:00:00' ? '' : this.mListSalidasTarjeta[i].HoraMarcSali_d, fontSize: 8.5, alignment: "center" },
+        { text: this.mListSalidasTarjeta[i].FaltSali_d == '0' ? '' : this.mListSalidasTarjeta[i].FaltSali_d, fontSize: 8.5, alignment: "center" },
+        { text: this.mListSalidasTarjeta[i].PenaCtrlSali_d == '0.00' ? '' : this.mListSalidasTarjeta[i].PenaCtrlSali_d, fontSize: 8.5, alignment: "center" },
+        ]
+        resultadoString.push(arrys)
+      }
 
-      page.drawText("---------------------------------------------------------", {
-        x: 20,
-        y: height - 8.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
+
+
+
       var heightAux = 9.7
       var sumFalt = 0
       var penFalt = 0
       for (var i = 0; i < datos.data.data.length; i++) {
 
         heightAux = heightAux + 1
-        if (datos.data.data[i].FaltSali_d > 0) {
+        if (datos.data.data[i].FaltSali_d > 0 && datos.data.data[i].isCtrlRefeSali_d == 0) {
           sumFalt = sumFalt + datos.data.data[i].FaltSali_d
         }
 
@@ -668,84 +632,356 @@ export default {
           penFalt = penFalt + pen
         }
 
-        var space = "                       "
-        /**datos.data.data[i].DescCtrlSali_d.substring(0, 9)**/
-
-        var texto = space + "  " + datos.data.data[i].HoraProgSali_d.substring(0, 5) + "   "
-          + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '              ' : datos.data.data[i].HoraMarcSali_d) + "    " + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '    ' : datos.data.data[i].FaltSali_d) + "        "
-          + (datos.data.data[i].isCtrlRefeSali_d == 1 ? "REF" : datos.data.data[i].PenaCtrlSali_d == '0.00' ? '      ' : datos.data.data[i].PenaCtrlSali_d)
-
-        page.drawText(texto, {
-          x: 20,
-          y: height - heightAux * 9,
-          size: 9,
-          color: rgb(0, 0, 0),
-        })
-
-        page.drawText(datos.data.data[i].DescCtrlSali_d.substring(0, 8), {
-          x: 20,
-          y: height - (heightAux) * 9,
-          size: 9,
-          color: rgb(0, 0, 0),
-        })
-
-
       }
-      heightAux = heightAux - 0.5
+
+   
+
+var docDefinition = {
+
+        // a string or { width: 190, height: number }
+        pageSize: { width: 220, height: 'auto' },
+        pageMargins: [15, 15, 15, 15],
+        // header: [empresa],
 
 
-      page.drawText("---------------------------------------------------------", {
-        x: 20,
-        y: height - (heightAux - 0.2) * fontSize,
-        size: fontSize,
-        color: rgb(0, 0, 0),
-      })
+        content: [
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: 'noBorders', // optional
+            alignment: "center",
+            table: {
+              widths: ['*'],
+              body: [empresa]
+            }
+          },
+          {
+            bold: true,
+            fontSize: 9,
+            alignment: 'center',
+            layout: 'noBorders', // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [35, 75, 25, 22],
+              body: [
+                ['Unidad', 'Salida #' + salida.idSali_m, 'Ruta', 'Vue']
+              ]
+            }
 
-      page.drawText("Chofer : ", {
-        x: 20,
-        y: height - (heightAux + 1) * fontSize,
-        size: 8.5,
-        color: rgb(0, 0, 0),
-      })
+          },
 
-      page.drawText("Cobrador : ", {
-        x: 20,
-        y: height - (heightAux + 2) * fontSize,
-        size: 8.5,
-        color: rgb(0, 0, 0),
-      })
 
-      page.drawText("Adelanto : " + (salida.adelantoTime == null ? '00:00:00' : salida.adelantoTime), {
-        x: 20,
-        y: height - (heightAux + 3) * fontSize,
-        size: 8.5,
-        color: rgb(0, 0, 0),
-      })
+          {
+            //bold: true, 
+            fontSize: 9,
+            alignment: 'center',
 
-      page.drawText("Atrasos : " + (salida.atrasoTime == null ? '00:00:00' : salida.atrasoTime), {
-        x: 20,
-        y: height - (heightAux + 4) * fontSize,
-        size: 8.5,
-        color: rgb(0, 0, 0),
-      })
+            layout: 'noBorders', // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [35, 75, 25, 22],
+              body: [
 
-      let bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
+                [salida.CodiVehiSali_m, salida.HoraSaliProgSali_mF.substring(0, 10), { text: salida.LetraRutaSali_m, bold: true }, salida.NumeVuelSali_m],
+              ]
+            }
 
-      page.drawText("TOTAL Faltas  : +" + sumFalt, {
-        x: 20,
-        y: height - (heightAux + 5) * fontSize,
-        size: 10,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
+          },
 
-      page.drawText("TOTAL Dinero  : " + Number(penFalt).toFixed(2), {
-        x: 20,
-        y: height - (heightAux + 6) * fontSize,
-        size: 10,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
+
+
+          {
+
+            fontSize: 10,
+            layout: 'noBorders', // optional
+            table: {
+
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              widths: ['*'],
+              body: [
+
+                ['FREC: ' + salida.DescFrec.substring(0, 25)]
+
+
+              ]
+            }
+          },
+
+          { text: '---------------------------------------------------------' },
+
+
+
+
+          // {
+          //     table: {
+          //             widths: ['*'],
+          //             body: [[" "], [" "]]
+          //     },
+          //     layout: {
+          //         hLineWidth: function(i, node) {
+          //             return (i === 0 || i === node.table.body.length) ? 0 : 2;
+          //         },
+          //         vLineWidth: function(i, node) {
+          //             return 0;
+          //         },
+          //     }
+          // },
+          // 
+
+          {
+            fontSize: 8.5,
+            layout: 'noBorders',
+            // optional
+            table: {
+
+
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [55, 23, 33, 19, 17],
+              
+              body: resultadoString
+              //   ['RELOJ', 'PROG', 'MARC', 'FALT',  'PEN'],
+              //    ['CHUGCHUP', '06:18', '06:15:21', '-3', '' ],
+              //    ['MADRE TE', '06:24', '06:21:10', '-3', '' ],
+              //    ['COLEGIO', '06:30', '06:26:34', '-4', '' ],
+              //     ['MALDONAD', '06:38', '06:35:09', '-3', '' ],
+              //      ['TERMINAL', '06:53', '06:47:56', '-6', '' ],
+              //       ['FERIA DE', '07:10', '07:03:57', '-7', '' ],
+              //    ['MAVESA', '07:23', '07:16:48', '-7', '' ],
+              //     ['OLMEDO Y', '07:43', '07:38:59', '-5', '' ],
+              //      ['OVIEDO Y', '07:50', '07:44:39', '-6', '' ],
+              //        ['CHUGCHUP', '08:10', '', '', 'REF' ]
+
+
+
+              // ]
+            }
+          },
+
+
+
+          // {
+          //   table: {
+          //     widths: ['*'],
+          //     body: [[" "], [" "]]
+          //   },
+          //   layout: {
+
+
+
+          //     hLineWidth: function (i, node) {
+          //       return (i === 0 || i === node.table.body.length) ? 0 : 2;
+          //     },
+          //     vLineWidth: function (i, node) {
+          //       return 0;
+          //     },
+          //   }
+          // },
+
+
+
+          { text: '---------------------------------------------------------' },
+          { text: 'Chofer: ', fontSize:8 },
+          { text: 'Cobrador: ',fontSize:8 },
+          { text: 'Adelanto: '+  (salida.adelantoTime == null ? '00:00:00' : salida.adelantoTime), fontSize:8, fontSize:8 },
+          { text: 'Atrasos: '+(salida.atrasoTime == null ? '00:00:00' : salida.atrasoTime),fontSize:8 },
+          
+
+          {
+            fontSize: 10,
+            bold: true,
+            layout: 'noBorders', // optional
+            table: {
+
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+
+              body: [
+
+                ['TOTAL Faltas : +' + sumFalt],
+                ['TOTAL Dinero : ' + Number(penFalt).toFixed(2)],
+
+
+              ]
+            }
+          },
+
+        ]
+      };
+
+
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        this.baseURlPDFPanelDespachoTarjeta = dataUrl
+      });
+
+      // const pdfDoc = await PDFDocument.create()
+      // const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+      // const TimesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
+
+      // const page = pdfDoc.addPage()
+      // page.setWidth(230)
+      // const { width, height } = page.getSize()
+      // const fontSize = 10
+
+      // page.drawText("     " + this.$cookies.get("nameEmpresa").toUpperCase().substring(0, 28), {
+      //   x: 20,
+      //   y: height - 2 * fontSize,
+      //   size: fontSize,
+      //   font: TimesRomanBold,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("Unidad       " + "Salida #" + salida.idSali_m + "         Ruta     Vue.", {
+      //   x: 20,
+      //   y: height - 3.5 * fontSize,
+      //   size: fontSize,
+      //   font: TimesRomanBold,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("    " + salida.CodiVehiSali_m + "          "
+      //   + FechaStringToHour(salida.HoraSaliProgSali_mF) + "         "
+      //   + (salida.LetraRutaSali_m.length > 2 ? salida.LetraRutaSali_m : "  " + salida.LetraRutaSali_m) + "           " + salida.NumeVuelSali_m, {
+      //   x: 20,
+      //   y: height - 4.5 * fontSize,
+      //   size: fontSize,
+      //   font: timesRomanFont,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText('FREC : ' + salida.DescFrec.substring(0, 26), {
+      //   x: 20,
+      //   y: height - 5.6 * fontSize,
+      //   size: fontSize,
+      //   font: timesRomanFont,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("---------------------------------------------------------", {
+      //   x: 20,
+      //   y: height - 6.6 * fontSize,
+      //   size: fontSize,
+      //   font: timesRomanFont,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("RELOJ             PROG   MARC  FALT  PEN", {
+      //   x: 20,
+      //   y: height - 7.6 * fontSize,
+      //   size: fontSize,
+      //   font: timesRomanFont,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("---------------------------------------------------------", {
+      //   x: 20,
+      //   y: height - 8.6 * fontSize,
+      //   size: fontSize,
+      //   font: timesRomanFont,
+      //   color: rgb(0, 0, 0),
+      // })
+      // var heightAux = 9.7
+      // var sumFalt = 0
+      // var penFalt = 0
+      // for (var i = 0; i < datos.data.data.length; i++) {
+
+      //   heightAux = heightAux + 1
+      //   if (datos.data.data[i].FaltSali_d > 0) {
+      //     sumFalt = sumFalt + datos.data.data[i].FaltSali_d
+      //   }
+
+      //   if (datos.data.data[i].isCtrlRefeSali_d == 0) {
+      //     var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
+      //     penFalt = penFalt + pen
+      //   }
+
+      //   var space = "                       "
+      //   /**datos.data.data[i].DescCtrlSali_d.substring(0, 9)**/
+
+      //   var texto = space + "  " + datos.data.data[i].HoraProgSali_d.substring(0, 5) + "   "
+      //     + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '              ' : datos.data.data[i].HoraMarcSali_d) + "    " + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '    ' : datos.data.data[i].FaltSali_d) + "        "
+      //     + (datos.data.data[i].isCtrlRefeSali_d == 1 ? "REF" : datos.data.data[i].PenaCtrlSali_d == '0.00' ? '      ' : datos.data.data[i].PenaCtrlSali_d)
+
+      //   page.drawText(texto, {
+      //     x: 20,
+      //     y: height - heightAux * 9,
+      //     size: 9,
+      //     color: rgb(0, 0, 0),
+      //   })
+
+      //   page.drawText(datos.data.data[i].DescCtrlSali_d.substring(0, 8), {
+      //     x: 20,
+      //     y: height - (heightAux) * 9,
+      //     size: 9,
+      //     color: rgb(0, 0, 0),
+      //   })
+
+
+      // }
+      // heightAux = heightAux - 0.5
+
+
+      // page.drawText("---------------------------------------------------------", {
+      //   x: 20,
+      //   y: height - (heightAux - 0.2) * fontSize,
+      //   size: fontSize,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("Chofer : ", {
+      //   x: 20,
+      //   y: height - (heightAux + 1) * fontSize,
+      //   size: 8.5,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("Cobrador : ", {
+      //   x: 20,
+      //   y: height - (heightAux + 2) * fontSize,
+      //   size: 8.5,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("Adelanto : " + (salida.adelantoTime == null ? '00:00:00' : salida.adelantoTime), {
+      //   x: 20,
+      //   y: height - (heightAux + 3) * fontSize,
+      //   size: 8.5,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("Atrasos : " + (salida.atrasoTime == null ? '00:00:00' : salida.atrasoTime), {
+      //   x: 20,
+      //   y: height - (heightAux + 4) * fontSize,
+      //   size: 8.5,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // let bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
+
+      // page.drawText("TOTAL Faltas  : +" + sumFalt, {
+      //   x: 20,
+      //   y: height - (heightAux + 5) * fontSize,
+      //   size: 10,
+      //   font: bold,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("TOTAL Dinero  : " + Number(penFalt).toFixed(2), {
+      //   x: 20,
+      //   y: height - (heightAux + 6) * fontSize,
+      //   size: 10,
+      //   font: bold,
+      //   color: rgb(0, 0, 0),
+      // })
 
       this.baseURlPDFPanelDespachoTarjeta = await pdfDoc.saveAsBase64({ dataUri: true });
     }, exportPdfSalidasPanelBusqueda() 

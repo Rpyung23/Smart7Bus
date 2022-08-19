@@ -167,6 +167,11 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { convertSecondtoTimeString } from '../../util/fechas'
+
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs
+
 export default {
   mixins: [clientPaginationMixin],
   layout: "ProduccionDashboardLayout",
@@ -389,52 +394,146 @@ export default {
       }
 
 
-      /*******************************/
-      const fontSize = 10
+ var empresa = [{ text: this.$cookies.get('nameEmpresa').substring(0, 30), fontSize: 12, bold: true, alignment: "center" }]
 
-      page.drawText("     " + this.$cookies.get("nameEmpresa").toUpperCase().substring(0, 28), {
-        x: 20,
-        y: height - 2 * fontSize,
-        size: fontSize,
-        font: TimesRomanBold,
-        color: rgb(0, 0, 0),
-      })
+      var docDefinition = {
 
-      page.drawText("     COMPROBANTE DE INGRESO", {
-        x: 20,
-        y: height - 3 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
+        // a string or { width: 190, height: number }
+        pageSize: { width: 220, height: 'auto' },
+        pageMargins: [15, 15, 15, 15],
+        // header: [empresa],
 
 
-      page.drawText("---------------------------------------------------------", {
-        x: 20,
-        y: height - 4.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
+        content: [
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: 'noBorders', // optional
+            alignment: "center",
+            table: {
+              widths: ['*'],
+              body: [empresa]
+            }
+          },
+          { text: 'COMPROBANTE DE INGRESO', alignment: "center", fontSize: 10},
 
-      page.drawText("VEHI.       LINEA               FECHA     VALOR", {
-        x: 20,
-        y: height - 5.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
+          { text: '---------------------------------------------------------' },
+           
+           {
+            fontSize: 8.5,
+           // layout: 'noBorders',
+            // optional
+            table: {
+
+
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [19, 62, 44, 27],
+              body: [
+              [{text:'VEHI', alignment:"center"}, {text: 'LINEA', alignment:"center"}, {text: 'FECHA', alignment:"center"}, {text:'VALOR', alignment:"center"}],
+            ]
+
+            }
+          },
+
+          { text: '---------------------------------------------------------' },
+                 
+
+
+ {
+            fontSize: 8.5,
+           // layout: 'noBorders',
+            // optional
+            table: {
+
+
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [19, 63, 43, 27],
+              body: [
+               [{text:'5', alignment:"center"}, {text: 'EJIDO', alignment:"center"}, {text: '2022-08-18', alignment:"center"}, {text:'4.50', alignment:"center"}],            
+               [{text:'3', alignment:"center"}, {text: 'SANTO DOMINGO', alignment:"center"}, {text: '2022-08-18', alignment:"center"}, {text:'4.50', alignment:"center"}]           
+],
+            }
+          },
+
+          
+          { text: '---------------------------------------------------------' },
+
+
+            { text: 'Atrasos Falta: ', fontSize:7.5, bold:true },
+          { text: 'Atrasos Justificados: ',fontSize:7.5, bold:true },
+          { text: 'Adelantos Falta: ',fontSize:7.5, bold:true },
+          { text: 'Adelantos Justificados: ', fontSize:7, bold:true },
+          { text: 'Rubros: ', fontSize:7.5, bold:true },
+          { text: 'Rubros Justificados: ', fontSize:7.5, bold:true },
+          { text: 'Ex Velocidad: ',fontSize:7.5, bold:true },
+          { text: 'Ex Velocidad Justificados: ', fontSize:7.5, bold:true },
+          { text: 'Tarjeta: ', fontSize:7.5, bold:true },
+          { text: 'Operador: ', fontSize:7.5 },
+          { text: 'Fecha de Pago: ',fontSize:7.5},
+          { text: 'Fecha Impresion: ', fontSize:7.5},
+          { text: 'TOTAL Dinero: ',fontSize:9, color:'red'},
+         ]}
+
+
+
+var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl
+      });
+
+
+      // /*******************************/
+      // const fontSize = 10
+
+      // page.drawText("     " + this.$cookies.get("nameEmpresa").toUpperCase().substring(0, 28), {
+      //   x: 20,
+      //   y: height - 2 * fontSize,
+      //   size: fontSize,
+      //   font: TimesRomanBold,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("     COMPROBANTE DE INGRESO", {
+      //   x: 20,
+      //   y: height - 3 * fontSize,
+      //   size: fontSize,
+      //   font: timesRomanFont,
+      //   color: rgb(0, 0, 0),
+      // })
+
+
+      // page.drawText("---------------------------------------------------------", {
+      //   x: 20,
+      //   y: height - 4.6 * fontSize,
+      //   size: fontSize,
+      //   font: timesRomanFont,
+      //   color: rgb(0, 0, 0),
+      // })
+
+      // page.drawText("VEHI.       LINEA               FECHA     VALOR", {
+      //   x: 20,
+      //   y: height - 5.6 * fontSize,
+      //   size: fontSize,
+      //   font: timesRomanFont,
+      //   color: rgb(0, 0, 0),
+      // })
 
 
 
 
-      page.drawText("---------------------------------------------------------", {
-        x: 20,
-        y: height - 6.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
+      // page.drawText("---------------------------------------------------------", {
+      //   x: 20,
+      //   y: height - 6.6 * fontSize,
+      //   size: fontSize,
+      //   font: timesRomanFont,
+      //   color: rgb(0, 0, 0),
+      // })
 
 
       var heightAux = 7.6

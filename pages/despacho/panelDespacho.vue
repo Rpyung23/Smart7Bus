@@ -191,10 +191,14 @@
             <div slot="empty">
               <span>No existen Salidas Anuladas</span>
             </div>
+
+            
+
           </el-table>
         </div>
       </card>
     </modal>
+    
   </div>
 </template>
 <script>
@@ -243,6 +247,7 @@ export default {
   data() {
     return {
       columnsInfo: [],
+      imagenBaseUrl:"",
       getWidth: "100%",
       dataAdapter: new jqx.dataAdapter([]),
       token: this.$cookies.get("token"),
@@ -268,7 +273,9 @@ export default {
       radioTipoDespacho: 3,
       checkboxOrdenamientoDespacho: false,
       checkboxOSalidasAnuladasDespacho: false,
-      modalDespachoSalidasAnuladas: false
+      modalDespachoSalidasAnuladas: false,
+      mListSalidasTarjeta: []
+
     };
   },
   methods: {
@@ -578,160 +585,246 @@ export default {
         this.optionsUnidadesSalidasPanelSalidas = [];
       }
     },
+
+
     async readDetalleSalidaDPanelBusqueda(salida, bandera) {
-      //console.log(salida)
+      console.log(salida)
       this.modalSalidasTarjetaPanelDespacho = true
+      this.baseURlPDFPanelDespachoTarjetaSalida = ''
+      
       var datos = await this.$axios.post(process.env.baseUrl + "/detalleSalida", {
         token: this.token,
         idsalida: salida.idSali_m
       })
+      this.mListSalidasTarjeta = []
+      this.mListSalidasTarjeta.push(...datos.data.data)
+      console.log(salida)
 
+
+
+      var empresa = [{ text: this.$cookies.get('nameEmpresa').substring(0, 30), fontSize: 12, bold: true, alignment: "center" }]
+
+
+
+
+      var resultadoString = [[{ text: 'RELOJ', fontSize: 8.5, bold: true, alignment: "center" },
+      { text: 'PROG', fontSize: 8.5, bold: true, alignment: "center" },
+      { text: 'MARC', fontSize: 8.5, bold: true, alignment: "center" },
+      { text: 'FALT', fontSize: 8.5, bold: true, alignment: "center" },
+      { text: 'PEN', fontSize: 8.5, bold: true, alignment: "center" }]]
+
+      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
+
+        var arrys = [{ text: this.mListSalidasTarjeta[i].DescCtrlSali_d.substring(0, 9), fontSize: 8.5 },
+        { text: this.mListSalidasTarjeta[i].HoraProgSali_d.substring(0, 5), fontSize: 8.5, alignment: "center", },
+        { text: this.mListSalidasTarjeta[i].HoraMarcSali_d == '00:00:00' ? '' : this.mListSalidasTarjeta[i].HoraMarcSali_d, fontSize: 8.5, alignment: "center" },
+        { text: this.mListSalidasTarjeta[i].FaltSali_d, fontSize: 8.5, alignment: "center" },
+        { text: this.mListSalidasTarjeta[i].PenaCtrlSali_d == '0.00' ? '' : this.mListSalidasTarjeta[i].PenaCtrlSali_d, fontSize: 8.5, alignment: "center" },
+        ]
+        resultadoString.push(arrys)
+      }
+
+
+
+
+      var heightAux = 9.7
+      var sumFalt = 0
+      var penFalt = 0
+      for (var i = 0; i < datos.data.data.length; i++) {
+
+        heightAux = heightAux + 1
+        if (datos.data.data[i].FaltSali_d > 0 && datos.data.data[i].isCtrlRefeSali_d == 0) {
+          sumFalt = sumFalt + datos.data.data[i].FaltSali_d
+        }
+
+        if (datos.data.data[i].isCtrlRefeSali_d == 0) {
+          var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
+          penFalt = penFalt + pen
+        }
+
+      }
 
       var docDefinition = {
 
         // a string or { width: 190, height: number }
-        pageSize: 'C7',
-        pageMargins: [ 15, 15, 15, 15 ],
-        header: [{ text: 'COOPERATIVA SAN MIGUEL', bold: true, alignment:'center'},
-      
-       
-         ],
+        pageSize: { width: 220, height: 'auto' },
+        pageMargins: [15, 15, 15, 15],
+        // header: [empresa],
+
+
         content: [
-
-
-
-
-          
           {
-           bold: true, 
-          fontSize: 9, 
-          alignment: 'center',
-                
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: 'noBorders', // optional
+            alignment: "center",
+            table: {
+              widths: ['*'],
+              body: [empresa]
+            }
+          },
+          {
+            bold: true,
+            fontSize: 9,
+            alignment: 'center',
             layout: 'noBorders', // optional
             table: {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
-              headerRows: 1,
-              widths: [35, 85, 35, 35],
+              headerRows: 0,
+              widths: [35, 75, 25, 22],
               body: [
-                ['Unidad', 'Salida #247378', 'Ruta', 'Vde.'],
-              
+                ['Unidad', 'Salida #' + salida.idSali_m, 'Ruta', 'Vue']
               ]
             }
 
-           } ,
+          },
 
 
           {
-           //bold: true, 
-          fontSize: 9, 
-          alignment: 'center',
-                
+            //bold: true, 
+            fontSize: 9,
+            alignment: 'center',
+
             layout: 'noBorders', // optional
             table: {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
-              headerRows: 1,
-              widths: [35, 85, 35, 35],
+              headerRows: 0,
+              widths: [35, 75, 25, 22],
               body: [
-               
-                ['119', '17 DE AGO, 2022', 'FL', ''], 
+
+                [salida.CodiVehiSali_m, salida.HoraSaliProgSali_mF.substring(0, 10), { text: salida.LetraRutaSali_m, bold: true }, salida.NumeVuelSali_m],
               ]
             }
 
-           } ,
-
-
-           { text: 'FREC: CHUCHUPUNGO SABADO', fontSize: 10},
-           
+          },
 
 
 
+          {
 
-
-// {
-//     table: {
-//             widths: ['*'],
-//             body: [[" "], [" "]]
-//     },
-//     layout: {
-//         hLineWidth: function(i, node) {
-//             return (i === 0 || i === node.table.body.length) ? 0 : 2;
-//         },
-//         vLineWidth: function(i, node) {
-//             return 0;
-//         },
-//     }
-// },
-// 
-
-           {
-          fontSize: 8.5,
-          lineWidth: 0,
-            layout: 'headerLineOnly', // optional
+            fontSize: 10,
+            layout: 'noBorders', // optional
             table: {
-             
+
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
-              headerRows: 1,
-              widths: ['auto', 'auto', 'auto','auto', 'auto' ],
+              widths: ['*'],
               body: [
-               
-                ['RELOJ', 'PROG', 'MARC', 'FALT',  'PEN'],
-                 ['CHUGCHUP', '06:18', '06:15:21', '-3', '' ],
-                 ['MADRE TE', '06:24', '06:21:10', '-3', '' ],
-                 ['COLEGIO', '06:30', '06:26:34', '-4', '' ],
-                  ['MALDONAD', '06:38', '06:35:09', '-3', '' ],
-                   ['TERMINAL', '06:53', '06:47:56', '-6', '' ],
-                    ['FERIA DE', '07:10', '07:03:57', '-7', '' ],
-                 ['MAVESA', '07:23', '07:16:48', '-7', '' ],
-                  ['OLMEDO Y', '07:43', '07:38:59', '-5', '' ],
-                   ['OVIEDO Y', '07:50', '07:44:39', '-6', '' ],
-                     ['CHUGCHUP', '08:10', '', '', 'REF' ]
+
+                ['FREC: ' + salida.DescFrec.substring(0, 25)]
 
 
               ]
             }
-          } ,
+          },
+
+          { text: '---------------------------------------------------------' },
 
 
 
-{
-    table: {
-            widths: ['*'],
-            body: [[" "], [" "]]
-    },
-    layout: {
-        hLineWidth: function(i, node) {
-            return (i === 0 || i === node.table.body.length) ? 0 : 2;
-        },
-        vLineWidth: function(i, node) {
-            return 0;
-        },
-    }
-},
 
+          // {
+          //     table: {
+          //             widths: ['*'],
+          //             body: [[" "], [" "]]
+          //     },
+          //     layout: {
+          //         hLineWidth: function(i, node) {
+          //             return (i === 0 || i === node.table.body.length) ? 0 : 2;
+          //         },
+          //         vLineWidth: function(i, node) {
+          //             return 0;
+          //         },
+          //     }
+          // },
+          // 
 
-           {
-           
-          fontSize: 10,
-          bold:true,
-            layout: 'headerLineOnly', // optional
+          {
+            fontSize: 8.5,
+            layout: 'noBorders',
+            // optional
             table: {
-             
+
+
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
-             
+              headerRows: 0,
+              widths: [55, 23, 33, 19, 17],
+              body: resultadoString
+              //   ['RELOJ', 'PROG', 'MARC', 'FALT',  'PEN'],
+              //    ['CHUGCHUP', '06:18', '06:15:21', '-3', '' ],
+              //    ['MADRE TE', '06:24', '06:21:10', '-3', '' ],
+              //    ['COLEGIO', '06:30', '06:26:34', '-4', '' ],
+              //     ['MALDONAD', '06:38', '06:35:09', '-3', '' ],
+              //      ['TERMINAL', '06:53', '06:47:56', '-6', '' ],
+              //       ['FERIA DE', '07:10', '07:03:57', '-7', '' ],
+              //    ['MAVESA', '07:23', '07:16:48', '-7', '' ],
+              //     ['OLMEDO Y', '07:43', '07:38:59', '-5', '' ],
+              //      ['OVIEDO Y', '07:50', '07:44:39', '-6', '' ],
+              //        ['CHUGCHUP', '08:10', '', '', 'REF' ]
+
+
+
+              // ]
+            }
+          },
+
+
+
+          // {
+          //   table: {
+          //     widths: ['*'],
+          //     body: [[" "], [" "]]
+          //   },
+          //   layout: {
+
+
+
+          //     hLineWidth: function (i, node) {
+          //       return (i === 0 || i === node.table.body.length) ? 0 : 2;
+          //     },
+          //     vLineWidth: function (i, node) {
+          //       return 0;
+          //     },
+          //   }
+          // },
+
+
+
+          { text: '---------------------------------------------------------' },
+
+          {
+
+
+
+
+
+
+            fontSize: 10,
+            bold: true,
+            layout: 'noBorders', // optional
+            table: {
+
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+
               body: [
-               
-                ['TOTAL Faltas: +0'],
-                ['TOTAL Dinero: 0.00'],
-               
+
+                ['TOTAL Faltas : +' + sumFalt],
+                ['TOTAL Dinero : ' + Number(penFalt).toFixed(2)],
+
 
               ]
             }
-          } ,
-        
+          },
+
+
+
+
+
         ]
       };
 
@@ -941,6 +1034,7 @@ export default {
     document.oncontextmenu = function () { return false }*/
     this.initFechaActualSalidaDespachoPanel()
 
+    this.imagenBaseUrl = this.$cookies.get('logo')
 
 
     $(document).on("click", ".idShowTarjeta", function () {
