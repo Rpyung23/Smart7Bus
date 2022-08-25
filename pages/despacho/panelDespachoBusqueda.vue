@@ -3,9 +3,9 @@
     <base-header>
       <div class="align-items-center py-3">
         <card class="no-border-card col" style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
           footer-classes="pb-2">
-          <div class="cardTextoRPagosVehiculoProduccion">
+          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
             <el-select v-model="itemUnidadSalidasPanelBusqueda" multiple filterable style="margin-right: 0.5rem" remote
               placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
               :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
@@ -27,7 +27,7 @@
             </base-input>
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
+          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda">
             <div class="buttonCenterEndDerecha">
               <base-button icon type="primary" size="sm" @click="readSalidasPanelBusqueda()">
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
@@ -54,7 +54,7 @@
         </card>
 
         <card class="no-border-card col" style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
           footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
             <el-select v-model="mSelectRutaSalidaPanelBusqueda" multiple collapse-tags placeholder="Lineas">
@@ -64,9 +64,9 @@
             </el-select>
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccion">
+          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
             <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
-              <el-checkbox label="2" style="background-color: hsla(226, 88%, 61%, 0.301)">EN RUTA</el-checkbox>
+              <el-checkbox label="2" style="background-color: hsla(226, 88%, 61%, 0.301);">EN RUTA</el-checkbox>
               <el-checkbox label="0,1" style="background-color: hsla(115, 100%, 59%, 0.301)">SALIDAS DIFERIDAS
               </el-checkbox>
               <el-checkbox label="5">FINALIZADOS</el-checkbox>
@@ -1096,12 +1096,12 @@ var docDefinition = {
   color: black !important;
 }
 
-.cardTextoRPagosVehiculoProduccion {
+.cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda {
   display: flex;
   align-items: center;
 }
 
-.cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
+.cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda {
   display: flex;
   justify-content: space-between;
 }
@@ -1129,10 +1129,13 @@ var docDefinition = {
 .card-bodyRPagosVehiculoProduccion {
   padding: 0rem !important;
   height: calc(100vh - 13rem);
-  overflow: auto;
+  overflow: none;
 }
 
-.card-bodyTopOpcionesRPagosVehiculoPRoduccion {
+.card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda {
   padding-top: 0.25rem !important;
 }
+
+
+
 </style>

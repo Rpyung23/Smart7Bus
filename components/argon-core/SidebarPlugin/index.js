@@ -2,11 +2,11 @@ import Sidebar from './SideBar.vue';
 import SidebarItem from './SidebarItem.vue';
 
 const SidebarStore = {
-  showSidebar: false,
+  showSidebar: true,
   sidebarLinks: [],
-  isMinimized: false,
+  isMinimized: true,
   breakpoint: 1200,
-  hovered: false,
+  hovered: true,
   displaySidebar(value) {
     if (window.innerWidth > this.breakpoint) {
       return;

@@ -1,7 +1,6 @@
-export function FechaStringToHour(fecha)
-{
+export function FechaStringToHour(fecha) {
     var fecha_ = new Date(fecha)
-    var dia = fecha_.getDay() ;
+    var dia = fecha_.getDay();
     var mes = fecha_.getMonth();
     mes = mes + 1;
     var diaTexto = "DOMINGO"
@@ -49,11 +48,10 @@ export function FechaStringToHour(fecha)
     }
 
 
-    return fecha_.getDate()+" DE "+mesTexto+", "+fecha_.getFullYear()
+    return fecha_.getDate() + " DE " + mesTexto + ", " + fecha_.getFullYear()
 }
 
-export function getformatFechatoTime(fecha)
-{
+export function getformatFechatoTime(fecha) {
     var fecha_ = new Date(fecha)
 
 
@@ -64,25 +62,21 @@ export function getformatFechatoTime(fecha)
 
 
 
-    if(hora<10)
-    {
-        hora = "0"+hora;
+    if (hora < 10) {
+        hora = "0" + hora;
     }
-    if(minutos<10)
-    {
-        minutos = "0"+minutos;
+    if (minutos < 10) {
+        minutos = "0" + minutos;
     }
-    if(segundos<10)
-    {
-        segundos = "0"+segundos;
+    if (segundos < 10) {
+        segundos = "0" + segundos;
     }
 
-    return hora+":"+minutos+":"+segundos
+    return hora + ":" + minutos + ":" + segundos
 }
 
 
-export function getFecha_dd_mm_yyyy(fecha)
-{
+export function getFecha_dd_mm_yyyy(fecha) {
 
 
     var fecha_ = new Date(fecha)
@@ -92,27 +86,28 @@ export function getFecha_dd_mm_yyyy(fecha)
 
     var mes = fecha_.getMonth();
 
-    mes =mes +1;
+    mes = mes + 1;
 
-    if(dia<10)
-    {
-        dia = "0"+dia;
+    if (dia < 10) {
+        dia = "0" + dia;
     }
-    if(mes<10)
-    {
-        mes = "0"+mes;
+    if (mes < 10) {
+        mes = "0" + mes;
     }
 
-    return (fecha_.getFullYear()+"-"+mes+"-"+dia)
+    return (fecha_.getFullYear() + "-" + mes + "-" + dia)
 }
 
-export function convertSecondtoTimeString(seconds)
-{
-    var hour = Math.floor(seconds / 3600);
-    hour = (hour < 10) ? '0' + hour : hour;
-    var minute = Math.floor((seconds / 60) % 60);
-    minute = (minute < 10) ? '0' + minute : minute;
-    var second = seconds % 60;
-    second = (second < 10) ? '0' + second : second;
-    return hour + ':' + minute + ':' + second;
+export function convertSecondtoTimeString(seconds) {
+    if (seconds == 0) {
+        return '00:00:00'
+    } else {
+        var hour = Math.floor(seconds / 3600);
+        hour = (hour < 10) ? '0' + hour : hour;
+        var minute = Math.floor((seconds / 60) % 60);
+        minute = (minute < 10) ? '0' + minute : minute;
+        var second = seconds % 60;
+        second = (second < 10) ? '0' + second : second;
+        return hour + ':' + minute + ':' + second;
+    }
 }

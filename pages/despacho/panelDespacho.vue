@@ -7,30 +7,16 @@
         footer-classes="pb-2">
 
 
-        <div class="cardTextoRPagosVehiculoProduccion">
-          <el-date-picker type="datetime" placeholder="Select date and time" v-model="fechaActualSalidasPanelDespacho"
-            style="margin-right: 0.5rem;width: 15rem;">
+        <div class="cardTiposDespachosPanelDespacho">
+
+          <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+            v-model="fechaActualSalidasPanelDespacho">
           </el-date-picker>
 
-          <el-select v-model="itemUnidadSalidasPanelBusqueda" filterable style="margin-right: 0.5rem" remote
-            placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-            :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
-            <el-option v-for="item in optionsUnidadesSalidasPanelSalidas" :key="item.CodiVehi" :label="item.CodiVehi"
-              :value="item.CodiVehi">
-            </el-option>
-          </el-select>
-
           <el-select v-model="mSelectRutaSalidaPanelDespacho" collapse-tags placeholder="Lineas"
-            @change="readFrecuenciasSalidasPanel()" style="margin-right: 0.5rem;width: 15rem;">
+            @change="readFrecuenciasSalidasPanel()">
             <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
               :value="item.idRuta">
-            </el-option>
-          </el-select>
-
-          <el-select v-model="mSelectRutaFrecuenciaPanelDespacho" collapse-tags placeholder="Frecuencias"
-            style="margin-right: 0.5rem;width: 15rem;">
-            <el-option v-for="item in mListRutasFrecuencias" :key="item.idFrec" :label="item.DescFrec"
-              :value="item.idFrec">
             </el-option>
           </el-select>
 
@@ -43,23 +29,19 @@
 
         <div class="buttonsAdicionalesDespacho">
 
+          <base-button icon type="default" @click="showReporteLlegadaSAlida()" size="sm">
+            <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
+          </base-button>
+
           <base-button icon type="primary" @click="showReporteLlegadaSAlida()" size="sm">
             <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-          </base-button>
-
-          <base-button icon type="info" size="sm">
-            <span class="btn-inner--icon"><i class="ni ni-single-02"></i></span>
-          </base-button>
-
-          <base-button icon type="primary" title="Tipos de Despachos" size="sm" @click="showmodalTiposDespacho()">
-            <span class="btn-inner--icon"><i class="ni ni-bullet-list-67"></i></span>
           </base-button>
 
           <base-button icon type="danger" title="Salidas Anuladas" size="sm"
             @click="showModalDespachoSalidasAnuladas()">
             <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
           </base-button>
-          <base-button icon type="success " size="sm">
+          <base-button icon type="success" title="Despachar" size="sm" @click="showEnviarDespachoPanel()">
             <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
           </base-button>
 
@@ -72,44 +54,41 @@
 
 
       <div class="containerTablero">
-        <div class="container-rutas">
+        <!--<div class="container-rutas">
           <div :class="index == 0 ? 'itemrutaDespacho activeRutaDespacho' : 'itemrutaDespacho'"
             v-for="(ruta, index) in mListRutasDespacho" :id="ruta.LetrRuta" :key="ruta.LetrRuta"
             @click="lecturaDespacho(ruta)">
             {{ ruta.DescRuta }}
           </div>
-        </div>
+        </div>-->
         <div class="container-calendario col_personalizado">
-          <card class="no-border-card card-sinborderPanel" body-classes="card-body-sinpadding px-0 pb-1"
-            footer-classes="pb-2">
-            <JqxGrid ref="myGridDespachoPanel" @contextmenu="myGridOnContextMenu()" @rowclick="myGridOnRowClick($event)"
-              @cellbeginedit="cellBeginEditEvent($event)" :height="'100%'" style="margin-right: 50rem !important;"
-              @cellendedit="cellEndEditEvent($event)" :columns="columnsInfo" :source="dataAdapter" :editable="true"
-              @rowselect="myGridOnRowSelect($event)" :selectionmode="'singlerow'" :enabletooltips="true"
-              :width="getWidth">
-            </JqxGrid>
+          <JqxGrid ref="myGridDespachoPanel" @contextmenu="myGridOnContextMenu()" @rowclick="myGridOnRowClick($event)"
+            @cellbeginedit="cellBeginEditEvent($event)" :height="'100%'" style="margin-right: 50rem !important;"
+            @cellendedit="cellEndEditEvent($event)" :columns="columnsInfo" :source="dataAdapter" :editable="true"
+            @rowselect="myGridOnRowSelect($event)" :selectionmode="'singlerow'" :enabletooltips="true"
+            :width="getWidth">
+          </JqxGrid>
 
-            <JqxMenu ref="myMenu" @itemclick="myMenuOnItemClick($event)" :width="200" :height="200" :mode="'popup'"
-              :autoOpenPopup="false">
-              <ul>
-                <li>Retirar unidad</li>
-                <li>Reemplazar unidad</li>
-                <li>Ingresar unidad</li>
-                <li>Modificar Intervalos</li>
-                <li>Cambiar frecuencia</li>
-                <li>Anular Salidas</li>
-                <li>Copiar contenido</li>
-              </ul>
-            </JqxMenu>
+          <JqxMenu ref="myMenu" @itemclick="myMenuOnItemClick($event)" :width="200" :height="200" :mode="'popup'"
+            :autoOpenPopup="false">
+            <ul>
+              <li>Retirar unidad</li>
+              <li>Reemplazar unidad</li>
+              <li>Ingresar unidad</li>
+              <li>Modificar Intervalos</li>
+              <li>Cambiar frecuencia</li>
+              <li>Anular Salidas</li>
+              <li>Copiar contenido</li>
+            </ul>
+          </JqxMenu>
 
-            <div style="font-size: 12px; font-family: Verdana; margin-top: 30px; display: none;">
-              <div ref="beginEdit"></div>
-              <div ref="endEdit" style="margin-top: 10px;"></div>
-            </div>
-            <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingDespachoSalidaPanelBusqueda">
-              <div class="circleProgress"></div>
-            </div>
-          </card>
+          <div style="font-size: 12px; font-family: Verdana; margin-top: 30px; display: none;">
+            <div ref="beginEdit"></div>
+            <div ref="endEdit" style="margin-top: 10px;"></div>
+          </div>
+          <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingDespachoSalidaPanelBusqueda">
+            <div class="circleProgress"></div>
+          </div>
         </div>
       </div>
 
@@ -123,20 +102,6 @@
       </card>
     </modal>
 
-    <!--Form modal Tipos de Despacho -->
-    <modal :show.sync="modalTiposDespacho" size="sm">
-      <div class="containerTiposDespachos">
-        <el-radio-group v-model="radioTipoDespacho">
-          <el-radio :label="3">Salida Normal.</el-radio>
-          <el-radio :label="9">Generar Tarjeta</el-radio>
-          <el-radio :label="6">Salida Diferida</el-radio>
-          <el-radio :label="7">Salida de Apoyo</el-radio>
-        </el-radio-group>
-        <div>
-        </div>
-      </div>
-    </modal>
-
     <!--Form modal Despacho Salidas Anuladas-->
     <modal :show.sync="modalDespachoSalidasAnuladas" size="xl" body-classes="p-0">
       <h6 slot="header" class="modal-title">Despacho Salidas Anuladas</h6>
@@ -144,7 +109,7 @@
         <div>
           <el-table v-loading="isLoadingDespachoSalidaPanelBusqueda" element-loading-text="Cargando Datos..."
             element-loading-spinner="el-icon-loading" :data="mListDespachosSalidasAnuladas" row-key="id"
-            :height="mListDespachosSalidasAnuladas.length > 0 ? 550 : 150" style="width: 100%"
+            :height="mListDespachosSalidasAnuladas.length > 0 ? 510 : 150" style="width: 100%"
             header-row-class-name="thead-dark" :default-sort="{ prop: 'HoraSaliProgSali_m', order: 'ascending' }"
             :row-class-name="tableRowClassNameDSalidasAnuladas">
 
@@ -184,7 +149,7 @@
             <el-table-column prop="VeloMaxiSali_m" label="KM/H" min-width="100px">
             </el-table-column>
 
-            <el-table-column prop="Country23" label="Chofer" min-width="150px">
+            <el-table-column prop="Country23" label="Chofer" min-width="250px">
             </el-table-column>
 
 
@@ -192,13 +157,180 @@
               <span>No existen Salidas Anuladas</span>
             </div>
 
-            
+
 
           </el-table>
         </div>
       </card>
     </modal>
-    
+
+    <!--DESPACHAR modal-->
+    <modal :show.sync="modalEnviarDespachoPanel">
+
+
+      <div class="row">
+        <div class="col-md-12">
+
+          <el-radio-group v-model="radioTipoDespacho" style="display: flex;justify-content: center;">
+            <el-radio :label="3">Salida Normal.</el-radio>
+            <el-radio :label="9">Generar Tarjeta</el-radio>
+            <el-radio :label="6">Salida Diferida</el-radio>
+          </el-radio-group>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="row" style="margin-bottom: 0.5rem;">
+        <div class="col-md-12">
+
+          <el-date-picker type="datetime" placeholder="Select date and time" style="width: 100%;"
+            v-model="fechaActualSalidasPanelDespacho">
+          </el-date-picker>
+
+        </div>
+
+      </div>
+
+
+      <div class="row" style="margin-bottom: 0.5rem;">
+        <div class="col-md-6">
+
+
+
+          <el-select v-model="itemUnidadSalidasPanelBusqueda" filterable remote placeholder="Ingrese unidad"
+            :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+            :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+            <el-option v-for="item in optionsUnidadesSalidasPanelSalidas" :key="item.CodiVehi" :label="item.CodiVehi"
+              :value="item.CodiVehi">
+            </el-option>
+          </el-select>
+
+
+
+
+        </div>
+        <div class="col-md-6">
+
+          <el-select v-model="mSelectRutaSalidaPanelDespacho" collapse-tags placeholder="Lineas"
+            @change="readFrecuenciasSalidasPanel()" style="width: 100%;">
+            <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
+              :value="item.idRuta">
+            </el-option>
+          </el-select>
+
+
+
+
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom: 0.5rem;">
+        <div class="col-md-12">
+
+
+          <el-select v-model="mSelectRutaFrecuenciaPanelDespacho" style="width: 100%;" collapse-tags
+            placeholder="Frecuencias">
+            <el-option v-for="item in mListRutasFrecuencias" :key="item.idFrec" :label="item.DescFrec"
+              :value="item.idFrec">
+            </el-option>
+          </el-select>
+
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-12">
+
+
+          <el-select v-model="itemUnidadSalidasPanelBusqueda" filterable remote placeholder="Ingrese unidad"
+            style="width: 100%;" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+            :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+            <el-option v-for="item in optionsUnidadesSalidasPanelSalidas" :key="item.CodiVehi" :label="item.CodiVehi"
+              :value="item.CodiVehi">
+            </el-option>
+          </el-select>
+        </div>
+      </div>
+
+
+      <template slot="footer">
+        <base-button type="link" @click="modalEnviarDespachoPanel = false">Cancelar</base-button>
+        <base-button type="primary" class="ml-auto">ENVIAR DESPACHO</base-button>
+      </template>
+
+    </modal>
+
+    <!--RECORRIDO modal-->
+    <modal :show.sync="modalRecorridoPanelDespachoControl" size="xl" body-classes="p-0">
+      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
+        <GmapMap map-type-id="roadmap" class="mapa" :center="oCenterPanelDespachoControl" :zoom="oZoomPanelDespachoControl" :options="{
+          zoomControl: false,
+          scaleControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+          rotateControl: false,
+          fullscreenControl: false,
+          disableDefaultUi: true,
+        }">
+          <GmapMarker v-for="marker in mListPosicionesHistorialSalidasPanelBusqueda" :key="marker.idHistEve" :position="{
+            lat: parseFloat(marker.LatiHistEven),
+            lng: parseFloat(marker.LongHistEven),
+          }" :icon="marker.icono" :clickable="false" :draggable="false" :optimized="true" />
+
+          <!--MARCADORES CON MARCACION-->
+          <GmapMarker v-for="marker in mListPosicionesHistorialMarcSalidasPanelBusqueda" :key="marker.idHistEve"
+            :position="{
+              lat: parseFloat(marker.LatiHistEven),
+              lng: parseFloat(marker.LongHistEven),
+            }" icon="static/img/control/control.png" :clickable="false" :draggable="false" :optimized="true" :options="{
+  label: {
+    text:
+      'RUTA : ' +
+      marker.DescRutaSali_m +
+      '\nPROG : ' +
+      marker.HoraProgSali_d +
+      ' MARC : ' +
+      marker.HoraMarcSali_d,
+    color: '#055eb1',
+    className: 'paddingLabelControlMarc',
+  },
+}" />
+
+
+          <!--TODOS LOS MARCADORES-->
+
+          <GmapPolygon v-for="control in mListControlesSalidaPanelBusquedaDespacho" :key="control.CodiCtrl" :options="{
+            strokeColor: '#F71313',
+            fillColor: '#F7131380',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+          }" :strokeOpacity="0.5" :strokeWeight="1" :paths="control.calculator.coordinates" />
+
+          <GmapMarker v-for="(control, index) in mListControlesSalidaPanelBusquedaDespacho"
+            :key="control.DescCtrl + index" :position="{
+              lat: parseFloat(control.Lati1Ctrl),
+              lng: parseFloat(control.Long1Ctrl),
+            }" :optimized="true" icon="static/img/control/control.png" :options="{
+  label: {
+    text: control.DescCtrl,
+    color: '#F71313',
+    className: 'paddingLabelControl',
+  },
+}" />
+
+
+        </GmapMap>
+
+        <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingRecorridoSalidaPanelBusqueda">
+          <div class="circleProgress"></div>
+        </div>
+      </card>
+    </modal>
+
   </div>
 </template>
 <script>
@@ -247,7 +379,7 @@ export default {
   data() {
     return {
       columnsInfo: [],
-      imagenBaseUrl:"",
+      imagenBaseUrl: "",
       getWidth: "100%",
       dataAdapter: new jqx.dataAdapter([]),
       token: this.$cookies.get("token"),
@@ -267,15 +399,18 @@ export default {
       mSelectRutaSalidaPanelDespacho: null,
       mSelectRutaFrecuenciaPanelDespacho: null,
       modalSalidasTarjetaPanelDespacho: false,
-      modalTiposDespacho: false,
+      modalEnviarDespachoPanel: false,
       baseURlPDFPanelDespachoTarjetaSalida: null,
       selectedRowSalida: null,
       radioTipoDespacho: 3,
       checkboxOrdenamientoDespacho: false,
       checkboxOSalidasAnuladasDespacho: false,
       modalDespachoSalidasAnuladas: false,
-      mListSalidasTarjeta: []
-
+      mListSalidasTarjeta: [],
+      titleModalTipoSalidaPanelDespacho: '',
+      modalRecorridoPanelDespachoControl:false,
+      oCenterPanelDespachoControl: { lat: -1.249546, lng: -78.585376 },
+      oZoomPanelDespachoControl: 7,
     };
   },
   methods: {
@@ -296,12 +431,14 @@ export default {
       this.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida, 1)
 
     },
-
-
-
+    showEnviarDespachoPanel() {
+      this.modalEnviarDespachoPanel ? (this.modalEnviarDespachoPanel = false) : (this.modalEnviarDespachoPanel = true)
+    },
     async readFrecuenciasSalidasPanel() {
       this.mListRutasFrecuencias = []
-      this.mSelectRutaFrecuenciaPanelDespacho = null
+
+      this.createHeaderTable()
+      this.readDespachoSalidasAnuladas()
       var datos = await this.$axios.post(process.env.baseUrl + "/frecuencias_rutas", {
         token: this.token,
         ruta: this.mSelectRutaSalidaPanelDespacho
@@ -358,7 +495,16 @@ export default {
         this.$refs.myGridDespachoPanel.deleterow(rowid);
       }
     },
-    async createHeaderTable(oRuta) {
+    getRutaPorID(idRuta) {
+      for (var i = 0; this.mListRutasDespacho.length; i++) {
+        if (this.mListRutasDespacho[i].idRuta == idRuta) {
+          return this.mListRutasDespacho[i]
+        }
+      }
+    },
+    async createHeaderTable() {
+      var oRuta = this.getRutaPorID(this.mSelectRutaSalidaPanelDespacho)
+
       try {
         this.mListDespachosPanel = []
         this.mListDespachosPanelAuxiliar = []
@@ -373,21 +519,8 @@ export default {
         this.mListDespachosPanelAuxiliar.push(...datos.data.datos)
         this.$refs.myGridDespachoPanel.beginupdate();
         this.columnsInfo = []
-        this.columnsInfo[0] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[2] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[8] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[9] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[10] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[11] = { text: 'Chofer', datafield: 'Country23', width: 150, cellsalign: 'left', cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-
-        this.columnsInfo[12] = {
-          text: 'Operaciones', datafield: 'Country24', width: 210, cellclassname: this.cellclassname, cellsalign: 'right', createwidget: (row, column, value, htmlElement) => {
+        this.columnsInfo[0] = {
+          text: 'Operaciones', datafield: 'Country24', width: 210, cellclassname: this.cellclassname, pinned: true, createwidget: (row, column, value, htmlElement) => {
             htmlElement.innerHTML = `<div class="cardTextoRPagosVehiculoProduccion">
                                           <button data-v-6d3c1b30="" type="button" class="btn btn-icon btn-fab btn-default btn-sm">
                                               <span data-v-6d3c1b30="" class="btn-inner--icon">
@@ -405,6 +538,20 @@ export default {
 
           }
         }
+        this.columnsInfo[1] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit, pinned: true }
+        this.columnsInfo[2] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit, pinned: true }
+        this.columnsInfo[3] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[4] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[5] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[6] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[7] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[8] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[9] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[10] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[11] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[12] = { text: 'Chofer', datafield: 'Country23', width: 150, cellsalign: 'left', cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+
+
 
 
 
@@ -429,20 +576,6 @@ export default {
       let args = event.args;
       this.$refs.endEdit.innerHTML = 'Event Type: cellendedit, Column: ' + args.datafield + ', Row: ' + (1 + args.rowindex) + ', Value: ' + args.value;
     },
-    activeRutaDespacho(ruta) {
-      console.log(ruta)
-      console.log(ruta.LetrRuta)
-      $("#" + ruta.LetrRuta).addClass("activeRutaDespacho")
-      this.createHeaderTable(ruta)
-      this.readDespachoSalidasAnuladas(ruta)
-    },
-    removeAllRutaNoSelect() {
-      for (var i = 0; i < this.mListRutasDespacho.length; i++) {
-        var ruta = "#" + this.mListRutasDespacho[i].LetrRuta
-        console.log(ruta)
-        $(ruta).removeClass("activeRutaDespacho")
-      }
-    },
     async initRutasDespacho() {
       try {
         var datos = await this.$axios.post(
@@ -454,7 +587,11 @@ export default {
         );
         if (datos.data.status_code == 200) {
           this.mListRutasDespacho.push(...datos.data.data);
-          this.activeRutaDespacho(datos.data.data[0])
+          this.mSelectRutaSalidaPanelDespacho = datos.data.data[0].idRuta
+          this.initFechaActualSalidaDespachoPanel()
+          this.readFrecuenciasSalidasPanel()
+
+          //this.activeRutaDespacho(datos.data.data[0])
         } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Rutas Despacho",
@@ -591,7 +728,7 @@ export default {
       console.log(salida)
       this.modalSalidasTarjetaPanelDespacho = true
       this.baseURlPDFPanelDespachoTarjetaSalida = ''
-      
+
       var datos = await this.$axios.post(process.env.baseUrl + "/detalleSalida", {
         token: this.token,
         idsalida: salida.idSali_m
@@ -963,15 +1100,15 @@ export default {
         return "estadoenrutaDespacho"
       } else if (data.EstaSali_m == 'FINALIZADO') {
         return "estadofinalizadoDespacho";
+      } else {
+        return "estadofinalizadoDespacho"
       }
-    },
-    showmodalTiposDespacho() {
-      this.modalTiposDespacho = true;
     },
     showModalDespachoSalidasAnuladas() {
       this.modalDespachoSalidasAnuladas = true;
     },
-    async readDespachoSalidasAnuladas(ruta) {
+    async readDespachoSalidasAnuladas() {
+      var ruta = this.mSelectRutaSalidaPanelDespacho
       try {
         this.isLoadingDespachoSalidaPanelBusqueda = true;
         this.mListDespachosSalidasAnuladas = [];
@@ -1030,9 +1167,10 @@ export default {
   mounted() {
     this.readAllUnidadesSalidasPanelBusqueda()
     this.initRutasDespacho()
+    this.initFechaActualSalidaDespachoPanel()
     /*document.addEventListener('contextmenu', event => event.preventDefault());
     document.oncontextmenu = function () { return false }*/
-    this.initFechaActualSalidaDespachoPanel()
+
 
     this.imagenBaseUrl = this.$cookies.get('logo')
 
@@ -1055,7 +1193,7 @@ export default {
   margin: auto;
   display: flex;
   justify-content: flex-end;
-  width: 100%;
+  width: 50%;
 }
 
 .container-rutas::-webkit-scrollbar {
@@ -1082,6 +1220,14 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+
+
+.cardTiposDespachosPanelDespacho {
+  display: flex;
+  align-items: center;
+  width: 50%;
+  justify-content: flex-start;
 }
 
 .en-ruta {
@@ -1144,7 +1290,7 @@ export default {
 }
 
 .card-Calendar {
-  height: calc(100vh - 6rem);
+  height: calc(100vh - 7rem);
   scroll-behavior: auto;
 }
 
@@ -1160,8 +1306,7 @@ export default {
 }
 
 .containerTablero {
-  background-color: #2dce89;
-  height: calc(100vh - 9rem);
+  height: calc(100vh - 9.5rem);
   display: flex;
 }
 
@@ -1181,17 +1326,22 @@ export default {
 }
 
 .estadoenrutaDespacho {
-  background-color: rgba(78, 135, 242, 0.369);
+  background-color: rgb(114, 128, 247);
   color: black;
 }
 
 .estadoanuladoDespacho {
-  background-color: rgba(245, 97, 97, 0.369) !important;
+  background-color: rgba(255, 0, 0, 0.315) !important;
   color: black;
 }
 
 .estadodiferidoDespacho {
-  background-color: rgba(92, 237, 84, 0.369);
+  background-color: rgb(141, 248, 126);
   color: black;
+}
+
+.card-bodyDSalidasAnuladas {
+  height: calc(100vh - 9rem);
+  overflow: none;
 }
 </style>

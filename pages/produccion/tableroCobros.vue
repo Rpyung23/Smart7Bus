@@ -37,12 +37,12 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readlPanelTableroProduccion()">
+            <base-button icon type="primary"  @click="readlPanelTableroProduccion()">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               <span class="btn-inner--text">Buscar</span>
             </base-button>
 
-            <base-button icon type="default" @click="realizarCobro()"
+            <base-button icon type="default" sm @click="realizarCobro()"
               v-if="multipleSelectionProduccionCobros.length > 0">
               <span class="btn-inner--icon"><i class="el-icon-money"></i></span>
               <span class="btn-inner--text">Pagar</span>
@@ -92,7 +92,7 @@
                 <el-table-column type="selection" minWidth="50">
                 </el-table-column>
 
-                <el-table-column prop="Unidad" label="Unidad" minWidth="50">
+                <el-table-column prop="Unidad" label="Unidad" minWidth="70">
                 </el-table-column>
                 <el-table-column prop="DescRuta" label="Ruta - Linea" minWidth="140">
                 </el-table-column>
@@ -159,7 +159,6 @@ import {
   Notification,
   Button
 } from "element-ui";
-import { PDFDocument, StandardFonts, rgb, degrees, ParseSpeeds } from 'pdf-lib'
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
@@ -213,8 +212,6 @@ export default {
       baseURlPDFComprobanteIngresoTableroCobro: "",
       multipleSelectionProduccionCobros: [],
       banderaMarcoAguaRecibo: true,
-      pngUrl : 'https://res.cloudinary.com/virtualcode7/image/upload/v1659468163/marcoAgua_oibpny.png',
-      pngImageBytes : null
     };
   },
   methods: {
@@ -303,11 +300,10 @@ export default {
 
       if (datos.data.status_code == 200) {
         let dinero = 0
-        for (var i = 0; i < datos.data.datos.length; i++) 
-        {
-          dinero = dinero + (datos.data.datos[i].DeudaTotal == null ? 0 : parseFloat(datos.data.datos[i].DeudaTotal) )
+        for (var i = 0; i < datos.data.datos.length; i++) {
+          dinero = dinero + (datos.data.datos[i].DeudaTotal == null ? 0 : parseFloat(datos.data.datos[i].DeudaTotal))
         }
-        console.log("DINERO : "+dinero)
+        console.log("DINERO : " + dinero)
         this.mPendienteRPagosVehiculo = dinero
         this.tableDataPanelControlProduccion.push(...datos.data.datos)
       }
@@ -319,7 +315,7 @@ export default {
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
           token: this.token,
-          tipo:3
+          tipo: 3
         })
 
         if (datos.data.status_code == 200) {
@@ -351,54 +347,53 @@ export default {
     showVisibleModalTableroProduccion() {
       this.isObservacionesTableroProduccion = this.isObservacionesTableroProduccion == true ? false : true
     },
-    async crearPreviewReciboIngresoPanelCobro(mLista) {
-      var dineroCobrado = 0
+    async crearPreviewReciboIngresoPanelCobro(mLista) 
+    {
 
-      const pdfDoc = await PDFDocument.create(ParseSpeeds.Slow)
-      const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
-      const TimesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
-      let bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
+      let dineroCobrado = 0.0
+      let atrasos_falta = 0.0
+      let adelantos_falta = 0.0
+      let atrasos_justificaciones = 0.0
+      let adelantos_justificaciones = 0.0
+      let rubros_falta = 0.0
+      let rubros_justificaciones = 0.0
+      let ex_velocidad_falta = 0.0
+      let ex_velocidad_justificaciones = 0.0
+      let tarjeta = 0.0
+
+      var mListaCuerpoRecibo = []
 
       
 
-      const page = pdfDoc.addPage()
-      page.setWidth(230)
-      const { width, height } = page.getSize()
+      for (var i = 0; i < mLista.length; i++) {
 
-      /**********MARCO DE AGUA*********/
-      
-      if (this.banderaMarcoAguaRecibo) 
-      {
+          atrasos_falta = atrasos_falta + (mLista[i].AtrasoFTiempo)
+          adelantos_falta = adelantos_falta + (mLista[i].AdelantoFTiempo)
+          atrasos_justificaciones = atrasos_justificaciones + (mLista[i].AtrasoJTiempo)
+          adelantos_justificaciones = adelantos_justificaciones + (mLista[i].AdelantoJTiempo)
+          rubros_falta = rubros_falta + parseFloat(mLista[i].RubroFalta)
+          rubros_justificaciones = rubros_justificaciones + parseFloat(mLista[i].RubroJustificacion)
+          ex_velocidad_falta = ex_velocidad_falta + parseFloat(mLista[i].VelocidadFalta)
+          ex_velocidad_justificaciones = ex_velocidad_justificaciones + parseFloat(mLista[i].VelocidadJustificacion)
+          tarjeta = tarjeta + parseFloat(mLista[i].TarjetaDiaria)
 
-        const pngUrl = 'https://res.cloudinary.com/virtualcode7/image/upload/v1659468163/marcoAgua_oibpny.png'
-      const pngImageBytes = await fetch(pngUrl).then((res) => res.arrayBuffer())
-      const pngImage = await pdfDoc.embedPng(pngImageBytes)
-      const pngDims = pngImage.scale(0.20)
+          dineroCobrado = dineroCobrado + parseFloat(mLista[i].DeudaTotal)
 
-        page.drawImage(pngImage, {
-        x: 20,
-        y: height - 20 * 10,
-        width: pngDims.width,
-        height: pngDims.height,
-        })
-
-
-        /*page.drawText("RECIBO SOLO DE MUESTRA(SIN PAGAR)", {
-          x: 20,
-          y: height - 2 * 10,
-          size: 13,
-          font: bold,
-          color: rgb(0.95, 0.1, 0.1),
-          rotate: degrees(-45),
-        })*/
-      }
+          var obj = [{ text: mLista[i].Unidad, alignment: "center" },
+          { text: mLista[i].DescRuta, alignment: "center" },
+          { text: mLista[i].Fecha, alignment: "center" },
+          { text: mLista[i].DeudaTotal, alignment: "center" }]
+          mListaCuerpoRecibo.push(obj)
+        }
 
 
- var empresa = [{ text: this.$cookies.get('nameEmpresa').substring(0, 30), fontSize: 12, bold: true, alignment: "center" }]
+
+      var empresa = [{ text: this.$cookies.get('nameEmpresa').substring(0, 30), fontSize: 12, bold: true, alignment: "center" }]
 
       var docDefinition = {
 
         // a string or { width: 190, height: number }
+        watermark: { text: 'NO PAGADO', color: 'red', opacity: 0.30, bold: true,fontSize: (mLista.length > 50 ? 150 : 40) },
         pageSize: { width: 220, height: 'auto' },
         pageMargins: [15, 15, 15, 15],
         // header: [empresa],
@@ -410,19 +405,18 @@ export default {
             fontSize: 12,
             bold: true,
             layout: 'noBorders', // optional
-            alignment: "center",
             table: {
               widths: ['*'],
               body: [empresa]
             }
           },
-          { text: 'COMPROBANTE DE INGRESO', alignment: "center", fontSize: 10},
+          { text: 'COMPROBANTE DE INGRESO', alignment: "center", fontSize: 10 },
 
           { text: '---------------------------------------------------------' },
-           
-           {
+
+          {
             fontSize: 8.5,
-           // layout: 'noBorders',
+            layout: 'noBorders',
             // optional
             table: {
 
@@ -432,19 +426,22 @@ export default {
               headerRows: 0,
               widths: [19, 62, 44, 27],
               body: [
-              [{text:'VEHI', alignment:"center"}, {text: 'LINEA', alignment:"center"}, {text: 'FECHA', alignment:"center"}, {text:'VALOR', alignment:"center"}],
-            ]
+                [{ text: 'VEHI', alignment: "center", bold: true },
+                { text: 'LINEA', alignment: "center", bold: true },
+                { text: 'FECHA', alignment: "center", bold: true },
+                { text: 'VALOR', alignment: "center", bold: true }],
+              ]
 
             }
           },
 
           { text: '---------------------------------------------------------' },
-                 
 
 
- {
+
+          {
             fontSize: 8.5,
-           // layout: 'noBorders',
+            layout: 'noBorders',
             // optional
             table: {
 
@@ -453,310 +450,40 @@ export default {
               // you can declare how many rows should be treated as headers
               headerRows: 0,
               widths: [19, 63, 43, 27],
-              body: [
-               [{text:'5', alignment:"center"}, {text: 'EJIDO', alignment:"center"}, {text: '2022-08-18', alignment:"center"}, {text:'4.50', alignment:"center"}],            
-               [{text:'3', alignment:"center"}, {text: 'SANTO DOMINGO', alignment:"center"}, {text: '2022-08-18', alignment:"center"}, {text:'4.50', alignment:"center"}]           
-],
+              body: mLista.length > 0 ?  mListaCuerpoRecibo : [mLista],
             }
           },
 
-          
+
           { text: '---------------------------------------------------------' },
 
 
-            { text: 'Atrasos Falta: ', fontSize:7.5, bold:true },
-          { text: 'Atrasos Justificados: ',fontSize:7.5, bold:true },
-          { text: 'Adelantos Falta: ',fontSize:7.5, bold:true },
-          { text: 'Adelantos Justificados: ', fontSize:7, bold:true },
-          { text: 'Rubros: ', fontSize:7.5, bold:true },
-          { text: 'Rubros Justificados: ', fontSize:7.5, bold:true },
-          { text: 'Ex Velocidad: ',fontSize:7.5, bold:true },
-          { text: 'Ex Velocidad Justificados: ', fontSize:7.5, bold:true },
-          { text: 'Tarjeta: ', fontSize:7.5, bold:true },
-          { text: 'Operador: ', fontSize:7.5 },
-          { text: 'Fecha de Pago: ',fontSize:7.5},
-          { text: 'Fecha Impresion: ', fontSize:7.5},
-          { text: 'TOTAL Dinero: ',fontSize:9, color:'red'},
-         ]}
+          { text: 'Atrasos Falta : ' + convertSecondtoTimeString(atrasos_falta) , fontSize: 9, bold: true },
+          { text: 'Atrasos Justificados : ' + convertSecondtoTimeString(atrasos_justificaciones), fontSize: 9, bold: true },
+          { text: 'Adelantos Falta : ' + convertSecondtoTimeString(adelantos_falta), fontSize: 9, bold: true },
+          { text: 'Adelantos Justificados : ' + convertSecondtoTimeString(adelantos_justificaciones), fontSize: 9, bold: true },
+          { text: 'Rubros: ' + Number(rubros_falta).toFixed(2), fontSize: 9, bold: true },
+          { text: 'Rubros Justificados : ' + Number(rubros_justificaciones).toFixed(2), fontSize: 9, bold: true },
+          { text: 'Ex Velocidad : ' + Number(ex_velocidad_falta).toFixed(2), fontSize: 9, bold: true },
+          { text: 'Ex Velocidad Justificados : ' + Number(ex_velocidad_justificaciones).toFixed(2), fontSize: 9, bold: true },
+          { text: 'Tarjeta : ' + Number(tarjeta).toFixed(2), fontSize: 9, bold: true },
+          { text: 'Operador : ' + this.$cookies.get("namesUsuario"), fontSize: 9 },
+          { text: 'Fecha de Pago : ' + (this.banderaMarcoAguaRecibo ? 'RECIBO SIN PAGAR' : this.initFechaActualTicket()), fontSize: 9 },
+          { text: 'Fecha Impresion : ' + this.initFechaActualTicket(), fontSize: 9 },
+          { text: 'TOTAL DINERO : ' + Number(dineroCobrado).toFixed(2), fontSize: 11, color: 'darkgreen',bold:true },
+        ]
+      }
 
 
 
-var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
 
       pdfDocGenerator.getDataUrl((dataUrl) => {
         this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl
       });
 
 
-      // /*******************************/
-      // const fontSize = 10
-
-      // page.drawText("     " + this.$cookies.get("nameEmpresa").toUpperCase().substring(0, 28), {
-      //   x: 20,
-      //   y: height - 2 * fontSize,
-      //   size: fontSize,
-      //   font: TimesRomanBold,
-      //   color: rgb(0, 0, 0),
-      // })
-
-      // page.drawText("     COMPROBANTE DE INGRESO", {
-      //   x: 20,
-      //   y: height - 3 * fontSize,
-      //   size: fontSize,
-      //   font: timesRomanFont,
-      //   color: rgb(0, 0, 0),
-      // })
-
-
-      // page.drawText("---------------------------------------------------------", {
-      //   x: 20,
-      //   y: height - 4.6 * fontSize,
-      //   size: fontSize,
-      //   font: timesRomanFont,
-      //   color: rgb(0, 0, 0),
-      // })
-
-      // page.drawText("VEHI.       LINEA               FECHA     VALOR", {
-      //   x: 20,
-      //   y: height - 5.6 * fontSize,
-      //   size: fontSize,
-      //   font: timesRomanFont,
-      //   color: rgb(0, 0, 0),
-      // })
-
-
-
-
-      // page.drawText("---------------------------------------------------------", {
-      //   x: 20,
-      //   y: height - 6.6 * fontSize,
-      //   size: fontSize,
-      //   font: timesRomanFont,
-      //   color: rgb(0, 0, 0),
-      // })
-
-
-      var heightAux = 7.6
-
-      var tamanioHoja = 1530
-
-      for (var i = 0; i < mLista.length; i++) {
-        heightAux++
-
-
-        /*page.drawRectangle({
-          x: 20,
-          y: height - heightAux * 9,
-          width: 25,
-          height: 10,
-          borderColor: rgb(1, 0, 0),
-          borderWidth: 1.5,
-        })*/
-
-        page.drawText("  " + mLista[i].Unidad, {
-          x: 20,
-          y: height - heightAux * 9,
-          size: 8.5,
-          color: rgb(0, 0, 0),
-        })
-
-
-        /*page.drawRectangle({
-          x: 55,
-          y: height - heightAux * 9,
-          width: 60,
-          height: 10,
-          borderColor: rgb(1, 0, 0),
-          borderWidth: 1.5,
-        })*/
-
-        page.drawText(mLista[i].DescRuta.substring(0, 11), {
-          x: 55,
-          y: height - heightAux * 9,
-          size: 8.5,
-          color: rgb(0, 0, 0),
-        })
-
-        /*page.drawRectangle({
-          x: 122,
-          y: height - heightAux * 9,
-          width: 50,
-          height: 10,
-          borderColor: rgb(1, 0, 0),
-          borderWidth: 1.5,
-        })*/
-
-        page.drawText(mLista[i].Fecha, {
-          x: 122,
-          y: height - heightAux * 9,
-          size: 8.5,
-          color: rgb(0, 0, 0),
-        })
-
-
-        /*page.drawRectangle({
-          x: 180,
-          y: height - heightAux * 9,
-          width: 30,
-          height: 10,
-          borderColor: rgb(1, 0, 0),
-          borderWidth: 1.5,
-        })*/
-
-
-        page.drawText(mLista[i].DeudaTotal, {
-          x: 180,
-          y: height - heightAux * 9,
-          size: 8.5,
-          color: rgb(0, 0, 0),
-        })
-
-        dineroCobrado = dineroCobrado + parseFloat(mLista[i].DeudaTotal)
-      }
-
-
-      page.drawText("---------------------------------------------------------", {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
-
-
-      var atrasos_falta = 0
-      var adelantos_falta = 0
-      var atrasos_justificaciones = 0
-      var adelantos_justificaciones = 0
-      var rubros_falta = 0
-      var rubros_justificaciones = 0
-      var ex_velocidad_falta = 0
-      var ex_velocidad_justificaciones = 0
-      var tarjeta = 0
-
-      for (var i = 0; i < mLista.length; i++) {
-        atrasos_falta = atrasos_falta + mLista[i].AtrasoFTiempo
-        adelantos_falta = adelantos_falta + mLista[i].AdelantoFTiempo
-        atrasos_justificaciones = atrasos_justificaciones + mLista[i].AtrasoJTiempo
-        adelantos_justificaciones = adelantos_justificaciones + mLista[i].AdelantoJTiempo
-        rubros_falta = rubros_falta + parseFloat(mLista[i].RubroFalta)
-        rubros_justificaciones = rubros_justificaciones + parseFloat(mLista[i].RubroJustificacion)
-        ex_velocidad_falta = ex_velocidad_falta + parseFloat(mLista[i].VelocidadFalta)
-        ex_velocidad_justificaciones = ex_velocidad_justificaciones + parseFloat(mLista[i].VelocidadJustificacion)
-        tarjeta = tarjeta + parseFloat(mLista[i].TarjetaDiaria)
-      }
-
-      page.drawText("Atrasos Falta : " + convertSecondtoTimeString(atrasos_falta), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("Atrasos Justificados : " + convertSecondtoTimeString(atrasos_justificaciones), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("Adelantos Falta : " + convertSecondtoTimeString(adelantos_falta), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("Adelantos Justificados : " + convertSecondtoTimeString(adelantos_justificaciones), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("Rubros : " + Number(rubros_falta).toFixed(2), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("Rubros Justificados : " + Number(rubros_justificaciones).toFixed(2), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("Ex. Velocidad : " + Number(ex_velocidad_falta).toFixed(2), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("Ex. Velocidad Justificados : " + Number(ex_velocidad_justificaciones).toFixed(2), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("Tarjeta : " + Number(tarjeta).toFixed(2), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("Operador : " + this.$cookies.get("namesUsuario"), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        color: rgb(0, 0, 0),
-      })
-
-
-
-
-
-      page.drawText("Fecha Pago : " + (this.banderaMarcoAguaRecibo ? 'RECIBO SIN PAGAR' : this.initFechaActualTicket()), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        color: rgb(0, 0, 0),
-      })
-
-
-
-      page.drawText("Fecha Impresión : " + this.initFechaActualTicket(), {
-        x: 20,
-        y: height - (heightAux++) * fontSize,
-        size: 7.5,
-        color: rgb(0, 0, 0),
-      })
-
-
-
-
-      page.drawText("TOTAL Dinero  : " + Number(dineroCobrado).toFixed(2), {
-        x: 20,
-        y: height - (heightAux + 0.5) * fontSize,
-        size: 10,
-        font: bold,
-        color: rgb(1, 0, 0),
-      })
-
-      this.baseURlPDFComprobanteIngresoTableroCobro = await pdfDoc.saveAsBase64({ dataUri: true });
+   
       this.banderaMarcoAguaRecibo = true
     },
     async realizarCobro() {
@@ -785,7 +512,7 @@ var pdfDocGenerator = pdfMake.createPdf(docDefinition);
           if (datos.data.code == 200) {
             this.reloadStoreTableCobros(mListaCobrosAuxiliar)
 
-            //await this.readlPanelTableroProduccion()
+
             this.notifyVue('default', datos.data.msm + "\n <strong>Listo para imprimir</strong>", 'ni ni-check-bold', 3000)
             this.crearPreviewReciboIngresoPanelCobro(mListaCobrosAuxiliar)
           } else {
@@ -818,9 +545,8 @@ var pdfDocGenerator = pdfMake.createPdf(docDefinition);
       this.tableDataPanelControlProduccion.push(...mListaTablaAuxiliar)
 
       var dinero = 0
-      for (var i = 0; i < this.tableDataPanelControlProduccion.length; i++) 
-      {
-        
+      for (var i = 0; i < this.tableDataPanelControlProduccion.length; i++) {
+
         dinero = dinero + parseFloat(this.tableDataPanelControlProduccion[i].DeudaTotal)
       }
       this.mPendienteRPagosVehiculo = dinero.toFixed(2)
@@ -835,7 +561,7 @@ var pdfDocGenerator = pdfMake.createPdf(docDefinition);
         type
       });
     },
-    async dowloadImage(){
+    async dowloadImage() {
       this.pngImageBytes = await fetch(this.pngUrl).then((res) => res.arrayBuffer())
     }
   }, mounted() {
@@ -902,7 +628,7 @@ var pdfDocGenerator = pdfMake.createPdf(docDefinition);
 .card-bodyRCobrosVehiculoProduccionPC {
   padding: 0rem !important;
   height: calc(100vh - 13em);
-  overflow: auto;
+  overflow: none;
 }
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
