@@ -150,29 +150,19 @@
               <div class="navbarModal" style="margin-bottom: 0.5rem;">
                 <strong style="color:red;">{{ oTiempoFalta }}</strong>
                 <div class="containerButtonMasMenos">
-                  <button class="circleButtonMasMenos danger">
-                    <i class="ni ni-fat-delete"></i>
-                  </button> <input type="text" maxlength="2" class="inputTimer" :disabled="oBanderaHora == 1"
-                    v-model="oHora"><strong style="color: black;">:</strong>
-                  <input type="text" maxlength="2" class="inputTimer" :disabled="oBanderaMinutos == 1"
-                    v-model="oMinutos"><strong style="color: black;">:</strong>
-                  <input type="text" maxlength="2" class="inputTimer" :disabled="oBanderaSegundos == 1"
-                    v-model="oSegundos">
-                  <button class="circleButtonMasMenos">
-                    <i class="ni ni-fat-add"></i>
-                  </button>
+                  <input v-model="oHora" @keyup="menorHoras()" @keydown="minutosJustificar()" max="24" min="0" type="number" maxlength="2" :disabled="oBanderaHora == 1" class="inputTimer" data-index="0" ref="input-0" @input="focusNextOncePopulated($event, 2)" 
+                    ><strong style="color: black;">:</strong>
+                  <input v-model="oMinutos" @keyup="menorMinutos()" @keydown="minutosJustificar()" max="59" min="0" type="number" maxlength="2" :disabled="oBanderaMinutos == 1" class="inputTimer"  data-index="1" ref="input-1" @input="focusNextOncePopulated($event, 2)"  
+                     ><strong style="color: black;">:</strong>
+                  <input v-model="oSegundos" @keyup="menorSegundos()" @keydown="minutosJustificar()" max="59" min="0" type="number" maxlength="2" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"  
+                     >
                 </div>
               </div>
 
               <div class="navbarModal">
                 <strong style="color: red;">{{ oPriceFalta }} $</strong>
                 <div class="containerButtonMasMenos">
-                  <button class="circleButtonMasMenos danger">
-                    <i class="ni ni-fat-delete"></i>
-                  </button> <strong style="color: black;">0.00</strong>
-                  <button class="circleButtonMasMenos">
-                    <i class="ni ni-fat-add"></i>
-                  </button>
+                 <strong style="color: black;">0.00</strong>
                 </div>
               </div>
             </div>
@@ -913,7 +903,54 @@ export default {
         console.log(error);
       }
     },
-
+    focusNextOncePopulated(event, max) {
+      if (event.target.value.length === max) {
+        const nextElement = this.$refs?.[
+          `input-${Number(event.target.dataset.index) + 1}`
+        ];
+        if (nextElement) nextElement.focus();
+      }
+    },
+    minutosJustificar(){
+          var tiempo = this.oTiempoFalta.split(':')
+          setTimeout(() => {
+            if (this.oHora > tiempo[0]) {
+              return this.oHora = tiempo[0];
+            }else if (this.oMinutos > tiempo[1]) {
+              return this.oMinutos = tiempo[1];
+            }else if (this.oSegundos > tiempo[2]) {
+              return this.oSegundos = tiempo[2];
+            }
+          }, 1000);
+    },
+    menorHoras(){
+      setTimeout(() => {
+        if (this.oHora.length < 2) {
+          if (this.oHora < 9 ) {
+            return this.oHora = 0+this.oHora
+          }
+        }
+      }, 3000);
+    },
+    menorMinutos(){
+      setTimeout(() => {
+        if (this.oMinutos.length<2) {
+          if (this.oMinutos < 9 ) {
+            return this.oMinutos = 0+this.oMinutos
+          }
+        }  
+      }, 3000);
+    },
+    menorSegundos(){
+      setTimeout(() => {
+        if(this.oSegundos.length<2){
+          if (this.oSegundos < 9 ) {
+            return this.oSegundos = 0+this.oSegundos
+          }
+        }  
+      }, 3000);   
+    }
+  
   }, mounted() {
     this.readTrazadoAllTramosTableroProduccion()
     this.readUnidadesTableroProduccion()
@@ -993,7 +1030,7 @@ export default {
 }
 
 .containerButtonMasMenos {
-  background-color: #2dce89;
+  background-color: #e7e7e7;
   width: -webkit-fit-content;
   width: -moz-fit-content;
   height: fit-content;
