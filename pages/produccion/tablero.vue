@@ -162,7 +162,9 @@
               <div class="navbarModal">
                 <strong style="color: red;">{{ oPriceFalta }} $</strong>
                 <div class="containerButtonMasMenos bg-gradient-default border-0">
-                 <strong style="color: white;">0.00</strong>
+                 <input v-model="oDolaresVelo" @keypress="menorDolares()" min="0" type="number" class="inputTimer"> 
+                 <strong style="color: white;">.</strong>
+                 <input v-model="oCentavosVelo" @keypress="menorCentavos()" max="99"  min="0" type="number" class="inputTimer">
                 </div>
               </div>
             </div>
@@ -922,6 +924,22 @@ export default {
         if (nextElement) nextElement.focus();
       }
     },
+    menorDolares(){
+      setTimeout(() => {
+        var dinero = this.oPriceFalta.split('.')
+        if (this.oDolaresVelo > dinero[0]) {
+          return this.oDolaresVelo = dinero[0];
+        }    
+      }, 2000);   
+    },
+    menorCentavos(){
+      setTimeout(() => {
+        var dinero = this.oPriceFalta.split('.')
+        if (this.oCentavosVelo > dinero[1]) {
+          return this.oCentavosVelo = dinero[1];
+        }    
+      }, 2000);    
+    },
     menorHoras(){
       setTimeout(() => {
         var tiempo = this.oTiempoFalta.split(':')
@@ -933,7 +951,7 @@ export default {
         else if (this.oHora > tiempo[0]) {
           return this.oHora = tiempo[0];
         }
-      }, 3000);
+      }, 2000);
     },
     menorMinutos(){
       setTimeout(() => {
@@ -956,9 +974,8 @@ export default {
         }else if (this.oSegundos > tiempo[2]) {
           return this.oSegundos = tiempo[2];
         }    
-      }, 3000);   
+      }, 2000);   
     }
-  
   }, mounted() {
     this.readTrazadoAllTramosTableroProduccion()
     this.readUnidadesTableroProduccion()
@@ -985,6 +1002,7 @@ export default {
   padding-right: 5px !important;
   padding-left: 5px !important;
 }
+
 
 .barraResumen {
   width: 100%;

@@ -402,6 +402,7 @@ export default {
       modalEnviarDespachoPanel: false,
       baseURlPDFPanelDespachoTarjetaSalida: null,
       selectedRowSalida: null,
+      selectRowId:null,
       radioTipoDespacho: 3,
       checkboxOrdenamientoDespacho: false,
       checkboxOSalidasAnuladasDespacho: false,
@@ -415,9 +416,12 @@ export default {
   },
   methods: {
     myGridOnRowSelect: function (event) {
+      
       this.selectedRowSalida = event.args.row
       this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(this.selectedRowSalida.idSali_m)
       this.selectedRowSalida.idSali_m = this.selectedRowSalida.idSali_m
+      this.selectRowId = this.selectedRowSalida.idSali_m
+    
     },
     getHoraSaliProgSali_mF(id_salida) {
       for (var i = 0; i < this.mListDespachosPanel.length; i++) {
@@ -538,8 +542,8 @@ export default {
 
           }
         }
-        this.columnsInfo[1] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit, pinned: true }
-        this.columnsInfo[2] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit, pinned: true }
+        this.columnsInfo[1] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[2] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
         this.columnsInfo[3] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
         this.columnsInfo[4] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
         this.columnsInfo[5] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
@@ -1093,15 +1097,16 @@ export default {
       })*/
 
     },
-    cellclassname(row, column, value, data) {
+    cellclassname(row, column, value, data) { 
+      if (data.EstaSali_m != '' && this.selectRowId == data.idSali_m) {
+        return "estadoSeleccionadoRow";
+      }
       if (data.EstaSali_m == 'DIFERIDO') {
         return "estadodiferidoDespacho";
       } else if (data.EstaSali_m == 'EN RUTA') {
         return "estadoenrutaDespacho"
       } else if (data.EstaSali_m == 'FINALIZADO') {
         return "estadofinalizadoDespacho";
-      } else {
-        return "estadofinalizadoDespacho"
       }
     },
     showModalDespachoSalidasAnuladas() {
@@ -1220,6 +1225,7 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
+  background-color: #ffffff;
 }
 
 
@@ -1327,6 +1333,11 @@ export default {
 
 .estadoenrutaDespacho {
   background-color: rgb(114, 128, 247);
+  color: black;
+}
+
+.estadoSeleccionadoRow{
+  background-color: rgb(233, 233, 233);
   color: black;
 }
 
