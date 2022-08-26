@@ -530,12 +530,21 @@ export default {
                 this.oPriceFalta = '0.00'
               } else {
                 this.oPriceFalta = obj.VelocidadFalta
+                var dinero = this.oPriceFalta.split('.')
+                this.oDolaresVelo = dinero[0]
+                this.oCentavosVelo = dinero[1]
               }
             } else {
               this.oPriceFalta = obj.TarjetaTrabajo
+              var dinero = this.oPriceFalta.split('.')
+              this.oDolaresVelo = dinero[0]
+              this.oCentavosVelo = dinero[1]
             }
           } else {
             this.oPriceFalta = obj.RubroFalta
+            var dinero = this.oPriceFalta.split('.')
+            this.oDolaresVelo = dinero[0]
+            this.oCentavosVelo = dinero[1]
           }
         }
       }

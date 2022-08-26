@@ -34,7 +34,7 @@
                       </template>
                     </el-table-column>
 
-                    <el-table-column label="Informate" min-width="170px" prop="InfoCtrlVehi" sortable>
+                    <el-table-column label="Informate" min-width="160px" prop="InfoCtrlVehi" sortable>
                       <template v-slot="{ row }">
                         <badge class="badge-dot mr-4" type="">
                           <i :class="`bg-${row.InfoCtrlVehi == 1 ? 'success' : 'danger'
@@ -119,7 +119,7 @@
                     <el-table-column v-for="column in tableColumnsPropietariosFlotaVehicular" :key="column.label"
                       v-bind="column">
                     </el-table-column>
-                    <el-table-column label="Estado" min-width="150px" prop="activo" sortable>
+                    <el-table-column label="Estado" min-width="140px" prop="activo" sortable>
                       <template v-slot="{ row }">
                         <badge class="badge-dot mr-4" type="">
                           <i :class="`bg-${row.activo == 1 ? 'success' : 'danger'
@@ -339,7 +339,7 @@ export default {
         {
           prop: "id",
           label: "Código",
-          minWidth: 115,
+          minWidth: 120,
           sortable: true,
         },
         {
@@ -367,13 +367,13 @@ export default {
         {
           prop: "CodiObse",
           label: "Código",
-          minWidth: 115,
+          minWidth: 125,
           sortable: true,
         },
         {
           prop: "AliaObse",
           label: "Nombres y Apellidos",
-          minWidth: 170,
+          minWidth: 190,
         },
         {
           prop: "UsuaObse",
@@ -383,7 +383,7 @@ export default {
         {
           prop: "ClavObse",
           label: "Contraseña",
-          minWidth: 120,
+          minWidth: 140,
         },
         {
           prop: "descripcion",
