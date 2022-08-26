@@ -58,7 +58,7 @@
             <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="mListRSalidas" row-key="id"
               :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-              header-row-class-name="thead-dark" :height="mListRSalidas.length > 0 ? 480 : 150"
+              header-row-class-name="thead-dark" height="calc(100vh - 10rem)"
               >
               <el-table-column v-for="column in tableRSalidasDespachos" :key="column.label" v-bind="column">
               </el-table-column>

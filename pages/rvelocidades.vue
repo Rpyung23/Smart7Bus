@@ -65,7 +65,7 @@
             <el-table v-loading="loadingTableRVelocidadesBusquedaloading" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="mListaRVelocidades" row-key="id"
               class="tablePanelControlProduccion" 
-              header-row-class-name="thead-dark" :height="mListaRVelocidades.length > 0 ? 500 : 150"
+              header-row-class-name="thead-dark" height="calc(100vh - 9rem)"
               highlight-current-row>
 
               <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">

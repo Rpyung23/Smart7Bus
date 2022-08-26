@@ -134,7 +134,7 @@
               element-loading-spinner="el-icon-loading"
               :data="tableDataRecaudoContadorPasajeros"
               row-key="id"
-              height="440"
+              height="calc(100vh - 13rem)"
               style="width: 100%"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"

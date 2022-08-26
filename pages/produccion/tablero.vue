@@ -74,7 +74,7 @@
             <el-table v-loading="loadingRTableroProduccion" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="tableDataPanelControlProduccion" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
-              :height="tableDataPanelControlProduccion.length > 0 ? 460 : 150" style="width: 100%">
+              height="calc(100vh - 12rem)" style="width: 100%">
 
 
 
@@ -149,20 +149,20 @@
             <div class="containerLeftTopNavbarModal">
               <div class="navbarModal" style="margin-bottom: 0.5rem;">
                 <strong style="color:red;">{{ oTiempoFalta }}</strong>
-                <div class="containerButtonMasMenos">
-                  <input v-model="oHora" @keyup="menorHoras()" @keydown="minutosJustificar()" max="24" min="0" type="number" maxlength="2" :disabled="oBanderaHora == 1" class="inputTimer" data-index="0" ref="input-0" @input="focusNextOncePopulated($event, 2)" 
-                    ><strong style="color: black;">:</strong>
-                  <input v-model="oMinutos" @keyup="menorMinutos()" @keydown="minutosJustificar()" max="59" min="0" type="number" maxlength="2" :disabled="oBanderaMinutos == 1" class="inputTimer"  data-index="1" ref="input-1" @input="focusNextOncePopulated($event, 2)"  
-                     ><strong style="color: black;">:</strong>
-                  <input v-model="oSegundos" @keyup="menorSegundos()" @keydown="minutosJustificar()" max="59" min="0" type="number" maxlength="2" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"  
+                <div class="containerButtonMasMenos bg-gradient-default border-0">
+                  <input v-model="oHora" @keypress="menorHoras()" max="24" min="0" type="number" :disabled="oBanderaHora == 1" class="inputTimer" data-index="0" ref="input-0" @input="focusNextOncePopulated($event, 2)" 
+                    ><strong style="color: white;">:</strong>
+                  <input v-model="oMinutos" @keypress="menorMinutos()" max="59" min="0" type="number"  :disabled="oBanderaMinutos == 1" class="inputTimer"  data-index="1" ref="input-1" @input="focusNextOncePopulated($event, 2)"  
+                     ><strong style="color: white;">:</strong>
+                  <input v-model="oSegundos" @keypress="menorSegundos()" max="59" min="0" type="number" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"  
                      >
                 </div>
               </div>
 
               <div class="navbarModal">
                 <strong style="color: red;">{{ oPriceFalta }} $</strong>
-                <div class="containerButtonMasMenos">
-                 <strong style="color: black;">0.00</strong>
+                <div class="containerButtonMasMenos bg-gradient-default border-0">
+                 <strong style="color: white;">0.00</strong>
                 </div>
               </div>
             </div>
@@ -442,6 +442,8 @@ export default {
       oHora: '00',
       oMinutos: '00',
       oSegundos: '00',
+      oDolaresVelo: '0',
+      oCentavosVelo : '00',
       oBanderaHora: 1,
       oBanderaMinutos: 1,
       oBanderaSegundos: 1,
@@ -527,7 +529,7 @@ export default {
               if (obj.VelocidadFalta == '0.00') {
                 this.oPriceFalta = '0.00'
               } else {
-                this.oPriceFalta = obj.obj.VelocidadFalta
+                this.oPriceFalta = obj.VelocidadFalta
               }
             } else {
               this.oPriceFalta = obj.TarjetaTrabajo
@@ -911,35 +913,30 @@ export default {
         if (nextElement) nextElement.focus();
       }
     },
-    minutosJustificar(){
-          var tiempo = this.oTiempoFalta.split(':')
-          setTimeout(() => {
-            if (this.oHora > tiempo[0]) {
-              return this.oHora = tiempo[0];
-            }else if (this.oMinutos > tiempo[1]) {
-              return this.oMinutos = tiempo[1];
-            }else if (this.oSegundos > tiempo[2]) {
-              return this.oSegundos = tiempo[2];
-            }
-          }, 1000);
-    },
     menorHoras(){
       setTimeout(() => {
-        if (this.oHora.length < 2) {
+        var tiempo = this.oTiempoFalta.split(':')
+        if (this.oHora.length < 2 && this.oHora <= tiempo[0]) {
           if (this.oHora < 9 ) {
             return this.oHora = 0+this.oHora
           }
+        }
+        else if (this.oHora > tiempo[0]) {
+          return this.oHora = tiempo[0];
         }
       }, 3000);
     },
     menorMinutos(){
       setTimeout(() => {
-        if (this.oMinutos.length<2) {
+        var tiempo = this.oTiempoFalta.split(':')
+        if (this.oMinutos.length<2 && this.oMinutos <= tiempo[1]) {
           if (this.oMinutos < 9 ) {
             return this.oMinutos = 0+this.oMinutos
           }
+        }else if (this.oMinutos > tiempo[1]) {
+          return this.oMinutos = tiempo[1];
         }  
-      }, 3000);
+      }, 2000);
     },
     menorSegundos(){
       setTimeout(() => {
@@ -947,7 +944,9 @@ export default {
           if (this.oSegundos < 9 ) {
             return this.oSegundos = 0+this.oSegundos
           }
-        }  
+        }else if (this.oSegundos > tiempo[2]) {
+          return this.oSegundos = tiempo[2];
+        }    
       }, 3000);   
     }
   
@@ -969,11 +968,13 @@ export default {
 }
 
 .inputTimer {
-  width: 1.4rem !important;
+  width: 2rem !important;
   background-color: transparent;
   outline: none;
+  color: white;
   border-width: 0rem;
-  padding: 0rem !important;
+  padding-right: 5px !important;
+  padding-left: 5px !important;
 }
 
 .barraResumen {
@@ -1031,15 +1032,11 @@ export default {
 
 .containerButtonMasMenos {
   background-color: #e7e7e7;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  height: fit-content;
-  width: fit-content;
   padding-left: 4px;
   padding-right: 4px;
   padding-top: 2px;
   padding-bottom: 2px;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
 }
 
 .circleButtonMasMenos {
@@ -1110,7 +1107,7 @@ export default {
 
 .card-bodyRPagosVehiculoProduccionPCTablero {
   padding: 0rem !important;
-  height: calc(100vh - 12em);
+  height: calc(100vh - 12rem);
   overflow: auto;
 }
 

@@ -100,7 +100,7 @@
         <card class="no-border-card" style="margin-bottom: 0rem"
           body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
           <div>
-            <iframe :src="oBase64IndicadoresCalidad" style="width: 100%; height: 33rem"></iframe>
+            <iframe :src="oBase64IndicadoresCalidad" style="width: 100%; height: 35.5rem"></iframe>
           </div>
         </card>
 

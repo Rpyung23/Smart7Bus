@@ -16,7 +16,7 @@
                   <el-table v-loading="loadingUnidadesFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     class="table-responsive table-flush" :data="mListUnidadesFlotaVehicular"
-                    header-row-class-name="thead-dark" :height="mListUnidadesFlotaVehicular.length > 0 ? 487 : 150">
+                    header-row-class-name="thead-dark" height="calc(100vh - 11rem)">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label"
                       v-bind="column">
@@ -68,7 +68,7 @@
                 <div>
                   <el-table v-loading="loadingGruposFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListGruposFlotaVehicular" :height="mListGruposFlotaVehicular.length > 0 ? 487 : 150"
+                    :data="mListGruposFlotaVehicular" height="calc(100vh - 11rem)"
                     header-row-class-name="thead-dark">
                     <div slot="empty"></div>
 
@@ -114,7 +114,7 @@
                   <el-table v-loading="loadingPropietariosFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListPropietariosFlotaVehicular"
-                    :height="mListPropietariosFlotaVehicular.length > 0 ? 487 : 150" header-row-class-name="thead-dark">
+                    height="calc(100vh - 11rem)" header-row-class-name="thead-dark">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsPropietariosFlotaVehicular" :key="column.label"
                       v-bind="column">
@@ -156,7 +156,7 @@
                   <el-table v-loading="loadingAdministrativosFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListAdministrativosFlotaVehicular"
-                    :height="mListAdministrativosFlotaVehicular.length > 0 ? 487 : 150"
+                    height="calc(100vh - 11rem)"
                     header-row-class-name="thead-dark">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsAdministrativosFlotaVehicular" :key="column.label"
@@ -193,7 +193,7 @@
                 <div>
                   <el-table v-loading="loadingChoferesFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListChoferesFlotaVehicular" :height="mListChoferesFlotaVehicular.length > 0 ? 487 : 150"
+                    :data="mListChoferesFlotaVehicular" height="calc(100vh - 11rem)"
                     header-row-class-name="thead-dark">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsChoferesFlotaVehicular" :key="column.label"
