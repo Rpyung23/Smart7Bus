@@ -71,7 +71,7 @@
         <card class="no-border-card" style="margin-bottom: 0rem"
           body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
           <div>
-            <iframe :src="baseURlPDFPanelProduccionMinutosTarjetas" style="width: 100%; height: 33rem"></iframe>
+            <iframe :src="baseURlPDFPanelProduccionMinutosTarjetas" style="width: 100%; height: 39rem"></iframe>
           </div>
         </card>
 

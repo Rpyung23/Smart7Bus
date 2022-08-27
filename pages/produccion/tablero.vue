@@ -74,7 +74,7 @@
             <el-table v-loading="loadingRTableroProduccion" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="tableDataPanelControlProduccion" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
-              :height="tableDataPanelControlProduccion.length > 0 ? 460 : 150" style="width: 100%">
+              height="calc(100vh - 12rem)" style="width: 100%">
 
 
 
@@ -149,30 +149,22 @@
             <div class="containerLeftTopNavbarModal">
               <div class="navbarModal" style="margin-bottom: 0.5rem;">
                 <strong style="color:red;">{{ oTiempoFalta }}</strong>
-                <div class="containerButtonMasMenos">
-                  <button class="circleButtonMasMenos danger">
-                    <i class="ni ni-fat-delete"></i>
-                  </button> <input type="text" maxlength="2" class="inputTimer" :disabled="oBanderaHora == 1"
-                    v-model="oHora"><strong style="color: black;">:</strong>
-                  <input type="text" maxlength="2" class="inputTimer" :disabled="oBanderaMinutos == 1"
-                    v-model="oMinutos"><strong style="color: black;">:</strong>
-                  <input type="text" maxlength="2" class="inputTimer" :disabled="oBanderaSegundos == 1"
-                    v-model="oSegundos">
-                  <button class="circleButtonMasMenos">
-                    <i class="ni ni-fat-add"></i>
-                  </button>
+                <div class="containerButtonMasMenos bg-gradient-default border-0">
+                  <input v-model="oHora" @keypress="menorHoras()" max="24" min="0" type="number" :disabled="oBanderaHora == 1" class="inputTimer" data-index="0" ref="input-0" @input="focusNextOncePopulated($event, 2)" 
+                    ><strong style="color: white;">:</strong>
+                  <input v-model="oMinutos" @keypress="menorMinutos()" max="59" min="0" type="number"  :disabled="oBanderaMinutos == 1" class="inputTimer"  data-index="1" ref="input-1" @input="focusNextOncePopulated($event, 2)"  
+                     ><strong style="color: white;">:</strong>
+                  <input v-model="oSegundos" @keypress="menorSegundos()" max="59" min="0" type="number" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"  
+                     >
                 </div>
               </div>
 
               <div class="navbarModal">
                 <strong style="color: red;">{{ oPriceFalta }} $</strong>
-                <div class="containerButtonMasMenos">
-                  <button class="circleButtonMasMenos danger">
-                    <i class="ni ni-fat-delete"></i>
-                  </button> <strong style="color: black;">0.00</strong>
-                  <button class="circleButtonMasMenos">
-                    <i class="ni ni-fat-add"></i>
-                  </button>
+                <div class="containerButtonMasMenos bg-gradient-default border-0">
+                 <input v-model="oDolaresVelo" @keypress="menorDolares()" min="0" type="number" class="inputTimer"> 
+                 <strong style="color: white;">.</strong>
+                 <input v-model="oCentavosVelo" @keypress="menorCentavos()" max="99"  min="0" type="number" class="inputTimer">
                 </div>
               </div>
             </div>
@@ -452,6 +444,8 @@ export default {
       oHora: '00',
       oMinutos: '00',
       oSegundos: '00',
+      oDolaresVelo: '0',
+      oCentavosVelo : '00',
       oBanderaHora: 1,
       oBanderaMinutos: 1,
       oBanderaSegundos: 1,
@@ -537,13 +531,22 @@ export default {
               if (obj.VelocidadFalta == '0.00') {
                 this.oPriceFalta = '0.00'
               } else {
-                this.oPriceFalta = obj.obj.VelocidadFalta
+                this.oPriceFalta = obj.VelocidadFalta
+                var dinero = this.oPriceFalta.split('.')
+                this.oDolaresVelo = dinero[0]
+                this.oCentavosVelo = dinero[1]
               }
             } else {
               this.oPriceFalta = obj.TarjetaTrabajo
+              var dinero = this.oPriceFalta.split('.')
+              this.oDolaresVelo = dinero[0]
+              this.oCentavosVelo = dinero[1]
             }
           } else {
             this.oPriceFalta = obj.RubroFalta
+            var dinero = this.oPriceFalta.split('.')
+            this.oDolaresVelo = dinero[0]
+            this.oCentavosVelo = dinero[1]
           }
         }
       }
@@ -913,7 +916,66 @@ export default {
         console.log(error);
       }
     },
-
+    focusNextOncePopulated(event, max) {
+      if (event.target.value.length === max) {
+        const nextElement = this.$refs?.[
+          `input-${Number(event.target.dataset.index) + 1}`
+        ];
+        if (nextElement) nextElement.focus();
+      }
+    },
+    menorDolares(){
+      setTimeout(() => {
+        var dinero = this.oPriceFalta.split('.')
+        if (this.oDolaresVelo > dinero[0]) {
+          return this.oDolaresVelo = dinero[0];
+        }    
+      }, 2000);   
+    },
+    menorCentavos(){
+      setTimeout(() => {
+        var dinero = this.oPriceFalta.split('.')
+        if (this.oCentavosVelo > dinero[1]) {
+          return this.oCentavosVelo = dinero[1];
+        }    
+      }, 2000);    
+    },
+    menorHoras(){
+      setTimeout(() => {
+        var tiempo = this.oTiempoFalta.split(':')
+        if (this.oHora.length < 2 && this.oHora <= tiempo[0]) {
+          if (this.oHora < 9 ) {
+            return this.oHora = 0+this.oHora
+          }
+        }
+        else if (this.oHora > tiempo[0]) {
+          return this.oHora = tiempo[0];
+        }
+      }, 2000);
+    },
+    menorMinutos(){
+      setTimeout(() => {
+        var tiempo = this.oTiempoFalta.split(':')
+        if (this.oMinutos.length<2 && this.oMinutos <= tiempo[1]) {
+          if (this.oMinutos < 9 ) {
+            return this.oMinutos = 0+this.oMinutos
+          }
+        }else if (this.oMinutos > tiempo[1]) {
+          return this.oMinutos = tiempo[1];
+        }  
+      }, 2000);
+    },
+    menorSegundos(){
+      setTimeout(() => {
+        if(this.oSegundos.length<2){
+          if (this.oSegundos < 9 ) {
+            return this.oSegundos = 0+this.oSegundos
+          }
+        }else if (this.oSegundos > tiempo[2]) {
+          return this.oSegundos = tiempo[2];
+        }    
+      }, 2000);   
+    }
   }, mounted() {
     this.readTrazadoAllTramosTableroProduccion()
     this.readUnidadesTableroProduccion()
@@ -932,12 +994,15 @@ export default {
 }
 
 .inputTimer {
-  width: 1.4rem !important;
+  width: 2rem !important;
   background-color: transparent;
   outline: none;
+  color: white;
   border-width: 0rem;
-  padding: 0rem !important;
+  padding-right: 5px !important;
+  padding-left: 5px !important;
 }
+
 
 .barraResumen {
   width: 100%;
@@ -993,16 +1058,12 @@ export default {
 }
 
 .containerButtonMasMenos {
-  background-color: #2dce89;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  height: fit-content;
-  width: fit-content;
+  background-color: #e7e7e7;
   padding-left: 4px;
   padding-right: 4px;
   padding-top: 2px;
   padding-bottom: 2px;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
 }
 
 .circleButtonMasMenos {
@@ -1073,7 +1134,7 @@ export default {
 
 .card-bodyRPagosVehiculoProduccionPCTablero {
   padding: 0rem !important;
-  height: calc(100vh - 12em);
+  height: calc(100vh - 12rem);
   overflow: auto;
 }
 

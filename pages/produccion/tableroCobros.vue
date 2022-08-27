@@ -88,7 +88,7 @@
                 @selection-change="handleSelectionChangeTableCobros" element-loading-text="Cargando Datos..."
                 element-loading-spinner="el-icon-loading" :data="tableDataPanelControlProduccion" row-key="id"
                 class="col-12 col-md-8 tablePanelControlProduccion" header-row-class-name="thead-dark"
-                :height="tableDataPanelControlProduccion.length > 0 ? 455 : 150" style="width: 100%">
+                height="calc(100vh - 13rem)" style="width: 100%">
                 <el-table-column type="selection" minWidth="50">
                 </el-table-column>
 

@@ -88,7 +88,7 @@
             <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="mListaSalidasPanelBusqueda" row-key="id"
               class="tablePanelControlProduccion" :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-              header-row-class-name="thead-dark" :height="mListaSalidasPanelBusqueda.length > 0 ? 445 : 150">
+              header-row-class-name="thead-dark" height="calc(100vh - 13rem)">
 
 
               <el-table-column label="Actions" width="170">

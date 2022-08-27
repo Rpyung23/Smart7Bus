@@ -123,7 +123,7 @@
           <div>
             <el-table v-loading="loadingRPagosVehiculoRecibo" element-loading-text="Cargando Datos..."
               element-loading-spinner="el-icon-loading" :data="tableDataRPagosVEhiculoProduccionRecibo" row-key="id"
-              :height="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? 440 : 150" style="width: 100%"
+              height="calc(100vh - 13rem)" style="width: 100%"
               :default-sort="{ prop: 'estado', order: 'descending' }" class="tablePanelControlProduccion"
               header-row-class-name="thead-dark" :row-class-name="tableRowClassNameRPagosVehiculoProduccionRecibo">
               

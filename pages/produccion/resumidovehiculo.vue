@@ -86,7 +86,7 @@
               element-loading-spinner="el-icon-loading" :data="tableDataResumidoVehiculos" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               :row-class-name="tableRowClassNameRPagosVehiculoProduccion"
-              :height="460" style="width: 100%">
+              height="calc(100vh - 12rem)" style="width: 100%">
 
 
               <el-table-column label="Acciones" minWidth="140">
