@@ -150,21 +150,22 @@
               <div class="navbarModal" style="margin-bottom: 0.5rem;">
                 <strong style="color:red;">{{ oTiempoFalta }}</strong>
                 <div class="containerButtonMasMenos bg-gradient-default border-0">
-                  <input v-model="oHora" @keypress="menorHoras()" max="24" min="0" type="number" :disabled="oBanderaHora == 1" class="inputTimer" data-index="0" ref="input-0" @input="focusNextOncePopulated($event, 2)" 
-                    ><strong style="color: white;">:</strong>
-                  <input v-model="oMinutos" @keypress="menorMinutos()" max="59" min="0" type="number"  :disabled="oBanderaMinutos == 1" class="inputTimer"  data-index="1" ref="input-1" @input="focusNextOncePopulated($event, 2)"  
-                     ><strong style="color: white;">:</strong>
-                  <input v-model="oSegundos" @keypress="menorSegundos()" max="59" min="0" type="number" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"  
-                     >
-                </div>
+                     <input v-model="oHora" @keypress="menorHoras()" max="24" min="0" type="number" :disabled="oBanderaHora == 1" class="inputTimer" data-index="0" ref="input-0" @input="focusNextOncePopulated($event, 2)" 
+                      ><strong style="color: white;">:</strong>
+                    <input v-model="oMinutos" @keypress="menorMinutos()" max="59" min="0" type="number"  :disabled="oBanderaMinutos == 1" class="inputTimer"  data-index="1" ref="input-1" @input="focusNextOncePopulated($event, 2)"  
+                      ><strong style="color: white;">:</strong>
+                    <input v-model="oSegundos" @keypress="menorSegundos()" max="59" min="0" type="number" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"  
+                      >
+                </div>  
               </div>
 
               <div class="navbarModal">
                 <strong style="color: red;">{{ oPriceFalta }} $</strong>
-                <div class="containerButtonMasMenos bg-gradient-default border-0">
-                 <input v-model="oDolaresVelo" @keypress="menorDolares()" min="0" type="number" class="inputTimer"> 
-                 <strong style="color: white;">.</strong>
-                 <input v-model="oCentavosVelo" @keypress="menorCentavos()" max="99"  min="0" type="number" class="inputTimer">
+                <div class="containerButtonMasMenos bg-gradient-default border-0" >
+                    <input v-model="oDolaresVelo" @keypress="menorDolares()" min="0" type="number" class="inputTimer"> 
+                    <strong style="color: white;">.</strong>
+                    <input v-model="oCentavosVelo" @keypress="menorCentavos()" max="99"  min="0" type="number" class="inputTimer">
+ 
                 </div>
               </div>
             </div>
@@ -172,8 +173,10 @@
             <div class="containerRigthTopNavbarModal">
               <textarea class="textAreaCustom" v-model="oMotivoString"></textarea>
 
-              <base-button title="Enviar Justificación" @click="sendJustify()" style="height: fit-content"
+              <base-button title="Enviar Justificación" class="btn-sm" @click="sendJustify()" style="height: fit-content"
                 type="primary"><i class="ni ni-check-bold"></i></base-button>
+                <base-button title="Cancelar Justificación" class="btn-sm" style="height: fit-content"
+                type="danger"><i class="ni ni-fat-remove"></i></base-button>
             </div>
 
           </div>
@@ -504,9 +507,11 @@ export default {
       var obj = event.args.row
       if (obj != null && obj != undefined) {
 
-
         if (parseInt(obj.Tipo) <= 2) {
           this.oMotivoString = obj.Motivo
+          this.oPriceFalta = '0.00'
+          this.oDolaresVelo = '00'
+          this.oCentavosVelo = '00'
 
           this.oTiempoFalta = obj.AtrasoFTiempo == '00:00:00' ? obj.AdelantoFTiempo : obj.AtrasoFTiempo
 
@@ -533,20 +538,42 @@ export default {
               } else {
                 this.oPriceFalta = obj.VelocidadFalta
                 var dinero = this.oPriceFalta.split('.')
-                this.oDolaresVelo = dinero[0]
+                if (dinero[0].length == 1) {
+                  this.oDolaresVelo = 0+dinero[0]
+                }else{
+                  this.oDolaresVelo = dinero[0]
+                }
                 this.oCentavosVelo = dinero[1]
               }
             } else {
               this.oPriceFalta = obj.TarjetaTrabajo
               var dinero = this.oPriceFalta.split('.')
-              this.oDolaresVelo = dinero[0]
+              if (dinero[0].length == 1) {
+                this.oDolaresVelo = 0+dinero[0]
+              }else{
+                this.oDolaresVelo = dinero[0]
+              }
               this.oCentavosVelo = dinero[1]
             }
           } else {
             this.oPriceFalta = obj.RubroFalta
             var dinero = this.oPriceFalta.split('.')
-            this.oDolaresVelo = dinero[0]
+            if (dinero[0].length == 1) {
+              this.oDolaresVelo = 0+dinero[0]
+            }else{
+              this.oDolaresVelo = dinero[0]
+            }
             this.oCentavosVelo = dinero[1]
+          }
+          if(this.oPriceFalta > 0){
+            this.oTiempoFalta = '00:00:00'
+            var tiempo = this.oTiempoFalta.split(':')
+            this.oHora = tiempo[0]
+            this.oMinutos = tiempo[1]
+            this.oSegundos = tiempo[2]
+            this.oBanderaHora = 0
+            this.oBanderaMinutos = 0
+            this.oBanderaSegundos = 0
           }
         }
       }
@@ -656,6 +683,20 @@ export default {
     },
     async showVisibleModalTableroProduccion(item) {
       this.isObservacionesTableroProduccion = this.isObservacionesTableroProduccion == true ? false : true
+      if (this.isObservacionesTableroProduccion == true) {
+        this.oPriceFalta ='0.00'
+        this.oHora = '00'
+        this.oMinutos = '00'
+        this.oSegundos = '00'
+        this.oDolaresVelo = '00'
+        this.oCentavosVelo = '00'
+        this.oTiempoFalta = '00:00:00'
+        this.oMotivoString = ''
+        this.oBanderaHora = 0
+        this.oBanderaMinutos = 0
+        this.oBanderaSegundos = 0
+        
+      } 
       this.readDetalleTableroProduccionAnotaciones(item)
       await this.readDetalleTableroProduccion(item)
     },
@@ -668,9 +709,9 @@ export default {
       this.readHistorialSalidaPanelBusqueda(item)
     },
     async readDetalleTableroProduccion(item) {
+      
       this.oUnidadModalTitle = item.Unidad
       this.oRutaModalTitle = item.DescRuta
-
 
       var mList = []
       try {
@@ -688,13 +729,7 @@ export default {
       } catch (error) {
         mList = []
       }
-
-
-
-
-
-
-
+      this.$refs.myGridDespachoPanel.clearselection();
       var obj = {
         localdata: mList,
         datatype: 'array',
@@ -729,7 +764,7 @@ export default {
 
     },
     async readDetalleTableroProduccionAnotaciones(item) {
-
+      this.$refs.myGridDespachoPanelOtros.clearselection();  
       var mListOtros = []
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionPanelControlAnotaciones", {
@@ -761,12 +796,14 @@ export default {
           source: obj,
           columns: this.columnsInfoOtros
         });
+      
       this.$refs.myGridDespachoPanelOtros.endupdate();
 
     },
     sendJustify() {
       var tiempo = this.oHora + ":" + this.oMinutos + ":" + this.oSegundos
-      console.log("JUSTIFICACION ENVIADA : " + tiempo)
+      var dinero = this.oDolaresVelo + "." + this.oCentavosVelo
+      console.log("JUSTIFICACION ENVIADA : " + tiempo + " " + dinero)
     },
     async readTrazadoAllTramosTableroProduccion() {
       this.mListaTrazadoAllTramsExVelocidad = []
@@ -927,16 +964,53 @@ export default {
     menorDolares(){
       setTimeout(() => {
         var dinero = this.oPriceFalta.split('.')
-        if (this.oDolaresVelo > dinero[0]) {
-          return this.oDolaresVelo = dinero[0];
+        if(dinero[0].length == 2){
+          if (0+this.oDolaresVelo > dinero[0]) {
+          if (this.oDolaresVelo.length == 1) {
+            return this.oDolaresVelo = 0+dinero[0];
+          }else{
+            return this.oDolaresVelo = dinero[0];
+          }
+        }else if (0+this.oDolaresVelo < dinero[0]) {
+          if (this.oDolaresVelo.length == 1) {
+            return this.oDolaresVelo = 0+this.oDolaresVelo;
+          }else{
+            return this.oDolaresVelo = dinero[0];
+          }
+        }
+        }else {
+          if (this.oDolaresVelo > dinero[0]) {
+          if (this.oDolaresVelo.length == 1) {
+            return this.oDolaresVelo = 0+dinero[0];
+          }else{
+            return this.oDolaresVelo = dinero[0];
+          }
+        }else if (0+this.oDolaresVelo < dinero[0]) {
+          if (this.oDolaresVelo.length == 1) {
+            return this.oDolaresVelo = 0+this.oDolaresVelo;
+          }else{
+            return this.oDolaresVelo = dinero[0];
+          }
+        }
         }    
       }, 2000);   
+      
     },
     menorCentavos(){
       setTimeout(() => {
         var dinero = this.oPriceFalta.split('.')
         if (this.oCentavosVelo > dinero[1]) {
-          return this.oCentavosVelo = dinero[1];
+          if (this.oCentavosVelo.length == 1) {
+            return this.oCentavosVelo = 0+dinero[1];
+          }else{
+            return this.oCentavosVelo = dinero[1];
+          }
+        }else if (this.oCentavosVelo < dinero[1]) {
+          if (this.oCentavosVelo.length == 1) {
+            return this.oCentavosVelo = 0+this.oCentavosVelo;
+          }else{
+            return this.oCentavosVelo = dinero[1];
+          }
         }    
       }, 2000);    
     },
@@ -994,15 +1068,14 @@ export default {
 }
 
 .inputTimer {
-  width: 2rem !important;
-  background-color: transparent;
-  outline: none;
-  color: white;
+  width: 1.8rem !important;
+  background-color: white;
+  color: black;
   border-width: 0rem;
   padding-right: 5px !important;
   padding-left: 5px !important;
+  border-radius: 0.5rem;
 }
-
 
 .barraResumen {
   width: 100%;
@@ -1058,11 +1131,11 @@ export default {
 }
 
 .containerButtonMasMenos {
-  background-color: #e7e7e7;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  background-color: #ffffff;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   border-radius: 0.5rem;
 }
 

@@ -109,7 +109,7 @@
         <div>
           <el-table v-loading="isLoadingDespachoSalidaPanelBusqueda" element-loading-text="Cargando Datos..."
             element-loading-spinner="el-icon-loading" :data="mListDespachosSalidasAnuladas" row-key="id"
-            :height="mListDespachosSalidasAnuladas.length > 0 ? 510 : 150" style="width: 100%"
+            :height="mListDespachosSalidasAnuladas.length > 0 ? 620 : 150" style="width: 100%"
             header-row-class-name="thead-dark" :default-sort="{ prop: 'HoraSaliProgSali_m', order: 'ascending' }"
             :row-class-name="tableRowClassNameDSalidasAnuladas">
 
@@ -1098,9 +1098,6 @@ export default {
 
     },
     cellclassname(row, column, value, data) { 
-      if (data.EstaSali_m != '' && this.selectRowId == data.idSali_m) {
-        return "estadoSeleccionadoRow";
-      }
       if (data.EstaSali_m == 'DIFERIDO') {
         return "estadodiferidoDespacho";
       } else if (data.EstaSali_m == 'EN RUTA') {
@@ -1113,7 +1110,7 @@ export default {
       this.modalDespachoSalidasAnuladas = true;
     },
     async readDespachoSalidasAnuladas() {
-      var ruta = this.mSelectRutaSalidaPanelDespacho
+      var ruta = this.getRutaPorID(this.mSelectRutaSalidaPanelDespacho)
       try {
         this.isLoadingDespachoSalidaPanelBusqueda = true;
         this.mListDespachosSalidasAnuladas = [];
@@ -1327,17 +1324,22 @@ export default {
 }
 
 .estadofinalizadoDespacho {
+  background-color: rgb(220, 220, 220);
+  color: black;
+}
+
+.estadofinalizadoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .estadofinalizadoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
   background-color: #ffffff;
   color: black;
 }
 
 .estadoenrutaDespacho {
-  background-color: rgb(114, 128, 247);
+  background-color: rgb(220, 220, 220);
   color: black;
 }
 
-.estadoSeleccionadoRow{
-  background-color: rgb(233, 233, 233);
+.estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
+  background-color: rgb(114, 128, 247);
   color: black;
 }
 
@@ -1347,6 +1349,11 @@ export default {
 }
 
 .estadodiferidoDespacho {
+  background-color: rgb(220, 220, 220);
+  color: black;
+}
+
+.estadodiferidoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .estadodiferidoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
   background-color: rgb(141, 248, 126);
   color: black;
 }
