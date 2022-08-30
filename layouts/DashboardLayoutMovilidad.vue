@@ -2,37 +2,21 @@
   <div class="wrapper">
     <notifications></notifications>
     <side-bar>
-      <template slot="links">
-        <sidebar-item :link="{
-          name: 'Despacho',
-          icon: 'ni ni-calendar-grid-58 text-success',
-          path: './panelDespacho',
-        }">
-        </sidebar-item>
+      <template slot-scope="props" slot="links">
 
-        <sidebar-item :link="{
-          name: 'Despacho Busqueda',
-          icon: 'ni ni-collection text-primary',
-          path: './panelDespachoBusqueda',
-        }">
-        </sidebar-item>
+        <sidebar-item v-if="permisos != null && permisos.movilidad.iCalidadBruto != null && permisos.movilidad.iCalidadBruto != null && permisos.movilidad.iCalidadBruto" 
+              :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidadMovilidad' }" />
 
 
-        <sidebar-item :link="{
-          name: 'Reportes',
-          icon: 'ni ni-ungroup text-blank',
-        }">
-          <sidebar-item :link="{ name: 'R. Salidas', path: './rSalidas' }" />
-          <sidebar-item  v-if="permisos != null && permisos.despacho.reportes.despachoGenerados != null && 
-                               permisos.despacho.reportes.despachoGenerados" 
-                               :link="{ name: 'Despachos Generados', path: './rDespachosGenerados' }" />
-        </sidebar-item>
+        <sidebar-item v-if="permisos != null && permisos.movilidad.iCalidad != null && permisos.movilidad.iCalidad != null && permisos.movilidad.iCalidad" 
+              :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidadMovilidad' }" />
 
 
       </template>
+
     </side-bar>
     <div class="main-content">
-      <dashboard-navbar :type="$route.name === 'alternative' ? 'light' : 'default'"></dashboard-navbar>
+      <dashboard-navbar :type="$route.name == 'alternative' ? 'light' : 'default'"></dashboard-navbar>
 
       <div @click="$sidebar.displaySidebar(false)">
         <nuxt></nuxt>
@@ -62,6 +46,7 @@ function initScrollbar(className) {
 
 import DashboardNavbar from "~/components/layouts/argon/DashboardNavbar.vue";
 import DashboardContent from "~/components/layouts/argon/Content.vue";
+import jwt_decode from "jwt-decode";
 
 export default {
   components: {
@@ -82,10 +67,15 @@ export default {
         initScrollbar("sidenav");
       }
     },
+    decodedPermisos() {
+      var decodeBase64 = window.atob(this.$cookies.get("token"))
+      console.log("PERMISOS")
+      this.permisos = this.$cookies.get("permisos")
+    }
   },
   mounted() {
-    this.permisos = this.$cookies.get("permisos")
-    this.initScrollbar();
+    this.decodedPermisos()
+    this.initScrollbar()
   },
 };
 </script>
