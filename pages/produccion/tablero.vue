@@ -162,9 +162,9 @@
               <div class="navbarModal">
                 <strong style="color: red;">{{ oPriceFalta }} $</strong>
                 <div class="containerButtonMasMenos bg-gradient-default border-0" >
-                    <input v-model="oDolaresVelo" @keypress="menorDolares()" min="0" type="number" class="inputTimer"> 
+                    <input v-model="oDolaresVelo" @keypress="menorDolares()" :disabled="oBanderaDolares == 1" min="0" type="number" class="inputTimer"> 
                     <strong style="color: white;">.</strong>
-                    <input v-model="oCentavosVelo" @keypress="menorCentavos()" max="99"  min="0" type="number" class="inputTimer">
+                    <input v-model="oCentavosVelo" @keypress="menorCentavos()" :disabled="oBanderaCentavos == 1" max="99"  min="0" type="number" class="inputTimer">
  
                 </div>
               </div>
@@ -173,9 +173,9 @@
             <div class="containerRigthTopNavbarModal">
               <textarea class="textAreaCustom" v-model="oMotivoString"></textarea>
 
-              <base-button title="Enviar Justificación" class="btn-sm" @click="sendJustify()" style="height: fit-content"
+              <base-button title="Enviar Justificación" v-if="this.oUsuarioJustificador == null" class="btn-sm" @click="sendJustify()" style="height: fit-content"
                 type="primary"><i class="ni ni-check-bold"></i></base-button>
-                <base-button title="Cancelar Justificación" class="btn-sm" style="height: fit-content"
+                <base-button title="Cancelar Justificación" v-else-if="this.oUsuarioJustificador != null && this.oUsuarioJustificador != ''" class="btn-sm" style="height: fit-content"
                 type="danger"><i class="ni ni-fat-remove"></i></base-button>
             </div>
 
@@ -420,7 +420,10 @@ export default {
       dataAdapter: new jqx.dataAdapter([]),
       dataAdapterOtros: new jqx.dataAdapter([]),
       getWidth: "100%",
-      columnsInfo: [{ text: 'Control', datafield: 'DescripcionControl', width: 200 },
+
+      valida:0,
+      columnsInfo: [{ text: 'Numero', datafield: 'Numero', width: 150 },
+      { text: 'Control', datafield: 'DescripcionControl', width: 200 },
       { text: 'PROG', datafield: 'Programado', width: 90 },
       { text: 'MARC', datafield: 'Marcado', width: 90 },
       { text: 'Atraso Tiempo', datafield: 'AtrasoFTiempo', width: 110 },
@@ -452,13 +455,17 @@ export default {
       oBanderaHora: 1,
       oBanderaMinutos: 1,
       oBanderaSegundos: 1,
+      oBanderaDolares : 1,
+      oBanderaCentavos : 1,
       oUnidadModalTitle: '',
       oRutaModalTitle: '',
       oPriceModalTitle: '0.00',
       oMotivoString: '',
+      objSeleccionado : [],
       oCenterTableroExVelocidad: { lat: -1.249546, lng: -78.585376 },
       oZoomTableroExVelocidad: 7,
       oHistorialExVelocidad: [],
+      oUsuarioJustificador:'',
       mListControlesSalidaPanelBusquedaDespacho:[]
     };
   },
@@ -505,20 +512,22 @@ export default {
     },
     myGridOnRowSelect: function (event) {
       var obj = event.args.row
+      this.objSeleccionado = obj
+      console.log("obj select")
+      console.log(this.objSeleccionado.Numero)
       if (obj != null && obj != undefined) {
-
+        console.log("row seleccionada justificar")
+        console.log(obj)
         if (parseInt(obj.Tipo) <= 2) {
           this.oMotivoString = obj.Motivo
-          this.oPriceFalta = '0.00'
+          this.oPriceFalta = '00.00'
           this.oDolaresVelo = '00'
           this.oCentavosVelo = '00'
-
+          this.oUsuarioJustificador = obj.NombApellUsua
           this.oTiempoFalta = obj.AtrasoFTiempo == '00:00:00' ? obj.AdelantoFTiempo : obj.AtrasoFTiempo
 
           var tiempo = this.oTiempoFalta.split(':')
-          console.log("*************************")
-          console.log(tiempo)
-
+          
           this.oHora = tiempo[0]
           this.oMinutos = tiempo[1]
           this.oSegundos = tiempo[2]
@@ -526,9 +535,11 @@ export default {
           this.oBanderaHora = tiempo[0] == '00' ? 1 : 0
           this.oBanderaMinutos = tiempo[1] == '00' ? 1 : 0
           this.oBanderaSegundos = tiempo[2] == '00' ? 1 : 0
+          this.oBanderaDolares = 1
+          this.oBanderaCentavos = 1
 
         } else {
-
+          this.oUsuarioJustificador = obj.NombApellUsua
           this.oMotivoString = obj.Notas
 
           if (obj.RubroFalta == '0.00') {
@@ -540,30 +551,42 @@ export default {
                 var dinero = this.oPriceFalta.split('.')
                 if (dinero[0].length == 1) {
                   this.oDolaresVelo = 0+dinero[0]
-                }else{
+                }else if(this.oDolaresVelo > dinero[0]){
                   this.oDolaresVelo = dinero[0]
                 }
-                this.oCentavosVelo = dinero[1]
+                if (dinero[1].length == 1) {
+                  this.oCentavosVelo = 0+dinero[1]
+                }else if(this.oCentavosVelo > dinero[1]){
+                  this.oCentavosVelo = dinero[1]
+                }
               }
             } else {
               this.oPriceFalta = obj.TarjetaTrabajo
               var dinero = this.oPriceFalta.split('.')
               if (dinero[0].length == 1) {
                 this.oDolaresVelo = 0+dinero[0]
-              }else{
-                this.oDolaresVelo = dinero[0]
-              }
-              this.oCentavosVelo = dinero[1]
+              }else if(this.oDolaresVelo > dinero[0]){
+                  this.oDolaresVelo = dinero[0]
+                }
+                if (dinero[1].length == 1) {
+                  this.oCentavosVelo = 0+dinero[1]
+                }else if(this.oCentavosVelo > dinero[1]){
+                  this.oCentavosVelo = dinero[1]
+                }
             }
           } else {
             this.oPriceFalta = obj.RubroFalta
             var dinero = this.oPriceFalta.split('.')
             if (dinero[0].length == 1) {
               this.oDolaresVelo = 0+dinero[0]
-            }else{
+            }else if(this.oDolaresVelo > dinero[0]){
               this.oDolaresVelo = dinero[0]
             }
-            this.oCentavosVelo = dinero[1]
+            if (dinero[1].length == 1) {
+              this.oCentavosVelo = 0+dinero[1]
+            }else if(this.oCentavosVelo > dinero[1]){
+              this.oCentavosVelo = dinero[1]
+            }
           }
           if(this.oPriceFalta > 0){
             this.oTiempoFalta = '00:00:00'
@@ -571,10 +594,12 @@ export default {
             this.oHora = tiempo[0]
             this.oMinutos = tiempo[1]
             this.oSegundos = tiempo[2]
-            this.oBanderaHora = 0
-            this.oBanderaMinutos = 0
-            this.oBanderaSegundos = 0
+            this.oBanderaHora = 1
+            this.oBanderaMinutos = 1
+            this.oBanderaSegundos = 1
           }
+          this.oBanderaDolares = this.oDolaresVelo == '00' ? 1 : 0
+          this.oBanderaCentavos = this.oCentavosVelo == '00' ? 1 : 0
         }
       }
     },
@@ -692,10 +717,12 @@ export default {
         this.oCentavosVelo = '00'
         this.oTiempoFalta = '00:00:00'
         this.oMotivoString = ''
-        this.oBanderaHora = 0
-        this.oBanderaMinutos = 0
-        this.oBanderaSegundos = 0
-        
+        this.oBanderaHora = 1
+        this.oBanderaMinutos = 1
+        this.oBanderaSegundos = 1
+        this.oBanderaDolares = 1
+        this.oBanderaCentavos = 1
+        this.oUsuarioJustificador = ''
       } 
       this.readDetalleTableroProduccionAnotaciones(item)
       await this.readDetalleTableroProduccion(item)
@@ -749,8 +776,9 @@ export default {
           { name: 'NombApellUsua', type: 'string' },
           { name: 'Motivo', type: 'string' },
           { name: 'Notas', type: 'string' },
-          { name: 'Tipo', type: 'string' }
-
+          { name: 'Tipo', type: 'string' },
+          { name: 'Codigo', type: 'string' },
+          { name: 'Numero', type: 'string' },
         ]
       }
 
@@ -801,9 +829,18 @@ export default {
 
     },
     sendJustify() {
-      var tiempo = this.oHora + ":" + this.oMinutos + ":" + this.oSegundos
-      var dinero = this.oDolaresVelo + "." + this.oCentavosVelo
-      console.log("JUSTIFICACION ENVIADA : " + tiempo + " " + dinero)
+      if (this.validarJustificacion()) {
+        return;
+      }
+        this.$notify({
+            message:
+              'Justificación enviada correctamente',
+            timeout: 3000,
+            icon: 'ni ni-fat-delete',
+            type: 'default'
+          });
+      
+      
     },
     async readTrazadoAllTramosTableroProduccion() {
       this.mListaTrazadoAllTramsExVelocidad = []
@@ -932,7 +969,32 @@ export default {
       }
       this.isLoadingRecorridoSalidaPanelBusqueda = false;
     },
+    async registroJustificacionProduccion() {
+      var dinero = ''
+      var tiempo = ''
+      this.objSeleccionado.Tipo == 1 || this.objSeleccionado.Tipo == 2 ? dinero = '00.00' :  dinero = this.oDolaresVelo + "." + this.oCentavosVelo
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/registroJustificacionProduccion", {
+          token: this.token,
+          numero: this.objSeleccionado.Numero,
+          codigo: this.objSeleccionado.Codigo,
+          tipo: this.objSeleccionado.Tipo,
+          minutos:tiempo,
+          dinero:parseFloat(dinero),
+          motivo:this.oMotivoString
+        })
 
+      } catch (error) {
+        console.log(error)
+        this.$notify({
+          message: error.toString(),
+          timeout: 3000,
+          icon: 'ni ni-fat-remove',
+          type: 'danger'
+        });
+      }
+
+    },
     async initControlesPanelTableroProduccion() {
       console.log("INICIANDO CONTROLES");
       try {
@@ -964,91 +1026,126 @@ export default {
     menorDolares(){
       setTimeout(() => {
         var dinero = this.oPriceFalta.split('.')
-        if(dinero[0].length == 2){
-          if (0+this.oDolaresVelo > dinero[0]) {
-          if (this.oDolaresVelo.length == 1) {
-            return this.oDolaresVelo = 0+dinero[0];
-          }else{
-            return this.oDolaresVelo = dinero[0];
+        if (this.oDolaresVelo.length==1) {
+          if (this.oDolaresVelo < 10 ) {
+            return this.oDolaresVelo = 0+this.oDolaresVelo
           }
-        }else if (0+this.oDolaresVelo < dinero[0]) {
-          if (this.oDolaresVelo.length == 1) {
-            return this.oDolaresVelo = 0+this.oDolaresVelo;
-          }else{
-            return this.oDolaresVelo = dinero[0];
-          }
+        }else if (this.oDolaresVelo > dinero[0]) {
+          return this.oDolaresVelo = dinero[0];
         }
-        }else {
-          if (this.oDolaresVelo > dinero[0]) {
-          if (this.oDolaresVelo.length == 1) {
-            return this.oDolaresVelo = 0+dinero[0];
-          }else{
-            return this.oDolaresVelo = dinero[0];
-          }
-        }else if (0+this.oDolaresVelo < dinero[0]) {
-          if (this.oDolaresVelo.length == 1) {
-            return this.oDolaresVelo = 0+this.oDolaresVelo;
-          }else{
-            return this.oDolaresVelo = dinero[0];
-          }
-        }
-        }    
-      }, 2000);   
-      
+        if(this.oDolaresVelo < 0){
+          return this.oDolaresVelo = '00';
+        }  
+      }, 1000);   
     },
     menorCentavos(){
       setTimeout(() => {
         var dinero = this.oPriceFalta.split('.')
-        if (this.oCentavosVelo > dinero[1]) {
-          if (this.oCentavosVelo.length == 1) {
-            return this.oCentavosVelo = 0+dinero[1];
-          }else{
-            return this.oCentavosVelo = dinero[1];
+        if (this.oCentavosVelo.length==1) {
+          if (this.oCentavosVelo < 10 ) {
+            return this.oCentavosVelo = 0+this.oCentavosVelo
           }
-        }else if (this.oCentavosVelo < dinero[1]) {
-          if (this.oCentavosVelo.length == 1) {
-            return this.oCentavosVelo = 0+this.oCentavosVelo;
-          }else{
-            return this.oCentavosVelo = dinero[1];
-          }
-        }    
-      }, 2000);    
+        }else if (this.oCentavosVelo > dinero[1]) {
+          return this.oCentavosVelo = dinero[1];
+        }
+        if(this.oCentavosVelo < 0){
+          return this.oCentavosVelo = '00';
+        }  
+      }, 1000);    
     },
     menorHoras(){
       setTimeout(() => {
         var tiempo = this.oTiempoFalta.split(':')
-        if (this.oHora.length < 2 && this.oHora <= tiempo[0]) {
-          if (this.oHora < 9 ) {
+        if (this.oHora.length == 1) {
+          if (this.oHora < 10 ) {
             return this.oHora = 0+this.oHora
           }
         }
         else if (this.oHora > tiempo[0]) {
           return this.oHora = tiempo[0];
         }
-      }, 2000);
+        if(this.oHora < 0){
+          return this.oHora = '00';
+        }
+      }, 1000);
     },
     menorMinutos(){
       setTimeout(() => {
         var tiempo = this.oTiempoFalta.split(':')
-        if (this.oMinutos.length<2 && this.oMinutos <= tiempo[1]) {
-          if (this.oMinutos < 9 ) {
+        if (this.oMinutos.length==1) {
+          if (this.oMinutos < 10 ) {
             return this.oMinutos = 0+this.oMinutos
           }
         }else if (this.oMinutos > tiempo[1]) {
           return this.oMinutos = tiempo[1];
+        }
+        if(this.oMinutos < 0){
+          return this.oMinutos = '00';
         }  
-      }, 2000);
+      }, 1000);
     },
     menorSegundos(){
       setTimeout(() => {
-        if(this.oSegundos.length<2){
-          if (this.oSegundos < 9 ) {
+        var tiempo = this.oTiempoFalta.split(':')
+        if (this.oSegundos.length == 1) {
+          if (this.oSegundos < 10 ) {
             return this.oSegundos = 0+this.oSegundos
           }
         }else if (this.oSegundos > tiempo[2]) {
           return this.oSegundos = tiempo[2];
-        }    
-      }, 2000);   
+        }
+        if(this.oSegundos < 0){
+          return this.oSegundos = '00';
+        }  
+      }, 1000);  
+    },
+    validarJustificacion(){
+      this.valida = 0;
+      var tiempoF = this.oTiempoFalta.split(':')
+      var dineroP = this.oPriceFalta.split('.')
+      var tiempo = this.oHora + ":" + this.oMinutos + ":" + this.oSegundos
+      var dinero = this.oDolaresVelo + "." + this.oCentavosVelo
+      if (tiempo > this.oTiempoFalta || this.oHora > tiempoF[0] || this.oMinutos > tiempoF[1] ||  this.oSegundos > tiempoF[2] ) {
+        this.valida = 1;
+        this.$notify({
+            message:
+              'El tiempo a justificar es mayor al tiempo de falta',
+            timeout: 3000,
+            icon: 'ni ni-fat-delete',
+            type: 'danger'
+          });
+      }
+      if (this.oHora < 0 || this.oMinutos < 0 || this.oSegundos < 0) {
+        this.valida = 1;
+        this.$notify({
+            message:
+              'El tiempo a justificar no puede ser negativo',
+            timeout: 3000,
+            icon: 'ni ni-fat-delete',
+            type: 'danger'
+          });
+      }
+      if (dinero > this.oPriceFalta || this.oDolaresVelo > dineroP[0] || this.oCentavosVelo > dineroP[1] ) {
+        this.valida = 1;
+        this.$notify({
+            message:
+              'El dinero a cobrar no puede ser mayor al de la penalidad',
+            timeout: 3000,
+            icon: 'ni ni-fat-delete',
+            type: 'danger'
+          });
+      }
+      if (dinero < 0 || this.oDolaresVelo < 0 || this.oCentavosVelo < 0) {
+        this.valida = 1;
+        this.$notify({
+            message:
+              'El dinero a cobrar no puede ser mayor al de la penalidad',
+            timeout: 3000,
+            icon: 'ni ni-fat-delete',
+            type: 'danger'
+          });
+      }
+      return this.valida;
     }
   }, mounted() {
     this.readTrazadoAllTramosTableroProduccion()
