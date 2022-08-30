@@ -73,8 +73,6 @@
           
         </sidebar-item>
 
-        <sidebar-item v-if="permisos != null && permisos.iCalidad != null && permisos.iCalidad.active != null && permisos.iCalidad.active" 
-              :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidad' }" />
 
         <sidebar-item v-if="permisos != null && permisos.historial != null && permisos.historial.active != null && permisos.historial.active" :link="{
           name: 'Historial',
@@ -82,6 +80,10 @@
           path: './historial/recorrido',
         }">
         </sidebar-item>
+
+        
+        <sidebar-item v-if="permisos != null && permisos.movilidad != null && permisos.movilidad.active != null && permisos.movilidad.active" 
+              :link="{ name: 'Movilidad',icon: 'ni ni-building text-dark', path: './movilidad/rIcanlidadMovilidad' }" />
 
 
       </template>

@@ -59,7 +59,8 @@
               <span class="btn-inner--text">Buscar</span>
             </base-button>
 
-            <download-excel v-if="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? true : false" class="btn btn-outline-success" outline :header="RecibosheaderExcelRPagosVehiculoProduccion"
+            <download-excel v-if="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? true : false" 
+              class="btn btn-outline-success" outline :header="RecibosheaderExcelRPagosVehiculoProduccion"
               :data="tableDataRPagosVEhiculoProduccionRecibo" :fields="json_fields_excelRecibosPagosVehiculoProduccion"
               :worksheet="RecibosWorksheetExcelRPagosVehiculoProduccion"
               :name="RecibosFileNameExcelRPagosVehiculoProduccion">
