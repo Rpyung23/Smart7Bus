@@ -23,8 +23,9 @@
           icon: 'ni ni-ungroup text-blank',
         }">
           <sidebar-item :link="{ name: 'R. Salidas', path: './rSalidas' }" />
-          <sidebar-item :link="{ name: 'Despachos Generados', path: './rDespachosGenerados' }" />
-          <sidebar-item :link="{ name: 'Marcaciones Generadas', path: './rDespachosGenerados' }" />
+          <sidebar-item  v-if="permisos != null && permisos.despacho.reportes.despachoGenerados != null && 
+                               permisos.despacho.reportes.despachoGenerados" 
+                               :link="{ name: 'Despachos Generados', path: './rDespachosGenerados' }" />
         </sidebar-item>
 
 
@@ -67,6 +68,11 @@ export default {
     DashboardNavbar,
     DashboardContent,
   },
+  data() {
+    return {
+      permisos: null
+    }
+  },
   methods: {
     initScrollbar() {
       let isWindows = navigator.platform.startsWith("Win");
@@ -78,6 +84,7 @@ export default {
     },
   },
   mounted() {
+    this.permisos = this.$cookies.get("permisos")
     this.initScrollbar();
   },
 };
