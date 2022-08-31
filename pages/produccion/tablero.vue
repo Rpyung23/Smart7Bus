@@ -154,7 +154,7 @@
                       ><strong style="color: white;">:</strong>
                     <input v-model="oMinutos" @keypress="menorMinutos()" max="59" min="0" type="number"  :disabled="oBanderaMinutos == 1" class="inputTimer"  data-index="1" ref="input-1" @input="focusNextOncePopulated($event, 2)"  
                       ><strong style="color: white;">:</strong>
-                    <input v-model="oSegundos" @keypress="menorSegundos()" max="59" min="0" type="number" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"  
+                    <input v-model="oSegundos" max="59" min="0" type="number" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"  
                       >
                 </div>  
               </div>
@@ -164,7 +164,7 @@
                 <div class="containerButtonMasMenos bg-gradient-default border-0" >
                     <input v-model="oDolaresVelo" @keypress="menorDolares()" :disabled="oBanderaDolares == 1" min="0" type="number" class="inputTimer"> 
                     <strong style="color: white;">.</strong>
-                    <input v-model="oCentavosVelo" @keypress="menorCentavos()" :disabled="oBanderaCentavos == 1" max="99"  min="0" type="number" class="inputTimer">
+                    <input v-model="oCentavosVelo" :disabled="oBanderaCentavos == 1" max="99"  min="0" type="number" class="inputTimer">
  
                 </div>
               </div>
@@ -175,7 +175,7 @@
 
               <base-button title="Enviar Justificación" v-if="this.oUsuarioJustificador == null" class="btn-sm" @click="sendJustify()" style="height: fit-content"
                 type="primary"><i class="ni ni-check-bold"></i></base-button>
-                <base-button title="Cancelar Justificación" v-else-if="this.oUsuarioJustificador != null && this.oUsuarioJustificador != ''" class="btn-sm" style="height: fit-content"
+                <base-button title="Cancelar Justificación" v-else-if="this.oUsuarioJustificador != null && this.oUsuarioJustificador != ''" class="btn-sm" @click="deleteJustify()" style="height: fit-content"
                 type="danger"><i class="ni ni-fat-remove"></i></base-button>
             </div>
 
@@ -422,29 +422,29 @@ export default {
       getWidth: "100%",
 
       valida:0,
-      columnsInfo: [{ text: 'Numero', datafield: 'Numero', width: 150 },
-      { text: 'Control', datafield: 'DescripcionControl', width: 200 },
-      { text: 'PROG', datafield: 'Programado', width: 90 },
-      { text: 'MARC', datafield: 'Marcado', width: 90 },
-      { text: 'Atraso Tiempo', datafield: 'AtrasoFTiempo', width: 110 },
-      { text: 'Adelanto Tiempo', datafield: 'AdelantoFTiempo', width: 120 },
+      columnsInfo: [{ text: 'Numero', datafield: 'Numero', width: 100, cellclassname: this.cellclassname},
+      { text: 'Control', datafield: 'DescripcionControl', width: 200, cellclassname: this.cellclassname },
+      { text: 'PROG', datafield: 'Programado', width: 90, cellclassname: this.cellclassname },
+      { text: 'MARC', datafield: 'Marcado', width: 90, cellclassname: this.cellclassname },
+      { text: 'Atraso Tiempo', datafield: 'AtrasoFTiempo', width: 110, cellclassname: this.cellclassname },
+      { text: 'Adelanto Tiempo', datafield: 'AdelantoFTiempo', width: 120, cellclassname: this.cellclassname },
       {
-        text: 'Atraso Jus.', datafield: 'AtrasoJTiempo', width: 150
+        text: 'Atraso Jus.', datafield: 'AtrasoJTiempo', width: 150, cellclassname: this.cellclassname
       },
       {
-        text: 'Adelanto Jus.', datafield: 'AdelantoJTiempo', width: 150
+        text: 'Adelanto Jus.', datafield: 'AdelantoJTiempo', width: 150, cellclassname: this.cellclassname
       },
-      { text: 'Rubros', datafield: 'RubroFalta', width: 60 },
-      { text: 'Rubros Jus.', datafield: 'RubroJustificacion', width: 100 },
-      { text: 'Velo', datafield: 'VelocidadFalta', width: 70 },
-      { text: 'Velo Jus.', datafield: 'VelocidadJustificacion', width: 70 },
-      { text: 'Tarjeta', datafield: 'TarjetaTrabajo', width: 70 },
-      { text: 'Usuario Justificador', datafield: 'NombApellUsua', width: 250 },
-      { text: 'Motivo', datafield: 'Motivo', width: 250 },
-      { text: 'Notas', datafield: 'Notas', width: 250 }],
-      columnsInfoOtros: [{ text: 'Hora', datafield: 'fecha_creacion', width: 200 },
-      { text: 'Rubro', datafield: 'descripcion', width: 150 },
-      { text: 'Nota', datafield: 'anotaciones', width: 850 }],
+      { text: 'Rubros', datafield: 'RubroFalta', width: 60, cellclassname: this.cellclassname },
+      { text: 'Rubros Jus.', datafield: 'RubroJustificacion', width: 100, cellclassname: this.cellclassname },
+      { text: 'Velo', datafield: 'VelocidadFalta', width: 70, cellclassname: this.cellclassname },
+      { text: 'Velo Jus.', datafield: 'VelocidadJustificacion', width: 70, cellclassname: this.cellclassname },
+      { text: 'Tarjeta', datafield: 'TarjetaTrabajo', width: 70, cellclassname: this.cellclassname },
+      { text: 'Usuario Justificador', datafield: 'NombApellUsua', width: 250, cellclassname: this.cellclassname },
+      { text: 'Motivo', datafield: 'Motivo', width: 250, cellclassname: this.cellclassname },
+      { text: 'Notas', datafield: 'Notas', width: 250, cellclassname: this.cellclassname }],
+      columnsInfoOtros: [{ text: 'Hora', datafield: 'fecha_creacion', width: 200, cellclassname: this.cellclassname },
+      { text: 'Rubro', datafield: 'descripcion', width: 150, cellclassname: this.cellclassname },
+      { text: 'Nota', datafield: 'anotaciones', width: 850, cellclassname: this.cellclassname }],
       oTiempoFalta: "00:00:00",
       oPriceFalta: "0.00",
       oHora: '00',
@@ -513,11 +513,7 @@ export default {
     myGridOnRowSelect: function (event) {
       var obj = event.args.row
       this.objSeleccionado = obj
-      console.log("obj select")
-      console.log(this.objSeleccionado.Numero)
       if (obj != null && obj != undefined) {
-        console.log("row seleccionada justificar")
-        console.log(obj)
         if (parseInt(obj.Tipo) <= 2) {
           this.oMotivoString = obj.Motivo
           this.oPriceFalta = '00.00'
@@ -534,7 +530,7 @@ export default {
 
           this.oBanderaHora = tiempo[0] == '00' ? 1 : 0
           this.oBanderaMinutos = tiempo[1] == '00' ? 1 : 0
-          this.oBanderaSegundos = tiempo[2] == '00' ? 1 : 0
+          this.oBanderaSegundos = 0
           this.oBanderaDolares = 1
           this.oBanderaCentavos = 1
 
@@ -599,7 +595,7 @@ export default {
             this.oBanderaSegundos = 1
           }
           this.oBanderaDolares = this.oDolaresVelo == '00' ? 1 : 0
-          this.oBanderaCentavos = this.oCentavosVelo == '00' ? 1 : 0
+          this.oBanderaCentavos = 0
         }
       }
     },
@@ -709,20 +705,7 @@ export default {
     async showVisibleModalTableroProduccion(item) {
       this.isObservacionesTableroProduccion = this.isObservacionesTableroProduccion == true ? false : true
       if (this.isObservacionesTableroProduccion == true) {
-        this.oPriceFalta ='0.00'
-        this.oHora = '00'
-        this.oMinutos = '00'
-        this.oSegundos = '00'
-        this.oDolaresVelo = '00'
-        this.oCentavosVelo = '00'
-        this.oTiempoFalta = '00:00:00'
-        this.oMotivoString = ''
-        this.oBanderaHora = 1
-        this.oBanderaMinutos = 1
-        this.oBanderaSegundos = 1
-        this.oBanderaDolares = 1
-        this.oBanderaCentavos = 1
-        this.oUsuarioJustificador = ''
+        this.limpiarDatosJustificacion()
       } 
       this.readDetalleTableroProduccionAnotaciones(item)
       await this.readDetalleTableroProduccion(item)
@@ -736,9 +719,6 @@ export default {
       this.readHistorialSalidaPanelBusqueda(item)
     },
     async readDetalleTableroProduccion(item) {
-      
-      this.oUnidadModalTitle = item.Unidad
-      this.oRutaModalTitle = item.DescRuta
 
       var mList = []
       try {
@@ -748,7 +728,10 @@ export default {
         }
         )
 
-        if (datos.data.datos.length > 0) {
+        if (datos.data.datos.length > 0) 
+        {
+          this.oUnidadModalTitle = datos.data.datos[0].Unidad
+          this.oRutaModalTitle = datos.data.datos[0].DescRuta
           this.oPriceModalTitle = datos.data.datos[0].DeudaTotal
         }
         mList.push(...datos.data.datos)
@@ -832,15 +815,11 @@ export default {
       if (this.validarJustificacion()) {
         return;
       }
-        this.$notify({
-            message:
-              'Justificación enviada correctamente',
-            timeout: 3000,
-            icon: 'ni ni-fat-delete',
-            type: 'default'
-          });
-      
-      
+      this.registerJustificacionProduccion()
+
+    },
+    deleteJustify(){
+      this.deleteJustificacionProduccion()
     },
     async readTrazadoAllTramosTableroProduccion() {
       this.mListaTrazadoAllTramsExVelocidad = []
@@ -851,7 +830,6 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListaTrazadoAllTramsExVelocidad = datos.data.datos
-          console.log(this.mListaTrazadoAllTramsExVelocidad)
         }
       } catch (e) {
         console.log(e)
@@ -917,9 +895,6 @@ export default {
             codigoProduccion: item.Codigo,
           }
         );
-        console.log("RECORRIDO SALIDA");
-        console.log(datos);
-
         for (var i = 0; i < datos.data.datos.length; i++) {
           var obj = datos.data.datos[i];
 
@@ -969,12 +944,12 @@ export default {
       }
       this.isLoadingRecorridoSalidaPanelBusqueda = false;
     },
-    async registroJustificacionProduccion() {
-      var dinero = ''
-      var tiempo = ''
-      this.objSeleccionado.Tipo == 1 || this.objSeleccionado.Tipo == 2 ? dinero = '00.00' :  dinero = this.oDolaresVelo + "." + this.oCentavosVelo
-      try {
-        var datos = await this.$axios.post(process.env.baseUrl + "/registroJustificacionProduccion", {
+    async registerJustificacionProduccion() 
+    {
+      var dinero = this.objSeleccionado.Tipo == 3 || this.objSeleccionado.Tipo == 4 ? (this.oDolaresVelo+"."+this.oCentavosVelo) : '0.00' 
+      var tiempo = this.objSeleccionado.Tipo == 1 || this.objSeleccionado.Tipo == 2 ? (this.oHora+":"+this.oMinutos+":"+this.oSegundos) : '00:00:00'
+
+      var objBody = {
           token: this.token,
           numero: this.objSeleccionado.Numero,
           codigo: this.objSeleccionado.Codigo,
@@ -982,8 +957,91 @@ export default {
           minutos:tiempo,
           dinero:parseFloat(dinero),
           motivo:this.oMotivoString
-        })
+        }
+      
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/registroJustificacionProduccion",objBody)
+        
+        if(datos.data.status_code == 200){
+          
+          this.readlPanelTableroProduccion()
+          this.readDetalleTableroProduccion(this.objSeleccionado)
+          this.limpiarDatosJustificacion()
+          this.$notify({
+            message: datos.data.mensaje,
+            timeout: 3000,
+            icon: 'ni ni-check-bold',
+            type: 'default'
+          });
+        }else if(datos.data.status_code == 300){
+          this.$notify({
+            message:datos.data.mensaje,
+            timeout: 3000,
+            icon: 'ni ni-fat-delete',
+            type: 'warning'
+          });
+        }else if(datos.data.status_code == 400){
+          this.$notify({
+            message:
+            datos.data.mensaje,
+            timeout: 3000,
+            icon: 'ni ni-fat-delete',
+            type: 'warning'
+          });
+        }else if(datos.data.status_code == 500){
+          this.$notify({
+            message:
+            datos.data.mensaje,
+            timeout: 3000,
+            icon: 'ni ni-fat-remove',
+            type: 'warning'
+          });
+        }
+      } catch (error) {
+        console.log(error)
+        this.$notify({
+          message: error.toString(),
+          timeout: 3000,
+          icon: 'ni ni-fat-remove',
+          type: 'danger'
+        });
+      }
 
+    },
+    async deleteJustificacionProduccion() 
+    {
+
+      var objBody = {
+          token: this.token,
+          numero: this.objSeleccionado.Numero,
+          codigo: this.objSeleccionado.Codigo,
+          tipo: this.objSeleccionado.Tipo
+        }
+      
+      try {
+        var datos = await this.$axios.delete(process.env.baseUrl + "/deleteJustificacionProduccion",{data:objBody} )
+        
+        if(datos.data.status_code == 200)
+        {
+          this.readlPanelTableroProduccion()
+          this.readDetalleTableroProduccion(this.objSeleccionado)
+          this.limpiarDatosJustificacion()
+            
+          this.$notify({
+            message: datos.data.mensaje,
+            timeout: 1500,
+            icon: 'ni ni-check-bold',
+            type: 'default'
+          });
+          
+        }else if(datos.data.status_code == 500){
+          this.$notify({
+            message:datos.data.mensaje,
+            timeout: 3000,
+            icon: 'ni ni-fat-delete',
+            type: 'warning'
+          });
+        }
       } catch (error) {
         console.log(error)
         this.$notify({
@@ -1023,6 +1081,22 @@ export default {
         if (nextElement) nextElement.focus();
       }
     },
+    limpiarDatosJustificacion(){
+        this.oPriceFalta ='0.00'
+        this.oHora = '00'
+        this.oMinutos = '00'
+        this.oSegundos = '00'
+        this.oDolaresVelo = '00'
+        this.oCentavosVelo = '00'
+        this.oTiempoFalta = '00:00:00'
+        this.oMotivoString = ''
+        this.oBanderaHora = 1
+        this.oBanderaMinutos = 1
+        this.oBanderaSegundos = 1
+        this.oBanderaDolares = 1
+        this.oBanderaCentavos = 1
+        this.oUsuarioJustificador = ''
+    },
     menorDolares(){
       setTimeout(() => {
         var dinero = this.oPriceFalta.split('.')
@@ -1037,21 +1111,6 @@ export default {
           return this.oDolaresVelo = '00';
         }  
       }, 1000);   
-    },
-    menorCentavos(){
-      setTimeout(() => {
-        var dinero = this.oPriceFalta.split('.')
-        if (this.oCentavosVelo.length==1) {
-          if (this.oCentavosVelo < 10 ) {
-            return this.oCentavosVelo = 0+this.oCentavosVelo
-          }
-        }else if (this.oCentavosVelo > dinero[1]) {
-          return this.oCentavosVelo = dinero[1];
-        }
-        if(this.oCentavosVelo < 0){
-          return this.oCentavosVelo = '00';
-        }  
-      }, 1000);    
     },
     menorHoras(){
       setTimeout(() => {
@@ -1084,28 +1143,13 @@ export default {
         }  
       }, 1000);
     },
-    menorSegundos(){
-      setTimeout(() => {
-        var tiempo = this.oTiempoFalta.split(':')
-        if (this.oSegundos.length == 1) {
-          if (this.oSegundos < 10 ) {
-            return this.oSegundos = 0+this.oSegundos
-          }
-        }else if (this.oSegundos > tiempo[2]) {
-          return this.oSegundos = tiempo[2];
-        }
-        if(this.oSegundos < 0){
-          return this.oSegundos = '00';
-        }  
-      }, 1000);  
-    },
     validarJustificacion(){
       this.valida = 0;
       var tiempoF = this.oTiempoFalta.split(':')
       var dineroP = this.oPriceFalta.split('.')
       var tiempo = this.oHora + ":" + this.oMinutos + ":" + this.oSegundos
       var dinero = this.oDolaresVelo + "." + this.oCentavosVelo
-      if (tiempo > this.oTiempoFalta || this.oHora > tiempoF[0] || this.oMinutos > tiempoF[1] ||  this.oSegundos > tiempoF[2] ) {
+      if (tiempo > this.oTiempoFalta || this.oHora > tiempoF[0] || this.oMinutos > tiempoF[1] ) {
         this.valida = 1;
         this.$notify({
             message:
@@ -1125,7 +1169,7 @@ export default {
             type: 'danger'
           });
       }
-      if (dinero > this.oPriceFalta || this.oDolaresVelo > dineroP[0] || this.oCentavosVelo > dineroP[1] ) {
+      if (dinero > this.oPriceFalta || this.oDolaresVelo > dineroP[0] ) {
         this.valida = 1;
         this.$notify({
             message:
@@ -1146,7 +1190,12 @@ export default {
           });
       }
       return this.valida;
-    }
+    },
+    cellclassname(row, column, value, data) { 
+      if(data.NombApellUsua != null){
+        return "estadoJustificado";
+      }
+    },
   }, mounted() {
     this.readTrazadoAllTramosTableroProduccion()
     this.readUnidadesTableroProduccion()
@@ -1310,5 +1359,15 @@ export default {
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
+}
+
+.estadoJustificado {
+  background-color: rgb(220, 220, 220);
+  color: black;
+}
+
+.estadoJustificado:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .estadoJustificado:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
+  background-color: rgb(203, 243, 198);
+  color: black;
 }
 </style>
