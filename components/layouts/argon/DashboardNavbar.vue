@@ -180,7 +180,7 @@
           <div class="dropdown-divider"></div>
           <a :href="hrefLogOut" class="dropdown-item" @click="cerrarSession()">
             <i class="ni ni-user-run"></i>
-            <span>Logout</span>
+            <span>Cerrar Sesión</span>
           </a>
         </template>
       </base-dropdown>

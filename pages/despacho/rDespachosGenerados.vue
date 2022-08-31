@@ -113,8 +113,6 @@
               </el-table-column>
               <el-table-column prop="LetraRutaSali_m" label="RUTA" width="150">
               </el-table-column>
-              <el-table-column type="index" label="T" width="100">
-              </el-table-column>
               <el-table-column prop="Fecha1" label="DATE" width="150">
               </el-table-column>
               <el-table-column prop="Unidad" label="UNIDAD" width="150">
@@ -226,7 +224,6 @@ export default {
       json_fields_excelRDespachosGenerados: {
         "FECHA": "Fecha",
         "RUTA": "LetraRutaSali_m",
-        "T": "T",
         "DATE": "Fecha1",
         "UNIDAD": "Unidad",
         "RUTA DETALLE": "NombreRuta",
@@ -303,7 +300,8 @@ export default {
         tipo: 1
       });
 
-      if (datos.data.status_code == 200) {
+      if (datos.data.status_code == 200) 
+      {
         this.mListaRutasIndicadoresCalidad.push(...datos.data.data)
       }
     },
@@ -334,7 +332,16 @@ export default {
           fechaF: this.fechaFinalRDespachosGenerados + " 23:59:59"
         })
         if (datos.data.status_code == 200) {
+          
+          for(var i = 0;i<datos.data.datos.length;i++)
+          {
+            datos.data.datos[i].Turno = i + 1            
+          }
+
           this.tableDataDespachosGenerados.push(...datos.data.datos)
+
+
+
           this.RecibosheaderExcelRDespachosGEnerados = [
             "Reporte Despachos Generados",
             "Fechas : " + this.fechaInicialRDespachosGenerados + " hasta " + this.fechaFinalRDespachosGenerados,
