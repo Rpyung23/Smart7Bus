@@ -12,7 +12,16 @@
               <br />
               <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
                 footer-classes="pb-2">
-                <div>
+                <div class="row border-0">
+                    <div class="col-12 text-right buttonNuevo">
+                      <el-tooltip content="Agregar" placement="top">
+                        <base-button type="primary" icon size="sm">
+                          <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                        </base-button>
+                      </el-tooltip>
+                    </div>
+                    </div>
+                  <div>
                   <el-table v-loading="loadingUnidadesFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     class="table-responsive table-flush" :data="mListUnidadesFlotaVehicular"
@@ -65,13 +74,23 @@
               <br />
               <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
                 footer-classes="pb-2">
+                <div class="row border-0">
+                  <div class="col-12 text-right buttonNuevo">
+                    <el-tooltip content="Agregar" placement="top">
+                      <base-button type="primary" icon size="sm">
+                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                      </base-button>
+                    </el-tooltip>
+                  </div>
+                </div>
                 <div>
                   <el-table v-loading="loadingGruposFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListGruposFlotaVehicular" height="calc(100vh - 11rem)"
                     header-row-class-name="thead-dark">
+                    
                     <div slot="empty"></div>
-
+                      
                     <el-table-column v-for="column in tableColumnsGruposFlotaVehicular" :key="column.label"
                       v-bind="column">
                     </el-table-column>
@@ -109,12 +128,22 @@
               <br />
               <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
                 footer-classes="pb-2">
+                <div class="row border-0">
+                  <div class="col-12 text-right buttonNuevo">
+                    <el-tooltip content="Agregar" placement="top">
+                      <base-button type="primary" icon size="sm">
+                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                      </base-button>
+                    </el-tooltip>
+                  </div>
+                </div>
                 <div>
 
                   <el-table v-loading="loadingPropietariosFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListPropietariosFlotaVehicular"
                     height="calc(100vh - 11rem)" header-row-class-name="thead-dark">
+                    
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsPropietariosFlotaVehicular" :key="column.label"
                       v-bind="column">
@@ -190,6 +219,15 @@
               <br />
               <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
                 footer-classes="pb-2">
+                <div class="row border-0">
+                  <div class="col-12 text-right buttonNuevo">
+                    <el-tooltip content="Agregar" placement="top">
+                      <base-button type="primary" icon size="sm">
+                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                      </base-button>
+                    </el-tooltip>
+                  </div>
+                </div>
                 <div>
                   <el-table v-loading="loadingChoferesFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
@@ -449,7 +487,7 @@ export default {
         {
           prop: "CodiVehi",
           label: "Unidad",
-          minWidth: 150,
+          minWidth: 120,
         },
       ],
       mListUnidadesFlotaVehicular: [],
@@ -711,4 +749,11 @@ export default {
 body {
   overflow: auto !important;
 }
+
+.buttonNuevo{
+  padding-top: 5px; 
+  padding-right: 25px; 
+  padding-bottom: 5px;
+}
+
 </style>

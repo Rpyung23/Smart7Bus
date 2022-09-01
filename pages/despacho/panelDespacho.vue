@@ -28,21 +28,17 @@
         </div>
 
 
-
-
-
-
         <div class="buttonsAdicionalesDespacho">
           
-          <base-button icon type="info" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recalificar Salida">
+          <base-button icon type="info" @click="showModalDespachoRecalificarSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recalificar Salida">
             <span class="btn-inner--icon"><i class="ni ni-watch-time"></i></span>
           </base-button>
 
-          <base-button icon type="danger" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'FINALIZADO'" size="sm" title="Anular Salida">
+          <base-button icon type="danger" @click="showModalDespachoAnularSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'FINALIZADO'" size="sm" title="Anular Salida">
             <span class="btn-inner--icon"><i class="ni ni-scissors"></i></span>
           </base-button>
 
-          <base-button icon type="warning" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'FINALIZADO' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Finalizar Salida">
+          <base-button icon type="warning" @click="showModalDespachoFinalizarSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'FINALIZADO' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Finalizar Salida">
             <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
           </base-button>
 
@@ -228,8 +224,8 @@
         </div>
         <div class="col-md-6">
 
-          <el-select v-model="mSelectRutaSalidaPanelDespacho" collapse-tags placeholder="Lineas"
-            @change="readFrecuenciasSalidasPanel()" style="width: 100%;">
+          <el-select v-model="mSelectRutaSalidaDespachar" collapse-tags placeholder="Lineas"
+            style="width: 100%;">
             <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
               :value="item.idRuta">
             </el-option>
@@ -344,6 +340,21 @@
         </div>
       </card>
     </modal>
+
+    <!--Form modal Despacho Recalificar Salida-->
+    <modal :show.sync="modalDespachoRecalificarSalida" body-classes="p-0">
+      <h6 slot="header" class="modal-title">Recalificar Salida</h6>
+    </modal>
+
+    <!--Form modal Despacho Anular Salida-->
+    <modal :show.sync="modalDespachoAnularSalida" body-classes="p-0">
+      <h6 slot="header" class="modal-title">Anular Salida</h6>
+    </modal>
+
+    <!--Form modal Despacho Finalizar Salida-->
+    <modal :show.sync="modalDespachoFinalizarSalida" body-classes="p-0">
+      <h6 slot="header" class="modal-title">Finalizar Salida</h6>
+    </modal>
   </div>
 </template>
 <script>
@@ -410,9 +421,13 @@ export default {
       itemUnidadSalidasPanelBusqueda: [],
       mListRutasFrecuencias: [],
       mSelectRutaSalidaPanelDespacho: null,
+      mSelectRutaSalidaDespachar: null,
       mSelectRutaFrecuenciaPanelDespacho: null,
       modalSalidasTarjetaPanelDespacho: false,
       modalEnviarDespachoPanel: false,
+      modalDespachoRecalificarSalida:false,
+      modalDespachoAnularSalida:false,
+      modalDespachoFinalizarSalida:false,
       baseURlPDFPanelDespachoTarjetaSalida: null,
       selectedRowSalida: null,
       selectRowId:null,
@@ -453,6 +468,18 @@ export default {
     },
     showEnviarDespachoPanel() {
       this.modalEnviarDespachoPanel ? (this.modalEnviarDespachoPanel = false) : (this.modalEnviarDespachoPanel = true)
+    },
+    showModalDespacho() {
+      this.modalEnviarDespachoPanel ? (this.modalEnviarDespachoPanel = false) : (this.modalEnviarDespachoPanel = true)
+    },
+    showModalDespachoRecalificarSalida() {
+      this.modalDespachoRecalificarSalida ? (this.modalDespachoRecalificarSalida = false) : (this.modalDespachoRecalificarSalida = true)
+    },
+    showModalDespachoAnularSalida() {
+      this.modalDespachoAnularSalida ? (this.modalDespachoAnularSalida = false) : (this.modalDespachoAnularSalida = true)
+    },
+    showModalDespachoFinalizarSalida() {
+      this.modalDespachoFinalizarSalida ? (this.modalDespachoFinalizarSalida = false) : (this.modalDespachoFinalizarSalida = true)
     },
     async readFrecuenciasSalidasPanel() {
       this.mListRutasFrecuencias = []
@@ -589,6 +616,7 @@ export default {
         if (datos.data.status_code == 200) {
           this.mListRutasDespacho.push(...datos.data.data);
           this.mSelectRutaSalidaPanelDespacho = datos.data.data[0].idRuta
+          this.mSelectRutaSalidaDespachar = datos.data.data[0].idRuta
           this.initFechaActualSalidaDespachoPanel()
           this.readFrecuenciasSalidasPanel()
 
