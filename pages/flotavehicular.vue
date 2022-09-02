@@ -14,11 +14,9 @@
                 footer-classes="pb-2">
                 <div class="row border-0">
                     <div class="col-12 text-right buttonNuevo">
-                      <el-tooltip content="Agregar" placement="top">
                         <base-button type="primary" icon size="sm">
-                          <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                          <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Unidad</span>
                         </base-button>
-                      </el-tooltip>
                     </div>
                     </div>
                   <div>
@@ -76,11 +74,9 @@
                 footer-classes="pb-2">
                 <div class="row border-0">
                   <div class="col-12 text-right buttonNuevo">
-                    <el-tooltip content="Agregar" placement="top">
                       <base-button type="primary" icon size="sm">
-                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Grupo</span>
                       </base-button>
-                    </el-tooltip>
                   </div>
                 </div>
                 <div>
@@ -132,7 +128,7 @@
                   <div class="col-12 text-right buttonNuevo">
                     <el-tooltip content="Agregar" placement="top">
                       <base-button type="primary" icon size="sm">
-                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Propietario</span>
                       </base-button>
                     </el-tooltip>
                   </div>
@@ -221,11 +217,9 @@
                 footer-classes="pb-2">
                 <div class="row border-0">
                   <div class="col-12 text-right buttonNuevo">
-                    <el-tooltip content="Agregar" placement="top">
-                      <base-button type="primary" icon size="sm">
-                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                      <base-button type="primary" icon size="sm" @click="showModalAgregarChoferFlotavehicular()">
+                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Chofer</span>
                       </base-button>
-                    </el-tooltip>
                   </div>
                 </div>
                 <div>
@@ -283,33 +277,96 @@
     </modal>
 
 
-    <!--Form modal-->
-    <modal :show.sync="modalChoferesFlotaVehicular" size="sm" body-classes="p-0">
+    <!--Form modal -->
+    <modal :show.sync="modalChoferesFlotaVehicular" size="sm" body-classes="p-0" gradient="default"
+               modal-classes="modal-danger modal-dialog-centered">
+      <h6 slot="header" class="modal-title">{{ this.modalTitleAsignarChofer }}</h6>
       <card type="secondary" header-classes="bg-transparent pb-5" body-classes="px-lg-5 py-lg-5" class="border-0 mb-0">
-        <template slot="header">
-          <div class="text-muted text-center mt-2 mb-3">
-            <el-select  placeholder="Unidades sin chofer">
+         <div class="text-muted text-center  mb-3">
+            <el-select  placeholder="Unidades sin chofer" v-model="mSelectUnidad">
               <el-option v-for="item in mListChoferesUnidadesSinAsignacion" :key="item.CodiVehi" :label="item.nombres" :value="item.CodiVehi">
                 <span style="float: left">{{ item.CodiVehi }}</span>
                 <span :style="item.nombres == null ? 'float: right; color: green; font-size: 13px' : 'float: right; color: red; font-size: 13px'">{{ item.nombres == null ? 'Libre' : item.nombres }}</span>
               </el-option>
             </el-select>
           </div>
+          <div class="text-center">
+          <base-button type="primary" @click="sendAsignarChoferUnidad()" native-type="submit">Asignar</base-button>
+        </div>
 
-        </template>
+        
       </card>
 
     </modal>
 
+     <!--Form modal Agregar Chofer-->
+     <modal :show.sync="modalAgregarChoferFlotaVehicular">
+      <validation-observer v-slot="{handleSubmit}" ref="formValidator">
+      <form class="needs-validation"
+            @submit.prevent="handleSubmit(firstFormSubmit)">
+        <div class="form-row">
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-badge"
+              name="Nombre"
+              placeholder="Nombre Completo"
+              rules="required"
+              v-model="nombreChofer">
+            </base-input>
+          </div>
 
-
-
-
-
-
-
-
-
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-mobile-button"
+              name="Teléfono"
+              type="number"
+              placeholder="Teléfono"
+              rules="required"
+              v-model="telefonoChofer">
+            </base-input>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-6">
+            <base-input
+              name="Usuario"
+              placeholder="Usuario"
+              prepend-icon="ni ni-circle-08"
+              rules="required"
+              v-model="usuarioChofer">
+            </base-input>
+          </div>
+          <div class="col-md-6">
+            <base-input
+            prepend-icon="ni ni-key-25"
+              name="Contraseña"
+              placeholder="Contraseña"
+              rules="required"
+              v-model="passwordChofer">
+            </base-input>
+          </div> 
+        </div>
+        <div class="form-row">
+          <div class="col-md-12">
+            <base-input
+              prepend-icon="ni ni-email-83"
+              type="email"
+              name="Email"
+              placeholder="Email"
+              rules="required"
+              v-model="emailChofer">
+            </base-input>
+          </div>
+        </div>
+        <div class="text-right">
+          <base-button type="danger" @click="showModalAgregarChoferFlotavehicular()">Cancelar</base-button>
+          <base-button type="primary" @click="sendRegisterChofer()" native-type="submit">Agregar</base-button>
+        </div>
+      </form>
+    </validation-observer>
+       
+    </modal>
+      
   </div>
 </template>
 <script>
@@ -342,6 +399,17 @@ export default {
   data() {
     return {
       token: this.$cookies.get("token"),
+      usuarioChofer:'',
+      telefonoChofer:'',
+      nombreChofer:'',
+      passwordChofer:'',
+      emailChofer:'',
+      modalTitleAsignarChofer:'',
+      usuarioChoferUnidad:'',
+      validaChofer:0,
+      mSelectUnidad:null,
+      rowSeleccionadoChofer:[],
+      indexSeleccionadoChofer:'',
       currentPageUnidadesFlotaVehicular: 1,
       loadingUnidadesFlotaVehicular: false,
       loadingGruposFlotaVehicular: false,
@@ -350,6 +418,7 @@ export default {
       loadingChoferesFlotaVehicular: false,
       modalPermisosUsuariosAdminFlotaVehicular: false,
       modalChoferesFlotaVehicular: false,
+      modalAgregarChoferFlotaVehicular:false,
       tableColumnsUnidadesFlotaVehicular: [
         {
           prop: "CodiVehi",
@@ -651,7 +720,10 @@ export default {
     initChoferesUnidadSinAsignacionFlotaVehicular: async function (index,row) 
     {
       this.showModalUnidadesChoferFlotavehicular(index,row)
-    
+      this.rowSeleccionadoChofer = row
+      this.indexSeleccionadoChofer = index
+      this.modalTitleAsignarChofer = row.nombres
+      this.usuarioChoferUnidad = row.usuario
       this.mListChoferesUnidadesSinAsignacion = [];
 
       try {
@@ -683,7 +755,14 @@ export default {
       this.jsonPermisosUsuario = JSON.parse(row.permisosJSON)
     },
     showModalUnidadesChoferFlotavehicular(index, row) {
-      this.modalChoferesFlotaVehicular = this.modalChoferesFlotaVehicular ? false : true
+      this.modalChoferesFlotaVehicular = true
+    },
+    showModalAgregarChoferFlotavehicular(index, row) {
+      this.modalAgregarChoferFlotaVehicular = this.modalAgregarChoferFlotaVehicular ? false : true
+      if (this.modalAgregarChoferFlotaVehicular == false) {
+        this.cancelarRegisterChofer()
+      }
+  
     },
     onError() {
       console.log('error')
@@ -721,6 +800,122 @@ export default {
           type: 'danger'
         });
       }
+    },
+    async registerChofer(){
+      try {
+        var objBody= {
+        token:this.token,
+        datos:{
+          usuario: this.usuarioChofer,
+          constrasenia: this.passwordChofer,
+          nombres: this.nombreChofer,
+          email: this.emailChofer,
+          telefono: this.telefonoChofer
+        }
+      }
+      var result = await this.$axios.post(process.env.baseUrl + "/register_choferes", objBody)
+    if (result.data.status_code == 200) {
+      this.initChoferesFlotaVehicular()
+      this.limpiarRegisterChofer()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async asignarChoferUnidad(){
+      try {
+        var objBody= {
+        token:this.token,
+        datos:{
+          usuario: this.usuarioChoferUnidad,
+          vehiculo: this.mSelectUnidad,
+        }
+      }
+      var result = await this.$axios.post(process.env.baseUrl + "/asignar_chofer_vehiculo", objBody)
+      if (result.data.status_code == 200) {
+        this.initChoferesFlotaVehicular()
+        this.initChoferesUnidadSinAsignacionFlotaVehicular(this.indexSeleccionadoChofer,this.rowSeleccionadoChofer)
+        this.mSelectUnidad = null
+        this.$notify({
+            message: result.data.msm,
+            timeout: 1500,
+            type: 'default'
+          });
+      } else {
+        this.$notify({
+            timeout: 3000,
+            message: result.data.msm,
+            type: 'danger'
+            
+          });
+      }
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    sendAsignarChoferUnidad(){
+      this.asignarChoferUnidad();
+    },
+    sendRegisterChofer(){
+      if (this.validarChofer()) {
+        return;
+      }
+      this.registerChofer();
+    },
+    limpiarRegisterChofer(){
+      this.nombreChofer = ''
+      this.usuarioChofer = ''
+      this.emailChofer = ''
+      this.passwordChofer = ''
+      this.telefonoChofer = ''
+    },
+    cancelarRegisterChofer(){
+      this.nombreChofer = ''
+      this.usuarioChofer = ''
+      this.emailChofer = ''
+      this.passwordChofer = ''
+      this.telefonoChofer = ''
+      this.modalAgregarChoferFlotaVehicular = false
+    },
+    validarChofer(){
+      this.validarChofer = 0
+      if (this.usuarioChofer == '') {
+        this.validarChofer = 1
+      }
+      if (this.nombreChofer == '') {
+        this.validarChofer = 1
+      }
+      if (this.emailChofer == '') {
+        this.validarChofer = 1
+      }
+      if (this.passwordChofer == '') {
+        this.validarChofer = 1
+      }
+      if (this.telefonoChofer == '') {
+        this.validarChofer = 1
+      }
+      return this.validarChofer
     }
   },
   mounted() {
