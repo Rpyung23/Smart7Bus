@@ -110,7 +110,7 @@
               </el-table>
 
               <iframe class="col-6 col-md-4" :src="baseURlPDFComprobanteIngresoTableroCobro"
-                style="width: 100%;padding:0rem;border-width:0rem;height: calc(100vh - 12.4em);"></iframe>
+                style="width: 100%;padding:0rem;border-width:0rem;height: calc(100vh - 13em);"></iframe>
 
             </div>
           </div>
@@ -166,10 +166,9 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { convertSecondtoTimeString } from '../../util/fechas'
-
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
   mixins: [clientPaginationMixin],
@@ -232,9 +231,14 @@ export default {
         this.optionsUnidadesPanelProduccion = [];
       }
     },
-    handleSelectionChangeTableCobros(val) {
+    handleSelectionChangeTableCobros(val) 
+    {
+      
+
       if (val != undefined && val != null) {
-        if (this.banderaMarcoAguaRecibo) {
+        if (this.banderaMarcoAguaRecibo) 
+        {
+          
           this.multipleSelectionProduccionCobros = val
           var dinero = 0
           for (var i = 0; i < this.multipleSelectionProduccionCobros.length; i++) {
@@ -367,7 +371,7 @@ export default {
 
       for (var i = 0; i < mLista.length; i++) {
 
-          atrasos_falta = atrasos_falta + (mLista[i].AtrasoFTiempo)
+          /*atrasos_falta = atrasos_falta + (mLista[i].AtrasoFTiempo)
           adelantos_falta = adelantos_falta + (mLista[i].AdelantoFTiempo)
           atrasos_justificaciones = atrasos_justificaciones + (mLista[i].AtrasoJTiempo)
           adelantos_justificaciones = adelantos_justificaciones + (mLista[i].AdelantoJTiempo)
@@ -375,7 +379,7 @@ export default {
           rubros_justificaciones = rubros_justificaciones + parseFloat(mLista[i].RubroJustificacion)
           ex_velocidad_falta = ex_velocidad_falta + parseFloat(mLista[i].VelocidadFalta)
           ex_velocidad_justificaciones = ex_velocidad_justificaciones + parseFloat(mLista[i].VelocidadJustificacion)
-          tarjeta = tarjeta + parseFloat(mLista[i].TarjetaDiaria)
+          tarjeta = tarjeta + parseFloat(mLista[i].TarjetaDiaria)*/
 
           dineroCobrado = dineroCobrado + parseFloat(mLista[i].DeudaTotal)
 
@@ -393,7 +397,7 @@ export default {
       var docDefinition = {
 
         // a string or { width: 190, height: number }
-        watermark: { text: 'NO PAGADO', color: 'red', opacity: 0.30, bold: true,fontSize: (mLista.length > 50 ? 150 : 40) },
+        watermark: { text: this.banderaMarcoAguaRecibo ? 'NO PAGADO' : '', color: 'red', opacity: 0.25, bold: true,fontSize: (mLista.length > 50 ? 150 : 27) },
         pageSize: { width: 220, height: 'auto' },
         pageMargins: [15, 15, 15, 15],
         // header: [empresa],
@@ -424,7 +428,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [19, 62, 44, 27],
+              widths: [19, 65, 44, 27],
               body: [
                 [{ text: 'VEHI', alignment: "center", bold: true },
                 { text: 'LINEA', alignment: "center", bold: true },
@@ -449,24 +453,13 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [19, 63, 43, 27],
-              body: mLista.length > 0 ?  mListaCuerpoRecibo : [mLista],
+              widths: [19, 65, 43, 27],
+              body: mLista.length > 0 ?  mListaCuerpoRecibo : [[]],
             }
           },
 
 
           { text: '---------------------------------------------------------' },
-
-
-          { text: 'Atrasos Falta : ' + convertSecondtoTimeString(atrasos_falta) , fontSize: 9, bold: true },
-          { text: 'Atrasos Justificados : ' + convertSecondtoTimeString(atrasos_justificaciones), fontSize: 9, bold: true },
-          { text: 'Adelantos Falta : ' + convertSecondtoTimeString(adelantos_falta), fontSize: 9, bold: true },
-          { text: 'Adelantos Justificados : ' + convertSecondtoTimeString(adelantos_justificaciones), fontSize: 9, bold: true },
-          { text: 'Rubros: ' + Number(rubros_falta).toFixed(2), fontSize: 9, bold: true },
-          { text: 'Rubros Justificados : ' + Number(rubros_justificaciones).toFixed(2), fontSize: 9, bold: true },
-          { text: 'Ex Velocidad : ' + Number(ex_velocidad_falta).toFixed(2), fontSize: 9, bold: true },
-          { text: 'Ex Velocidad Justificados : ' + Number(ex_velocidad_justificaciones).toFixed(2), fontSize: 9, bold: true },
-          { text: 'Tarjeta : ' + Number(tarjeta).toFixed(2), fontSize: 9, bold: true },
           { text: 'Operador : ' + this.$cookies.get("namesUsuario"), fontSize: 9 },
           { text: 'Fecha de Pago : ' + (this.banderaMarcoAguaRecibo ? 'RECIBO SIN PAGAR' : this.initFechaActualTicket()), fontSize: 9 },
           { text: 'Fecha Impresion : ' + this.initFechaActualTicket(), fontSize: 9 },
@@ -480,6 +473,7 @@ export default {
 
       pdfDocGenerator.getDataUrl((dataUrl) => {
         this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl
+        this.banderaMarcoAguaRecibo = true
       });
 
 
@@ -510,11 +504,15 @@ export default {
 
         if (datos.data.status_code == 200) {
           if (datos.data.code == 200) {
-            this.reloadStoreTableCobros(mListaCobrosAuxiliar)
+            this.banderaMarcoAguaRecibo = false
+
+            
 
 
             this.notifyVue('default', datos.data.msm + "\n <strong>Listo para imprimir</strong>", 'ni ni-check-bold', 3000)
+            
             this.crearPreviewReciboIngresoPanelCobro(mListaCobrosAuxiliar)
+            this.reloadStoreTableCobros(mListaCobrosAuxiliar)
           } else {
             this.notifyVue('warning', datos.data.msm, 'ni ni-fat-remove', 4500)
           }

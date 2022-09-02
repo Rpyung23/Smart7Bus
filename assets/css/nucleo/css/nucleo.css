@@ -672,6 +672,33 @@ body::-webkit-scrollbar{
   }
 
 
+.paddingLabelPosicionesRuta {
+    margin-top: 2.5rem;
+    margin-right: 2.5rem;
+    border-color: green;
+    border-style: solid;
+    border-width: 1px;
+    color: green;
+    background-color: rgb(255, 255, 255);
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    border-radius: 1rem;
+  } 
+  
+.paddingLabelPosicionesFueraRuta {
+    margin-top: 2.5rem;
+    margin-right: 2.5rem;
+    border-color: red;
+    border-style: solid;
+    border-width: 1px;
+    color: red;
+    background-color: rgb(255, 255, 255);
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    border-radius: 1rem;
+  } 
+
+
   .paddingLabelTramaExVelocidad {
     margin-top: 3.6rem;
     border-color: #c70808;
@@ -687,10 +714,9 @@ body::-webkit-scrollbar{
     margin-bottom: 2.9rem;
     font-weight: bold;
     border-color: #1d1c1c;
-    border-width: 1px;
     background-color: white;
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
+    padding-right: 0.1rem;
+    padding-left: 0.1rem;
     border-radius: 1rem;
   }
   
@@ -710,4 +736,9 @@ body::-webkit-scrollbar{
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .cardControlesMarc{
+    height: 100px;
+    width: 100px;
   }
