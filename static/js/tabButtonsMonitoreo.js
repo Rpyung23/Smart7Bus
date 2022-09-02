@@ -21,34 +21,60 @@ var itemMonitoreo = document.getElementById("itemMonitoreo")
 var itemControles = document.getElementById("itemControles")
 var itemRutas = document.getElementById("itemRutas")
 var itemConfig = document.getElementById("itemConfig")
+var findClass = 'itemOptionMonitoreoActive'
 
 itemMonitoreo.addEventListener('click',function()
 {
-    deleteItemSelected()
-    $('#itemMonitoreo').addClass("itemOptionMonitoreoActive")
-    closeAllPanel()
-    showPanel("#element2")
+    if( $('#itemMonitoreo').hasClass(findClass) ){
+        deleteItemSelected()
+        closeAllPanel()
+    }
+    else{
+        deleteItemSelected()
+        $('#itemMonitoreo').addClass("itemOptionMonitoreoActive")
+        closeAllPanel()
+        showPanel("#element2")
+    }
 })
 
 itemControles.addEventListener('click',function(){
-    deleteItemSelected()
-    $('#itemControles').addClass("itemOptionMonitoreoActive")
-    closeAllPanel()
-    showPanel("#PanelControles")
+    if( $('#itemControles').hasClass(findClass) ){
+        deleteItemSelected()
+        closeAllPanel()
+    }
+    else{
+        deleteItemSelected()
+        $('#itemControles').addClass("itemOptionMonitoreoActive")
+        closeAllPanel()
+        showPanel("#PanelControles")
+    }
 })
 
 itemRutas.addEventListener('click',function(){
-    deleteItemSelected()
-    $('#itemRutas').addClass("itemOptionMonitoreoActive")
-    closeAllPanel()
-    showPanel("#PanelRutas")
+    if( $('#itemRutas').hasClass(findClass) ){
+        deleteItemSelected()
+        closeAllPanel()
+    }
+    else{
+        deleteItemSelected()
+        $('#itemRutas').addClass("itemOptionMonitoreoActive")
+        closeAllPanel()
+        showPanel("#PanelRutas")
+    }
 })
 
 itemConfig.addEventListener('click',function(){
-    deleteItemSelected()
-    $('#itemConfig').addClass("itemOptionMonitoreoActive")
-    closeAllPanel()
-    showPanel("#PanelConfigMapaMonitoreo")
+    if( $('#itemConfig').hasClass(findClass) ){
+        deleteItemSelected()
+        closeAllPanel()
+    }
+    else{
+        deleteItemSelected()
+        $('#itemConfig').addClass("itemOptionMonitoreoActive")
+        closeAllPanel()
+        showPanel("#PanelConfigMapaMonitoreo")
+    }
+    
 })
 
 closeAllPanel()

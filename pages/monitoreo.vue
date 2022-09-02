@@ -212,6 +212,7 @@
 
     <div id="tabOptionsMonitoreo" class="tabOptionsMonitoreo">
       <div id="itemMonitoreo" class="itemOptionMonitoreo itemOptionMonitoreoActive">
+        
         <i class="bx bx-bus"></i>
       </div>
       <div id="itemControles" class="itemOptionMonitoreo">
@@ -630,7 +631,7 @@ export default {
     },
     selectedRutaMonitoreo() {
       if (this.mListRutasMonitoreo.length > 0) {
-        this.initControleMonitoreoRutas();
+        //this.initControleMonitoreoRutas();
         for (var i = 0; i < this.mListUnidades.length; i++) {
           var bandera = false;
           for (var j = 0; j < this.mListRutasMonitoreo.length; j++) {
@@ -890,6 +891,9 @@ export default {
           }
         }
       }
+    },
+    prueba(){
+      alert()
     },
     updateInformationMarker(position, oUnidadAux) {
       //console.log("UPDATE INFO MARKER");

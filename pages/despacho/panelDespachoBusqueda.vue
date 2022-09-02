@@ -2,35 +2,73 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select v-model="itemUnidadSalidasPanelBusqueda" multiple filterable style="margin-right: 0.5rem" remote
-              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
-              <el-option v-for="item in optionsUnidadesSalidasPanelBusqueda" :key="item.CodiVehi" :label="item.CodiVehi"
-                :value="item.CodiVehi">
+            <el-select
+              v-model="itemUnidadSalidasPanelBusqueda"
+              multiple
+              filterable
+              style="margin-right: 0.5rem"
+              remote
+              placeholder="Ingrese unidad"
+              :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
+            >
+              <el-option
+                v-for="item in optionsUnidadesSalidasPanelBusqueda"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
               </el-option>
             </el-select>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaInicialSalidasPanelBusqueda">
+            <base-input
+              addon-left-icon="ni ni-calendar-grid-58"
+              style="margin-right: 0.5rem"
+            >
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaInicialSalidasPanelBusqueda"
+              >
               </flat-picker>
             </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaFinalSalidasPanelBusqueda">
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaFinalSalidasPanelBusqueda"
+              >
               </flat-picker>
             </base-input>
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda">
+          <div
+            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
+          >
             <div class="buttonCenterEndDerecha">
-              <base-button icon type="primary" size="sm" @click="readSalidasPanelBusqueda()">
-                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              <base-button
+                icon
+                type="primary"
+                size="sm"
+                @click="readSalidasPanelBusqueda()"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="el-icon-search"></i
+                ></span>
               </base-button>
               <!--<download-excel
               class="btn btn-outline-success"
@@ -46,32 +84,67 @@
               ></span>
               <span class="btn-inner--text"> Excel</span>
             </download-excel>-->
-              <base-button type="danger" size="sm" v-if="mListaSalidasPanelBusqueda.length > 0" @click="exportPdfSalidasPanelBusqueda()" title="Exportar PDF">
-                <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
+              <base-button
+                type="danger"
+                size="sm"
+                v-if="mListaSalidasPanelBusqueda.length > 0"
+                @click="exportPdfSalidasPanelBusqueda()"
+                title="Exportar PDF"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="ni ni-single-copy-04"></i
+                ></span>
               </base-button>
             </div>
           </div>
         </card>
 
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
-            <el-select v-model="mSelectRutaSalidaPanelBusqueda" multiple collapse-tags placeholder="Lineas">
-              <el-option v-for="item in mListLineasSalidasPanelBusqueda" :key="item.LetrRuta" :label="item.DescRuta"
-                :value="item.LetrRuta">
+            <el-select
+              v-model="mSelectRutaSalidaPanelBusqueda"
+              multiple
+              collapse-tags
+              placeholder="Lineas"
+            >
+              <el-option
+                v-for="item in mListLineasSalidasPanelBusqueda"
+                :key="item.LetrRuta"
+                :label="item.DescRuta"
+                :value="item.LetrRuta"
+              >
               </el-option>
             </el-select>
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
             <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
-              <el-checkbox label="2" style="background-color: hsla(226, 88%, 61%, 0.301);">EN RUTA</el-checkbox>
-              <el-checkbox label="0,1" style="background-color: hsla(115, 100%, 59%, 0.301)">SALIDAS DIFERIDAS
+              <el-checkbox
+                label="2"
+                style="background-color: hsla(226, 88%, 61%, 0.301)"
+                >EN RUTA</el-checkbox
+              >
+              <el-checkbox
+                label="0,1"
+                style="background-color: hsla(115, 100%, 59%, 0.301)"
+                >SALIDAS DIFERIDAS
               </el-checkbox>
               <el-checkbox label="5">FINALIZADOS</el-checkbox>
-              <el-checkbox label="3" style="background-color: hsla(34, 93%, 61%, 0.479)">PENALIZADAS</el-checkbox>
-              <el-checkbox label="4" style="background-color: rgba(252, 143, 143, 0.692)">ANULADOS</el-checkbox>
+              <el-checkbox
+                label="3"
+                style="background-color: hsla(34, 93%, 61%, 0.479)"
+                >PENALIZADAS</el-checkbox
+              >
+              <el-checkbox
+                label="4"
+                style="background-color: rgba(252, 143, 143, 0.692)"
+                >ANULADOS</el-checkbox
+              >
               <!--<el-checkbox
                 label="31"
                 disabled="false"
@@ -82,28 +155,42 @@
           </div>
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1" footer-classes="pb-2">
+        <card
+          class="no-border-card"
+          style="margin-bottom: 0rem"
+          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1"
+          footer-classes="pb-2"
+        >
           <div>
-            <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="mListaSalidasPanelBusqueda" row-key="id"
-              class="tablePanelControlProduccion" :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-              header-row-class-name="thead-dark" height="calc(100vh - 13rem)">
-
-
+            <el-table
+              v-loading="loadingTableUnidadesSalidasPanelBusqueda"
+              element-loading-text="Cargando Datos..."
+              element-loading-spinner="el-icon-loading"
+              :data="mListaSalidasPanelBusqueda"
+              row-key="id"
+              class="tablePanelControlProduccion"
+              :row-class-name="tableRowClassNameSalidasPanelBusqueda"
+              header-row-class-name="thead-dark"
+              height="calc(100vh - 13rem)"
+            >
               <el-table-column label="Actions" width="170">
-
                 <template slot-scope="scope">
-                  <base-button size="sm" title="Tarjeta" @click="showTarjetaSalidasPanelBusqueda(scope.row)"
-                    type="primary"><i class="ni ni-ungroup"></i></base-button>
-                  <base-button size="sm" title="Recorrido" @click="showRecorridoSalidasPanelBusqueda(scope.row)"
-                    type="success"><i class="ni ni-world"></i></base-button>
+                  <base-button
+                    size="sm"
+                    title="Tarjeta"
+                    @click="showTarjetaSalidasPanelBusqueda(scope.row)"
+                    type="primary"
+                    ><i class="ni ni-ungroup"></i
+                  ></base-button>
+                  <base-button
+                    size="sm"
+                    title="Recorrido"
+                    @click="showRecorridoSalidasPanelBusqueda(scope.row)"
+                    type="success"
+                    ><i class="ni ni-world"></i
+                  ></base-button>
                 </template>
-
               </el-table-column>
-
-
-
 
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="130">
               </el-table-column>
@@ -111,10 +198,18 @@
               <el-table-column prop="idSali_m" label="Salida" width="140">
               </el-table-column>
 
-              <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
+              <el-table-column
+                v-for="column in tableColumnsUnidadesFlotaVehicular"
+                :key="column.label"
+                v-bind="column"
+              >
               </el-table-column>
 
-              <el-table-column label="Estado" min-width="270px" prop="EstaSali_m">
+              <el-table-column
+                label="Estado"
+                min-width="270px"
+                prop="EstaSali_m"
+              >
                 <template v-slot="{ row }">
                   <badge class="badge-dot mr-4" type="">
                     <!--<i
@@ -126,12 +221,20 @@
                           : 'success'
                       }`"
                     ></i>-->
-                    <span class="status"><strong>{{
-                        row.EstaSali_m == 1 ? "DIFERIDA" : row.EstaSali_m == 4 ? "ANULADO" : row.EstaSali_m == 2 ? "EN RUTA"
-                          : row.EstaSali_m == 3 && parseFloat(row.PenaCtrlSali_d) > 0
-                            ? "FINALIZADO CON PENALIDAD"
-                            : "FINALIZADA SIN PENALIDAD"
-                    }}</strong></span>
+                    <span class="status"
+                      ><strong>{{
+                        row.EstaSali_m == 1
+                          ? "DIFERIDA"
+                          : row.EstaSali_m == 4
+                          ? "ANULADO"
+                          : row.EstaSali_m == 2
+                          ? "EN RUTA"
+                          : row.EstaSali_m == 3 &&
+                            parseFloat(row.PenaCtrlSali_d) > 0
+                          ? "FINALIZADO CON PENALIDAD"
+                          : "FINALIZADA SIN PENALIDAD"
+                      }}</strong></span
+                    >
                   </badge>
                 </template>
               </el-table-column>
@@ -144,87 +247,154 @@
     </base-header>
 
     <!--Form modal-->
-    <modal :show.sync="modalSalidasPanelDespachoBusqueda" size="xl" body-classes="p-0">
-      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
-        <GmapMap map-type-id="roadmap" class="mapa" :center="oCenter" :zoom="oZoom" :options="{
-          zoomControl: false,
-          scaleControl: false,
-          mapTypeControl: false,
-          streetViewControl: false,
-          rotateControl: false,
-          fullscreenControl: false,
-          disableDefaultUi: true,
-        }">
-          <GmapMarker v-for="marker in mListPosicionesHistorialSalidasPanelBusqueda" :key="marker.idHistEve" :position="{
-            lat: parseFloat(marker.LatiHistEven),
-            lng: parseFloat(marker.LongHistEven),
-          }" :icon="marker.icono" :clickable="false" :draggable="false" :optimized="true" />
+    <modal
+      :show.sync="modalSalidasPanelDespachoBusqueda"
+      size="xl"
+      body-classes="p-0"
+    >
+      <div class="containerModalRecorridoPanelDespacho">
+        <div class="cardControlesMarc">
+          <el-table
+            height="calc(80vh)"
+            style="width: 100%"
+            :data="mListControlesSalidaPanelBusquedaDespacho"
+          >
+            <el-table-column prop="CodiCtrl" label="CTRL" width="100">
+            </el-table-column>
+            <el-table-column prop="horaMarc" label="H. PROG" width="70">
+            </el-table-column>
+            <el-table-column prop="horaProg" label="H. MARC" width="70">
+            </el-table-column>
+          </el-table>
+        </div>
 
-          <!--MARCADORES CON MARCACION-->
-          <GmapMarker v-for="marker in mListPosicionesHistorialMarcSalidasPanelBusqueda" :key="marker.idHistEve"
+        <GmapMap
+          map-type-id="roadmap"
+          class="mapa"
+          :center="oCenter"
+          :zoom="oZoom"
+          :options="{
+            zoomControl: false,
+            scaleControl: false,
+            mapTypeControl: false,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: false,
+            disableDefaultUi: true,
+          }"
+        >
+          <GmapMarker
+            v-for="marker in mListPosicionesHistorialSalidasPanelBusqueda"
+            :key="marker.idHistEve"
             :position="{
               lat: parseFloat(marker.LatiHistEven),
               lng: parseFloat(marker.LongHistEven),
-            }" icon="static/img/control/control.png" :clickable="false" :draggable="false" :optimized="true" :options="{
-  label: {
-    text:
-      'RUTA : ' +
-      marker.DescRutaSali_m +
-      '\nPROG : ' +
-      marker.HoraProgSali_d +
-      ' MARC : ' +
-      marker.HoraMarcSali_d,
-    color: '#055eb1',
-    className: 'paddingLabelControlMarc',
-  },
-}" />
+            }"
+            :icon="marker.icono"
+            :clickable="false"
+            :draggable="false"
+            :optimized="true"
+          />
 
+          <!--MARCADORES CON MARCACION-->
+          <GmapMarker
+            v-for="marker in mListPosicionesHistorialMarcSalidasPanelBusqueda"
+            :key="marker.idHistEve"
+            :position="{
+              lat: parseFloat(marker.LatiHistEven),
+              lng: parseFloat(marker.LongHistEven),
+            }"
+            icon="static/img/control/control.png"
+            :clickable="false"
+            :draggable="false"
+            :optimized="true"
+            :options="{
+              label: {
+                text:
+                  'RUTA : ' +
+                  marker.DescRutaSali_m +
+                  '\nPROG : ' +
+                  marker.HoraProgSali_d +
+                  ' MARC : ' +
+                  marker.HoraMarcSali_d,
+                color: '#055eb1',
+                className: 'paddingLabelControlMarc',
+              },
+            }"
+          />
 
           <!--TODOS LOS MARCADORES-->
 
-          <GmapPolygon v-for="control in mListControlesSalidaPanelBusquedaDespacho" :key="control.CodiCtrl" :options="{
-            strokeColor: '#F71313',
-            fillColor: '#F7131380',
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-          }" :strokeOpacity="0.5" :strokeWeight="1" :paths="control.calculator.coordinates" />
+          <GmapPolygon
+            v-for="control in mListControlesSalidaPanelBusquedaDespacho"
+            :key="control.CodiCtrl"
+            :options="{
+              strokeColor: 'rgb(3, 3, 3)',
+              fillColor: 'rgba(3, 3, 3, 0.178)',
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+            }"
+            :strokeOpacity="0.5"
+            :strokeWeight="1"
+            :paths="control.calculator.coordinates"
+          />
 
-          <GmapMarker v-for="(control, index) in mListControlesSalidaPanelBusquedaDespacho"
-            :key="control.DescCtrl + index" :position="{
+          <GmapMarker
+            v-for="(
+              control, index
+            ) in mListControlesSalidaPanelBusquedaDespacho"
+            :key="control.DescCtrl + index"
+            :position="{
               lat: parseFloat(control.Lati1Ctrl),
               lng: parseFloat(control.Long1Ctrl),
-            }" :optimized="true" icon="static/img/control/control.png" :options="{
-  label: {
-    text: control.DescCtrl,
-    color: '#F71313',
-    className: 'paddingLabelControl',
-  },
-}" />
-
-
+            }"
+            :optimized="true"
+            icon="static/img/control/control.png"
+            :options="{
+              label: {
+                text: control.DescCtrl,
+                color: 'rgb(3, 3, 3)',
+                className: 'paddingLabelControl',
+              },
+            }"
+          />
         </GmapMap>
 
-        <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingRecorridoSalidaPanelBusqueda">
+        <div
+          class="loadingRecorridoSalidaBusquedaPanel"
+          v-if="isLoadingRecorridoSalidaPanelBusqueda"
+        >
           <div class="circleProgress"></div>
         </div>
-      </card>
+      </div>
     </modal>
 
     <!--Form modal TICKET SALIDA-->
-    <modal :show.sync="modalSalidasTarjetaPanelDespachoBusqueda" size="sm" body-classes="p-0">
-      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
-        <iframe :src="baseURlPDFPanelDespachoTarjeta" style="width: 100%; height: 33rem"></iframe>
+    <modal
+      :show.sync="modalSalidasTarjetaPanelDespachoBusqueda"
+      size="sm"
+      body-classes="p-0"
+    >
+      <card
+        type="secondary"
+        header-classes="bg-transparent pb-5"
+        class="border-0 mb-0"
+      >
+        <iframe
+          :src="baseURlPDFPanelDespachoTarjeta"
+          style="width: 100%; height: 33rem"
+        ></iframe>
       </card>
     </modal>
   </div>
 </template>
 <script>
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 import {
   Table,
@@ -250,7 +420,7 @@ import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPag
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
-import { FechaStringToHour } from "../../util/fechas"
+import { FechaStringToHour } from "../../util/fechas";
 
 export default {
   mixins: [clientPaginationMixin],
@@ -354,7 +524,7 @@ export default {
       filaSelectionCurrentSalidaPanelBusqueda: null,
       isLoadingRecorridoSalidaPanelBusqueda: false,
       modalSalidasTarjetaPanelDespachoBusqueda: false,
-      mListControlesSalidaPanelBusquedaDespacho: []
+      mListControlesSalidaPanelBusquedaDespacho: [],
     };
   },
   methods: {
@@ -404,7 +574,7 @@ export default {
     async readAllLineasContadorSalidasPanelBusqueda() {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
-        tipo: 3
+        tipo: 3,
       });
       if (datos.data.status_code == 200) {
         this.mListLineasSalidasPanelBusqueda.push(...datos.data.data);
@@ -489,13 +659,13 @@ export default {
     },
     showTarjetaSalidasPanelBusqueda(salida) {
       this.modalSalidasTarjetaPanelDespachoBusqueda = true;
-      this.readDetalleSalidaDPanelBusqueda(salida)
+      this.readDetalleSalidaDPanelBusqueda(salida);
     },
     async readHistorialSalidaPanelBusqueda(item) {
       this.isLoadingRecorridoSalidaPanelBusqueda = true;
       this.mListPosicionesHistorialSalidasPanelBusqueda = [];
       this.mListPosicionesHistorialMarcSalidasPanelBusqueda = [];
-      console.log(this.filaSelectionCurrentSalidaPanelBusqueda)
+      console.log(this.filaSelectionCurrentSalidaPanelBusqueda);
 
       try {
         console.log("INICIAR HISTORIAL RECORRIDO");
@@ -505,11 +675,13 @@ export default {
             token: this.token,
             unidad: item.CodiVehiSali_m,
             salida: item.idSali_m,
-            fechaI: item.HoraSaliProgSali_mF
+            fechaI: item.HoraSaliProgSali_mF,
           }
         );
         console.log("RECORRIDO SALIDA");
         console.log(datos);
+
+        this.panelMarcaciones(datos.data.datos);
 
         for (var i = 0; i < datos.data.datos.length; i++) {
           var obj = datos.data.datos[i];
@@ -517,12 +689,13 @@ export default {
           obj.icono = {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
             fillColor:
-              (obj.HoraMarcSali_d != null && obj.HoraProgSali_d != null) ? "#055eb1" :
-                obj.EvenExceVeloHistEven == 1
-                  ? "yellow"
-                  : obj.OutRoutHistEven == 1
-                    ? "red"
-                    : "green",
+              obj.HoraMarcSali_d != null && obj.HoraProgSali_d != null
+                ? "#055eb1"
+                : obj.EvenExceVeloHistEven == 1
+                ? "yellow"
+                : obj.OutRoutHistEven == 1
+                ? "red"
+                : "green",
             fillOpacity: 1,
             strokeWeight: 0,
             rotation: obj.RumbHistEven,
@@ -560,6 +733,22 @@ export default {
       }
       this.isLoadingRecorridoSalidaPanelBusqueda = false;
     },
+    async panelMarcaciones(datos) {
+      for (var i = 0;i < this.mListControlesSalidaPanelBusquedaDespacho.length;i++) 
+      {
+        for(var j = 0;j<datos.length;j++)
+        {
+          console.log(datos[j].CodiCtrlHistEven +" == "+this.mListControlesSalidaPanelBusquedaDespacho[i].CodiCtrl)
+          if(datos[j].CodiCtrlHistEven == this.mListControlesSalidaPanelBusquedaDespacho[i].CodiCtrl)
+          {
+            console.log("AQUI")
+
+            this.mListControlesSalidaPanelBusquedaDespacho[i].horaMarc = datos[j].HORAMARC
+            this.mListControlesSalidaPanelBusquedaDespacho[i].horaProg = datos[j].HORAPROG
+          }
+        }
+      }
+    },
     async initControlesSalidasPanelBusqueda() {
       console.log("INICIANDO CONTROLES");
       try {
@@ -572,7 +761,14 @@ export default {
         if (datos.data.status_code == 200) {
           this.mListControlesSalidaPanelBusquedaDespacho = [];
           for (var i = 0; i < datos.data.data.length; i++) {
-            this.mListControlesSalidaPanelBusquedaDespacho[i] = datos.data.data[i];
+            var dato = datos.data.data[i];
+            dato.horaMarc = "";
+            dato.horaProg = "";
+
+            this.mListControlesSalidaPanelBusquedaDespacho[i] = dato;
+
+            console.log(this.mListControlesSalidaPanelBusquedaDespacho[i])
+
             //this.mListControlesMonitoreoAux[i] = datos.data.data[i];
           }
         }
@@ -581,142 +777,160 @@ export default {
       }
     },
     async readDetalleSalidaDPanelBusqueda(salida) {
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/detalleSalida",
+        {
+          token: this.token,
+          idsalida: salida.idSali_m,
+        }
+      );
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/detalleSalida", {
-        token: this.token,
-        idsalida: salida.idSali_m
-      })
+      this.mListSalidasTarjeta = [];
+      this.mListSalidasTarjeta.push(...datos.data.data);
+      console.log(salida);
 
-  this.mListSalidasTarjeta = []
-      this.mListSalidasTarjeta.push(...datos.data.data)
-      console.log(salida)
+      var empresa = [
+        {
+          text: this.$cookies.get("nameEmpresa").substring(0, 30),
+          fontSize: 12,
+          bold: true,
+          alignment: "center",
+        },
+      ];
 
-      
-      var empresa = [{ text: this.$cookies.get('nameEmpresa').substring(0, 30), fontSize: 12, bold: true, alignment: "center" }]
-
-
-
-
-      var resultadoString = [[{ text: 'RELOJ', fontSize: 8.5, bold: true, alignment: "center" },
-      { text: 'PROG', fontSize: 8.5, bold: true, alignment: "center" },
-      { text: 'MARC', fontSize: 8.5, bold: true, alignment: "center" },
-      { text: 'FALT', fontSize: 8.5, bold: true, alignment: "center" },
-      { text: 'PEN', fontSize: 8.5, bold: true, alignment: "center" }]]
+      var resultadoString = [
+        [
+          { text: "RELOJ", fontSize: 8.5, bold: true, alignment: "center" },
+          { text: "PROG", fontSize: 8.5, bold: true, alignment: "center" },
+          { text: "MARC", fontSize: 8.5, bold: true, alignment: "center" },
+          { text: "FALT", fontSize: 8.5, bold: true, alignment: "center" },
+          { text: "PEN", fontSize: 8.5, bold: true, alignment: "center" },
+        ],
+      ];
 
       for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
-
-        var arrys = [{ text: this.mListSalidasTarjeta[i].DescCtrlSali_d.substring(0, 9), fontSize: 8.5 },
-        { text: this.mListSalidasTarjeta[i].HoraProgSali_d.substring(0, 5), fontSize: 8.5, alignment: "center", },
-        { text: this.mListSalidasTarjeta[i].HoraMarcSali_d == '00:00:00' ? '' : this.mListSalidasTarjeta[i].HoraMarcSali_d, fontSize: 8.5, alignment: "center" },
-        { text: this.mListSalidasTarjeta[i].FaltSali_d == '0' ? '' : this.mListSalidasTarjeta[i].FaltSali_d, fontSize: 8.5, alignment: "center" },
-        { text: this.mListSalidasTarjeta[i].PenaCtrlSali_d == '0.00' ? '' : this.mListSalidasTarjeta[i].PenaCtrlSali_d, fontSize: 8.5, alignment: "center" },
-        ]
-        resultadoString.push(arrys)
+        var arrys = [
+          {
+            text: this.mListSalidasTarjeta[i].DescCtrlSali_d.substring(0, 9),
+            fontSize: 8.5,
+          },
+          {
+            text: this.mListSalidasTarjeta[i].HoraProgSali_d.substring(0, 5),
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text:
+              this.mListSalidasTarjeta[i].HoraMarcSali_d == "00:00:00"
+                ? ""
+                : this.mListSalidasTarjeta[i].HoraMarcSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text:
+              this.mListSalidasTarjeta[i].FaltSali_d == "0"
+                ? ""
+                : this.mListSalidasTarjeta[i].FaltSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text:
+              this.mListSalidasTarjeta[i].PenaCtrlSali_d == "0.00"
+                ? ""
+                : this.mListSalidasTarjeta[i].PenaCtrlSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+        ];
+        resultadoString.push(arrys);
       }
 
-
-
-
-      var heightAux = 9.7
-      var sumFalt = 0
-      var penFalt = 0
+      var heightAux = 9.7;
+      var sumFalt = 0;
+      var penFalt = 0;
       for (var i = 0; i < datos.data.data.length; i++) {
-
-        heightAux = heightAux + 1
-        if (datos.data.data[i].FaltSali_d > 0 && datos.data.data[i].isCtrlRefeSali_d == 0) {
-          sumFalt = sumFalt + datos.data.data[i].FaltSali_d
+        heightAux = heightAux + 1;
+        if (
+          datos.data.data[i].FaltSali_d > 0 &&
+          datos.data.data[i].isCtrlRefeSali_d == 0
+        ) {
+          sumFalt = sumFalt + datos.data.data[i].FaltSali_d;
         }
 
         if (datos.data.data[i].isCtrlRefeSali_d == 0) {
-          var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
-          penFalt = penFalt + pen
+          var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d);
+          penFalt = penFalt + pen;
         }
-
       }
 
-   
-
-var docDefinition = {
-
+      var docDefinition = {
         // a string or { width: 190, height: number }
-        pageSize: { width: 220, height: 'auto' },
+        pageSize: { width: 220, height: "auto" },
         pageMargins: [15, 15, 15, 15],
         // header: [empresa],
-
 
         content: [
           {
             headerRows: 0,
             fontSize: 12,
             bold: true,
-            layout: 'noBorders', // optional
+            layout: "noBorders", // optional
             alignment: "center",
             table: {
-              widths: ['*'],
-              body: [empresa]
-            }
+              widths: ["*"],
+              body: [empresa],
+            },
           },
           {
             bold: true,
             fontSize: 9,
-            alignment: 'center',
-            layout: 'noBorders', // optional
+            alignment: "center",
+            layout: "noBorders", // optional
             table: {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
               widths: [35, 75, 25, 22],
-              body: [
-                ['Unidad', 'Salida #' + salida.idSali_m, 'Ruta', 'Vue']
-              ]
-            }
-
+              body: [["Unidad", "Salida #" + salida.idSali_m, "Ruta", "Vue"]],
+            },
           },
 
-
           {
-            //bold: true, 
+            //bold: true,
             fontSize: 9,
-            alignment: 'center',
+            alignment: "center",
 
-            layout: 'noBorders', // optional
+            layout: "noBorders", // optional
             table: {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
               widths: [35, 75, 25, 22],
               body: [
-
-                [salida.CodiVehiSali_m, salida.HoraSaliProgSali_mF.substring(0, 10), { text: salida.LetraRutaSali_m, bold: true }, salida.NumeVuelSali_m],
-              ]
-            }
-
+                [
+                  salida.CodiVehiSali_m,
+                  salida.HoraSaliProgSali_mF.substring(0, 10),
+                  { text: salida.LetraRutaSali_m, bold: true },
+                  salida.NumeVuelSali_m,
+                ],
+              ],
+            },
           },
-
-
 
           {
-
             fontSize: 10,
-            layout: 'noBorders', // optional
+            layout: "noBorders", // optional
             table: {
-
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
-              widths: ['*'],
-              body: [
-
-                ['FREC: ' + salida.DescFrec.substring(0, 25)]
-
-
-              ]
-            }
+              widths: ["*"],
+              body: [["FREC: " + salida.DescFrec.substring(0, 25)]],
+            },
           },
 
-          { text: '---------------------------------------------------------' },
-
-
-
+          { text: "---------------------------------------------------------" },
 
           // {
           //     table: {
@@ -732,21 +946,19 @@ var docDefinition = {
           //         },
           //     }
           // },
-          // 
+          //
 
           {
             fontSize: 8.5,
-            layout: 'noBorders',
+            layout: "noBorders",
             // optional
             table: {
-
-
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
               widths: [55, 23, 33, 19, 17],
-              
-              body: resultadoString
+
+              body: resultadoString,
               //   ['RELOJ', 'PROG', 'MARC', 'FALT',  'PEN'],
               //    ['CHUGCHUP', '06:18', '06:15:21', '-3', '' ],
               //    ['MADRE TE', '06:24', '06:21:10', '-3', '' ],
@@ -759,13 +971,9 @@ var docDefinition = {
               //      ['OVIEDO Y', '07:50', '07:44:39', '-6', '' ],
               //        ['CHUGCHUP', '08:10', '', '', 'REF' ]
 
-
-
               // ]
-            }
+            },
           },
-
-
 
           // {
           //   table: {
@@ -773,8 +981,6 @@ var docDefinition = {
           //     body: [[" "], [" "]]
           //   },
           //   layout: {
-
-
 
           //     hLineWidth: function (i, node) {
           //       return (i === 0 || i === node.table.body.length) ? 0 : 2;
@@ -785,42 +991,44 @@ var docDefinition = {
           //   }
           // },
 
-
-
-          { text: '---------------------------------------------------------' },
-          { text: 'Chofer: ', fontSize:8 },
-          { text: 'Cobrador: ',fontSize:8 },
-          { text: 'Adelanto: '+  (salida.adelantoTime == null ? '00:00:00' : salida.adelantoTime), fontSize:8, fontSize:8 },
-          { text: 'Atrasos: '+(salida.atrasoTime == null ? '00:00:00' : salida.atrasoTime),fontSize:8 },
-          
+          { text: "---------------------------------------------------------" },
+          { text: "Chofer: ", fontSize: 8 },
+          { text: "Cobrador: ", fontSize: 8 },
+          {
+            text:
+              "Adelanto: " +
+              (salida.adelantoTime == null ? "00:00:00" : salida.adelantoTime),
+            fontSize: 8,
+            fontSize: 8,
+          },
+          {
+            text:
+              "Atrasos: " +
+              (salida.atrasoTime == null ? "00:00:00" : salida.atrasoTime),
+            fontSize: 8,
+          },
 
           {
             fontSize: 10,
             bold: true,
-            layout: 'noBorders', // optional
+            layout: "noBorders", // optional
             table: {
-
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
 
               body: [
-
-                ['TOTAL Faltas : +' + sumFalt],
-                ['TOTAL Dinero : ' + Number(penFalt).toFixed(2)],
-
-
-              ]
-            }
+                ["TOTAL Faltas : +" + sumFalt],
+                ["TOTAL Dinero : " + Number(penFalt).toFixed(2)],
+              ],
+            },
           },
-
-        ]
+        ],
       };
-
 
       var pdfDocGenerator = pdfMake.createPdf(docDefinition);
 
       pdfDocGenerator.getDataUrl((dataUrl) => {
-        this.baseURlPDFPanelDespachoTarjeta = dataUrl
+        this.baseURlPDFPanelDespachoTarjeta = dataUrl;
       });
 
       // const pdfDoc = await PDFDocument.create()
@@ -925,10 +1133,8 @@ var docDefinition = {
       //     color: rgb(0, 0, 0),
       //   })
 
-
       // }
       // heightAux = heightAux - 0.5
-
 
       // page.drawText("---------------------------------------------------------", {
       //   x: 20,
@@ -983,80 +1189,245 @@ var docDefinition = {
       //   color: rgb(0, 0, 0),
       // })
 
-      this.baseURlPDFPanelDespachoTarjeta = await pdfDoc.saveAsBase64({ dataUri: true });
-    }, exportPdfSalidasPanelBusqueda() 
-    {
-      var empresa = [{ text: 'Empresa : '+this.$cookies.get('nameEmpresa'), fontSize: 8.5, bold: true,alignment:"left" }]
-      var unidad = [{ text: 'Flota Vehicular : '+(this.itemUnidadSalidasPanelBusqueda.length > 0 ? this.itemUnidadSalidasPanelBusqueda.toString() : 'Toda la flota'), fontSize: 8.5, bold: true,alignment:"left" }]
-      var ruta = [{ text: 'Rutas : ', fontSize: 8.5, bold: true,alignment:"left" }]
-      var desde_hasta = [{ text: 'Fecha : '+this.fechaInicialSalidasPanelBusqueda+" hasta "+this.fechaFinalSalidasPanelBusqueda, fontSize: 8.5, bold: true,alignment:"left" }]
-      
-      var resultadoString = [[{ text: 'Unidad', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'Salida', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'Ruta', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'N° Vuelta', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'H.Salida', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'H. Llegada', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'T. Atraso', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'T. Adelanto', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'V. Max', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }, { text: 'PEN ($)', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" },{ text: 'ESTADO', fontSize: 8.5, bold: true,fillColor:"#039BC4",color:"white",alignment:"center" }]]
+      this.baseURlPDFPanelDespachoTarjeta = await pdfDoc.saveAsBase64({
+        dataUri: true,
+      });
+    },
+    exportPdfSalidasPanelBusqueda() {
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 8.5,
+          bold: true,
+          alignment: "left",
+        },
+      ];
+      var unidad = [
+        {
+          text:
+            "Flota Vehicular : " +
+            (this.itemUnidadSalidasPanelBusqueda.length > 0
+              ? this.itemUnidadSalidasPanelBusqueda.toString()
+              : "Toda la flota"),
+          fontSize: 8.5,
+          bold: true,
+          alignment: "left",
+        },
+      ];
+      var ruta = [
+        { text: "Rutas : ", fontSize: 8.5, bold: true, alignment: "left" },
+      ];
+      var desde_hasta = [
+        {
+          text:
+            "Fecha : " +
+            this.fechaInicialSalidasPanelBusqueda +
+            " hasta " +
+            this.fechaFinalSalidasPanelBusqueda,
+          fontSize: 8.5,
+          bold: true,
+          alignment: "left",
+        },
+      ];
 
-      for (var i = 0; i < this.mListaSalidasPanelBusqueda.length; i++) 
-      {
-        var estado = this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1 ? "DIFERIDA" : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 4 ? "ANULADO" : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2 ? "EN RUTA"
-                          : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 && parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d) > 0
-                            ? "FINALIZADO CON PENALIDAD"
-                            : "FINALIZADA SIN PENALIDAD"
-        var arrys = [{ text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m, fontSize: 8.5 },
-        { text: this.mListaSalidasPanelBusqueda[i].idSali_m, fontSize: 8.5 },
-        { text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m, fontSize: 8.5 },
-        { text: this.mListaSalidasPanelBusqueda[i].NumeVuelSali_m, fontSize: 8.5 },
-        { text: this.mListaSalidasPanelBusqueda[i].HoraSaliProgSali_mF, fontSize: 8.5 },
-        { text: this.mListaSalidasPanelBusqueda[i].HoraLlegProgSali_m, fontSize: 8.5 },
-        { text: this.mListaSalidasPanelBusqueda[i].atrasoTime, fontSize: 8.5 },
-        { text: this.mListaSalidasPanelBusqueda[i].adelantoTime, fontSize: 8.5 },
-        { text: this.mListaSalidasPanelBusqueda[i].VeloMaxiSali_m, fontSize: 8.5 },
-        { text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d, fontSize: 8.5 },
-        { text: estado, fontSize: 8.5 }]
-        resultadoString.push(arrys)
+      var resultadoString = [
+        [
+          {
+            text: "Unidad",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Salida",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Ruta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "N° Vuelta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H.Salida",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. Llegada",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "T. Atraso",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "T. Adelanto",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "V. Max",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "PEN ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "ESTADO",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+        ],
+      ];
+
+      for (var i = 0; i < this.mListaSalidasPanelBusqueda.length; i++) {
+        var estado =
+          this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1
+            ? "DIFERIDA"
+            : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 4
+            ? "ANULADO"
+            : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
+            ? "EN RUTA"
+            : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
+              parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d) > 0
+            ? "FINALIZADO CON PENALIDAD"
+            : "FINALIZADA SIN PENALIDAD";
+        var arrys = [
+          {
+            text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
+            fontSize: 8.5,
+          },
+          { text: this.mListaSalidasPanelBusqueda[i].idSali_m, fontSize: 8.5 },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m,
+            fontSize: 8.5,
+          },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].NumeVuelSali_m,
+            fontSize: 8.5,
+          },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].HoraSaliProgSali_mF,
+            fontSize: 8.5,
+          },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].HoraLlegProgSali_m,
+            fontSize: 8.5,
+          },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].atrasoTime,
+            fontSize: 8.5,
+          },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].adelantoTime,
+            fontSize: 8.5,
+          },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].VeloMaxiSali_m,
+            fontSize: 8.5,
+          },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
+            fontSize: 8.5,
+          },
+          { text: estado, fontSize: 8.5 },
+        ];
+        resultadoString.push(arrys);
       }
 
       var docDefinition = {
-        pageOrientation: 'landscape',
-        pageSize: 'A4',
+        pageOrientation: "landscape",
+        pageSize: "A4",
         content: [
           {
-            layout:'noBorders',
+            layout: "noBorders",
             table: {
               headerRows: 0,
-              widths: [450,450,450,450],
-              body: [empresa,unidad,ruta,desde_hasta]
-            }
+              widths: [450, 450, 450, 450],
+              body: [empresa, unidad, ruta, desde_hasta],
+            },
           },
           {
             table: {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 40, 100, 40, 90, 50, 60, 60, 35, 35,90],
-              body: resultadoString
-            }
-          }
-        ]
-      }
-      var win = window.open('', '_blank');
+              widths: [30, 40, 100, 40, 90, 50, 60, 60, 35, 35, 90],
+              body: resultadoString,
+            },
+          },
+        ],
+      };
+      var win = window.open("", "_blank");
       pdfMake.createPdf(docDefinition).open({}, win);
-    }
+    },
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
     this.readAllUnidadesSalidasPanelBusqueda();
-    this.initControlesSalidasPanelBusqueda()
+    this.initControlesSalidasPanelBusqueda();
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllLineasContadorSalidasPanelBusqueda();
     this.readSalidasPanelBusqueda();
-
   },
 };
 </script>
 <style>
+.containerModalRecorridoPanelDespacho {
+  display: flex;
+}
+.cardControlesMarc {
+  height: calc(80vh);
+  width: 18rem;
+}
 .current-row {
   background-color: rgba(0, 0, 0, 0.178);
 }
 
-.el-table__body tr.current-row>td.el-table__cell {
+.el-table__body tr.current-row > td.el-table__cell {
   background-color: rgba(0, 0, 0, 0.178) !important;
 }
 
@@ -1135,7 +1506,4 @@ var docDefinition = {
 .card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda {
   padding-top: 0.25rem !important;
 }
-
-
-
 </style>

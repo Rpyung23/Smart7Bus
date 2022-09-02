@@ -9,6 +9,11 @@
 
         <div class="cardTiposDespachosPanelDespacho">
 
+          <base-button icon type="danger" title="Ver Salidas Anuladas" size="sm"
+            @click="showModalDespachoSalidasAnuladas()">
+            <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
+          </base-button>
+
           <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
             v-model="fechaActualSalidasPanelDespacho">
           </el-date-picker>
@@ -23,24 +28,29 @@
         </div>
 
 
-
-
-
-
         <div class="buttonsAdicionalesDespacho">
+          
+          <base-button icon type="info" @click="showModalDespachoRecalificarSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recalificar Salida">
+            <span class="btn-inner--icon"><i class="ni ni-watch-time"></i></span>
+          </base-button>
 
-          <base-button icon type="default" @click="showReporteLlegadaSAlida()" size="sm">
+          <base-button icon type="danger" @click="showModalDespachoAnularSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'FINALIZADO'" size="sm" title="Anular Salida">
+            <span class="btn-inner--icon"><i class="ni ni-scissors"></i></span>
+          </base-button>
+
+          <base-button icon type="warning" @click="showModalDespachoFinalizarSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'FINALIZADO' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Finalizar Salida">
+            <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
+          </base-button>
+
+          <base-button icon type="default" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recorrido">
             <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
           </base-button>
 
-          <base-button icon type="primary" @click="showReporteLlegadaSAlida()" size="sm">
+          <base-button icon type="primary" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" @click="showReporteLlegadaSAlida()" size="sm" title="Ver Tarjeta">
             <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
           </base-button>
 
-          <base-button icon type="danger" title="Salidas Anuladas" size="sm"
-            @click="showModalDespachoSalidasAnuladas()">
-            <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
-          </base-button>
+          
           <base-button icon type="success" title="Despachar" size="sm" @click="showEnviarDespachoPanel()">
             <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
           </base-button>
@@ -214,8 +224,8 @@
         </div>
         <div class="col-md-6">
 
-          <el-select v-model="mSelectRutaSalidaPanelDespacho" collapse-tags placeholder="Lineas"
-            @change="readFrecuenciasSalidasPanel()" style="width: 100%;">
+          <el-select v-model="mSelectRutaSalidaDespachar" collapse-tags placeholder="Lineas"
+            style="width: 100%;">
             <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
               :value="item.idRuta">
             </el-option>
@@ -287,18 +297,18 @@
               lat: parseFloat(marker.LatiHistEven),
               lng: parseFloat(marker.LongHistEven),
             }" icon="static/img/control/control.png" :clickable="false" :draggable="false" :optimized="true" :options="{
-  label: {
-    text:
-      'RUTA : ' +
-      marker.DescRutaSali_m +
-      '\nPROG : ' +
-      marker.HoraProgSali_d +
-      ' MARC : ' +
-      marker.HoraMarcSali_d,
-    color: '#055eb1',
-    className: 'paddingLabelControlMarc',
-  },
-}" />
+              label: {
+                text:
+                  'RUTA : ' +
+                  marker.DescRutaSali_m +
+                  '\nPROG : ' +
+                  marker.HoraProgSali_d +
+                  ' MARC : ' +
+                  marker.HoraMarcSali_d,
+                color: '#055eb1',
+                className: 'paddingLabelControlMarc',
+              },
+            }" />
 
 
           <!--TODOS LOS MARCADORES-->
@@ -331,6 +341,20 @@
       </card>
     </modal>
 
+    <!--Form modal Despacho Recalificar Salida-->
+    <modal :show.sync="modalDespachoRecalificarSalida" body-classes="p-0">
+      <h6 slot="header" class="modal-title">Recalificar Salida</h6>
+    </modal>
+
+    <!--Form modal Despacho Anular Salida-->
+    <modal :show.sync="modalDespachoAnularSalida" body-classes="p-0">
+      <h6 slot="header" class="modal-title">Anular Salida</h6>
+    </modal>
+
+    <!--Form modal Despacho Finalizar Salida-->
+    <modal :show.sync="modalDespachoFinalizarSalida" body-classes="p-0">
+      <h6 slot="header" class="modal-title">Finalizar Salida</h6>
+    </modal>
   </div>
 </template>
 <script>
@@ -397,12 +421,17 @@ export default {
       itemUnidadSalidasPanelBusqueda: [],
       mListRutasFrecuencias: [],
       mSelectRutaSalidaPanelDespacho: null,
+      mSelectRutaSalidaDespachar: null,
       mSelectRutaFrecuenciaPanelDespacho: null,
       modalSalidasTarjetaPanelDespacho: false,
       modalEnviarDespachoPanel: false,
+      modalDespachoRecalificarSalida:false,
+      modalDespachoAnularSalida:false,
+      modalDespachoFinalizarSalida:false,
       baseURlPDFPanelDespachoTarjetaSalida: null,
       selectedRowSalida: null,
       selectRowId:null,
+      selectRowEstado:null,
       radioTipoDespacho: 3,
       checkboxOrdenamientoDespacho: false,
       checkboxOSalidasAnuladasDespacho: false,
@@ -421,7 +450,9 @@ export default {
       this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(this.selectedRowSalida.idSali_m)
       this.selectedRowSalida.idSali_m = this.selectedRowSalida.idSali_m
       this.selectRowId = this.selectedRowSalida.idSali_m
-    
+      this.selectRowEstado = this.selectedRowSalida.EstaSali_m
+      console.log("EstaSali_m")
+      console.log(this.selectRowEstado)
     },
     getHoraSaliProgSali_mF(id_salida) {
       for (var i = 0; i < this.mListDespachosPanel.length; i++) {
@@ -437,6 +468,18 @@ export default {
     },
     showEnviarDespachoPanel() {
       this.modalEnviarDespachoPanel ? (this.modalEnviarDespachoPanel = false) : (this.modalEnviarDespachoPanel = true)
+    },
+    showModalDespacho() {
+      this.modalEnviarDespachoPanel ? (this.modalEnviarDespachoPanel = false) : (this.modalEnviarDespachoPanel = true)
+    },
+    showModalDespachoRecalificarSalida() {
+      this.modalDespachoRecalificarSalida ? (this.modalDespachoRecalificarSalida = false) : (this.modalDespachoRecalificarSalida = true)
+    },
+    showModalDespachoAnularSalida() {
+      this.modalDespachoAnularSalida ? (this.modalDespachoAnularSalida = false) : (this.modalDespachoAnularSalida = true)
+    },
+    showModalDespachoFinalizarSalida() {
+      this.modalDespachoFinalizarSalida ? (this.modalDespachoFinalizarSalida = false) : (this.modalDespachoFinalizarSalida = true)
     },
     async readFrecuenciasSalidasPanel() {
       this.mListRutasFrecuencias = []
@@ -523,37 +566,18 @@ export default {
         this.mListDespachosPanelAuxiliar.push(...datos.data.datos)
         this.$refs.myGridDespachoPanel.beginupdate();
         this.columnsInfo = []
-        this.columnsInfo[0] = {
-          text: 'Operaciones', datafield: 'Country24', width: 210, cellclassname: this.cellclassname, pinned: true, createwidget: (row, column, value, htmlElement) => {
-            htmlElement.innerHTML = `<div class="cardTextoRPagosVehiculoProduccion">
-                                          <button data-v-6d3c1b30="" type="button" class="btn btn-icon btn-fab btn-default btn-sm">
-                                              <span data-v-6d3c1b30="" class="btn-inner--icon">
-                                              <i data-v-6d3c1b30="" class="ni ni-cloud-download-95"></i></span> 
-                                              </button> 
-                                          <button data-v-6d3c1b30="" type="button" class="btn btn-icon btn-fab btn-danger btn-sm">
-                                              <span data-v-6d3c1b30="" class="btn-inner--icon"><i data-v-6d3c1b30="" class="ni ni-fat-remove"></i></span> 
-                                              </button> 
-                                          <button data-v-6d3c1b30="" type="button" class="btn btn-icon btn-fab btn-warning btn-sm">
-                                              <span data-v-6d3c1b30="" class="btn-inner--icon"><i data-v-6d3c1b30="" class="ni ni-fat-delete"></i></span> 
-                                              </button> 
-                                          </div>`
-          },
-          initwidget: (row, column, value, htmlElement) => {
-
-          }
-        }
-        this.columnsInfo[1] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[2] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[3] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[4] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[5] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[6] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[7] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[8] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[9] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[10] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[11] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[12] = { text: 'Chofer', datafield: 'Country23', width: 150, cellsalign: 'left', cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[0] = { text: 'Unidad', datafield: 'CodiVehiSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[1] = { text: 'H.Salida', datafield: 'HoraSaliProgSali_m', width: 130, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[2] = { text: 'H.Llegada', datafield: 'HoraLlegProgSali_m', width: 90, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[8] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[9] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[10] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[11] = { text: 'Chofer', datafield: 'Country23', width: 150, cellsalign: 'left', cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
 
 
 
@@ -592,6 +616,7 @@ export default {
         if (datos.data.status_code == 200) {
           this.mListRutasDespacho.push(...datos.data.data);
           this.mSelectRutaSalidaPanelDespacho = datos.data.data[0].idRuta
+          this.mSelectRutaSalidaDespachar = datos.data.data[0].idRuta
           this.initFechaActualSalidaDespachoPanel()
           this.readFrecuenciasSalidasPanel()
 
@@ -1104,6 +1129,8 @@ export default {
         return "estadoenrutaDespacho"
       } else if (data.EstaSali_m == 'FINALIZADO') {
         return "estadofinalizadoDespacho";
+      }else{
+        return "estadofinalizadoDespacho";
       }
     },
     showModalDespachoSalidasAnuladas() {
@@ -1164,7 +1191,7 @@ export default {
       } else {
         return false;
       }
-    }
+    },
   },
   mounted() {
     this.readAllUnidadesSalidasPanelBusqueda()
@@ -1172,7 +1199,7 @@ export default {
     this.initFechaActualSalidaDespachoPanel()
     /*document.addEventListener('contextmenu', event => event.preventDefault());
     document.oncontextmenu = function () { return false }*/
-
+    
 
     this.imagenBaseUrl = this.$cookies.get('logo')
 
@@ -1222,7 +1249,6 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-  background-color: #ffffff;
 }
 
 
@@ -1362,4 +1388,6 @@ export default {
   height: calc(100vh - 9rem);
   overflow: none;
 }
+
+
 </style>

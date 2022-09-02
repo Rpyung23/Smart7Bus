@@ -404,6 +404,8 @@ export default {
     },
     async readAllDetalleReciboPagosVehiculoProduccion(index, item) {
       this.modalsReciboProduccion = true;
+      this.baseURlPDFPanelDetalleRecibo = ""
+
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/ProduccionDetalleRecibosPagosVehiculo",
