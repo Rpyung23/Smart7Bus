@@ -585,7 +585,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListUnidadesFlotaVehicular.push(...datos.data.data);
-        } else if (datos.data.status_code == 200) {
+        } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Flota Vehicular",
             message: "No existen unidades registradas",
