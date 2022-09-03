@@ -931,23 +931,6 @@ export default {
           },
 
           { text: "---------------------------------------------------------" },
-
-          // {
-          //     table: {
-          //             widths: ['*'],
-          //             body: [[" "], [" "]]
-          //     },
-          //     layout: {
-          //         hLineWidth: function(i, node) {
-          //             return (i === 0 || i === node.table.body.length) ? 0 : 2;
-          //         },
-          //         vLineWidth: function(i, node) {
-          //             return 0;
-          //         },
-          //     }
-          // },
-          //
-
           {
             fontSize: 8.5,
             layout: "noBorders",
@@ -959,37 +942,8 @@ export default {
               widths: [55, 23, 33, 19, 17],
 
               body: resultadoString,
-              //   ['RELOJ', 'PROG', 'MARC', 'FALT',  'PEN'],
-              //    ['CHUGCHUP', '06:18', '06:15:21', '-3', '' ],
-              //    ['MADRE TE', '06:24', '06:21:10', '-3', '' ],
-              //    ['COLEGIO', '06:30', '06:26:34', '-4', '' ],
-              //     ['MALDONAD', '06:38', '06:35:09', '-3', '' ],
-              //      ['TERMINAL', '06:53', '06:47:56', '-6', '' ],
-              //       ['FERIA DE', '07:10', '07:03:57', '-7', '' ],
-              //    ['MAVESA', '07:23', '07:16:48', '-7', '' ],
-              //     ['OLMEDO Y', '07:43', '07:38:59', '-5', '' ],
-              //      ['OVIEDO Y', '07:50', '07:44:39', '-6', '' ],
-              //        ['CHUGCHUP', '08:10', '', '', 'REF' ]
-
-              // ]
             },
           },
-
-          // {
-          //   table: {
-          //     widths: ['*'],
-          //     body: [[" "], [" "]]
-          //   },
-          //   layout: {
-
-          //     hLineWidth: function (i, node) {
-          //       return (i === 0 || i === node.table.body.length) ? 0 : 2;
-          //     },
-          //     vLineWidth: function (i, node) {
-          //       return 0;
-          //     },
-          //   }
-          // },
 
           { text: "---------------------------------------------------------" },
           { text: "Chofer: ", fontSize: 8 },
