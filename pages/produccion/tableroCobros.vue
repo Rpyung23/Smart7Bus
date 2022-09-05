@@ -144,6 +144,9 @@
 </template>
 <script>
 
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 
@@ -166,9 +169,7 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { convertSecondtoTimeString } from '../../util/fechas'
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
 
 export default {
   mixins: [clientPaginationMixin],
@@ -355,15 +356,6 @@ export default {
     {
 
       let dineroCobrado = 0.0
-      let atrasos_falta = 0.0
-      let adelantos_falta = 0.0
-      let atrasos_justificaciones = 0.0
-      let adelantos_justificaciones = 0.0
-      let rubros_falta = 0.0
-      let rubros_justificaciones = 0.0
-      let ex_velocidad_falta = 0.0
-      let ex_velocidad_justificaciones = 0.0
-      let tarjeta = 0.0
 
       var mListaCuerpoRecibo = []
 
@@ -371,16 +363,7 @@ export default {
 
       for (var i = 0; i < mLista.length; i++) {
 
-          /*atrasos_falta = atrasos_falta + (mLista[i].AtrasoFTiempo)
-          adelantos_falta = adelantos_falta + (mLista[i].AdelantoFTiempo)
-          atrasos_justificaciones = atrasos_justificaciones + (mLista[i].AtrasoJTiempo)
-          adelantos_justificaciones = adelantos_justificaciones + (mLista[i].AdelantoJTiempo)
-          rubros_falta = rubros_falta + parseFloat(mLista[i].RubroFalta)
-          rubros_justificaciones = rubros_justificaciones + parseFloat(mLista[i].RubroJustificacion)
-          ex_velocidad_falta = ex_velocidad_falta + parseFloat(mLista[i].VelocidadFalta)
-          ex_velocidad_justificaciones = ex_velocidad_justificaciones + parseFloat(mLista[i].VelocidadJustificacion)
-          tarjeta = tarjeta + parseFloat(mLista[i].TarjetaDiaria)*/
-
+    
           dineroCobrado = dineroCobrado + parseFloat(mLista[i].DeudaTotal)
 
           var obj = [{ text: mLista[i].Unidad, alignment: "center" },
@@ -394,82 +377,68 @@ export default {
 
       var empresa = [{ text: this.$cookies.get('nameEmpresa').substring(0, 30), fontSize: 12, bold: true, alignment: "center" }]
 
-      var docDefinition = {
-
-        // a string or { width: 190, height: number }
-        watermark: { text: this.banderaMarcoAguaRecibo ? 'NO PAGADO' : '', color: 'red', opacity: 0.25, bold: true,fontSize: (mLista.length > 50 ? 150 : 27) },
+      var dd = {
         pageSize: { width: 220, height: 'auto' },
+        watermark: { text: this.banderaMarcoAguaRecibo ? 'NO PAGADO' : '', color: 'red', opacity: 0.25, bold: true,fontSize: (mLista.length > 50 ? 120 : 27) },
         pageMargins: [15, 15, 15, 15],
-        // header: [empresa],
-
-
+        compress: true,
         content: [
           {
             headerRows: 0,
             fontSize: 12,
             bold: true,
-            layout: 'noBorders', // optional
+            layout: 'noBorders',
             table: {
-              widths: ['*'],
+              widths: ["*"],
               body: [empresa]
             }
           },
-          { text: 'COMPROBANTE DE INGRESO', alignment: "center", fontSize: 10 },
+          { text: "COMPROBANTE DE INGRESO",alignment: "center", fontSize: 10 },
 
-          { text: '---------------------------------------------------------' },
-
+          { text: "---------------------------------------------------------" },
           {
             fontSize: 8.5,
             layout: 'noBorders',
-            // optional
             table: {
-
-
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
+              // 19, 65, 44, 27
               headerRows: 0,
               widths: [19, 65, 44, 27],
               body: [
-                [{ text: 'VEHI', alignment: "center", bold: true },
-                { text: 'LINEA', alignment: "center", bold: true },
-                { text: 'FECHA', alignment: "center", bold: true },
-                { text: 'VALOR', alignment: "center", bold: true }],
+                [{ text: "VEHI", alignment: "center", bold: true },
+                { text: "LINEA", alignment: "center", bold: true },
+                { text: "FECHA", alignment: "center", bold: true },
+                { text: "VALOR", alignment: "center", bold: true }],
               ]
 
             }
           },
 
-          { text: '---------------------------------------------------------' },
+          { text: "---------------------------------------------------------" },
 
 
 
           {
             fontSize: 8.5,
             layout: 'noBorders',
-            // optional
             table: {
-
-
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [19, 65, 43, 27],
+              widths: [19, 65, 44, 27],
               body: mLista.length > 0 ?  mListaCuerpoRecibo : [[]],
             }
           },
 
 
-          { text: '---------------------------------------------------------' },
-          { text: 'Operador : ' + this.$cookies.get("namesUsuario"), fontSize: 9 },
-          { text: 'Fecha de Pago : ' + (this.banderaMarcoAguaRecibo ? 'RECIBO SIN PAGAR' : this.initFechaActualTicket()), fontSize: 9 },
-          { text: 'Fecha Impresion : ' + this.initFechaActualTicket(), fontSize: 9 },
-          { text: 'TOTAL DINERO : ' + Number(dineroCobrado).toFixed(2), fontSize: 11, color: 'darkgreen',bold:true },
+          { text: "---------------------------------------------------------" },
+          { text: "Operador : " + this.$cookies.get("namesUsuario"),pageOrientation: 'portrait', fontSize: 9 },
+          { text: "Fecha de Pago : " + (this.banderaMarcoAguaRecibo ? 'RECIBO SIN PAGAR' : this.initFechaActualTicket()),pageOrientation: 'portrait', fontSize: 9 },
+          { text: "Fecha Impresion : " + this.initFechaActualTicket(),pageOrientation: 'portrait', fontSize: 9 },
+          { text: "TOTAL DINERO : " + Number(dineroCobrado).toFixed(2),pageOrientation: 'portrait', fontSize: 11, color: 'darkgreen',bold:true },
         ]
       }
 
 
 
-      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+      var pdfDocGenerator = pdfMake.createPdf(dd);
 
       pdfDocGenerator.getDataUrl((dataUrl) => {
         this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl

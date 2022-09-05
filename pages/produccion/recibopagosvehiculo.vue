@@ -294,7 +294,6 @@ export default {
         token: this.token,
       });
 
-      console.log(datos.data);
 
       if (datos.data.status_code == 200) {
         for (var i = 0; i < datos.data.data.length; i++) {
@@ -347,11 +346,6 @@ export default {
           );
 
           if (datos.data.status_code == 200) {
-            /*Notification.success({
-              title: "Reporte Pagos Vehiculo",
-              message: "Datos consultados con éxito.",
-              duration: 2500,
-            });*/
             var anulado = 0;
             var pagado = 0;
 
@@ -374,9 +368,6 @@ export default {
               "Operador : " + (this.itemCobradoresProduccionRPagoVehiculorecibo.length <= 0 ? "TODOS LOS OPERADORES" : this.itemCobradoresProduccionRPagoVehiculorecibo.NombApellUsua),
               "Total : " + this.mPagadoRPagosVehiculoRecibo,
             ]
-
-
-
 
           } else if (datos.data.status_code == 300) {
             this.loadingRPagosVehiculoRecibo = false;

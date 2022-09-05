@@ -389,7 +389,6 @@
   </div>
 </template>
 <script>
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import pdfMake from "pdfmake/build/pdfmake";
@@ -796,7 +795,7 @@ export default {
           bold: true,
           alignment: "center",
         },
-      ];
+      ]
 
       var resultadoString = [
         [
@@ -869,6 +868,7 @@ export default {
         // a string or { width: 190, height: number }
         pageSize: { width: 220, height: "auto" },
         pageMargins: [15, 15, 15, 15],
+        compress: true,
         // header: [empresa],
 
         content: [
@@ -877,7 +877,6 @@ export default {
             fontSize: 12,
             bold: true,
             layout: "noBorders", // optional
-            alignment: "center",
             table: {
               widths: ["*"],
               body: [empresa],
