@@ -614,7 +614,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListGruposFlotaVehicular.push(...datos.data.data);
-        } else if (datos.data.status_code == 200) {
+        } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Grupos",
             message: "No existen grupos registradas",
@@ -643,7 +643,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListPropietariosFlotaVehicular.push(...datos.data.data);
-        } else if (datos.data.status_code == 200) {
+        } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Propietarios",
             message: "No existen Propietarios registradas",
@@ -672,7 +672,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListAdministrativosFlotaVehicular.push(...datos.data.data);
-        } else if (datos.data.status_code == 200) {
+        } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Administrativos",
             message: "No existen Administrativos registradas",
@@ -701,7 +701,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListChoferesFlotaVehicular.push(...datos.data.data);
-        } else if (datos.data.status_code == 200) {
+        } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Choferes",
             message: "No existen Choferes registradas",
