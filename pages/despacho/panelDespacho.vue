@@ -46,7 +46,7 @@
             <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
           </base-button>
 
-          <base-button icon type="primary" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" @click="showReporteLlegadaSAlida()" size="sm" title="Ver Tarjeta">
+          <base-button icon type="primary" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != ''" @click="showReporteLlegadaSAlida()" size="sm" title="Ver Tarjeta">
             <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
           </base-button>
 
@@ -946,7 +946,7 @@ export default {
 }
 
 .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
-  background-color: rgb(114, 128, 247);
+  background-color: hsla(226, 88%, 61%, 0.301);
   color: black;
 }
 
