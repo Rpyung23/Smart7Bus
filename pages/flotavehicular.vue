@@ -61,6 +61,7 @@
                         <base-button class="remove btn-link" type="danger" size="sm" icon>
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
+                        
                       </div>
                     </el-table-column>
                   </el-table>
@@ -127,7 +128,7 @@
                 <div class="row border-0">
                   <div class="col-12 text-right buttonNuevo">
                     <el-tooltip content="Agregar" placement="top">
-                      <base-button type="primary" icon size="sm">
+                      <base-button type="primary" icon size="sm" @click="showModalAgregarPropietarioFlotavehicular()">
                         <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Propietario</span>
                       </base-button>
                     </el-tooltip>
@@ -158,11 +159,15 @@
 
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button class="edit" type="success" size="sm" icon>
+                        <base-button class="edit" type="success" size="sm" icon @click="editPropietario(row)">
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button class="remove btn-link" type="danger" size="sm" icon>
-                          <i class="text-white ni ni-fat-remove"></i>
+                        <base-button :type="row.activo == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoPropietario(row)">
+                          <i :class="row.activo == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
+                        </base-button>
+                        <base-button @click.native="initPropietariosUnidadSinAsignacionFlotaVehicular($index, row)"
+                          class="remove btn-link" type="default" size="sm" icon>
+                          <i class="text-white ni ni-bus-front-12"></i>
                         </base-button>
                       </div>
                     </el-table-column>
@@ -277,13 +282,13 @@
     </modal>
 
 
-    <!--Form modal -->
+    <!--Form modal Choferes Asignar Unidad-->
     <modal :show.sync="modalChoferesFlotaVehicular" size="sm" body-classes="p-0" gradient="default"
                modal-classes="modal-danger modal-dialog-centered">
       <h6 slot="header" class="modal-title">{{ this.modalTitleAsignarChofer }}</h6>
       <card type="secondary" header-classes="bg-transparent pb-5" body-classes="px-lg-5 py-lg-5" class="border-0 mb-0">
          <div class="text-muted text-center  mb-3">
-            <el-select  placeholder="Unidades sin chofer" v-model="mSelectUnidad">
+            <el-select  placeholder="Unidades sin chofer" v-model="mSelectUnidadChofer">
               <el-option v-for="item in mListChoferesUnidadesSinAsignacion" :key="item.CodiVehi" :label="item.nombres" :value="item.CodiVehi">
                 <span style="float: left">{{ item.CodiVehi }}</span>
                 <span :style="item.nombres == null ? 'float: right; color: green; font-size: 13px' : 'float: right; color: red; font-size: 13px'">{{ item.nombres == null ? 'Libre' : item.nombres }}</span>
@@ -366,11 +371,89 @@
     </validation-observer>
        
     </modal>
-      
+
+    <!--Form modal Agregar Propietario-->
+    <modal :show.sync="modalAgregarPropietarioFlotaVehicular" >
+      <validation-observer v-slot="{handleSubmit}" ref="formValidator">
+      <form class="needs-validation"
+            @submit.prevent="handleSubmit(firstFormSubmit)">
+        <div class="form-row">
+          <div class="col-md-6">
+            <base-input
+              :disabled="editedIndexPropietario == 1"
+              name="Código"
+              placeholder="Usuario"
+              prepend-icon="ni ni-circle-08"
+              rules="required"
+              v-model="codigoPropietario">
+            </base-input>
+          </div>
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-badge"
+              name="Nombre"
+              placeholder="Nombre Completo"
+              rules="required"
+              v-model="nombrePropietario">
+            </base-input>
+          </div>
+        </div>
+        <div class="form-row">  
+          <div class="col-md-6">
+            <base-input
+              name="Usuario"
+              placeholder="Usuario"
+              prepend-icon="ni ni-circle-08"
+              rules="required"
+              v-model="usuarioPropietario">
+            </base-input>
+          </div>
+            <div class="col-md-6">
+              <base-input
+              prepend-icon="ni ni-key-25"
+                name="Contraseña"
+                placeholder="Contraseña"
+                rules="required"
+                v-model="passwordPropietario">
+              </base-input>
+            </div> 
+          </div>
+        
+        <div class="text-right">
+          <base-button type="danger" @click="showModalAgregarPropietarioFlotavehicular()">Cancelar</base-button>
+          <base-button type="primary" v-if="editedIndexPropietario == -1" @click="sendRegisterPropietario()" native-type="submit">Agregar</base-button>
+          <base-button type="primary" v-else @click="sendUpdatePropietario()" native-type="submit">Actualizar</base-button>
+        </div>
+      </form>
+    </validation-observer>
+       
+    </modal>
+
+     <!--Form modal Propietario Vincular Unidad-->
+     <modal :show.sync="modalPropietariosFlotaVehicular" size="lg" body-classes="p-0" gradient="default"
+               modal-classes="modal-danger modal-dialog-centered">
+      <h6 slot="header" class="modal-title">{{ this.modalTitleVincularPropietario }}</h6>
+      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
+        <div style="text-align: center">
+            <el-transfer
+              style="text-align: left; display: inline-block"
+              v-model="mListUnidadesVinculadasPropietario"
+              filter-placeholder="Unidades"
+              filterable
+              :titles="['Unidades', 'Unidades Propietario']"
+              :button-texts="['Desvincular', 'Vincular']"
+              @change="handleChange"
+              :data="mListPropietariosUnidadesSinAsignacion">
+            </el-transfer>
+        </div>
+      </card>
+    </modal>
   </div>
 </template>
+
 <script>
-import { Table, TableColumn, Select, Option, Notification } from "element-ui";
+  
+import { Table, TableColumn, Select, Option, Notification, Transfer } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { Modal, BasePagination } from "@/components/argon-core";
@@ -381,6 +464,7 @@ import TabPane from "@/components/argon-core/Tabs/Tab";
 import VJsoneditor from 'v-jsoneditor'
 
 export default {
+  
   mixins: [clientPaginationMixin],
   layout: "DashboardLayout",
   components: {
@@ -395,6 +479,7 @@ export default {
     [Table.name]: Table,
     [TableColumn.name]: TableColumn,
     [Notification.name]: Notification,
+    [Transfer.name]: Transfer
   },
   data() {
     return {
@@ -407,9 +492,21 @@ export default {
       modalTitleAsignarChofer:'',
       usuarioChoferUnidad:'',
       validaChofer:0,
-      mSelectUnidad:null,
+      validaPropietario:0,
+      mSelectUnidadChofer:null,
       rowSeleccionadoChofer:[],
       indexSeleccionadoChofer:'',
+      mListUnidadesVinculadasPropietario:[],
+      mSelectUnidadPropietarioVD:[],
+      rowSeleccionadoPropietario:[],
+      indexSeleccionadoPropietario:'',
+      modalTitleVincularPropietario:'',
+      usuarioPropietarioUnidad:'',
+      codigoPropietario:'',
+      usuarioPropietario:'',
+      nombrePropietario:'',
+      passwordPropietario:'',
+      editedIndexPropietario:-1,
       currentPageUnidadesFlotaVehicular: 1,
       loadingUnidadesFlotaVehicular: false,
       loadingGruposFlotaVehicular: false,
@@ -418,7 +515,9 @@ export default {
       loadingChoferesFlotaVehicular: false,
       modalPermisosUsuariosAdminFlotaVehicular: false,
       modalChoferesFlotaVehicular: false,
+      modalPropietariosFlotaVehicular:false,
       modalAgregarChoferFlotaVehicular:false,
+      modalAgregarPropietarioFlotaVehicular:false,
       tableColumnsUnidadesFlotaVehicular: [
         {
           prop: "CodiVehi",
@@ -474,18 +573,18 @@ export default {
         {
           prop: "CodiObse",
           label: "Código",
-          minWidth: 125,
+          minWidth: 140,
           sortable: true,
         },
         {
           prop: "AliaObse",
           label: "Nombres y Apellidos",
-          minWidth: 190,
+          minWidth: 220,
         },
         {
           prop: "UsuaObse",
           label: "Usuario",
-          minWidth: 110,
+          minWidth: 140,
         },
         {
           prop: "ClavObse",
@@ -495,7 +594,7 @@ export default {
         {
           prop: "descripcion",
           label: "Descripción",
-          minWidth: 200,
+          minWidth: 220,
         },
       ],
       tableColumnsAdministrativosFlotaVehicular: [
@@ -568,10 +667,25 @@ export default {
       jsonPermisosUsuario: null,
       oItemAdministrativoFlotaVehicular: null,
       otitleModalUsuarioAdmin: '',
-      mListChoferesUnidadesSinAsignacion : []
+      mListChoferesUnidadesSinAsignacion : [],
+      mListPropietariosUnidadesSinAsignacion: []
+      
     };
+    
   },
   methods: {
+    handleChange(value, direction, movedKeys) {
+        if(direction == "right"){
+          this.mSelectUnidadPropietarioVD = []
+          this.mSelectUnidadPropietarioVD.push(...movedKeys)
+          this.sendvincularUnidadPropietario()
+        }else{
+          this.mSelectUnidadPropietarioVD = []
+          this.mSelectUnidadPropietarioVD.push(...movedKeys)
+          this.desvincularUnidadPropietario()
+        }
+        
+      },
     initUnidadesFlotaVEhicular: async function () {
       this.mListUnidadesFlotaVehicular = [];
       this.loadingUnidadesFlotaVehicular = true;
@@ -614,7 +728,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListGruposFlotaVehicular.push(...datos.data.data);
-        } else if (datos.data.status_code == 200) {
+        } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Grupos",
             message: "No existen grupos registradas",
@@ -643,7 +757,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListPropietariosFlotaVehicular.push(...datos.data.data);
-        } else if (datos.data.status_code == 200) {
+        } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Propietarios",
             message: "No existen Propietarios registradas",
@@ -672,7 +786,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListAdministrativosFlotaVehicular.push(...datos.data.data);
-        } else if (datos.data.status_code == 200) {
+        } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Administrativos",
             message: "No existen Administrativos registradas",
@@ -701,7 +815,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListChoferesFlotaVehicular.push(...datos.data.data);
-        } else if (datos.data.status_code == 200) {
+        } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Choferes",
             message: "No existen Choferes registradas",
@@ -748,6 +862,86 @@ export default {
       }
      
     },
+    initPropietariosUnidadSinAsignacionFlotaVehicular: async function (index,row) 
+    {
+      this.showModalUnidadesPropietarioFlotavehicular(index,row)
+      this.rowSeleccionadoPropietario = row
+      this.indexSeleccionadoPropietario = index
+      this.modalTitleVincularPropietario = row.AliaObse
+      this.usuarioPropietarioUnidad = row.CodiObse
+      
+
+      this.mListPropietariosUnidadesSinAsignacion = [];
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/read-novinculadas-unidades-propietario",
+          {
+            token: this.token,
+            propietario:this.usuarioPropietarioUnidad
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          for (var i = 0; i < datos.data.data.length; i++) {
+            this.mListPropietariosUnidadesSinAsignacion.push({
+            key: datos.data.data[i]['CodiVehi'],
+            label: `${ datos.data.data[i]['CodiVehi'] }`
+          });
+          }
+          this.mListPropietariosUnidadesSinAsignacion.push();
+        } else if (datos.data.status_code == 300) {
+          Notification.info({
+            title: "Unidades Propietarios",
+            message: "No existen Unidades Propietarios registradas",
+          });
+        } else {
+          Notification.error({
+            title: "Error Api Unidades Propietarios",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({ title: "Error Catch", msm: error.toString() });
+      }
+      this.initPropietariosUnidadesAsignadasFlotaVehicular(index,row)
+    },
+    initPropietariosUnidadesAsignadasFlotaVehicular: async function (index,row) 
+    {
+      this.mListUnidadesVinculadasPropietario = [];
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/read-vinculadas-unidades-propietario",
+          {
+            token: this.token,
+            propietario:this.usuarioPropietarioUnidad
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          for (var i = 0; i < datos.data.data.length; i++) {
+            for (var j = 0; j < this.mListPropietariosUnidadesSinAsignacion.length; j++) {
+              if(datos.data.data[i]['CodiVehi'] == this.mListPropietariosUnidadesSinAsignacion[j]['label']){
+                this.mListUnidadesVinculadasPropietario.push(this.mListPropietariosUnidadesSinAsignacion[j]['key'])
+              }
+            }
+          }
+
+        } else if (datos.data.status_code == 300) {
+          Notification.info({
+            title: "Unidades Propietarios",
+            message: "No existen Unidades Propietarios registradas",
+          });
+        } else {
+          Notification.error({
+            title: "Error Api Unidades Propietarios",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({ title: "Error Catch", msm: error.toString() });
+      }
+     
+    },
     showModalPermisosFlotaVehicular(index, row) {
       this.modalPermisosUsuariosAdminFlotaVehicular = this.modalPermisosUsuariosAdminFlotaVehicular ? false : true
       this.oItemAdministrativoFlotaVehicular = row
@@ -757,12 +951,20 @@ export default {
     showModalUnidadesChoferFlotavehicular(index, row) {
       this.modalChoferesFlotaVehicular = true
     },
+    showModalUnidadesPropietarioFlotavehicular(index, row) {
+      this.modalPropietariosFlotaVehicular = true
+    },
     showModalAgregarChoferFlotavehicular(index, row) {
       this.modalAgregarChoferFlotaVehicular = this.modalAgregarChoferFlotaVehicular ? false : true
       if (this.modalAgregarChoferFlotaVehicular == false) {
         this.cancelarRegisterChofer()
       }
-  
+    },
+    showModalAgregarPropietarioFlotavehicular(index, row) {
+      this.modalAgregarPropietarioFlotaVehicular = this.modalAgregarPropietarioFlotaVehicular ? false : true
+      if (this.modalAgregarPropietarioFlotaVehicular == false) {
+        this.cancelarRegisterPropietario()
+      }
     },
     onError() {
       console.log('error')
@@ -839,20 +1041,206 @@ export default {
         });
       }
     },
+    async registerPropietario(){
+      try {
+        var objBody= {
+        token:this.token,
+        datos:{
+          _codiobse:this.codigoPropietario,
+          _aliaobse:this.nombrePropietario,
+          _usuaobse:this.usuarioPropietario,
+          _clavobse:this.passwordPropietario,
+          _activo:1,
+          _oObservadorNivel:2
+        }
+      }
+      var result = await this.$axios.post(process.env.baseUrl + "/register-propietario", objBody)
+    if (result.data.status_code == 200) {
+      this.initPropietariosFlotaVehicular()
+      this.limpiarRegisterPropietario()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async updatePropietario(){
+      try {
+        var objBody= {
+        token:this.token,
+        datos:{
+          _codiobse:this.codigoPropietario,
+          _aliaobse:this.nombrePropietario,
+          _usuaobse:this.usuarioPropietario,
+          _clavobse:this.passwordPropietario,
+          _activo:1,
+          _oObservadorNivel:2
+        }
+      }
+      console.log("update propietario")
+      console.log(objBody)
+      var result = await this.$axios.put(process.env.baseUrl + "/update-propietario", objBody)
+    if (result.data.status_code == 200) {
+      this.initPropietariosFlotaVehicular()
+      this.limpiarRegisterPropietario()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async changeEstadoPropietario(row){
+      var estado
+      if (row.activo == 1) {
+        estado = 0
+      }else{
+        estado = 1
+      }
+      try {
+        var objBody= {
+        token:this.token,
+        datos:{
+          _estado:estado,
+          _codiobse:row.CodiObse
+        }
+      }
+      var result = await this.$axios.put(process.env.baseUrl + "/update-propietario-estado-inactivo", objBody)
+    if (result.data.status_code == 200) {
+      this.initPropietariosFlotaVehicular()
+      this.limpiarRegisterPropietario()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
     async asignarChoferUnidad(){
       try {
         var objBody= {
         token:this.token,
         datos:{
           usuario: this.usuarioChoferUnidad,
-          vehiculo: this.mSelectUnidad,
+          vehiculo: this.mSelectUnidadChofer,
         }
       }
       var result = await this.$axios.post(process.env.baseUrl + "/asignar_chofer_vehiculo", objBody)
       if (result.data.status_code == 200) {
         this.initChoferesFlotaVehicular()
         this.initChoferesUnidadSinAsignacionFlotaVehicular(this.indexSeleccionadoChofer,this.rowSeleccionadoChofer)
-        this.mSelectUnidad = null
+        this.mSelectUnidadChofer = null
+        this.$notify({
+            message: result.data.msm,
+            timeout: 1500,
+            type: 'default'
+          });
+      } else {
+        this.$notify({
+            timeout: 3000,
+            message: result.data.msm,
+            type: 'danger'
+            
+          });
+      }
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async vincularUnidadPropietario(){
+      try {      
+      var objBody= {
+        token:this.token,
+        datos:{
+          propietario: this.usuarioPropietarioUnidad,
+          unidad: this.mSelectUnidadPropietarioVD,
+        }
+      }
+      var result = await this.$axios.post(process.env.baseUrl + "/vincular-unidad-propietario", objBody)
+      if (result.data.status_code == 200) {
+        //this.initPropietariosUnidadSinAsignacionFlotaVehicular(this.indexSeleccionadoPropietario,this.rowSeleccionadoPropietario)
+      } else {
+        this.$notify({
+            timeout: 3000,
+            message: result.data.msm,
+            type: 'danger'
+            
+          });
+      }
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async desvincularUnidadPropietario(){
+      try {      
+        var objBody= {
+          token:this.token,
+          datos:{
+            propietario: this.usuarioPropietarioUnidad,
+            codivehiculo: this.mSelectUnidadPropietarioVD,
+          }
+        }
+        console.log("objBody")
+        console.log(objBody) 
+      var result = await this.$axios.delete(process.env.baseUrl + "/delete-unidad-propietario", {data:objBody})
+      
+      if (result.data.status_code == 200) {
+        //this.initPropietariosUnidadSinAsignacionFlotaVehicular(this.indexSeleccionadoPropietario,this.rowSeleccionadoPropietario)
+        //this.mListUnidadesVinculadasPropietario = []
         this.$notify({
             message: result.data.msm,
             timeout: 1500,
@@ -877,18 +1265,47 @@ export default {
     sendAsignarChoferUnidad(){
       this.asignarChoferUnidad();
     },
+    sendvincularUnidadPropietario(){
+      this.vincularUnidadPropietario()
+    },
+    senddesvincularUnidadPropietario(){
+      this.desvincularUnidadPropietario()
+    },
     sendRegisterChofer(){
       if (this.validarChofer()) {
         return;
       }
       this.registerChofer();
     },
+    sendRegisterPropietario(){
+      if (this.validarPropietario()) {
+        return;
+      }
+      this.registerPropietario();
+    },
+    sendUpdatePropietario(){
+      if (this.validarPropietario()) {
+        return;
+      }
+      this.updatePropietario();
+    },
+    sendChangeEstadoPropietario(row){
+      this.changeEstadoPropietario(row);
+    },
+    editPropietario(row){
+      this.nombrePropietario = row.AliaObse
+      this.usuarioPropietario = row.CodiObse
+      this.passwordPropietario = row.ClavObse
+      this.codigoPropietario = row.CodiObse
+      this.editedIndexPropietario = 1
+      this.modalAgregarPropietarioFlotaVehicular = true
+    },
     limpiarRegisterChofer(){
-      this.nombreChofer = ''
-      this.usuarioChofer = ''
-      this.emailChofer = ''
-      this.passwordChofer = ''
-      this.telefonoChofer = ''
+      this.nombreChofer  = ''
+      this.usuarioChofer   = ''
+      this.emailChofer  = ''
+      this.passwordChofer  = ''
+      this.telefonoChofer  = ''
     },
     cancelarRegisterChofer(){
       this.nombreChofer = ''
@@ -899,24 +1316,52 @@ export default {
       this.modalAgregarChoferFlotaVehicular = false
     },
     validarChofer(){
-      this.validarChofer = 0
+      this.validaChofer = 0
       if (this.usuarioChofer == '') {
-        this.validarChofer = 1
+        this.validaChofer = 1
       }
       if (this.nombreChofer == '') {
-        this.validarChofer = 1
+        this.validaChofer = 1
       }
       if (this.emailChofer == '') {
-        this.validarChofer = 1
+        this.validaChofer = 1
       }
       if (this.passwordChofer == '') {
-        this.validarChofer = 1
+        this.validaChofer = 1
       }
       if (this.telefonoChofer == '') {
-        this.validarChofer = 1
+        this.validaChofer = 1
       }
-      return this.validarChofer
-    }
+      return this.validaChofer
+    },
+    limpiarRegisterPropietario(){
+      this.nombrePropietario = ''
+      this.usuarioPropietario = ''
+      this.passwordPropietario = ''
+      this.codigoPropietario = ''
+      this.editedIndexPropietario = -1
+    },
+    cancelarRegisterPropietario(){
+      this.nombrePropietario = ''
+      this.usuarioPropietario = ''
+      this.passwordPropietario = ''
+      this.codigoPropietario = ''
+      this.editedIndexPropietario = -1
+      this.modalAgregarPropietarioFlotaVehicular = false
+    },
+    validarPropietario(){
+      this.validaPropietario = 0
+      if (this.usuarioPropietario == '') {
+        this.validaPropietario = 1
+      }
+      if (this.nombrePropietario == '') {
+        this.validaPropietario = 1
+      }
+      if (this.passwordPropietario == '') {
+        this.validaPropietario = 1
+      }
+      return this.validaPropietario
+    },
   },
   mounted() {
     this.initUnidadesFlotaVEhicular();
