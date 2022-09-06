@@ -3,27 +3,27 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-        <!--<sidebar-item
+
+        <sidebar-item
           :link="{
-            name: 'Tablero',
-            icon: 'ni ni-collection text-success',
-            path: './tablero',
+            name: 'C. Pasajeros',
+            icon: 'ni ni-single-02 text-success',
+            path: './rcontador',
           }"
         >
         </sidebar-item>
 
         <sidebar-item
           :link="{
-            name: 'Recibos',
-            icon: 'ni ni-single-copy-04 text-primary',
+            name: 'C. Pasajeros (Vueltas)',
+            icon: 'ni ni-ungroup text-default',
+            path: './rcontadorvueltas',
           }"
         >
-          <sidebar-item
-            :link="{ name: 'Recibos Pagos Vehiculo', path: './recibopagosvehiculo' }"
-          />
-        </sidebar-item>-->
+        </sidebar-item>
 
-        <sidebar-item
+
+        <!--<sidebar-item
           :link="{
             name: 'Reportes',
             icon: 'ni ni-book-bookmark text-blank',
@@ -32,16 +32,8 @@
           <sidebar-item :link="{ name: 'C. Pasajeros', path: './rcontador' }" />
           <sidebar-item :link="{ name: 'C. Pasajeros (Vueltas)', path: './rcontadorvueltas' }" />
           
-        </sidebar-item>
+        </sidebar-item>-->
 
-        <sidebar-item
-          :link="{
-            name: 'Trabajando',
-            icon: 'ni ni-calendar-grid-58 text-red',
-            path: '/calendar',
-          }"
-        >
-        </sidebar-item>
       </template>
     </side-bar>
     <div class="main-content">

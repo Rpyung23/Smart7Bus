@@ -42,7 +42,7 @@
             <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
           </base-button>
 
-          <base-button icon type="default" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recorrido">
+          <base-button icon type="default"  @click="showRecorridoSalidaPanelDespacho()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recorrido">
             <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
           </base-button>
 
@@ -107,9 +107,7 @@
 
     <!--Form modal TICKET LLEGADA-->
     <modal :show.sync="modalSalidasTarjetaPanelDespacho" size="sm" body-classes="p-0">
-      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
-        <iframe :src="baseURlPDFPanelDespachoTarjetaSalida" style="width: 100%; height: 33rem"></iframe>
-      </card>
+      <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta>
     </modal>
 
     <!--Form modal Despacho Salidas Anuladas-->
@@ -276,69 +274,7 @@
 
     <!--RECORRIDO modal-->
     <modal :show.sync="modalRecorridoPanelDespachoControl" size="xl" body-classes="p-0">
-      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
-        <GmapMap map-type-id="roadmap" class="mapa" :center="oCenterPanelDespachoControl" :zoom="oZoomPanelDespachoControl" :options="{
-          zoomControl: false,
-          scaleControl: false,
-          mapTypeControl: false,
-          streetViewControl: false,
-          rotateControl: false,
-          fullscreenControl: false,
-          disableDefaultUi: true,
-        }">
-          <GmapMarker v-for="marker in mListPosicionesHistorialSalidasPanelBusqueda" :key="marker.idHistEve" :position="{
-            lat: parseFloat(marker.LatiHistEven),
-            lng: parseFloat(marker.LongHistEven),
-          }" :icon="marker.icono" :clickable="false" :draggable="false" :optimized="true" />
-
-          <!--MARCADORES CON MARCACION-->
-          <GmapMarker v-for="marker in mListPosicionesHistorialMarcSalidasPanelBusqueda" :key="marker.idHistEve"
-            :position="{
-              lat: parseFloat(marker.LatiHistEven),
-              lng: parseFloat(marker.LongHistEven),
-            }" icon="static/img/control/control.png" :clickable="false" :draggable="false" :optimized="true" :options="{
-              label: {
-                text:
-                  'RUTA : ' +
-                  marker.DescRutaSali_m +
-                  '\nPROG : ' +
-                  marker.HoraProgSali_d +
-                  ' MARC : ' +
-                  marker.HoraMarcSali_d,
-                color: '#055eb1',
-                className: 'paddingLabelControlMarc',
-              },
-            }" />
-
-
-          <!--TODOS LOS MARCADORES-->
-
-          <GmapPolygon v-for="control in mListControlesSalidaPanelBusquedaDespacho" :key="control.CodiCtrl" :options="{
-            strokeColor: '#F71313',
-            fillColor: '#F7131380',
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-          }" :strokeOpacity="0.5" :strokeWeight="1" :paths="control.calculator.coordinates" />
-
-          <GmapMarker v-for="(control, index) in mListControlesSalidaPanelBusquedaDespacho"
-            :key="control.DescCtrl + index" :position="{
-              lat: parseFloat(control.Lati1Ctrl),
-              lng: parseFloat(control.Long1Ctrl),
-            }" :optimized="true" icon="static/img/control/control.png" :options="{
-  label: {
-    text: control.DescCtrl,
-    color: '#F71313',
-    className: 'paddingLabelControl',
-  },
-}" />
-
-
-        </GmapMap>
-
-        <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingRecorridoSalidaPanelBusqueda">
-          <div class="circleProgress"></div>
-        </div>
-      </card>
+      <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
     </modal>
 
     <!--Form modal Despacho Recalificar Salida-->
@@ -358,6 +294,11 @@
   </div>
 </template>
 <script>
+
+import recorrido from "../../components/monitoreo/recorrido.vue";
+import tarjeta from "../../components/tarjetas/tarjeta.vue";
+
+
 import {
   Table, TableColumn, Select, Option, Notification,
   DatePicker, RadioButton, RadioGroup, Radio, Button, Dropdown,
@@ -372,11 +313,7 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-import { timingSafeEqual } from "crypto";
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs
+
 
 export default {
   mixins: [clientPaginationMixin],
@@ -399,6 +336,8 @@ export default {
     [DatePicker.name]: DatePicker,
     [TableColumn.name]: TableColumn,
     [Notification.name]: Notification,
+    'ComponenteRecorrido': recorrido,
+    'ComponenteTarjeta': tarjeta,
   },
   data() {
     return {
@@ -463,8 +402,16 @@ export default {
       return '1998-06-06 11:00:00'
     },
     showReporteLlegadaSAlida() {
-      this.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida, 1)
+      this.modalSalidasTarjetaPanelDespacho = true
+      console.log(this.selectedRowSalida)
+      //idSali_m
+      this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(this.selectedRowSalida)
 
+    },
+    showRecorridoSalidaPanelDespacho()
+    {
+      this.modalRecorridoPanelDespachoControl = true
+      this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(this.selectedRowSalida)
     },
     showEnviarDespachoPanel() {
       this.modalEnviarDespachoPanel ? (this.modalEnviarDespachoPanel = false) : (this.modalEnviarDespachoPanel = true)
@@ -753,375 +700,7 @@ export default {
     },
 
 
-    async readDetalleSalidaDPanelBusqueda(salida, bandera) {
-      console.log(salida)
-      this.modalSalidasTarjetaPanelDespacho = true
-      this.baseURlPDFPanelDespachoTarjetaSalida = ''
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/detalleSalida", {
-        token: this.token,
-        idsalida: salida.idSali_m
-      })
-      this.mListSalidasTarjeta = []
-      this.mListSalidasTarjeta.push(...datos.data.data)
-      console.log(salida)
-
-
-
-      var empresa = [{ text: this.$cookies.get('nameEmpresa').substring(0, 30), fontSize: 12, bold: true, alignment: "center" }]
-
-
-
-
-      var resultadoString = [[{ text: 'RELOJ', fontSize: 8.5, bold: true, alignment: "center" },
-      { text: 'PROG', fontSize: 8.5, bold: true, alignment: "center" },
-      { text: 'MARC', fontSize: 8.5, bold: true, alignment: "center" },
-      { text: 'FALT', fontSize: 8.5, bold: true, alignment: "center" },
-      { text: 'PEN', fontSize: 8.5, bold: true, alignment: "center" }]]
-
-      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
-
-        var arrys = [{ text: this.mListSalidasTarjeta[i].DescCtrlSali_d.substring(0, 9), fontSize: 8.5 },
-        { text: this.mListSalidasTarjeta[i].HoraProgSali_d.substring(0, 5), fontSize: 8.5, alignment: "center", },
-        { text: this.mListSalidasTarjeta[i].HoraMarcSali_d == '00:00:00' ? '' : this.mListSalidasTarjeta[i].HoraMarcSali_d, fontSize: 8.5, alignment: "center" },
-        { text: this.mListSalidasTarjeta[i].FaltSali_d, fontSize: 8.5, alignment: "center" },
-        { text: this.mListSalidasTarjeta[i].PenaCtrlSali_d == '0.00' ? '' : this.mListSalidasTarjeta[i].PenaCtrlSali_d, fontSize: 8.5, alignment: "center" },
-        ]
-        resultadoString.push(arrys)
-      }
-
-
-
-
-      var heightAux = 9.7
-      var sumFalt = 0
-      var penFalt = 0
-      for (var i = 0; i < datos.data.data.length; i++) {
-
-        heightAux = heightAux + 1
-        if (datos.data.data[i].FaltSali_d > 0 && datos.data.data[i].isCtrlRefeSali_d == 0) {
-          sumFalt = sumFalt + datos.data.data[i].FaltSali_d
-        }
-
-        if (datos.data.data[i].isCtrlRefeSali_d == 0) {
-          var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
-          penFalt = penFalt + pen
-        }
-
-      }
-
-      var docDefinition = {
-
-        // a string or { width: 190, height: number }
-        pageSize: { width: 220, height: 'auto' },
-        pageMargins: [15, 15, 15, 15],
-        // header: [empresa],
-
-
-        content: [
-          {
-            headerRows: 0,
-            fontSize: 12,
-            bold: true,
-            layout: 'noBorders', // optional
-            alignment: "center",
-            table: {
-              widths: ['*'],
-              body: [empresa]
-            }
-          },
-          {
-            bold: true,
-            fontSize: 9,
-            alignment: 'center',
-            layout: 'noBorders', // optional
-            table: {
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
-              headerRows: 0,
-              widths: [35, 75, 25, 22],
-              body: [
-                ['Unidad', 'Salida #' + salida.idSali_m, 'Ruta', 'Vue']
-              ]
-            }
-
-          },
-
-
-          {
-            //bold: true, 
-            fontSize: 9,
-            alignment: 'center',
-
-            layout: 'noBorders', // optional
-            table: {
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
-              headerRows: 0,
-              widths: [35, 75, 25, 22],
-              body: [
-
-                [salida.CodiVehiSali_m, salida.HoraSaliProgSali_mF.substring(0, 10), { text: salida.LetraRutaSali_m, bold: true }, salida.NumeVuelSali_m],
-              ]
-            }
-
-          },
-
-
-
-          {
-
-            fontSize: 10,
-            layout: 'noBorders', // optional
-            table: {
-
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
-              widths: ['*'],
-              body: [
-
-                ['FREC: ' + salida.DescFrec.substring(0, 25)]
-
-
-              ]
-            }
-          },
-
-          { text: '---------------------------------------------------------' },
-
-
-
-
-          // {
-          //     table: {
-          //             widths: ['*'],
-          //             body: [[" "], [" "]]
-          //     },
-          //     layout: {
-          //         hLineWidth: function(i, node) {
-          //             return (i === 0 || i === node.table.body.length) ? 0 : 2;
-          //         },
-          //         vLineWidth: function(i, node) {
-          //             return 0;
-          //         },
-          //     }
-          // },
-          // 
-
-          {
-            fontSize: 8.5,
-            layout: 'noBorders',
-            // optional
-            table: {
-
-
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
-              headerRows: 0,
-              widths: [55, 23, 33, 19, 17],
-              body: resultadoString
-              //   ['RELOJ', 'PROG', 'MARC', 'FALT',  'PEN'],
-              //    ['CHUGCHUP', '06:18', '06:15:21', '-3', '' ],
-              //    ['MADRE TE', '06:24', '06:21:10', '-3', '' ],
-              //    ['COLEGIO', '06:30', '06:26:34', '-4', '' ],
-              //     ['MALDONAD', '06:38', '06:35:09', '-3', '' ],
-              //      ['TERMINAL', '06:53', '06:47:56', '-6', '' ],
-              //       ['FERIA DE', '07:10', '07:03:57', '-7', '' ],
-              //    ['MAVESA', '07:23', '07:16:48', '-7', '' ],
-              //     ['OLMEDO Y', '07:43', '07:38:59', '-5', '' ],
-              //      ['OVIEDO Y', '07:50', '07:44:39', '-6', '' ],
-              //        ['CHUGCHUP', '08:10', '', '', 'REF' ]
-
-
-
-              // ]
-            }
-          },
-
-
-
-          // {
-          //   table: {
-          //     widths: ['*'],
-          //     body: [[" "], [" "]]
-          //   },
-          //   layout: {
-
-
-
-          //     hLineWidth: function (i, node) {
-          //       return (i === 0 || i === node.table.body.length) ? 0 : 2;
-          //     },
-          //     vLineWidth: function (i, node) {
-          //       return 0;
-          //     },
-          //   }
-          // },
-
-
-
-          { text: '---------------------------------------------------------' },
-
-          {
-
-
-
-
-
-
-            fontSize: 10,
-            bold: true,
-            layout: 'noBorders', // optional
-            table: {
-
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
-
-              body: [
-
-                ['TOTAL Faltas : +' + sumFalt],
-                ['TOTAL Dinero : ' + Number(penFalt).toFixed(2)],
-
-
-              ]
-            }
-          },
-
-
-
-
-
-        ]
-      };
-
-
-
-      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
-
-      pdfDocGenerator.getDataUrl((dataUrl) => {
-        this.baseURlPDFPanelDespachoTarjetaSalida = dataUrl
-      });
-
-      /*const pdfDoc = await PDFDocument.create()
-      const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
-      const TimesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
-      const page = pdfDoc.addPage()
-      page.setWidth(230)
-      const { width, height } = page.getSize()
-      const fontSize = 10
-      page.drawText("     " + this.$cookies.get("nameEmpresa").toUpperCase().substring(0, 28), {
-        x: 20,
-        y: height - 2 * fontSize,
-        size: fontSize,
-        font: TimesRomanBold,
-        color: rgb(0, 0, 0),
-      })
-      page.drawText("Unidad       " + "Salida #" + salida.idSali_m + "         Ruta     Vue.", {
-        x: 20,
-        y: height - 3.5 * fontSize,
-        size: fontSize,
-        font: TimesRomanBold,
-        color: rgb(0, 0, 0),
-      })
-      page.drawText("    " + salida.CodiVehiSali_m + "          "
-        + FechaStringToHour(salida.HoraSaliProgSali_mF) + "         "
-        + (salida.LetraRutaSali_m.length > 2 ? salida.LetraRutaSali_m : "  " + salida.LetraRutaSali_m) + "           " + salida.NumeVuelSali_m, {
-        x: 20,
-        y: height - 4.5 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
-      page.drawText('FREC : ' + salida.DescFrec.substring(0, 26), {
-        x: 20,
-        y: height - 5.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
-      page.drawText("---------------------------------------------------------", {
-        x: 20,
-        y: height - 6.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
-      page.drawText("RELOJ             PROG   MARC  FALT  PEN", {
-        x: 20,
-        y: height - 7.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
-      page.drawText("---------------------------------------------------------", {
-        x: 20,
-        y: height - 8.6 * fontSize,
-        size: fontSize,
-        font: timesRomanFont,
-        color: rgb(0, 0, 0),
-      })
-      var heightAux = 9.7
-      var sumFalt = 0
-      var penFalt = 0
-      for (var i = 0; i < datos.data.data.length; i++) {
-        heightAux = heightAux + 1
-        if (bandera == 1) {
-          if (datos.data.data[i].FaltSali_d > 0) {
-            sumFalt = sumFalt + datos.data.data[i].FaltSali_d
-          }
-          if (datos.data.data[i].isCtrlRefeSali_d == 0) {
-            var pen = parseFloat(datos.data.data[i].PenaCtrlSali_d)
-            penFalt = penFalt + pen
-          }
-        }
-        var space = "                       "
-        
-        var texto = ''
-        if (bandera == 1) {
-          texto = space + "  " + datos.data.data[i].HoraProgSali_d.substring(0, 5) + "   "
-            + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '              ' : datos.data.data[i].HoraMarcSali_d) + "    " + (datos.data.data[i].HoraMarcSali_d == '00:00:00' ? '    ' : datos.data.data[i].FaltSali_d) + "        "
-            + (datos.data.data[i].isCtrlRefeSali_d == 1 ? "REF" : datos.data.data[i].PenaCtrlSali_d == '0.00' ? '      ' : datos.data.data[i].PenaCtrlSali_d)
-        } else {
-          texto = space + "  " + datos.data.data[i].HoraProgSali_d.substring(0, 5)
-        }
-        
-        page.drawText(texto, {
-          x: 20,
-          y: height - heightAux * 9,
-          size: 9,
-          color: rgb(0, 0, 0),
-        })
-        page.drawText(datos.data.data[i].DescCtrlSali_d.substring(0, 8), {
-          x: 20,
-          y: height - (heightAux) * 9,
-          size: 9,
-          color: rgb(0, 0, 0),
-        })
-      }
-      heightAux = heightAux - 0.5
-      page.drawText("---------------------------------------------------------", {
-        x: 20,
-        y: height - (heightAux - 0.2) * fontSize,
-        size: fontSize,
-        color: rgb(0, 0, 0),
-      })
-      let bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
-      page.drawText("TOTAL Faltas  : +" + sumFalt, {
-        x: 20,
-        y: height - (heightAux + 1) * fontSize,
-        size: 10,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })
-      page.drawText("TOTAL Dinero  : " + Number(penFalt).toFixed(2), {
-        x: 20,
-        y: height - (heightAux + 2) * fontSize,
-        size: 10,
-        font: bold,
-        color: rgb(0, 0, 0),
-      })*/
-
-    },
     cellclassname(row, column, value, data) { 
       if (data.EstaSali_m == 'DIFERIDO') {
         return "estadodiferidoDespacho";
@@ -1237,6 +816,7 @@ export default {
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
+  flex-wrap: wrap;
 }
 
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
@@ -1255,6 +835,7 @@ export default {
 .cardTiposDespachosPanelDespacho {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   width: 50%;
   justify-content: flex-start;
 }

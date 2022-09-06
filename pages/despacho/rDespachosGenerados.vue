@@ -129,6 +129,8 @@
               </el-table-column>
               <el-table-column prop="KMSRUTA" label="KMS RUTA" width="150">
               </el-table-column>
+              <!--<el-table-column prop="KMSREC" label="KMS RECORRIDO" width="180">
+              </el-table-column>-->
               <el-table-column prop="PASS_SUB" label="PASS SUB" width="180">
               </el-table-column>
               <!--<el-table-column prop="PASS_BAJ" label="PASS BAJ" width="180">
@@ -214,6 +216,7 @@ export default {
       token: this.$cookies.get("token"),
       fechaInicialRDespachosGenerados: "",
       fechaFinalRDespachosGenerados: "",
+      loadingTableUnidadesRecibosVehiculoProduccion :false,
       tableDataDetalleReciboPAgoVehiculoProduccion: [],
       optionsUnidadesProduccionPagosVehiculo: [],
       optionsCobradoresProduccionPagosVehiculo: [],
@@ -406,6 +409,7 @@ export default {
 
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -427,5 +431,6 @@ export default {
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
+  flex-wrap: wrap;
 }
 </style>

@@ -971,12 +971,12 @@ export default {
           this.readDetalleTableroProduccion(this.objSeleccionado)
           this.readlPanelTableroProduccion()
           this.limpiarDatosJustificacion()
-          this.$notify({
+          /*this.$notify({
             message: datos.data.mensaje,
             timeout: 3000,
             icon: 'ni ni-check-bold',
             type: 'default'
-          });
+          });*/
         }else if(datos.data.status_code == 300){
           this.$notify({
             message:datos.data.mensaje,
@@ -1031,12 +1031,12 @@ export default {
           this.readlPanelTableroProduccion()
           this.limpiarDatosJustificacion()
             
-          this.$notify({
+          /*this.$notify({
             message: datos.data.mensaje,
             timeout: 1500,
             icon: 'ni ni-check-bold',
             type: 'default'
-          });
+          });*/
           
         }else {
           this.$notify({

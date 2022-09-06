@@ -516,7 +516,7 @@ export default {
 
         dinero = dinero + parseFloat(this.tableDataPanelControlProduccion[i].DeudaTotal)
       }
-      this.mPendienteRPagosVehiculo = dinero.toFixed(2)
+      this.mPendienteRPagosVehiculo = Number(dinero).toFixed(2)
 
     },
     notifyVue(type, mensaje, icono, tiempo = 4500) {

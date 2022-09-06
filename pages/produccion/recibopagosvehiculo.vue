@@ -339,7 +339,7 @@ export default {
             fechaF: this.fechaFinalRPagosVehiculoProduccionRecibo,
             operadores: this.itemCobradoresProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemCobradoresProduccionRPagoVehiculorecibo
           };
-          console.log(body);
+          //console.log(body);
           var datos = await this.$axios.post(
             process.env.baseUrl + "/ProduccionRecibosPagosVehiculo",
             body

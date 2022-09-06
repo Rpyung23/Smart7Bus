@@ -9,17 +9,6 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccion">
-            <!--<el-autocomplete
-              class="inline-input"
-              v-model="itemUnidadContadorPasajero"
-              :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo"
-              style="margin-right: 0.5rem"
-              placeholder="Unidad"
-              prefix-icon="ni ni-bus-front-12"
-              :trigger-on-focus="false"
-              @select="handleSelectUnidadProduccionRPagoVehiculo"
-            ></el-autocomplete>-->
-
             <el-select
               v-model="itemUnidadContadorPasajero"
               multiple
@@ -39,59 +28,74 @@
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
+            <!--<base-input
+              type="datetime-local"
               style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialConteoPasajeros"
-              >
-              </flat-picker>
-            </base-input>
+              v-model="fechaInicialConteoPasajeros"
+            />
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalConteoPasajeros"
-              >
-              </flat-picker>
-            </base-input>
+            <base-input
+              type="datetime-local"
+              style="margin-right: 0.5rem"
+              v-model="fechaFinalConteoPasajeros"
+            />
+
+            <el-date-picker
+              v-model="fechaInicialConteoPasajeros"
+              type="datetime"
+              placeholder="Select date and time"
+            >
+            </el-date-picker> -->
+
+            <el-date-picker
+              v-model="fechaInicialConteoPasajeros"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format ="yyyy-MM-dd HH:mm:ss"
+              style="margin-right: 0.5rem"
+              placeholder="Fecha/Hora inicial"
+            >
+            </el-date-picker>
+
+            <el-date-picker
+              v-model="fechaFinalConteoPasajeros"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
+              value-format ="yyyy-MM-dd HH:mm:ss"
+              placeholder="Fecha/Hora final"
+            >
+            </el-date-picker>
+
+
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readConteoPasajeros()">
+          <div class="buttonsAdicionalesDespacho">
+            <base-button
+              icon
+              size="sm"
+              type="primary"
+              @click="readConteoPasajeros()"
+            >
               <span class="btn-inner--icon"
                 ><i class="el-icon-search"></i
               ></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
             <download-excel
-              class="btn btn-outline-success"
+              class="btn btn-sm btn-success"
               outline
               :header="headerExcelRPagosVehiculoProduccion"
               :data="tableDataRecaudoContadorPasajeros"
               :fields="json_fields_excelRPagosVehiculoProduccion"
-              :worksheet="WorksheetExcelRPagosVehiculoProduccion"
-              :name="FileNameExcelRPagosVehiculoProduccion"
+              :worksheet="ConteoPasajerosWorksheetExcelRPagosVehiculoProduccion"
+              :name="ConteoPasajerosFileNameExcelRPagosVehiculoProduccion"
             >
               <span class="btn-inner--icon"
                 ><i class="ni ni-collection"></i
               ></span>
-              <span class="btn-inner--text"> Excel</span>
             </download-excel>
-            <base-button outline type="danger">
+            <!--<base-button type="danger" size="sm">
               <span class="btn-inner--icon"><i class="ni ni-ungroup"></i></span>
-              <span class="btn-inner--text"> PDF</span>
-            </base-button>
+            </base-button>-->
           </div>
         </card>
 
@@ -223,6 +227,7 @@ import "flatpickr/dist/flatpickr.css";
 import {
   Table,
   TableColumn,
+  Button,
   Select,
   Option,
   Autocomplete,
@@ -257,6 +262,7 @@ export default {
     [TableColumn.name]: TableColumn,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
+    [Button.name]:Button
   },
   data() {
     return {
@@ -270,25 +276,24 @@ export default {
       token: this.$cookies.get("token"),
       fechaInicialConteoPasajeros: "",
       fechaFinalConteoPasajeros: "",
-      WorksheetExcelRPagosVehiculoProduccion: "",
-      FileNameExcelRPagosVehiculoProduccion: "",
+      ConteoPasajerosWorksheetExcelRPagosVehiculoProduccion: "",
+      ConteoPasajerosFileNameExcelRPagosVehiculoProduccion: "",
       headerExcelRPagosVehiculoProduccion: [],
       optionsUnidadesSelectContadorPasajero: [],
-      json_fields_excelRPagosVehiculoProduccion: {
-        Unidad: "vehiculo_codigo",
-        Salida: "salida_id",
+      json_fields_excelRPagosVehiculoProduccion: 
+      {
+        "Unidad": "unidad",
         "Linea - Ruta": "DescRutaSali_m",
-        "Fecha Salida": "HoraSaliProgSali_m",
-        "Fecha Creación": "fecha_creacion",
-        "Fecha Pago": "fecha_pago",
-        "Minutos ($)": "montoControles",
-        "Minutos Just($)": "montoControlesDesc",
-        "Detalle Rubro": "descripcion_rubro",
-        "Rubros ($)": "montoMultas",
-        "Rubros Jus ($)": "montoMultasDesc",
-        "Monto Pagado": "monto_pagado",
-        Estado: "estado",
-      },
+        "Subida 1": "subida1",
+        "Subida 2": "subida2",
+        "Subida 3": "subida3",
+        "Bajada 1": "bajada1",
+        "Bajada 2": "bajada2",
+        "Bajada 3": "bajada3",
+        "Total Subidas": "totalSubidas",
+        "Total Bajadas": "totalBajadas",
+        "Dinero Recaudado": "dinero"
+      }
     };
   },
   methods: {
@@ -320,8 +325,8 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialConteoPasajeros = format;
-      this.fechaFinalConteoPasajeros = format;
+      this.fechaInicialConteoPasajeros = format+" 05:00:00";
+      this.fechaFinalConteoPasajeros = format+" 23:59:59"
     },
     async readAllUnidadesContadorPasajeros() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
@@ -339,13 +344,18 @@ export default {
     async readAllLineasContadorPasajeros() {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
-        tipo:1
+        tipo: 1,
       });
       if (datos.data.status_code == 200) {
         this.mListLineasContadorPasajeros.push(...datos.data.data);
       }
     },
-    async readConteoPasajeros() {
+    async readConteoPasajeros() 
+    {
+
+      this.ConteoPasajerosWorksheetExcelRPagosVehiculoProduccion = "RCP_W_" + Date.now()
+      this.ConteoPasajerosFileNameExcelRPagosVehiculoProduccion = "RCP_" + Date.now() + ".xls"
+
       if (this.loadingUnidadesContadorPasajerosPasajeros) {
         Notification.info({
           title: "Conteo de Pasajeros",
@@ -357,6 +367,8 @@ export default {
         try {
           /*console.log(this.itemUnidadContadorPasajero)
           console.log(this.mSelectRutaContadorPasajero)*/
+          console.log(this.fechaInicialConteoPasajeros.toString())
+
           var body = {
             token: this.token,
             unidades:
@@ -367,8 +379,8 @@ export default {
               this.mSelectRutaContadorPasajero.length == 0
                 ? "*"
                 : this.mSelectRutaContadorPasajero,
-            fechaI: this.fechaInicialConteoPasajeros + " 01:00:00",
-            fechaF: this.fechaFinalConteoPasajeros + " 23:59:59",
+            fechaI: this.fechaInicialConteoPasajeros.toString(),
+            fechaF: this.fechaFinalConteoPasajeros.toString()
           };
           //console.log(body)
           var datos = await this.$axios.post(
@@ -378,10 +390,12 @@ export default {
               timeout: 600000,
             }
           );
-          console.log(datos.data)
-          if (datos.data.status_code == 200) 
-          {
+          //console.log(datos.data);
+          if (datos.data.status_code == 200) {
             this.tableDataRecaudoContadorPasajeros.push(...datos.data.datos);
+
+
+
           } else if (datos.data.status_code == 300) {
             Notification.info({
               title: "Conteo de Pasajeros",
@@ -396,9 +410,9 @@ export default {
         } catch (error) {
           console.log(error);
           Notification.error({
-              title: "TRYCTACH Conteo de Pasajeros",
-              message: error.toString(),
-            });
+            title: "TRYCTACH Conteo de Pasajeros",
+            message: error.toString(),
+          });
         }
         this.loadingUnidadesContadorPasajerosPasajeros = false;
       }

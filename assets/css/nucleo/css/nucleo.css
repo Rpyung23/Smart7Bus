@@ -742,3 +742,12 @@ body::-webkit-scrollbar{
     height: 100px;
     width: 100px;
   }
+
+
+  .buttonsAdicionalesDespacho {
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 50%;
+  }
