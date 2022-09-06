@@ -631,7 +631,7 @@ export default {
     },
     selectedRutaMonitoreo() {
       if (this.mListRutasMonitoreo.length > 0) {
-        //this.initControleMonitoreoRutas();
+        this.initControleMonitoreoRutas();
         for (var i = 0; i < this.mListUnidades.length; i++) {
           var bandera = false;
           for (var j = 0; j < this.mListRutasMonitoreo.length; j++) {
@@ -710,7 +710,7 @@ export default {
 
           for (var i = 0; i < datos.data.data.length; i++) {
             this.mListControlesMonitoreo[i] = datos.data.data[i];
-            this.mListControlesMonitoreoAux[i] = datos.data.data[i];
+            //this.mListControlesMonitoreoAux[i] = datos.data.data[i];
           }
         }
       } catch (error) {
@@ -968,7 +968,7 @@ export default {
   },
   mounted() {
     this.initRutas();
-    this.initControles();
+    //this.initControles();
     this.initRastreo();
     this.initIntervalMonitoreoGeneral();
   },
