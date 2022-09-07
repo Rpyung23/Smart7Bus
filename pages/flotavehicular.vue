@@ -128,11 +128,9 @@
                 footer-classes="pb-2">
                 <div class="row border-0">
                   <div class="col-12 text-right buttonNuevo">
-                    <el-tooltip content="Agregar" placement="top">
                       <base-button type="primary" icon size="sm" @click="showModalAgregarPropietarioFlotavehicular()">
                         <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Propietario</span>
                       </base-button>
-                    </el-tooltip>
                   </div>
                 </div>
                 <div>
