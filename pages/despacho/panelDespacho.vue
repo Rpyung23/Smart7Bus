@@ -18,17 +18,18 @@
             v-model="fechaActualSalidasPanelDespacho">
           </el-date-picker>
 
-          <el-select v-model="mSelectRutaSalidaPanelDespacho" collapse-tags placeholder="Lineas"
-            @change="readFrecuenciasSalidasPanel()">
+          <el-select v-model="mSelectRutaSalidaPanelDespacho" collapse-tags placeholder="Lineas">
             <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
               :value="item.idRuta">
             </el-option>
           </el-select>
-
         </div>
 
 
         <div class="buttonsAdicionalesDespacho">
+          <base-button icon type="primary" size="sm" @click="readFrecuenciasSalidasPanel()" >
+            <span class="btn-inner--icon"><i class="el-icon-search"></i ></span>
+          </base-button>
           
           <base-button icon type="info" @click="showModalDespachoRecalificarSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recalificar Salida">
             <span class="btn-inner--icon"><i class="ni ni-watch-time"></i></span>
