@@ -33,7 +33,11 @@ export default {
     };
   },
   methods: {
-    async readDetalleSalidaDPanelBusqueda(salida) {
+    async readDetalleSalidaDPanelBusqueda(salida) 
+    {
+      this.baseURlPDFPanelDespachoTarjeta = ""
+
+
       var datos = await this.$axios.post(
         process.env.baseUrl + "/detalleSalida",
         {
