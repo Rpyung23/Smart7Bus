@@ -27,7 +27,7 @@
 
 
         <div class="buttonsAdicionalesDespacho">
-          <base-button icon type="primary" size="sm" @click="readFrecuenciasSalidasPanel()" >
+          <base-button icon type="primary" size="sm" @click="readFrecuenciasSalidasPanel()" title="Buscar">
             <span class="btn-inner--icon"><i class="el-icon-search"></i ></span>
           </base-button>
           
