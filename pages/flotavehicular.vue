@@ -14,10 +14,11 @@
                 footer-classes="pb-2">
                 <div class="row border-0">
                     <div class="col-12 text-right buttonNuevo">
-                        <base-button type="primary" icon size="sm">
+                        <base-button @click="showModalAgregarUnidadFlotavehicular()" type="primary" icon size="sm">
                           <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Unidad</span>
                         </base-button>
                     </div>
+                    
                     </div>
                   <div>
                   <el-table v-loading="loadingUnidadesFlotaVehicular" element-loading-text="Cargando..."
@@ -55,11 +56,11 @@
 
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button class="edit" type="success" size="sm" icon>
+                        <base-button class="edit" type="success" size="sm" icon @click="editUnidad(row)">
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button class="remove btn-link" type="danger" size="sm" icon>
-                          <i class="text-white ni ni-fat-remove"></i>
+                        <base-button class="remove btn-link" :type="row.idEstaVehi == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoUnidad(row)">
+                          <i :class="row.idEstaVehi == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
                         </base-button>
                         
                       </div>
@@ -448,6 +449,63 @@
         </div>
       </card>
     </modal>
+
+     <!--Form modal Agregar Unidad-->
+     <modal :show.sync="modalAgregarUnidadFlotaVehicular" >
+      <validation-observer v-slot="{handleSubmit}" ref="formValidator">
+      <form class="needs-validation"
+            @submit.prevent="handleSubmit(firstFormSubmit)">
+        <div class="form-row">
+          <div class="col-md-6">
+            <base-input
+              :disabled="editedIndexUnidad == 1"
+              name="Unidad"
+              placeholder="Unidad"
+              prepend-icon="ni ni-bus-front-12"
+              rules="required"
+              v-model="unidadVehiculo">
+            </base-input>
+          </div>
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-single-copy-04"
+              name="Serie"
+              placeholder="Serie"
+              rules="required"
+              v-model="serieVehiculo">
+            </base-input>
+          </div>
+        </div>
+        <div class="form-row">  
+          <div class="col-md-6">
+            <base-input
+              name="Placa"
+              placeholder="Placa"
+              prepend-icon="ni ni-paper-diploma"
+              rules="required"
+              v-model="placaVehiculo">
+            </base-input>
+          </div>
+            <div class="col-md-6">
+              <base-input
+              prepend-icon="ni ni-mobile-button"
+                name="Número Sim"
+                placeholder="Número Sim"
+                v-model="numsimVehiculo">
+              </base-input>
+            </div> 
+          </div>
+        
+        <div class="text-right">
+          <base-button type="danger" @click="showModalAgregarUnidadFlotavehicular()">Cancelar</base-button>
+          <base-button type="primary" v-if="editedIndexUnidad == -1" @click="sendRegisterUnidad()" native-type="submit">Agregar</base-button>
+          <base-button type="primary" v-else @click="sendUpdateUnidad()" native-type="submit">Actualizar</base-button>
+        </div>
+      </form>
+    </validation-observer>
+       
+    </modal>
+
   </div>
 </template>
 
@@ -493,6 +551,7 @@ export default {
       usuarioChoferUnidad:'',
       validaChofer:0,
       validaPropietario:0,
+      validaUnidad:0,
       mSelectUnidadChofer:null,
       rowSeleccionadoChofer:[],
       indexSeleccionadoChofer:'',
@@ -507,6 +566,11 @@ export default {
       nombrePropietario:'',
       passwordPropietario:'',
       editedIndexPropietario:-1,
+      editedIndexUnidad:-1,
+      unidadVehiculo:'',
+      serieVehiculo:'',
+      placaVehiculo:'',
+      numsimVehiculo:'',
       currentPageUnidadesFlotaVehicular: 1,
       loadingUnidadesFlotaVehicular: false,
       loadingGruposFlotaVehicular: false,
@@ -518,6 +582,7 @@ export default {
       modalPropietariosFlotaVehicular:false,
       modalAgregarChoferFlotaVehicular:false,
       modalAgregarPropietarioFlotaVehicular:false,
+      modalAgregarUnidadFlotaVehicular:false,
       tableColumnsUnidadesFlotaVehicular: [
         {
           prop: "CodiVehi",
@@ -669,7 +734,6 @@ export default {
       otitleModalUsuarioAdmin: '',
       mListChoferesUnidadesSinAsignacion : [],
       mListPropietariosUnidadesSinAsignacion: []
-      
     };
     
   },
@@ -965,6 +1029,12 @@ export default {
         this.cancelarRegisterPropietario()
       }
     },
+    showModalAgregarUnidadFlotavehicular(index, row) {
+      this.modalAgregarUnidadFlotaVehicular = this.modalAgregarUnidadFlotaVehicular ? false : true
+      if (this.modalAgregarUnidadFlotaVehicular == false) {
+        this.cancelarRegisterUnidad()
+      }
+    },
     onError() {
       console.log('error')
     },
@@ -1079,6 +1149,71 @@ export default {
         });
       }
     },
+    async registerUnidad(){
+      try {
+        var objBody= {
+            token: this.token,
+            datos: {
+                _codivehiculo: this.unidadVehiculo,
+                _idtipodispositivo:null,
+                _autodespvehi: 1,
+                _anotacionesvehi: null,
+                _infoctrlvehi: 1,
+                _codidispvehi: this.serieVehiculo,
+                _placavehi: this.placaVehiculo,
+                _numsim: this.numsimVehiculo,
+                _idestavehi: null,
+                _grupoid: null,
+                _badge_estado: null,
+                _badge_inform: null,
+                _label_estado: null,
+                _label_inform: null,
+                _oGrupo: {
+                    _grupoid: 1,
+                    _descripcion: null,
+                    _activo: null,
+                    _color: null,
+                    _color1: null,
+                    _color2: null,
+                    _activolabel: "Activo",
+                    _badge_estado: ""
+                },
+                _oEstadoVehi: {
+                    _idestado: 1,
+                    _descripcion: null
+                },
+                _oTipoDispo: {
+                    _iddisptipo: 3,
+                    _descripcion: null
+                }
+            }
+        }
+      var result = await this.$axios.post(process.env.baseUrl + "/register-unidad", objBody)
+    if (result.data.status_code == 200) {
+      this.initUnidadesFlotaVEhicular()
+      this.limpiarRegisterUnidad()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
     async updatePropietario(){
       try {
         var objBody= {
@@ -1120,6 +1255,43 @@ export default {
         });
       }
     },
+    async updateUnidad(){
+      try {
+        var objBody= {
+        token:this.token,
+        datos: {
+          _codivehiculo: this.unidadVehiculo,
+          _codidispvehi: this.serieVehiculo,
+          _placavehi: this.placaVehiculo,
+          _numsim: this.numsimVehiculo,
+        }
+      }
+      var result = await this.$axios.put(process.env.baseUrl + "/update-unidad", objBody)
+    if (result.data.status_code == 200) {
+      this.initUnidadesFlotaVEhicular()
+      this.limpiarRegisterUnidad()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al actualizar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
     async changeEstadoPropietario(row){
       var estado
       if (row.activo == 1) {
@@ -1139,6 +1311,50 @@ export default {
     if (result.data.status_code == 200) {
       this.initPropietariosFlotaVehicular()
       this.limpiarRegisterPropietario()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async changeEstadoUnidad(row){
+      console.log("changeEstadoUnidad")
+      console.log(row)
+      var codivehiculo = row.CodiVehi
+      var estado
+      if (row.idEstaVehi == 1) {
+        estado = 2
+      }else{
+        estado = 1
+      }
+      try {
+        var objBody= {
+        token:this.token,
+        datos:{
+          _codivehiculo:codivehiculo,
+          _estado:estado,
+        }
+      }
+      var result = await this.$axios.put(process.env.baseUrl + "/update-unidad-estado", objBody)
+    if (result.data.status_code == 200) {
+      this.initUnidadesFlotaVEhicular()
+      this.limpiarRegisterUnidad()
       this.$notify({
           message: result.data.msm,
           timeout: 1500,
@@ -1282,22 +1498,45 @@ export default {
       }
       this.registerPropietario();
     },
+    sendRegisterUnidad(){
+      if (this.validarUnidad()) {
+        return;
+      }
+      this.registerUnidad();
+    },
     sendUpdatePropietario(){
       if (this.validarPropietario()) {
         return;
       }
       this.updatePropietario();
     },
+    sendUpdateUnidad(){
+      if (this.validarUnidad()) {
+        return;
+      }
+      this.updateUnidad();
+    },
     sendChangeEstadoPropietario(row){
       this.changeEstadoPropietario(row);
     },
+    sendChangeEstadoUnidad(row){
+      this.changeEstadoUnidad(row);
+    },
     editPropietario(row){
       this.nombrePropietario = row.AliaObse
-      this.usuarioPropietario = row.CodiObse
+      this.usuarioPropietario = row.UsuaObse
       this.passwordPropietario = row.ClavObse
       this.codigoPropietario = row.CodiObse
       this.editedIndexPropietario = 1
       this.modalAgregarPropietarioFlotaVehicular = true
+    },
+    editUnidad(row){
+      this.unidadVehiculo = row.CodiVehi
+      this.serieVehiculo = row.CodiDispVehi
+      this.placaVehiculo = row.PlacVehi
+      this.numsimVehiculo = row.NumeSIMVehi
+      this.editedIndexUnidad = 1
+      this.modalAgregarUnidadFlotaVehicular = true
     },
     limpiarRegisterChofer(){
       this.nombreChofer  = ''
@@ -1360,6 +1599,34 @@ export default {
         this.validaPropietario = 1
       }
       return this.validaPropietario
+    },
+    limpiarRegisterUnidad(){
+      this.unidadVehiculo = ''
+      this.placaVehiculo = ''
+      this.numsimVehiculo = ''
+      this.serieVehiculo = ''
+      this.editedIndexUnidad = -1
+    },
+    cancelarRegisterUnidad(){
+      this.unidadVehiculo = ''
+      this.placaVehiculo = ''
+      this.numsimVehiculo = ''
+      this.serieVehiculo = ''
+      this.editedIndexUnidad = -1
+      this.modalAgregarUnidadFlotaVehicular = false
+    },
+    validarUnidad(){
+      this.validaUnidad = 0
+      if (this.placaVehiculo == '') {
+        this.validaUnidad = 1
+      }
+      if (this.serieVehiculo == '') {
+        this.validaUnidad = 1
+      }
+      if (this.unidadVehiculo == '') {
+        this.validaUnidad = 1
+      }
+      return this.validaUnidad
     },
   },
   mounted() {
