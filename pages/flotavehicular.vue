@@ -876,8 +876,7 @@ export default {
         var datos = await this.$axios.post(
           process.env.baseUrlPanel + "/read-novinculadas-unidades-propietario",
           {
-            token: this.token,
-            propietario:this.usuarioPropietarioUnidad
+            token: this.token
           }
         );
 
