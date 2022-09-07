@@ -378,7 +378,7 @@ export default {
       var empresa = [{ text: this.$cookies.get('nameEmpresa').substring(0, 30), fontSize: 12, bold: true, alignment: "center" }]
 
       var dd = {
-        pageSize: { width: 220, height: 'auto' },
+        pageSize: { width: 220, height: mLista.length < 4 ? 300 : 'auto'},
         watermark: { text: this.banderaMarcoAguaRecibo ? 'NO PAGADO' : '', color: 'red', opacity: 0.25, bold: true,fontSize: (mLista.length > 50 ? 120 : 27) },
         pageMargins: [15, 15, 15, 15],
         compress: true,
