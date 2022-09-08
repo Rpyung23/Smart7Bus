@@ -98,6 +98,68 @@ export function getFecha_dd_mm_yyyy(fecha) {
     return (fecha_.getFullYear() + "-" + mes + "-" + dia)
 }
 
+export function getFechatoDDMM(fecha) {
+
+
+    var fecha_ = new Date(fecha)
+
+
+    var dia = fecha_.getDate();
+
+    var mes = fecha_.getMonth();
+
+    mes = mes + 1;
+
+    if (dia < 10) {
+        dia = "0" + dia;
+    }
+    
+    switch(mes)
+    {
+        case 1:
+            mes = 'ENE'
+            break;
+        case 2:
+            mes = 'FEB'
+            break;        
+        case 3:
+            mes = 'MAR'
+            break;
+        case 4:
+            mes = 'ABR'
+            break;
+        case 5:
+            mes = 'MAY'
+            break;
+        case 6:
+            mes = 'JUN'
+            break;
+        case 7:
+            mes = 'JUL'
+            break;
+        case 8:
+            mes = 'AGO'
+            break;
+        case 9:
+            mes = 'SEP'
+            break;
+        case 10:
+            mes = 'OCT'
+            break;
+        case 11:
+            mes = 'NOV'
+            break;
+        case 12:
+            mes = 'DIC'
+            break;
+    }
+
+
+
+    return dia +" "+mes
+}
+
+
 export function convertSecondtoTimeString(seconds) {
     if (seconds == 0) {
         return '00:00:00'

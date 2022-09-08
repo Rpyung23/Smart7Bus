@@ -26,6 +26,10 @@
           <sidebar-item  v-if="permisos != null && permisos.despacho.reportes.despachoGenerados != null && 
                                permisos.despacho.reportes.despachoGenerados" 
                                :link="{ name: 'Despachos Generados', path: './rDespachosGenerados' }" />
+
+          <sidebar-item v-if="permisos != null && permisos.despacho.reportes.reportePenalidades != null && 
+                               permisos.despacho.reportes.reportePenalidades" :link="{ name: 'R. Penalidades Semanales', path: './rPenalidadesSemanales' }" />
+
         </sidebar-item>
 
 

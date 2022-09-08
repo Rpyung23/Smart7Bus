@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.15.8",
+    "@nuxtjs/moment": "^1.6.1",
     "babel-plugin-component": "1.1.1",
     "cross-env": "7.0.3",
     "nodemon": "2.0.14",

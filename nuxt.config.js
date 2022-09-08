@@ -69,10 +69,9 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    'cookie-universal-nuxt',
+    '@nuxtjs/moment',
+    'cookie-universal-nuxt'
   ],
-
-
   /*
   ** Axios module configuration
   */

@@ -107,7 +107,6 @@
             <el-table
               v-loading="loadingRPagosVehiculoResumido"
               element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading"
               :data="tableDataRPagosVEhiculoProduccionResumido"
               row-key="id"
               class="tablePanelControlProduccion"

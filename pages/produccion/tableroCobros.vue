@@ -86,7 +86,7 @@
 
               <el-table v-loading="loadingRTableroProduccionCobranzas" ref="multipleTableCobrosPagar"
                 @selection-change="handleSelectionChangeTableCobros" element-loading-text="Cargando Datos..."
-                element-loading-spinner="el-icon-loading" :data="tableDataPanelControlProduccion" row-key="id"
+                :data="tableDataPanelControlProduccion" row-key="id"
                 class="col-12 col-md-8 tablePanelControlProduccion" header-row-class-name="thead-dark"
                 height="calc(100vh - 13rem)" style="width: 100%">
                 <el-table-column type="selection" minWidth="50">

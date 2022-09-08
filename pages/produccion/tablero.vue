@@ -72,7 +72,7 @@
           body-classes="card-bodyRPagosVehiculoProduccionPCTablero px-0 pb-1" footer-classes="pb-2">
           <div>
             <el-table v-loading="loadingRTableroProduccion" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="tableDataPanelControlProduccion" row-key="id"
+              :data="tableDataPanelControlProduccion" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               height="calc(100vh - 12rem)" style="width: 100%">
 
@@ -181,12 +181,13 @@
 
           </div>
 
-          <JqxGrid ref="myGridDespachoPanelOtros" :height="'150px'" :columns="columnsInfoOtros"
+          <JqxGrid v-if="oEmpresa != null && oEmpresa == 'smiguel' || oEmpresa == '28septiembre'"  ref="myGridDespachoPanelOtros" :height="'150px'" :columns="columnsInfoOtros"
             :source="dataAdapterOtros" :enabletooltips="true" :width="getWidth">
           </JqxGrid>
-          <br>
+          
+          <br v-if="oEmpresa != null && oEmpresa == 'smiguel' || oEmpresa == '28septiembre'" >
 
-          <JqxGrid ref="myGridDespachoPanel" :height="'200px'" @rowselect="myGridOnRowSelect($event)"
+          <JqxGrid ref="myGridDespachoPanel" :height="(oEmpresa != null && oEmpresa == 'smiguel' || oEmpresa == '28septiembre') ?  '200px' : '350px'" @rowselect="myGridOnRowSelect($event)"
             :columns="columnsInfo" :source="dataAdapter" :enabletooltips="true" :width="getWidth">
           </JqxGrid>
 
@@ -466,7 +467,8 @@ export default {
       oZoomTableroExVelocidad: 7,
       oHistorialExVelocidad: [],
       oUsuarioJustificador:'',
-      mListControlesSalidaPanelBusquedaDespacho:[]
+      mListControlesSalidaPanelBusquedaDespacho:[],
+      oEmpresa:null
     };
   },
   methods: {
@@ -1200,7 +1202,10 @@ export default {
         return "estadoJustificado";
       }
     },
-  }, mounted() {
+  }, mounted() 
+  {
+    this.oEmpresa = this.$cookies.get("empresa")
+
     this.readTrazadoAllTramosTableroProduccion()
     this.readUnidadesTableroProduccion()
     this.readLineasTableroProduccion()

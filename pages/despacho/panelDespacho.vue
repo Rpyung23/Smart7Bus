@@ -119,7 +119,7 @@
         <div>
           <el-table v-loading="isLoadingDespachoSalidaPanelBusqueda" element-loading-text="Cargando Datos..."
             element-loading-spinner="el-icon-loading" :data="mListDespachosSalidasAnuladas" row-key="id"
-            :height="mListDespachosSalidasAnuladas.length > 0 ? 620 : 150" style="width: 100%"
+            height="calc(100vh - 9rem)" style="width: 100%"
             header-row-class-name="thead-dark" :default-sort="{ prop: 'HoraSaliProgSali_m', order: 'ascending' }"
             :row-class-name="tableRowClassNameDSalidasAnuladas">
 

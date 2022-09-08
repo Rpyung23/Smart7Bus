@@ -165,7 +165,6 @@
             <el-table
               v-loading="loadingTableUnidadesSalidasPanelBusqueda"
               element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading"
               :data="mListaSalidasPanelBusqueda"
               row-key="id"
               class="tablePanelControlProduccion"
@@ -454,7 +453,7 @@ export default {
         {
           prop: "DescRutaSali_m",
           label: "Ruta",
-          minWidth: 200,
+          minWidth: 220,
         },
         {
           prop: "DescFrec",
