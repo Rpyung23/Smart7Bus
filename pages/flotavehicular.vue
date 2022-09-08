@@ -76,7 +76,7 @@
                 footer-classes="pb-2">
                 <div class="row border-0">
                   <div class="col-12 text-right buttonNuevo">
-                      <base-button type="primary" icon size="sm">
+                      <base-button type="primary" icon size="sm" @click="showModalAgregarGrupoFlotavehicular()">
                         <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Grupo</span>
                       </base-button>
                   </div>
@@ -107,11 +107,11 @@
 
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button class="edit" type="success" size="sm" icon>
+                        <base-button class="edit" type="success" size="sm" icon @click="editGrupo(row)">
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button class="remove btn-link" type="danger" size="sm" icon>
-                          <i class="text-white ni ni-fat-remove"></i>
+                        <base-button class="remove btn-link" :type="row.activo == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoGrupo(row)">
+                          <i :class="row.activo == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
                         </base-button>
                       </div>
                     </el-table-column>
@@ -181,6 +181,13 @@
               <br />
               <card class="cardFlotavehicular no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
                 footer-classes="pb-2">
+                <div class="row border-0">
+                  <div class="col-12 text-right buttonNuevo">
+                      <base-button type="primary" icon size="sm" @click="showModalAgregarAdministradorFlotavehicular()">
+                        <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Administrador</span>
+                      </base-button>
+                  </div>
+                </div>
                 <div>
                   <el-table v-loading="loadingAdministrativosFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
@@ -191,14 +198,26 @@
                     <el-table-column v-for="column in tableColumnsAdministrativosFlotaVehicular" :key="column.label"
                       v-bind="column">
                     </el-table-column>
+                    
+                    <el-table-column label="Estado" min-width="150px" prop="activo" sortable>
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.activo == 1 ? 'success' : 'danger'
+                          }`"></i>
+                          <span class="status">{{
+                              row.activo == 1 ? "ACTIVO" : "INACTIVO"
+                          }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
 
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button class="edit" type="success" size="sm" icon>
+                        <base-button class="edit" type="success" size="sm" icon @click="editAdministrador(row)">
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button class="remove btn-link" type="danger" size="sm" icon>
-                          <i class="text-white ni ni-fat-remove"></i>
+                        <base-button class="remove btn-link" :type="row.activo == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoAdministrador(row)">
+                          <i :class="row.activo == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
                         </base-button>
 
                         <base-button @click.native="showModalPermisosFlotaVehicular($index, row)"
@@ -238,10 +257,10 @@
 
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button class="edit" type="success" size="sm" icon>
+                        <base-button class="edit" type="success" size="sm" icon @click="editChofer(row)">
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
-                        <base-button class="remove btn-link" type="danger" size="sm" icon>
+                        <base-button class="remove btn-link" type="danger" size="sm" icon @click="sendDeleteChofer(row)">
                           <i class="text-white ni ni-fat-remove"></i>
                         </base-button>
 
@@ -311,14 +330,14 @@
         <div class="form-row">
           <div class="col-md-6">
             <base-input
-              prepend-icon="ni ni-badge"
-              name="Nombre"
-              placeholder="Nombre Completo"
+            :disabled="editedIndexChofer == 1"
+              name="Usuario"
+              placeholder="Usuario"
+              prepend-icon="ni ni-circle-08"
               rules="required"
-              v-model="nombreChofer">
+              v-model="usuarioChofer">
             </base-input>
           </div>
-
           <div class="col-md-6">
             <base-input
               prepend-icon="ni ni-mobile-button"
@@ -333,11 +352,11 @@
         <div class="form-row">
           <div class="col-md-6">
             <base-input
-              name="Usuario"
-              placeholder="Usuario"
-              prepend-icon="ni ni-circle-08"
+              prepend-icon="ni ni-badge"
+              name="Nombre"
+              placeholder="Nombre Completo"
               rules="required"
-              v-model="usuarioChofer">
+              v-model="nombreChofer">
             </base-input>
           </div>
           <div class="col-md-6">
@@ -364,7 +383,8 @@
         </div>
         <div class="text-right">
           <base-button type="danger" @click="showModalAgregarChoferFlotavehicular()">Cancelar</base-button>
-          <base-button type="primary" @click="sendRegisterChofer()" native-type="submit">Agregar</base-button>
+          <base-button v-if="editedIndexChofer == -1" type="primary" @click="sendRegisterChofer()" native-type="submit">Agregar</base-button>
+          <base-button v-else type="primary" @click="sendUpdateChofer()" native-type="submit">Actualizar</base-button>
         </div>
       </form>
     </validation-observer>
@@ -381,7 +401,7 @@
             <base-input
               :disabled="editedIndexPropietario == 1"
               name="Código"
-              placeholder="Usuario"
+              placeholder="Código"
               prepend-icon="ni ni-circle-08"
               rules="required"
               v-model="codigoPropietario">
@@ -486,7 +506,7 @@
           </div>
             <div class="col-md-6">
               <base-input
-              prepend-icon="ni ni-mobile-button"
+                prepend-icon="ni ni-mobile-button"
                 name="Número Sim"
                 placeholder="Número Sim"
                 v-model="numsimVehiculo">
@@ -498,6 +518,126 @@
           <base-button type="danger" @click="showModalAgregarUnidadFlotavehicular()">Cancelar</base-button>
           <base-button type="primary" v-if="editedIndexUnidad == -1" @click="sendRegisterUnidad()" native-type="submit">Agregar</base-button>
           <base-button type="primary" v-else @click="sendUpdateUnidad()" native-type="submit">Actualizar</base-button>
+        </div>
+      </form>
+    </validation-observer>
+       
+    </modal>
+
+    <!--Form modal Agregar Grupo-->
+    <modal :show.sync="modalAgregarGrupoFlotaVehicular" >
+      <validation-observer v-slot="{handleSubmit}" ref="formValidator">
+      <form class="needs-validation"
+            @submit.prevent="handleSubmit(firstFormSubmit)">
+        <div class="form-row">
+          <div class="col-md-6">
+            <base-input
+              name="Descripción"
+              placeholder="Descripción"
+              prepend-icon="ni ni-single-copy-04"
+              rules="required"
+              v-model="descripcionGrupo">
+            </base-input>
+          </div>
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-single-copy-04"
+              name="Fondo"
+              placeholder="Fondo"
+              rules="required"
+              v-model="fondoGrupo">
+            </base-input>
+          </div>
+        </div>
+        <div class="form-row">  
+          <div class="col-md-6">
+            <base-input
+              name="Texto"
+              placeholder="Texto"
+              prepend-icon="ni ni-single-copy-04"
+              rules="required"
+              v-model="textoGrupo">
+            </base-input>
+          </div>
+            <div class="col-md-6">
+              <base-input
+                prepend-icon="ni ni-mobile-button"
+                name="Línea"
+                placeholder="Línea"
+                v-model="lineaGrupo">
+              </base-input>
+            </div> 
+          </div>
+        
+        <div class="text-right">
+          <base-button type="danger" @click="showModalAgregarGrupoFlotavehicular()">Cancelar</base-button>
+          <base-button type="primary" v-if="editedIndexGrupo == -1" @click="sendRegisterGrupo()" native-type="submit">Agregar</base-button>
+          <base-button type="primary" v-else @click="sendUpdateGrupo()" native-type="submit">Actualizar</base-button>
+        </div>
+      </form>
+    </validation-observer>
+       
+    </modal>
+
+    <!--Form modal Agregar Admins-->
+    <modal :show.sync="modalAgregarAdministradorFlotaVehicular">
+      <validation-observer v-slot="{handleSubmit}" ref="formValidator">
+      <form class="needs-validation"
+            @submit.prevent="handleSubmit(firstFormSubmit)">
+        <div class="form-row">
+          <div class="col-md-6">
+            <base-input
+              :disabled="editedIndexAdministrador == 1"
+              name="Código"
+              placeholder="Código"
+              prepend-icon="ni ni-circle-08"
+              rules="required"
+              v-model="codigoAdmin">
+            </base-input>
+          </div>
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-circle-08"
+              name="Usuario"
+              placeholder="Usuario"
+              rules="required"
+              v-model="usuarioAdmin">
+            </base-input>
+          </div>
+        </div>
+        <div class="form-row">  
+          <div class="col-md-6">
+            <base-input
+              name="Nombre Completo"
+              placeholder="Nombre Completo"
+              prepend-icon="ni ni-badge"
+              rules="required"
+              v-model="nombreAdmin">
+            </base-input>
+          </div> 
+          <div class="col-md-6">
+            <base-input
+              name="Contraseña"
+              placeholder="Contraseña"
+              prepend-icon="ni ni-key-25"
+              rules="required"
+              v-model="passAdmin">
+            </base-input>
+          </div> 
+        </div>
+        <div class="form-row">  
+          <div class="col-md-12">
+            <el-select  placeholder="Terminales" v-model="mSelectTerminalAdmin" style="width:450px">
+              <el-option v-for="item in mListTerminalesAdmin" :key="item.CodiTerm" :label="item.DescTerm" :value="item.CodiTerm">
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+        <br>
+        <div class="text-right">
+          <base-button type="danger" @click="showModalAgregarAdministradorFlotavehicular()">Cancelar</base-button>
+          <base-button type="primary" v-if="editedIndexAdministrador == -1" @click="sendRegisterAdministrador()" native-type="submit">Agregar</base-button>
+          <base-button type="primary" v-else @click="sendUpdateAdministrador()" native-type="submit">Actualizar</base-button>
         </div>
       </form>
     </validation-observer>
@@ -518,7 +658,7 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import VJsoneditor from 'v-jsoneditor'
-
+import Swal from 'sweetalert2'
 export default {
   
   mixins: [clientPaginationMixin],
@@ -550,6 +690,8 @@ export default {
       validaChofer:0,
       validaPropietario:0,
       validaUnidad:0,
+      validaGrupo:0,
+      validaAdministrador:0,
       mSelectUnidadChofer:null,
       rowSeleccionadoChofer:[],
       indexSeleccionadoChofer:'',
@@ -565,10 +707,24 @@ export default {
       passwordPropietario:'',
       editedIndexPropietario:-1,
       editedIndexUnidad:-1,
+      editedIndexGrupo:-1,
+      editedIndexChofer:-1,
+      editedIndexAdministrador:-1,
       unidadVehiculo:'',
       serieVehiculo:'',
       placaVehiculo:'',
       numsimVehiculo:'',
+      descripcionGrupo:'',
+      fondoGrupo:'',
+      textoGrupo:'',
+      lineaGrupo:'',
+      grupoId:'',
+      codigoAdmin:'',
+      usuarioAdmin:'',
+      nombreAdmin:'',
+      passAdmin:'',
+      mSelectTerminalAdmin:'',
+      mListTerminalesAdmin:[],
       currentPageUnidadesFlotaVehicular: 1,
       loadingUnidadesFlotaVehicular: false,
       loadingGruposFlotaVehicular: false,
@@ -581,6 +737,8 @@ export default {
       modalAgregarChoferFlotaVehicular:false,
       modalAgregarPropietarioFlotaVehicular:false,
       modalAgregarUnidadFlotaVehicular:false,
+      modalAgregarGrupoFlotaVehicular:false,
+      modalAgregarAdministradorFlotaVehicular:false,
       tableColumnsUnidadesFlotaVehicular: [
         {
           prop: "CodiVehi",
@@ -664,13 +822,13 @@ export default {
         {
           prop: "CodiUsua",
           label: "Código",
-          minWidth: 120,
+          minWidth: 130,
           sortable: true,
         },
         {
           prop: "NombApellUsua",
           label: "Nombres y Apellidos",
-          minWidth: 240,
+          minWidth: 250,
         },
         {
           prop: "NombUsua",
@@ -685,7 +843,7 @@ export default {
         {
           prop: "DescTerm",
           label: "Terminal",
-          minWidth: 200,
+          minWidth: 160,
         },
       ],
       tableColumnsChoferesFlotaVehicular: [
@@ -747,7 +905,7 @@ export default {
           this.desvincularUnidadPropietario()
         }
         
-      },
+    },
     initUnidadesFlotaVEhicular: async function () {
       this.mListUnidadesFlotaVehicular = [];
       this.loadingUnidadesFlotaVehicular = true;
@@ -836,6 +994,7 @@ export default {
       this.loadingPropietariosFlotaVehicular = false;
     },
     initAdministrativosFlotaVehicular: async function () {
+      this.initTerminalesFlotaVehicular();
       this.mListAdministrativosFlotaVehicular = [];
       this.loadingAdministrativosFlotaVehicular = true;
       try {
@@ -863,6 +1022,33 @@ export default {
         Notification.error({ title: "Error Catch", msm: error.toString() });
       }
       this.loadingAdministrativosFlotaVehicular = false;
+    },
+    initTerminalesFlotaVehicular: async function () {
+      this.mListTerminalesAdmin = [];
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/read-terminales",
+          {
+            token: this.token,
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          this.mListTerminalesAdmin.push(...datos.data.data);
+        } else if (datos.data.status_code == 300) {
+          Notification.info({
+            title: "Terminales",
+            message: "No existen terminales registradas",
+          });
+        } else {
+          Notification.error({
+            title: "Error Api Terminales",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({ title: "Error Catch", msm: error.toString() });
+      }
     },
     initChoferesFlotaVehicular: async function () {
       this.loadingChoferesFlotaVehicular = true
@@ -1031,6 +1217,18 @@ export default {
       this.modalAgregarUnidadFlotaVehicular = this.modalAgregarUnidadFlotaVehicular ? false : true
       if (this.modalAgregarUnidadFlotaVehicular == false) {
         this.cancelarRegisterUnidad()
+      }
+    },
+    showModalAgregarGrupoFlotavehicular(index, row) {
+      this.modalAgregarGrupoFlotaVehicular = this.modalAgregarGrupoFlotaVehicular ? false : true
+      if (this.modalAgregarGrupoFlotaVehicular == false) {
+        this.cancelarRegisterGrupo()
+      }
+    },
+    showModalAgregarAdministradorFlotavehicular(index, row) {
+      this.modalAgregarAdministradorFlotaVehicular = this.modalAgregarAdministradorFlotaVehicular ? false : true
+      if (this.modalAgregarAdministradorFlotaVehicular == false) {
+        this.cancelarRegisterAdministrador()
       }
     },
     onError() {
@@ -1212,6 +1410,99 @@ export default {
         });
       }
     },
+    async registerGrupo(){
+      try {
+        var objBody= {
+            token: this.token,
+            datos: {
+         _descripcion : this.descripcionGrupo,
+         _activo : 1,
+         _color : this.fondoGrupo,
+         _color1 : this.textoGrupo,
+         _color2 : this.lineaGrupo
+    }
+        }
+      var result = await this.$axios.post(process.env.baseUrl + "/register-grupo", objBody)
+    if (result.data.status_code == 200) {
+      this.initGruposFlotaVehicular()
+      this.limpiarRegisterGrupo()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async registerAdministrador(){
+      try {
+        var objBody= {
+          token: this.token,
+          datos: {
+            _codiusua : this.codigoAdmin,
+            _nombapellusua : this.nombreAdmin,
+            _clavusua : this.passAdmin,
+            _nombusua : this.usuarioAdmin,
+            _oPermiso:{
+              _info_unidades:0,
+              _generar_calificar_tarjetas_despues_del_recorrido:0,
+              _info_usuarios:0,
+              _opciones_sistema:0,
+              _simulacion_dispositivo_urbano:0,
+              _envio_comandos:0,
+              _deperacion_sistema:0,
+              _anular_tarjeta:0,
+              _finalizar_vuelta:0,
+              _simulacion_dispositivo_urbano:0,
+              _alarmar_geocercas:0,
+              _visualizar_rutas_otras_terminales:0,
+              _admin_rutas_frecuencias:0
+            },
+            _oTerminal:{
+              _codigoterminal:this.mSelectTerminalAdmin,
+            }
+          }
+        }
+      var result = await this.$axios.post(process.env.baseUrl + "/register-administrador", objBody)
+    if (result.data.status_code == 200) {
+      this.initAdministrativosFlotaVehicular()
+      this.limpiarRegisterAdministrador()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
     async updatePropietario(){
       try {
         var objBody= {
@@ -1290,6 +1581,156 @@ export default {
         });
       }
     },
+    async updateGrupo(){
+      try {
+        var objBody= {
+        token:this.token,
+        datos: {
+          _grupoid : this.grupoId,
+          _descripcion : this.descripcionGrupo,
+          _activo : 1,
+          _color : this.fondoGrupo,
+          _color1 : this.textoGrupo,
+          _color2 : this.lineaGrupo
+        }
+      }
+      var result = await this.$axios.put(process.env.baseUrl + "/update-grupo", objBody)
+    if (result.data.status_code == 200) {
+      this.initGruposFlotaVehicular()
+      this.limpiarRegisterGrupo()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al actualizar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async updateChofer(){
+      try {
+        var objBody= {
+        token:this.token,
+        datos: {
+          usuario: this.usuarioChofer,
+          constrasenia: this.passwordChofer,
+          nombres: this.nombreChofer,
+          email: this.emailChofer,
+          telefono: this.telefonoChofer
+        }
+      }
+      var result = await this.$axios.put(process.env.baseUrl + "/update_chofer", objBody)
+    if (result.data.status_code == 200) {
+      this.initChoferesFlotaVehicular()
+      this.limpiarRegisterChofer()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al actualizar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async updateAdministrador(){
+      try {
+        var objBody= {
+          token: this.token,
+          datos: {
+            _codiusua : this.codigoAdmin,
+            _nombapellusua : this.nombreAdmin,
+            _clavusua : this.passAdmin,
+            _nombusua : this.usuarioAdmin,
+            _oTerminal:{
+              _codigoterminal:this.mSelectTerminalAdmin,
+            }
+          }
+        }
+      var result = await this.$axios.put(process.env.baseUrl + "/update-administrador", objBody)
+    if (result.data.status_code == 200) {
+      this.initAdministrativosFlotaVehicular()
+      this.limpiarRegisterAdministrador()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al actualizar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async deleteChofer(row){
+      try {
+        var usuarioDelete
+        usuarioDelete = row.usuario
+        var objBody= {
+        token:this.token,
+        usuario: usuarioDelete,  
+      }
+      //var result = await this.$axios.delete(process.env.baseUrl + "/delete_chofer", {data:objBody})
+    if (result.data.status_code == 200) {
+      this.initChoferesFlotaVehicular()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al eliminar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
     async changeEstadoPropietario(row){
       var estado
       if (row.activo == 1) {
@@ -1305,24 +1746,36 @@ export default {
           _codiobse:row.CodiObse
         }
       }
-      var result = await this.$axios.put(process.env.baseUrl + "/update-propietario-estado-inactivo", objBody)
-    if (result.data.status_code == 200) {
-      this.initPropietariosFlotaVehicular()
-      this.limpiarRegisterPropietario()
-      this.$notify({
-          message: result.data.msm,
-          timeout: 1500,
-          type: 'default'
-        });
-    } else {
-      this.$notify({
-          title: 'Error al insertar',
-          timeout: 3000,
-          message: result.data.msm,
-          type: 'danger'
-          
-        });
-    }  
+      Swal.fire({
+        title: row.activo == 1 ? 'Desactivar Propietario':'Activar Propietario',
+        text: row.AliaObse,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: row.activo == 1 ? 'Si, desactivar.' : 'Si, activar.'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          var result = await this.$axios.put(process.env.baseUrl + "/update-propietario-estado", objBody)
+          if (result.data.status_code == 200) {
+            this.initPropietariosFlotaVehicular()
+            this.$notify({
+                message: result.data.msm,
+                timeout: 1500,
+                type: 'default'
+              });
+          } else {
+            this.$notify({
+                title: 'Error al insertar',
+                timeout: 3000,
+                message: result.data.msm,
+                type: 'danger'
+                
+              });
+          }  
+        }
+      })
     } catch (error) {
         this.$notify({
           title: 'Error TRY Permisos',
@@ -1332,8 +1785,6 @@ export default {
       }
     },
     async changeEstadoUnidad(row){
-      console.log("changeEstadoUnidad")
-      console.log(row)
       var codivehiculo = row.CodiVehi
       var estado
       if (row.idEstaVehi == 1) {
@@ -1349,24 +1800,146 @@ export default {
           _estado:estado,
         }
       }
-      var result = await this.$axios.put(process.env.baseUrl + "/update-unidad-estado", objBody)
-    if (result.data.status_code == 200) {
-      this.initUnidadesFlotaVEhicular()
-      this.limpiarRegisterUnidad()
-      this.$notify({
-          message: result.data.msm,
-          timeout: 1500,
-          type: 'default'
-        });
-    } else {
-      this.$notify({
-          title: 'Error al insertar',
-          timeout: 3000,
-          message: result.data.msm,
+      Swal.fire({
+        title: row.idEstaVehi == 1 ? 'Desactivar Unidad':'Activar Unidad',
+        text: row.CodiVehi,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: row.idEstaVehi == 1 ? 'Si, desactivar.' : 'Si, activar.'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          var result = await this.$axios.put(process.env.baseUrl + "/update-unidad-estado", objBody)
+          if (result.data.status_code == 200) {
+            this.initUnidadesFlotaVEhicular()
+            this.$notify({
+                message: result.data.msm,
+                timeout: 1500,
+                type: 'default'
+              });
+          } else {
+            this.$notify({
+                title: 'Error al insertar',
+                timeout: 3000,
+                message: result.data.msm,
+                type: 'danger'
+                
+              });
+          }  
+        }
+      })
+      
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
           type: 'danger'
-          
         });
-    }  
+      }
+    },
+    async changeEstadoGrupo(row){
+      var idgrupo = row.id
+      var estado
+      if (row.activo == 1) {
+        estado = 0
+      }else{
+        estado = 1
+      }
+      try {
+        var objBody= {
+        token:this.token,
+        datos:{
+          _grupoid:idgrupo,
+          _activo:estado,
+        }
+      }
+      Swal.fire({
+        title: row.activo == 1 ? 'Desactivar Grupo':'Activar Grupo',
+        text: row.descripcion,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: row.activo == 1 ? 'Si, desactivar.' : 'Si, activar.'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          var result = await this.$axios.put(process.env.baseUrl + "/update-grupo-estado", objBody)
+          if (result.data.status_code == 200) {
+            this.initGruposFlotaVehicular()
+            this.$notify({
+                message: result.data.msm,
+                timeout: 1500,
+                type: 'default'
+              });
+          } else {
+            this.$notify({
+                title: 'Error al cambiar estado',
+                timeout: 3000,
+                message: result.data.msm,
+                type: 'danger'
+                
+              });
+          }  
+        }
+      })
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async changeEstadoAdministrador(row){
+      var estado
+      if (row.activo == 1) {
+        
+        estado = 0
+      }else{
+        estado = 1
+      }
+      try {
+        var objBody= {
+        token:this.token,
+        datos:{
+          _estado:estado,
+          _codiusua:row.CodiUsua
+        }
+      }
+      Swal.fire({
+        title: row.activo == 1 ? 'Desactivar Administrador':'Activar Administrador',
+        text: row.NombApellUsua,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: row.activo == 1 ? 'Si, desactivar.' : 'Si, activar.'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          var result = await this.$axios.put(process.env.baseUrl + "/update-administrador-estado", objBody)
+          if (result.data.status_code == 200) {
+            this.initAdministrativosFlotaVehicular()
+            this.$notify({
+                message: result.data.msm,
+                timeout: 1500,
+                type: 'default'
+              });
+          } else {
+            this.$notify({
+                title: 'Error al cambiar estado',
+                timeout: 3000,
+                message: result.data.msm,
+                type: 'danger'
+                
+              });
+          }  
+        }
+      })
+    
     } catch (error) {
         this.$notify({
           title: 'Error TRY Permisos',
@@ -1502,6 +2075,18 @@ export default {
       }
       this.registerUnidad();
     },
+    sendRegisterGrupo(){
+      if (this.validarGrupo()) {
+        return;
+      }
+      this.registerGrupo();
+    },
+    sendRegisterAdministrador(){
+      if (this.validarAdministrador()) {
+        return;
+      }
+      this.registerAdministrador();
+    },
     sendUpdatePropietario(){
       if (this.validarPropietario()) {
         return;
@@ -1514,11 +2099,38 @@ export default {
       }
       this.updateUnidad();
     },
+    sendUpdateGrupo(){
+      if (this.validarGrupo()) {
+        return;
+      }
+      this.updateGrupo();
+    },
+    sendUpdateChofer(){
+      if (this.validarChofer()) {
+        return;
+      }
+      this.updateChofer();
+    },
+    sendUpdateAdministrador(){
+      if (this.validarAdministrador()) {
+        return;
+      }
+      this.updateAdministrador();
+    },
     sendChangeEstadoPropietario(row){
       this.changeEstadoPropietario(row);
     },
     sendChangeEstadoUnidad(row){
       this.changeEstadoUnidad(row);
+    },
+    sendChangeEstadoGrupo(row){
+      this.changeEstadoGrupo(row);
+    },
+    sendChangeEstadoAdministrador(row){
+      this.changeEstadoAdministrador(row);
+    },
+    sendDeleteChofer(row){
+      this.deleteChofer(row);
     },
     editPropietario(row){
       this.nombrePropietario = row.AliaObse
@@ -1536,12 +2148,40 @@ export default {
       this.editedIndexUnidad = 1
       this.modalAgregarUnidadFlotaVehicular = true
     },
+    editGrupo(row){
+      this.descripcionGrupo = row.descripcion
+      this.fondoGrupo = row.color
+      this.textoGrupo = row.color1
+      this.lineaGrupo = row.color2
+      this.grupoId = row.id
+      this.editedIndexGrupo = 1
+      this.modalAgregarGrupoFlotaVehicular = true
+    },
+    editChofer(row){
+      this.usuarioChofer = row.usuario
+      this.telefonoChofer = row.telefono
+      this.nombreChofer = row.nombres
+      this.passwordChofer = row.constrasenia
+      this.emailChofer = row.email
+      this.editedIndexChofer = 1
+      this.modalAgregarChoferFlotaVehicular = true
+    },
+    editAdministrador(row){
+      this.codigoAdmin = row.CodiUsua
+      this.usuarioAdmin = row.NombApellUsua
+      this.nombreAdmin = row.NombUsua
+      this.passAdmin = row.ClavUsua
+      this.mSelectTerminalAdmin = row.CodiTermUsua
+      this.editedIndexAdministrador = 1
+      this.modalAgregarAdministradorFlotaVehicular = true
+    },
     limpiarRegisterChofer(){
       this.nombreChofer  = ''
       this.usuarioChofer   = ''
       this.emailChofer  = ''
       this.passwordChofer  = ''
       this.telefonoChofer  = ''
+      this.editedIndexChofer = -1
     },
     cancelarRegisterChofer(){
       this.nombreChofer = ''
@@ -1549,6 +2189,7 @@ export default {
       this.emailChofer = ''
       this.passwordChofer = ''
       this.telefonoChofer = ''
+      this.editedIndexChofer = -1
       this.modalAgregarChoferFlotaVehicular = false
     },
     validarChofer(){
@@ -1625,6 +2266,73 @@ export default {
         this.validaUnidad = 1
       }
       return this.validaUnidad
+    },
+    limpiarRegisterGrupo(){
+      this.descripcionGrupo = ''
+      this.fondoGrupo = ''
+      this.textoGrupo = ''
+      this.lineaGrupo = ''
+      this.editedIndexGrupo = -1
+    },
+    cancelarRegisterGrupo(){
+      this.descripcionGrupo = ''
+      this.fondoGrupo = ''
+      this.textoGrupo = ''
+      this.lineaGrupo = ''
+      this.editedIndexGrupo = -1
+      this.modalAgregarGrupoFlotaVehicular = false
+    },
+    validarGrupo(){
+      this.validaGrupo = 0
+      if (this.descripcionGrupo == '') {
+        this.validaGrupo = 1
+      }
+      if (this.fondoGrupo == '') {
+        this.validaGrupo = 1
+      }
+      if (this.lineaGrupo == '') {
+        this.validaGrupo = 1
+      }
+      if (this.textoGrupo == '') {
+        this.validaGrupo = 1
+      }
+      return this.validaGrupo
+    },
+    limpiarRegisterAdministrador(){
+      this.codigoAdmin = ''
+      this.usuarioAdmin = ''
+      this.nombreAdmin = ''
+      this.passAdmin = ''
+      this.mSelectTerminalAdmin = ''
+      this.editedIndexAdministrador = -1
+    },
+    cancelarRegisterAdministrador(){
+      this.codigoAdmin = ''
+      this.usuarioAdmin = ''
+      this.nombreAdmin = ''
+      this.passAdmin = ''
+      this.mSelectTerminalAdmin = ''
+      this.editedIndexAdministrador = -1
+      this.modalAgregarAdministradorFlotaVehicular = false
+    },
+    validarAdministrador(){
+      this.validaAdministrador = 0
+      if (this.codigoAdmin == '') {
+        this.validaAdministrador = 1
+      }
+      if (this.usuarioAdmin == '') {
+        this.validaAdministrador = 1
+      }
+      if (this.nombreAdmin == '') {
+        this.validaAdministrador = 1
+      }
+      if (this.passAdmin == '') {
+        this.validaAdministrador = 1
+      }
+      if (this.mListTerminalesAdmin == '') {
+        this.validaAdministrador = 1
+      }
+      return this.validaAdministrador
     },
   },
   mounted() {
