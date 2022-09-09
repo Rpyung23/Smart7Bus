@@ -24,7 +24,7 @@
                   <el-table v-loading="loadingUnidadesFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     class="table-responsive table-flush" :data="mListUnidadesFlotaVehicular"
-                    header-row-class-name="thead-dark" height="calc(100vh - 11rem)">
+                    header-row-class-name="thead-dark" height="calc(100vh - 13.4rem)">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label"
                       v-bind="column">
@@ -55,7 +55,7 @@
                     </el-table-column>
 
                     <el-table-column min-width="180px" align="right" label="Actions">
-                      <div slot-scope="{ $index, row }" class="d-flex">
+                      <div slot-scope="{ row }" class="d-flex">
                         <base-button class="edit" type="success" size="sm" icon @click="editUnidad(row)">
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
@@ -84,7 +84,7 @@
                 <div>
                   <el-table v-loading="loadingGruposFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListGruposFlotaVehicular" height="calc(100vh - 11rem)"
+                    :data="mListGruposFlotaVehicular" height="calc(100vh - 13.4rem)"
                     header-row-class-name="thead-dark">
                     
                     <div slot="empty"></div>
@@ -106,7 +106,7 @@
                     </el-table-column>
 
                     <el-table-column min-width="180px" align="right" label="Actions">
-                      <div slot-scope="{ $index, row }" class="d-flex">
+                      <div slot-scope="{ row }" class="d-flex">
                         <base-button class="edit" type="success" size="sm" icon @click="editGrupo(row)">
                           <i class="text-white ni ni-ruler-pencil"></i>
                         </base-button>
@@ -138,7 +138,7 @@
                   <el-table v-loading="loadingPropietariosFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListPropietariosFlotaVehicular"
-                    height="calc(100vh - 11rem)" header-row-class-name="thead-dark">
+                    height="calc(100vh - 13.4rem)" header-row-class-name="thead-dark">
                     
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsPropietariosFlotaVehicular" :key="column.label"
@@ -192,7 +192,7 @@
                   <el-table v-loading="loadingAdministrativosFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListAdministrativosFlotaVehicular"
-                    height="calc(100vh - 11rem)"
+                    height="calc(100vh - 13.4rem)"
                     header-row-class-name="thead-dark">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsAdministrativosFlotaVehicular" :key="column.label"
@@ -248,7 +248,7 @@
                 <div>
                   <el-table v-loading="loadingChoferesFlotaVehicular" element-loading-text="Cargando..."
                     element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
-                    :data="mListChoferesFlotaVehicular" height="calc(100vh - 11rem)"
+                    :data="mListChoferesFlotaVehicular" height="calc(100vh - 13.4rem)"
                     header-row-class-name="thead-dark">
                     <div slot="empty"></div>
                     <el-table-column v-for="column in tableColumnsChoferesFlotaVehicular" :key="column.label"
