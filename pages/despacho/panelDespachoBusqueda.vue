@@ -249,7 +249,7 @@
     <modal
       :show.sync="modalSalidasPanelDespachoBusqueda"
       size="xl"
-      body-classes="p-0"
+      body-classes="p-1"
     >
     <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
       <!--<div class="containerModalRecorridoPanelDespacho">

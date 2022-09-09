@@ -118,7 +118,7 @@
       <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyDSalidasAnuladas p-0">
         <div>
           <el-table v-loading="isLoadingDespachoSalidaPanelBusqueda" element-loading-text="Cargando Datos..."
-            element-loading-spinner="el-icon-loading" :data="mListDespachosSalidasAnuladas" row-key="id"
+            :data="mListDespachosSalidasAnuladas" row-key="id"
             height="calc(100vh - 9rem)" style="width: 100%"
             header-row-class-name="thead-dark" :default-sort="{ prop: 'HoraSaliProgSali_m', order: 'ascending' }"
             :row-class-name="tableRowClassNameDSalidasAnuladas">
@@ -275,7 +275,7 @@
     </modal>
 
     <!--RECORRIDO modal-->
-    <modal :show.sync="modalRecorridoPanelDespachoControl" size="xl" body-classes="p-0">
+    <modal :show.sync="modalRecorridoPanelDespachoControl" size="xl" body-classes="p-1">
       <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
     </modal>
 
@@ -803,7 +803,7 @@ export default {
   margin: auto;
   display: flex;
   justify-content: flex-end;
-  width: 50%;
+  width: 40%;
 }
 
 .container-rutas::-webkit-scrollbar {
@@ -838,7 +838,7 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  width: 50%;
+  width: 60%;
   justify-content: flex-start;
 }
 
@@ -948,12 +948,12 @@ export default {
 }
 
 .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
-  background-color: hsla(226, 88%, 61%, 0.301);
+  background-color: hsla(226, 88%, 61%, 0.192);
   color: black;
 }
 
 .estadoanuladoDespacho {
-  background-color: rgba(255, 0, 0, 0.315) !important;
+  background-color: rgba(255, 0, 0, 0.192) !important;
   color: black;
 }
 
@@ -963,7 +963,7 @@ export default {
 }
 
 .estadodiferidoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .estadodiferidoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
-  background-color: rgb(141, 248, 126);
+  background-color: rgba(140, 248, 126, 0.192);
   color: black;
 }
 

@@ -131,7 +131,6 @@
             <el-table
               v-loading="loadingUnidadesContadorPasajerosPasajerosVueltas"
               element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading"
               :data="tableDataRecaudoContadorPasajerosVueltas"
               row-key="id"
               height="440"

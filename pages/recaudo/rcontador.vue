@@ -135,7 +135,6 @@
             <el-table
               v-loading="loadingUnidadesContadorPasajerosPasajeros"
               element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading"
               :data="tableDataRecaudoContadorPasajeros"
               row-key="id"
               height="calc(100vh - 13rem)"
@@ -467,7 +466,8 @@ export default {
 .no-border-card .card-footer {
   border-top: 0;
 }
-.card-bodyRPagosVehiculoProduccion {
+.card-bodyRPagosVehiculoProduccion 
+{
   padding: 0rem !important;
   height: calc(100vh - 13rem);
   overflow: auto;

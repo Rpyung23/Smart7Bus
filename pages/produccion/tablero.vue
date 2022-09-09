@@ -186,8 +186,7 @@
           </JqxGrid>
           
           <br v-if="oEmpresa != null && oEmpresa == 'smiguel' || oEmpresa == '28septiembre'" >
-
-          <JqxGrid ref="myGridDespachoPanel" :height="(oEmpresa != null && oEmpresa == 'smiguel' || oEmpresa == '28septiembre') ?  '200px' : '350px'" @rowselect="myGridOnRowSelect($event)"
+          <JqxGrid ref="myGridDespachoPanel" :height="(oEmpresa != null && oEmpresa != 'smiguel' && oEmpresa != '28septiembre') ?   '350px' : '225px'" @rowselect="myGridOnRowSelect($event)"
             :columns="columnsInfo" :source="dataAdapter" :enabletooltips="true" :width="getWidth">
           </JqxGrid>
 
@@ -425,6 +424,7 @@ export default {
       valida:0,
       columnsInfo: [{ text: 'Numero', datafield: 'Numero', width: 100, cellclassname: this.cellclassname},
       { text: 'Control', datafield: 'DescripcionControl', width: 200, cellclassname: this.cellclassname },
+      { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 100, cellclassname: this.cellclassname },
       { text: 'PROG', datafield: 'Programado', width: 90, cellclassname: this.cellclassname },
       { text: 'MARC', datafield: 'Marcado', width: 90, cellclassname: this.cellclassname },
       { text: 'Atraso Tiempo', datafield: 'AtrasoFTiempo', width: 110, cellclassname: this.cellclassname },
@@ -751,6 +751,7 @@ export default {
         datatype: 'array',
         datafields: [
           { name: 'DescripcionControl', type: 'string' },
+          { name: 'NumeVuelSali_m', type: 'string' },
           { name: 'Programado', type: 'string' },
           { name: 'Marcado', type: 'string' },
           { name: 'AtrasoFTiempo', type: 'datetime' },

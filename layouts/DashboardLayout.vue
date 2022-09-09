@@ -69,7 +69,6 @@
           <sidebar-item :link="{ name: 'Recorrido', path: '/rdistancia' }" translate="no"/>
           <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" translate="no"/>
           <sidebar-item :link="{ name: 'ANT', path: './rant' }" />
-          <sidebar-item :link="{ name: 'Controles - Tiempo', path: './rant' }" translate="no" />
           
         </sidebar-item>
 
