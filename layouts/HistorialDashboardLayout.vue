@@ -5,6 +5,7 @@
       <template slot="links">
 
         <sidebar-item
+        translate="no"
           :link="{
             name: 'Recorrido',
             icon: 'ni ni-vector text-success',
@@ -14,6 +15,7 @@
         </sidebar-item>
 
         <sidebar-item
+        translate="no"
           :link="{
             name: 'Simulador',
             icon: 'ni ni-button-play text-info',

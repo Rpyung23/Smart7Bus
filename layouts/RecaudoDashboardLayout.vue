@@ -5,6 +5,7 @@
       <template slot="links">
 
         <sidebar-item
+        translate="no"
           :link="{
             name: 'C. Pasajeros',
             icon: 'ni ni-single-02 text-success',
@@ -14,6 +15,7 @@
         </sidebar-item>
 
         <sidebar-item
+        translate="no"
           :link="{
             name: 'C. Pasajeros (Vueltas)',
             icon: 'ni ni-ungroup text-default',

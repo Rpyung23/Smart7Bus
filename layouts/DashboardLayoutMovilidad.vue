@@ -4,11 +4,11 @@
     <side-bar>
       <template slot-scope="props" slot="links">
 
-        <sidebar-item v-if="permisos != null && permisos.movilidad.iCalidadBruto != null && permisos.movilidad.iCalidadBruto != null && permisos.movilidad.iCalidadBruto" 
+        <sidebar-item translate="no" v-if="permisos != null && permisos.movilidad.iCalidadBruto != null && permisos.movilidad.iCalidadBruto != null && permisos.movilidad.iCalidadBruto" 
               :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidadMovilidad' }" />
 
 
-        <sidebar-item v-if="permisos != null && permisos.movilidad.iCalidad != null && permisos.movilidad.iCalidad != null && permisos.movilidad.iCalidad" 
+        <sidebar-item translate="no" v-if="permisos != null && permisos.movilidad.iCalidad != null && permisos.movilidad.iCalidad != null && permisos.movilidad.iCalidad" 
               :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidadMovilidad' }" />
 
 

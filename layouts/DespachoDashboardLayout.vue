@@ -3,14 +3,14 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-        <sidebar-item :link="{
+        <sidebar-item translate="no" :link="{
           name: 'Despacho',
           icon: 'ni ni-calendar-grid-58 text-success',
           path: './panelDespacho',
         }">
         </sidebar-item>
 
-        <sidebar-item :link="{
+        <sidebar-item translate="no" :link="{
           name: 'Despacho Busqueda',
           icon: 'ni ni-collection text-primary',
           path: './panelDespachoBusqueda',
@@ -18,16 +18,16 @@
         </sidebar-item>
 
 
-        <sidebar-item :link="{
+        <sidebar-item translate="no" :link="{
           name: 'Reportes',
           icon: 'ni ni-ungroup text-blank',
         }">
-          <sidebar-item :link="{ name: 'R. Salidas', path: './rSalidas' }" />
-          <sidebar-item  v-if="permisos != null && permisos.despacho.reportes.despachoGenerados != null && 
+          <sidebar-item translate="no" :link="{ name: 'R. Salidas', path: './rSalidas' }" />
+          <sidebar-item translate="no"  v-if="permisos != null && permisos.despacho.reportes.despachoGenerados != null && 
                                permisos.despacho.reportes.despachoGenerados" 
                                :link="{ name: 'Despachos Generados', path: './rDespachosGenerados' }" />
 
-          <sidebar-item v-if="permisos != null && permisos.despacho.reportes.reportePenalidades != null && 
+          <sidebar-item translate="no" v-if="permisos != null && permisos.despacho.reportes.reportePenalidades != null && 
                                permisos.despacho.reportes.reportePenalidades" :link="{ name: 'R. Penalidades Semanales', path: './rPenalidadesSemanales' }" />
 
         </sidebar-item>

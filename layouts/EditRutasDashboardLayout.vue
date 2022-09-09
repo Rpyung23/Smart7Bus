@@ -5,6 +5,7 @@
       <template slot="links">
 
         <sidebar-item
+        translate="no"
           :link="{
             name: 'Controles',
             icon: 'ni ni-ungroup text-success',
@@ -13,6 +14,7 @@
         </sidebar-item>
 
         <sidebar-item
+        translate="no"
           :link="{
             name: 'Tramos EX. Velocidad',
             icon: 'ni ni-vector text-danger',
@@ -22,6 +24,7 @@
 
 
         <sidebar-item
+        translate="no"
           :link="{
             name: 'Rutas y Frecuencias',
             icon: 'ni ni-bus-front-12 text-primary',

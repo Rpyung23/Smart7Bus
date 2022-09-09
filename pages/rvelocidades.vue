@@ -14,48 +14,28 @@
               </el-option>
             </el-select>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+            <base-input title="Buscar" addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker" v-model="fechaInicialSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
+            <base-input title="Exportar a PDF" addon-left-icon="ni ni-calendar-grid-58">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker" v-model="fechaFinalSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readRVelocidades()">
+          <div class="buttonsAdicionalesDespacho">
+            <base-button icon type="primary" size="sm" @click="readRVelocidades()">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
-            </base-button>
-            <!--<download-excel
-              class="btn btn-outline-success"
-              outline
-              :header="headerExcelRPagosVehiculoProduccion"
-              :data="mListaRVelocidades"
-              :fields="json_fields_excelRPagosVehiculoProduccion"
-              :worksheet="WorksheetExcelRPagosVehiculoProduccion"
-              :name="FileNameExcelRPagosVehiculoProduccion"
-            >
-              <span class="btn-inner--icon"
-                ><i class="ni ni-collection"></i
-              ></span>
-              <span class="btn-inner--text"> Excel</span>
-            </download-excel>-->
-            <base-button outline type="danger">
-              <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
-              <span class="btn-inner--text"> Exportar PDF</span>
             </base-button>
 
-            <base-button outline type="success" v-if="isVisibleRecorrido">
-              <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
-              <span class="btn-inner--text" @click="showRecorridoSalidasPanelBusqueda()">
-                Recorrido</span>
+            <base-button outline size="sm" type="danger">
+              <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
             </base-button>
+
           </div>
         </card>
 
@@ -63,10 +43,10 @@
           footer-classes="pb-2">
           <div>
             <el-table v-loading="loadingTableRVelocidadesBusquedaloading" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="mListaRVelocidades" row-key="id"
+              :data="mListaRVelocidades" row-key="id"
               class="tablePanelControlProduccion" 
-              header-row-class-name="thead-dark" height="calc(100vh - 9rem)"
-              highlight-current-row>
+              header-row-class-name="thead-dark" height="calc(100vh - 9.5rem)"
+              >
 
               <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
               </el-table-column>
@@ -138,6 +118,7 @@ export default {
       mListaUnidadesSalidasPanelBusqueda: [],
       mListLineasSalidasPanelBusqueda: [],
       loadingTableRVelocidadesBusquedaloading: false,
+      loadingTableUnidadesSalidasPanelBusquedaloading:false,
       itemUnidadSalidasPanelBusqueda: [],
       token: this.$cookies.get("token"),
       fechaInicialSalidasPanelBusqueda: "",
@@ -163,6 +144,16 @@ export default {
           prop: "FechHistEven",
           label: "Fecha",
           minWidth: 130,
+        },
+        {
+          prop: "HoraSaliProgSali_m",
+          label: "H. Salida",
+          minWidth: 150,
+        },
+        {
+          prop: "HoraLlegProgSali_m",
+          label: "H. Llegada",
+          minWidth: 150,
         },
         {
           prop: "total_velocidad",
@@ -304,7 +295,7 @@ export default {
 
 .card-bodyRVelocidades {
   padding: 0rem !important;
-  height: calc(100vh - 9rem);
+  height: calc(100vh - 9.5rem);
   overflow: auto;
 }
 

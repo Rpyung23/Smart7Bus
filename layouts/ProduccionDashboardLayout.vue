@@ -4,6 +4,7 @@
     <side-bar>
       <template slot="links">
         <sidebar-item
+        translate="no"
           :link="{
             name: 'Tablero',
             icon: 'ni ni-collection text-default',
@@ -13,6 +14,7 @@
         </sidebar-item>
 
       <sidebar-item
+      translate="no"
           :link="{
             name: 'Tablero Cobros',
             icon: 'ni ni-money-coins text-success',
@@ -22,12 +24,14 @@
         </sidebar-item>
 
         <sidebar-item
+        translate="no"
           :link="{
             name: 'Recibos',
             icon: 'ni ni-single-copy-04 text-primary',
           }"
         >
           <sidebar-item
+          translate="no"
             :link="{ name: 'Recibos Pagos Vehiculo', path: './recibopagosvehiculo' }"
           />
           <!--<sidebar-item
@@ -36,19 +40,22 @@
         </sidebar-item>
 
         <sidebar-item
+        translate="no"
           :link="{
             name: 'Reportes',
             icon: 'ni ni-book-bookmark text-blank',
           }"
         >
           <sidebar-item
+          translate="no"
             :link="{ name: 'Minutos y Tarjetas', path: './rminutostarjeta' }"
           />
           <sidebar-item
+          translate="no"
             :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: './rminutostarjetaResumido' }"
           />
-          <sidebar-item :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
-          <sidebar-item :link="{ name: 'Resumidos Vehiculo', path: './resumidovehiculo' }" />
+          <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
+          <sidebar-item translate="no" :link="{ name: 'Resumidos Vehiculo', path: './resumidovehiculo' }" />
           
           <!--<sidebar-item
             :link="{ name: 'Pagos Vehiculo Resumido', path: './rpagosvehiculoresumido' }"

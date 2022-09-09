@@ -66,7 +66,7 @@
               <base-button
                 type="danger"
                 size="sm"
-                @click="exportPdfSalidasPanelBusqueda()"
+                @click="exportPdfRPenalidadesSemanales()"
                 title="Exportar PDF"
               >
                 <span class="btn-inner--icon"
@@ -116,7 +116,7 @@
 </template>
 <script>
 import moment from "moment";
-import {getFechatoDDMM,getFecha_dd_mm_yyyy} from "../../util/fechas"
+import { getFechatoDDMM, getFecha_dd_mm_yyyy } from "../../util/fechas";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 
@@ -137,6 +137,10 @@ import {
   Button,
   Loading,
 } from "element-ui";
+
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
@@ -182,8 +186,8 @@ export default {
       fechaDia7SalidasPanelBusqueda: "",
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       tableColumnPenalidades: [],
-      mListDatosPenalidades:[],
-      loadingPenalidadesSemanales:false
+      mListDatosPenalidades: [],
+      loadingPenalidadesSemanales: false,
     };
   },
   methods: {
@@ -260,240 +264,121 @@ export default {
         minWidth: 140,
       });
     },
-    async readApiPenalidades() 
-    {
-      this.loadingPenalidadesSemanales = true
+    async readApiPenalidades() {
+      this.loadingPenalidadesSemanales = true;
 
       try {
         var obj = {
           token: this.token,
-          fecha1: getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda)+" 00:00:00",
-          fecha1F: getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda)+" 23:59:59",
-          fecha2: getFecha_dd_mm_yyyy(this.fechaDia2SalidasPanelBusqueda)+" 00:00:00",
-          fecha2F: getFecha_dd_mm_yyyy(this.fechaDia2SalidasPanelBusqueda)+" 23:59:59",
-          fecha3: getFecha_dd_mm_yyyy(this.fechaDia3SalidasPanelBusqueda)+" 00:00:00",
-          fecha3F: getFecha_dd_mm_yyyy(this.fechaDia3SalidasPanelBusqueda)+" 23:59:59",
-          fecha4: getFecha_dd_mm_yyyy(this.fechaDia4SalidasPanelBusqueda)+" 00:00:00",
-          fecha4F: getFecha_dd_mm_yyyy(this.fechaDia4SalidasPanelBusqueda)+" 23:59:59",
-          fecha5: getFecha_dd_mm_yyyy(this.fechaDia5SalidasPanelBusqueda)+" 00:00:00",
-          fecha5F: getFecha_dd_mm_yyyy(this.fechaDia5SalidasPanelBusqueda)+" 23:59:59",
-          fecha6: getFecha_dd_mm_yyyy(this.fechaDia6SalidasPanelBusqueda)+" 00:00:00",
-          fecha6F: getFecha_dd_mm_yyyy(this.fechaDi61SalidasPanelBusqueda)+" 23:59:59",
-          fecha7: getFecha_dd_mm_yyyy(this.fechaDia7SalidasPanelBusqueda)+" 00:00:00",
-          fecha7F: getFecha_dd_mm_yyyy(this.fechaDia7SalidasPanelBusqueda)+" 23:59:59"
-        }
-      
-        console.log(obj)
-      
-      var datos = await this.$axios.post(
-        process.env.baseUrl + "/readPenalidadesSemanales",
-        obj
-      );
+          fecha1:
+            getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda) +
+            " 00:00:00",
+          fecha1F:
+            getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda) +
+            " 23:59:59",
+          fecha2:
+            getFecha_dd_mm_yyyy(this.fechaDia2SalidasPanelBusqueda) +
+            " 00:00:00",
+          fecha2F:
+            getFecha_dd_mm_yyyy(this.fechaDia2SalidasPanelBusqueda) +
+            " 23:59:59",
+          fecha3:
+            getFecha_dd_mm_yyyy(this.fechaDia3SalidasPanelBusqueda) +
+            " 00:00:00",
+          fecha3F:
+            getFecha_dd_mm_yyyy(this.fechaDia3SalidasPanelBusqueda) +
+            " 23:59:59",
+          fecha4:
+            getFecha_dd_mm_yyyy(this.fechaDia4SalidasPanelBusqueda) +
+            " 00:00:00",
+          fecha4F:
+            getFecha_dd_mm_yyyy(this.fechaDia4SalidasPanelBusqueda) +
+            " 23:59:59",
+          fecha5:
+            getFecha_dd_mm_yyyy(this.fechaDia5SalidasPanelBusqueda) +
+            " 00:00:00",
+          fecha5F:
+            getFecha_dd_mm_yyyy(this.fechaDia5SalidasPanelBusqueda) +
+            " 23:59:59",
+          fecha6:
+            getFecha_dd_mm_yyyy(this.fechaDia6SalidasPanelBusqueda) +
+            " 00:00:00",
+          fecha6F:
+            getFecha_dd_mm_yyyy(this.fechaDi61SalidasPanelBusqueda) +
+            " 23:59:59",
+          fecha7:
+            getFecha_dd_mm_yyyy(this.fechaDia7SalidasPanelBusqueda) +
+            " 00:00:00",
+          fecha7F:
+            getFecha_dd_mm_yyyy(this.fechaDia7SalidasPanelBusqueda) +
+            " 23:59:59",
+        };
 
-      console.log(datos.data)
-      this.mListDatosPenalidades.push(...datos.data.datos)
+        console.log(obj);
+
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/readPenalidadesSemanales",
+          obj
+        );
+
+        console.log(datos.data);
+        this.mListDatosPenalidades.push(...datos.data.datos);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
 
-      this.loadingPenalidadesSemanales = false
-
+      this.loadingPenalidadesSemanales = false;
     },
-    exportPdfSalidasPanelBusqueda() {
+    exportPdfRPenalidadesSemanales() {
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
-          fontSize: 8.5,
+          fontSize: 12,
           bold: true,
           alignment: "left",
         },
-      ];
-      var unidad = [
-        {
-          text:
-            "Flota Vehicular : " +
-            (this.itemUnidadSalidasPanelBusqueda.length > 0
-              ? this.itemUnidadSalidasPanelBusqueda.toString()
-              : "Toda la flota"),
-          fontSize: 8.5,
-          bold: true,
-          alignment: "left",
-        },
-      ];
-      var ruta = [
-        { text: "Rutas : ", fontSize: 8.5, bold: true, alignment: "left" },
       ];
       var desde_hasta = [
         {
           text:
             "Fecha : " +
-            this.fechaInicialSalidasPanelBusqueda +
+            getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda) +
             " hasta " +
-            this.fechaFinalSalidasPanelBusqueda,
-          fontSize: 8.5,
+            getFecha_dd_mm_yyyy(this.fechaDia7SalidasPanelBusqueda),
+          fontSize: 12,
           bold: true,
           alignment: "left",
         },
       ];
 
-      var resultadoString = [
-        [
-          {
-            text: "Unidad",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Salida",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Ruta",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "N° Vuelta",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "H.Salida",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "H. Llegada",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "T. Atraso",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "T. Adelanto",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "V. Max",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "PEN ($)",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "ESTADO",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-        ],
-      ];
+      var mList = []
+      mList.push([{text:"Unidad",bold:true,alignment:'center'}, 
+                 {text:getFechatoDDMM(this.fechaDia1SalidasPanelBusqueda),bold:true,alignment:'center'},
+                 {text:getFechatoDDMM(this.fechaDia2SalidasPanelBusqueda),bold:true,alignment:'center'},
+                 {text:getFechatoDDMM(this.fechaDia3SalidasPanelBusqueda),bold:true,alignment:'center'},
+                 {text:getFechatoDDMM(this.fechaDia4SalidasPanelBusqueda),bold:true,alignment:'center'},
+                 {text:getFechatoDDMM(this.fechaDia5SalidasPanelBusqueda),bold:true,alignment:'center'},
+                 {text:getFechatoDDMM(this.fechaDia6SalidasPanelBusqueda),bold:true,alignment:'center'},
+                 {text:getFechatoDDMM(this.fechaDia7SalidasPanelBusqueda),bold:true,alignment:'center'},
+                 {text:"Total",bold:true,alignment:'center'}])
 
-      for (var i = 0; i < this.mListaSalidasPanelBusqueda.length; i++) {
-        var estado =
-          this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1
-            ? "DIFERIDA"
-            : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 4
-            ? "ANULADO"
-            : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
-            ? "EN RUTA"
-            : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
-              parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d) > 0
-            ? "FINALIZADO CON PENALIDAD"
-            : "FINALIZADA SIN PENALIDAD";
-        var arrys = [
-          {
-            text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
-            fontSize: 8.5,
-          },
-          { text: this.mListaSalidasPanelBusqueda[i].idSali_m, fontSize: 8.5 },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m,
-            fontSize: 8.5,
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].NumeVuelSali_m,
-            fontSize: 8.5,
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].HoraSaliProgSali_mF,
-            fontSize: 8.5,
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].HoraLlegProgSali_m,
-            fontSize: 8.5,
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].atrasoTime,
-            fontSize: 8.5,
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].adelantoTime,
-            fontSize: 8.5,
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].VeloMaxiSali_m,
-            fontSize: 8.5,
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
-            fontSize: 8.5,
-          },
-          { text: estado, fontSize: 8.5 },
-        ];
-        resultadoString.push(arrys);
+
+      for(var i = 0;i<this.mListDatosPenalidades.length;i++)
+      {
+        mList.push(['1','1','1','1','1','1','1','1','1'])
       }
 
+      
+
       var docDefinition = {
-        pageOrientation: "landscape",
         pageSize: "A4",
         content: [
           {
             layout: "noBorders",
             table: {
               headerRows: 0,
-              widths: [450, 450, 450, 450],
-              body: [empresa, unidad, ruta, desde_hasta],
+              widths: [450, 450],
+              body: [empresa, desde_hasta],
             },
           },
           {
@@ -502,7 +387,14 @@ export default {
               // you can declare how many rows should be treated as headers
               headerRows: 0,
               widths: [30, 40, 100, 40, 90, 50, 60, 60, 35, 35, 90],
-              body: resultadoString,
+              body: [[]],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [60, 45, 45, 45,45,45,45,45,50],
+              body: mList,
             },
           },
         ],
@@ -512,8 +404,8 @@ export default {
     },
   },
   mounted() {
-    this.initPrimerDiaSemanaActualSalidaBusquedaPanel()
-    this.readApiPenalidades()
+    this.initPrimerDiaSemanaActualSalidaBusquedaPanel();
+    this.readApiPenalidades();
   },
 };
 </script>
