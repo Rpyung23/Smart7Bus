@@ -239,6 +239,72 @@
        
     </modal>
 
+     <!--Form modal Agregar Frecuencia-->
+     <modal :show.sync="modalAgregarFrecuenciaRutasFrecuencias">
+      <validation-observer v-slot="{handleSubmit}" ref="formValidator">
+      <form class="needs-validation"
+            @submit.prevent="handleSubmit(firstFormSubmit)">
+        <div class="form-row">
+          <div class="col-md-6">
+            <base-input
+              name="Letra"
+              placeholder="Letra"
+              prepend-icon="ni ni-caps-small"
+              rules="required"
+              v-model="LetrFrec">
+            </base-input>
+          </div>
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-single-copy-04"
+              name="Descripción"
+              placeholder="Descripción"
+              rules="required"
+              v-model="DescFrec">
+            </base-input>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-watch-time"
+              type="time"
+              name="Salida"
+              placeholder="Salida"
+              rules="required"
+              v-model="HoraInicFrec">
+            </base-input>
+          </div>
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-watch-time"
+              type="time"
+              name="Finalización"
+              placeholder="Finalización"
+              rules="required"
+              v-model="HoraFina2Frec">
+            </base-input>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-12">
+            <el-select  placeholder="Rutas" v-model="mSelectRutaFrecuencia" style="width:450px">
+              <el-option v-for="item in tableData" :key="item.DescRuta" :label="item.DescRuta" :value="item.idRuta">
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+        <br>
+        <div class="text-right">
+          <base-button type="danger" @click="showModalAgregarFrecuenciaRutasFrecuencias()">Cancelar</base-button>
+          <base-button v-if="editedIndexFrecuencia == -1" type="primary" @click="registerFrecuencia()" native-type="submit">Agregar</base-button>
+          <base-button v-else type="primary" @click="updateFrecuencia()" native-type="submit">Actualizar</base-button>  
+        </div>
+      </form>
+    </validation-observer>
+       
+    </modal>
+
   </div>
 </template>
 <script>
@@ -340,6 +406,7 @@ export default {
       selectedRows: [],
       token: this.$cookies.get("token"),
       modalAgregarRutaRutasFrecuencias:false,
+      modalAgregarFrecuenciaRutasFrecuencias:false,
       mListTerminalesAdmin: [],
       mSelectTerminalAdmin:'',
       descripcionRuta:'',
@@ -348,9 +415,27 @@ export default {
       salidaRuta:'',
       finalizacionRuta:'',
       idRuta:'',
+      idFrecuencia:'',
       editedIndexRuta:-1,
+      editedIndexFrecuencia:-1,
       mListFrecuenciasByRuta:[],
-      mListRutasSeleccionadas:[]
+      mListRutasSeleccionadas:[],
+      HoraInicFrec:'',
+      LetrFrec:'',
+      DescFrec:'',
+      LuneFrec:'',
+      MartFrec:'',
+      MierFrec:'',
+      JuevFrec:'',
+      VierFrec:'',
+      SabaFrec:'',
+      DomiFrec:'',
+      idFrecPatrFrec:'',
+      ActiFrec:'',
+      HoraInic1Frec:'',
+      HoraFina2Frec:'',
+      _frecuenciaId:'',
+      mSelectRutaFrecuencia:''
     };
   },
   methods: {
@@ -424,7 +509,6 @@ Toast.fire({
 
       if (datos.data.status_code == 200) 
       {
-        console.log(datos.data.data)
         for (var i = 0; i < datos.data.data.length; i++) {
           datos.data.data[i].statusType = datos.data.data[i].ActiFrec == 1
             ? "success"
@@ -488,7 +572,6 @@ Toast.fire({
     if (result.data.status_code == 200) {
       this.readAllRutas()
       this.limpiarRegisterRuta()
-      this.limpiarRegisterGrupo()
       this.$notify({
           message: result.data.msm,
           timeout: 1500,
@@ -512,7 +595,6 @@ Toast.fire({
       }
     },
     async updateRuta(){
-      console.log(this.mSelectTerminalAdmin)
       try {
         var objBody= {
             token: this.token,
@@ -553,6 +635,106 @@ Toast.fire({
         });
       }
     },
+    async registerFrecuencia()
+    {
+      try {
+        var objBody= {
+            token: this.token,
+            frequencie: {
+              idRutaFrec:this.mSelectRutaFrecuencia,
+              HoraInicFrec:this.HoraInicFrec,
+              LetrFrec:this.LetrFrec,
+              DescFrec:this.DescFrec,
+              LuneFrec:0,
+              MartFrec:0,
+              MierFrec:0,
+              JuevFrec:0,
+              VierFrec:0,
+              SabaFrec:0,
+              DomiFrec:0,
+              idFrecPatrFrec:0,
+              ActiFrec:1,
+              HoraInic1Frec:this.HoraInicFrec,
+              HoraFina2Frec:this.HoraFina2Frec
+          }
+        }
+        console.log("objBody");
+        console.log(objBody)
+      var result = await this.$axios.post(process.env.baseUrl + "/create", objBody)
+    if (result.data.status_code == 200) {
+      this.readAllFrecuenciasByRuta()
+      this.limpiarRegisterFrecuencia()
+      this.$notify({
+          message: result.data.msg,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msg,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async updateFrecuencia(){
+      try {
+        var objBody= {
+            token: this.token,
+            datos: {
+              _frecuenciaId:this._frecuenciaId,
+              idRutaFrec:this.mSelectRutaFrecuencia,
+              HoraInicFrec:this.HoraInicFrec,
+              LetrFrec:this.LetrFrec,
+              DescFrec:this.DescFrec,
+              LuneFrec:0,
+              MartFrec:0,
+              MierFrec:0,
+              JuevFrec:0,
+              VierFrec:0,
+              SabaFrec:0,
+              DomiFrec:0,
+              idFrecPatrFrec:0,
+              ActiFrec:1,
+              HoraInic1Frec:this.HoraInicFrec,
+              HoraFina2Frec:this.HoraFina2Frec
+          }
+        }
+      var result = await this.$axios.put(process.env.baseUrl + "/update-frecuencias", objBody)
+    if (result.data.status_code == 200) {
+      this.readAllFrecuenciasByRuta()
+      this.limpiarRegisterFrecuencia()
+      this.$notify({
+          message: result.data.msg,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al actualizar',
+          timeout: 3000,
+          message: result.data.msg,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
     limpiarRegisterRuta(){
       this.letraRuta  = ''
       this.descripcionRuta   = ''
@@ -572,10 +754,53 @@ Toast.fire({
       this.editedIndexRuta = -1
       this.modalAgregarRutaRutasFrecuencias = false
     },
+    limpiarRegisterFrecuencia(){
+      this.mSelectRutaFrecuencia = '',
+      this.HoraInicFrec = '',
+      this.LetrFrec = '',
+      this.DescFrec = '',
+      this.LuneFrec = '',
+      this.MartFrec = '',
+      this.MierFrec = '',
+      this.JuevFrec = '',
+      this.VierFrec = '',
+      this.SabaFrec = '',
+      this.DomiFrec = '',
+      this.idFrecPatrFrec = '',
+      this.ActiFrec = '',
+      this.HoraInic1Frec = '',
+      this.HoraFina2Frec = '',
+      this.editedIndexFrecuencia = -1
+    },
+    cancelarRegisterFrecuencia(){
+      this.mSelectRutaFrecuencia = '',
+      this.HoraInicFrec = '',
+      this.LetrFrec = '',
+      this.DescFrec = '',
+      this.LuneFrec = '',
+      this.MartFrec = '',
+      this.MierFrec = '',
+      this.JuevFrec = '',
+      this.VierFrec = '',
+      this.SabaFrec = '',
+      this.DomiFrec = '',
+      this.idFrecPatrFrec = '',
+      this.ActiFrec = '',
+      this.HoraInic1Frec = '',
+      this.HoraFina2Frec = '',
+      this.editedIndexFrecuencia = -1
+      this.modalAgregarFrecuenciaRutasFrecuencias = false
+    },
     showModalAgregarRutaRutasFrecuencias(index, row) {
       this.modalAgregarRutaRutasFrecuencias = this.modalAgregarRutaRutasFrecuencias ? false : true
       if (this.modalAgregarRutaRutasFrecuencias == false) {
         this.cancelarRegisterRuta()
+      }
+    },
+    showModalAgregarFrecuenciaRutasFrecuencias(index, row) {
+      this.modalAgregarFrecuenciaRutasFrecuencias = this.modalAgregarFrecuenciaRutasFrecuencias ? false : true
+      if (this.modalAgregarFrecuenciaRutasFrecuencias == false) {
+        this.cancelarRegisterFrecuencia()
       }
     },
     editRuta(row){
@@ -589,9 +814,29 @@ Toast.fire({
       this.editedIndexRuta = 1
       this.modalAgregarRutaRutasFrecuencias = true
     },
-    async changeEstadoRuta(row){
-      console.log("row estado")
+    editFrecuencia(row){
+      console.log("row f")
       console.log(row)
+      this._frecuenciaId=row.idFrec,
+      this.mSelectRutaFrecuencia=row.idRuta,
+      this.HoraInicFrec=row.HoraInicFrec,
+      this.LetrFrec=row.LetrFrec,
+      this.DescFrec=row.DescFrec,
+      this.LuneFrec=0,
+      this.MartFrecv0,
+      this.MierFrec=0,
+      this.JuevFrec=0,
+      this.VierFrec=0,
+      this.SabaFrec=0,
+      this.DomiFrec=0,
+      this.idFrecPatrFrec=0,
+      this.ActiFrec=1,
+      this.HoraInic1Frec=row.HoraInicFrec,
+      this.HoraFina2Frec=row.HoraFina2Frec
+      this.editedIndexFrecuencia = 1
+      this.modalAgregarFrecuenciaRutasFrecuencias = true
+    },
+    async changeEstadoRuta(row){
       var idruta = row.idRuta
       var estado
       if (row.ActiRuta == 1) {
@@ -646,8 +891,6 @@ Toast.fire({
       }
     },
     async changeEstadoFrecuencia(row){
-      console.log("row estado")
-      console.log(row)
       var idfrecuencia = row.idFrec
       var estado
       if (row.ActiFrec == 1) {
@@ -678,7 +921,7 @@ Toast.fire({
           if (result.data.status_code == 200) {
             this.readAllFrecuenciasByRuta()
             this.$notify({
-                message: result.data.msm,
+                message: result.data.msg,
                 timeout: 1500,
                 type: 'default'
               });
@@ -686,7 +929,7 @@ Toast.fire({
             this.$notify({
                 title: 'Error al cambiar estado',
                 timeout: 3000,
-                message: result.data.msm,
+                message: result.data.msg,
                 type: 'danger'
                 
               });
