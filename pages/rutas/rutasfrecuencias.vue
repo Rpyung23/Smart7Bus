@@ -2,30 +2,31 @@
   <div class="content">
     <base-header>
       <div class="row align-items-center ">
-        <div class="col">
+        <div class="col" style="margin-top:1rem;">
           <tabs tabNavClasses="nav-fill flex-column flex-sm-row">
             <tab-pane >
-              <div slot="title" @click="readAllRutas()">
+              <div slot="title">
                 Rutas
               </div>
               <br />
               <card
-                class="no-border-card cardRutasFrecuencias no-border-card"
-                body-classes="px-0 pb-1 cardBodyFlotavehicular"
-                footer-classes="pb-2"
-              >
+                class="cardRutasFrecuencias no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular" 
+                footer-classes="pb-2">
                 <div class="col-12 text-right buttonNuevo">
                     <base-button type="primary" icon size="sm" @click="showModalAgregarRutaRutasFrecuencias()">
                       <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Ruta</span>
                     </base-button>
                 </div>
                 <el-table
-                      height="calc(100vh - 13.7rem)"
-                      :data="tableData"
-                      row-key="id"
-                      header-row-class-name="thead-dark"
-                      @selection-change="SelectionChangeRutas">
+                    v-loading="loadingRutaRutasFrecuencias" element-loading-text="Cargando..."
+                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    height="calc(100vh - 14.6rem)"
+                    :data="tableData"
+                    row-key="id"
+                    header-row-class-name="thead-dark"
+                    @selection-change="SelectionChangeRutas">
                     >
+                    <div slot="empty"></div>
                       <el-table-column
                         v-for="column in tableColumns"
                         :key="column.label"
@@ -94,11 +95,15 @@
                     </base-button>
                 </div>
                 <el-table
-                      height="calc(100vh - 13.7rem)"
+                    v-loading="loadingFrecuenciaRutasFrecuencias" element-loading-text="Cargando..."
+                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                      height="calc(100vh - 14.6rem)"
                       :data="mListFrecuenciasByRuta"
                       row-key="id"
                       header-row-class-name="thead-dark"
+                      @selection-change="SelectionChangeFrecuencias">
                     >
+                    <div slot="empty"></div>
                       <el-table-column
                         v-for="column in tableColumnsFrecuencias"
                         :key="column.label"
@@ -158,7 +163,113 @@
                 </el-table>
               </card>
             </tab-pane>
-            <tab-pane title="Controles"></tab-pane>
+            <tab-pane >
+              <div slot="title" @click="readAllControlesByFrecuencia()">
+                Controles
+              </div>
+              <br />
+              <card
+                class="no-border-card cardRutasFrecuencias no-border-card"
+                body-classes="px-0 pb-1 cardBodyFlotavehicular"
+                footer-classes="pb-2"
+              >
+                <div class="col-12 text-right buttonNuevo">
+                    <base-button type="primary" icon size="sm" @click="showModalAgregarFrecuenciaRutasFrecuencias()">
+                      <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Control</span>
+                    </base-button>
+                </div>
+                <el-table
+                    v-loading="loadingControlRutasFrecuencias" element-loading-text="Cargando..."
+                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                      height="calc(100vh - 14.6rem)"
+                      :data="mListControlesByFrecuencia"
+                      row-key="id"
+                      header-row-class-name="thead-dark"
+                    >
+                    <div slot="empty"></div>
+                      <el-table-column
+                        v-for="column in tableColumnsControles"
+                        :key="column.label"
+                        v-bind="column"
+                      >
+                      </el-table-column>
+
+                      <el-table-column label="Referencial" min-width="140px" prop="isRefeSecuCtrl">
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.isRefeSecuCtrl == 1 ? 'success' : 'danger'
+                          }`"></i>
+                          <span class="status">{{
+                              row.isRefeSecuCtrl == 1 ? "SI" : "NO"
+                          }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="Retorno" min-width="130px" prop="CtrlRetoSecuCtrl">
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.CtrlRetoSecuCtrl == 1 ? 'success' : 'danger'
+                          }`"></i>
+                          <span class="status">{{
+                              row.CtrlRetoSecuCtrl == 1 ? "SI" : "NO"
+                          }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="Fin Vuelta" min-width="130px" prop="EsFinVuelSecuCtrl">
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.EsFinVuelSecuCtrl == 1 ? 'success' : 'danger'
+                          }`"></i>
+                          <span class="status">{{
+                              row.EsFinVuelSecuCtrl == 1 ? "SI" : "NO"
+                          }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="Tolerancia" min-width="135px" prop="MinuToleSecuCtrl">
+                    </el-table-column>
+                    <el-table-column label="Penalización" min-width="145px" prop="PenaCtrlSecuCtrl">
+                    </el-table-column>
+
+                      <el-table-column
+                        min-width="180px"
+                        align="right"
+                        label="Actions"
+                      >
+                        <div slot-scope="{ row }" class="d-flex">
+                          <base-button
+                            class="edit"
+                            type="success"
+                            size="sm"
+                            icon
+                            @click="editFrecuencia(row)"
+                          >
+                            <i class="text-white ni ni-ruler-pencil"></i>
+                          </base-button>
+                          <base-button
+                            class="remove btn-link"
+                            :type="row.ActiFrec == 1 ? 'danger' : 'primary'"
+                            size="sm"
+                            icon
+                            @click="changeEstadoFrecuencia(row)"
+                          >
+                            <i :class="row.ActiFrec == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
+                          </base-button>
+                          <base-button
+                            class="remove btn-link"
+                            type="default"
+                            size="sm"
+                            icon
+                            @click="changeEstadoRuta(row)"
+                          >
+                            <i class="text-white ni ni-glasses-2"></i>
+                          </base-button>
+                        </div>
+                      </el-table-column>
+                </el-table>
+              </card>
+            </tab-pane>
           </tabs>
         </div>
       </div>
@@ -289,7 +400,7 @@
         <div class="form-row">
           <div class="col-md-12">
             <el-select  placeholder="Rutas" v-model="mSelectRutaFrecuencia" style="width:450px">
-              <el-option v-for="item in tableData" :key="item.DescRuta" :label="item.DescRuta" :value="item.idRuta">
+              <el-option v-for="item in mListRutasModalAgregar" :key="item.DescRuta" :label="item.DescRuta" :value="item.idRuta">
               </el-option>
             </el-select>
           </div>
@@ -376,21 +487,13 @@ export default {
           label: "Descripción",
           minWidth: 250,
         },
-        {
-          prop: "LetrFrec",
-          label: "Letra",
-          minWidth: 95,
-        },
+        
         {
           prop: "DescRuta",
           label: "Ruta",
           minWidth: 230,
         },
-        {
-          prop: "LetrRuta",
-          label: "Letra Ruta",
-          minWidth: 135,
-        },
+        
         {
           prop: "HoraInicFrec",
           label: "Salida",
@@ -402,6 +505,31 @@ export default {
           minWidth: 145,
         },
       ],
+      tableColumnsControles: [
+        {
+          prop: "DescFrec",
+          label: "Frecuencia",
+          minWidth: 250,
+        },
+        {
+          prop: "DescCtrl",
+          label: "Control",
+          minWidth: 250,
+        },
+        {
+          prop: "CodiCtrlSecuCtrl",
+          label: "Código",
+          minWidth: 130,
+        },
+        {
+          prop: "InteSecuCtrl",
+          label: "Intervalo",
+          minWidth: 130,
+        }
+      ],
+      loadingRutaRutasFrecuencias:false,
+      loadingFrecuenciaRutasFrecuencias:false,
+      loadingControlRutasFrecuencias:false,
       tableData: [],
       selectedRows: [],
       token: this.$cookies.get("token"),
@@ -419,7 +547,11 @@ export default {
       editedIndexRuta:-1,
       editedIndexFrecuencia:-1,
       mListFrecuenciasByRuta:[],
+      mListControlesByFrecuencia:[],
       mListRutasSeleccionadas:[],
+      mListFrecuenciasSeleccionadas:[],
+      mListRutasModalAgregar:[],
+      mListFrecuenciasModalAgregar:[],
       HoraInicFrec:'',
       LetrFrec:'',
       DescFrec:'',
@@ -441,41 +573,23 @@ export default {
   methods: {
     SelectionChangeRutas(val) {
       this.mListRutasSeleccionadas = []
+      this.mListRutasModalAgregar = []
       for (var i = 0; i < val.length; i++) {
         this.mListRutasSeleccionadas.push(val[i].idRuta)
       }
+      this.mListRutasModalAgregar.push(...val)
     },
-    deleteRow(row) {
-      let indexToDelete = this.tableData.findIndex(
-        (tableRow) => tableRow.id === row.id
-      );
-      if (indexToDelete >= 0) {
-        this.tableData.splice(indexToDelete, 1);
+    SelectionChangeFrecuencias(val) {
+      this.mListFrecuenciasSeleccionadas = []
+      this.mListFrecuenciasModalAgregar = []
+      for (var i = 0; i < val.length; i++) {
+        this.mListFrecuenciasSeleccionadas.push(val[i].idFrec)
       }
-    },
-    showToast(type,msm){
-      var Toast = swal.mixin({
-      toast: true,
-      position: 'top-end',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.addEventListener('mouseenter', swal.stopTimer)
-        toast.addEventListener('mouseleave', swal.resumeTimer)
-      }
-    })
-
-Toast.fire({
-  icon: type,
-  title: msm
-})
-    },
-    selectionChange(selectedRows) {
-      this.selectedRows = selectedRows;
+      this.mListFrecuenciasModalAgregar.push(...val)
     },
     async readAllRutas() {
       this.tableData = []
+      this.loadingRutaRutasFrecuencias = true
       var datos = await this.$axios.post(process.env.baseUrlPanel + "/rutes", {
         token: this.token,
         tipo:3
@@ -495,13 +609,25 @@ Toast.fire({
         this.tableData.push(...datos.data.data);
       }else if(datos.data.status_code == 400)
       {
-        this.showToast('danger',datos.data.msm)
+        //this.showToast('danger',datos.data.msm)
+        this.$notify({
+            message: datos.data.msm,
+            timeout:3000,
+            type: 'danger'
+          });
       }else{
-         this.showToast('warning','No existen rutas disponibles')
+         //this.showToast('warning','No existen rutas disponibles')
+         this.$notify({
+            message: 'No existen rutas disponibles',
+            timeout:3000,
+            type: 'warning'
+          });
       }
+      this.loadingRutaRutasFrecuencias = false
     },
     async readAllFrecuenciasByRuta() {
       this.mListFrecuenciasByRuta = []
+      this.loadingFrecuenciaRutasFrecuencias = true
       var datos = await this.$axios.post(process.env.baseUrlPanel + "/frecuencias_rutas", {
         token: this.token,
         ruta:this.mListRutasSeleccionadas
@@ -521,10 +647,51 @@ Toast.fire({
         this.mListFrecuenciasByRuta.push(...datos.data.data);
       }else if(datos.data.status_code == 400)
       {
-        this.showToast('danger',datos.data.msm)
+        //this.showToast('danger',datos.data.msg)
+        this.$notify({
+            message: datos.data.msg,
+            timeout:3000,
+            type: 'danger'
+          });
+        
       }else{
-         this.showToast('warning','No existen frecuencias disponibles')
+         //this.showToast('warning','No existen frecuencias disponibles')
+         this.$notify({
+            message: 'No existen frecuencias disponibles',
+            timeout:3000,
+            type: 'warning'
+          });
       }
+      this.loadingFrecuenciaRutasFrecuencias = false
+    },
+    async readAllControlesByFrecuencia() {
+      this.mListControlesByFrecuencia = []
+      this.loadingControlRutasFrecuencias = true
+      var datos = await this.$axios.post(process.env.baseUrlPanel + "/AllControlesPorFrecuencia", {
+        token: this.token,
+        frecuencias:this.mListFrecuenciasSeleccionadas
+      });
+
+      if (datos.data.status_code == 200) 
+      {
+        this.mListControlesByFrecuencia.push(...datos.data.datos);
+      }else if(datos.data.status_code == 400)
+      {
+        //this.showToast('danger',datos.data.msm)
+        this.$notify({
+            message: datos.data.msm,
+            timeout:3000,
+            type: 'danger'
+          });
+      }else{
+         //this.showToast('warning','No existen controles disponibles')
+         this.$notify({
+            message: 'No existen controles disponibles',
+            timeout:3000,
+            type: 'warning'
+          });
+      }
+      this.loadingControlRutasFrecuencias = false
     },
     async readTerminales() {
       this.mListTerminalesAdmin = [];
@@ -954,7 +1121,7 @@ Toast.fire({
 <style>
 
 .cardRutasFrecuencias {
-  height: calc(100vh - 10rem) !important;
+  height: calc(100vh - 11rem) !important;
   overflow: auto;
 }
 
