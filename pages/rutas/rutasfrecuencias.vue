@@ -654,13 +654,6 @@ export default {
             type: 'danger'
           });
         
-      }else{
-         //this.showToast('warning','No existen frecuencias disponibles')
-         this.$notify({
-            message: 'No existen frecuencias disponibles',
-            timeout:3000,
-            type: 'warning'
-          });
       }
       this.loadingFrecuenciaRutasFrecuencias = false
     },
@@ -682,13 +675,6 @@ export default {
             message: datos.data.msm,
             timeout:3000,
             type: 'danger'
-          });
-      }else{
-         //this.showToast('warning','No existen controles disponibles')
-         this.$notify({
-            message: 'No existen controles disponibles',
-            timeout:3000,
-            type: 'warning'
           });
       }
       this.loadingControlRutasFrecuencias = false
