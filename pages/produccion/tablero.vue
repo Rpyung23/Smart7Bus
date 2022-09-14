@@ -39,10 +39,13 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readlPanelTableroProduccion()">
+
+            <div class="buttonCenterEndDerecha">
+              <base-button icon type="primary" size="sm" @click="readlPanelTableroProduccion()">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
+            </div>
+
           </div>
         </card>
 
@@ -150,22 +153,22 @@
               <div class="navbarModal" style="margin-bottom: 0.5rem;">
                 <strong style="color:red;">{{ oTiempoFalta }}</strong>
                 <div class="containerButtonMasMenos bg-gradient-default border-0">
-                     <input v-model="oHora" @keypress="menorHoras()" max="24" min="0" type="number" :disabled="oBanderaHora == 1" class="inputTimer" data-index="0" ref="input-0" @input="focusNextOncePopulated($event, 2)" 
+                     <input v-model="oHora" @keypress="menorHoras()" max="24" min="0" type="number" :disabled="oBanderaHora == 1" class="inputTimer" data-index="0" ref="input-0" @input="focusNextOncePopulated($event, 2)"
                       ><strong style="color: white;">:</strong>
-                    <input v-model="oMinutos" @keypress="menorMinutos()" max="59" min="0" type="number"  :disabled="oBanderaMinutos == 1" class="inputTimer"  data-index="1" ref="input-1" @input="focusNextOncePopulated($event, 2)"  
+                    <input v-model="oMinutos" @keypress="menorMinutos()" max="59" min="0" type="number"  :disabled="oBanderaMinutos == 1" class="inputTimer"  data-index="1" ref="input-1" @input="focusNextOncePopulated($event, 2)"
                       ><strong style="color: white;">:</strong>
-                    <input v-model="oSegundos" max="59" min="0" type="number" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"  
+                    <input v-model="oSegundos" max="59" min="0" type="number" :disabled="oBanderaSegundos == 1" class="inputTimer"  data-index="2" ref="input-2" @input="focusNextOncePopulated($event, 2)"
                       >
-                </div>  
+                </div>
               </div>
 
               <div class="navbarModal">
                 <strong style="color: red;">{{ oPriceFalta }} $</strong>
                 <div class="containerButtonMasMenos bg-gradient-default border-0" >
-                    <input v-model="oDolaresPena" @keypress="menorDolares()" :disabled="oBanderaDolares == 1" min="0" type="number" class="inputTimer"> 
+                    <input v-model="oDolaresPena" @keypress="menorDolares()" :disabled="oBanderaDolares == 1" min="0" type="number" class="inputTimer">
                     <strong style="color: white;">.</strong>
                     <input v-model="oCentavosPena" :disabled="oBanderaCentavos == 1" max="99"  min="0" type="number" class="inputTimer">
- 
+
                 </div>
               </div>
             </div>
@@ -184,7 +187,7 @@
           <JqxGrid v-if="oEmpresa != null && oEmpresa == 'smiguel' || oEmpresa == '28septiembre'"  ref="myGridDespachoPanelOtros" :height="'150px'" :columns="columnsInfoOtros"
             :source="dataAdapterOtros" :enabletooltips="true" :width="getWidth">
           </JqxGrid>
-          
+
           <br v-if="oEmpresa != null && oEmpresa == 'smiguel' || oEmpresa == '28septiembre'" >
           <JqxGrid ref="myGridDespachoPanel" :height="(oEmpresa != null && oEmpresa != 'smiguel' && oEmpresa != '28septiembre') ?   '350px' : '225px'" @rowselect="myGridOnRowSelect($event)"
             :columns="columnsInfo" :source="dataAdapter" :enabletooltips="true" :width="getWidth">
@@ -527,7 +530,7 @@ export default {
           this.oTiempoFalta = obj.AtrasoFTiempo == '00:00:00' ? obj.AdelantoFTiempo : obj.AtrasoFTiempo
 
           var tiempo = this.oTiempoFalta.split(':')
-          
+
           this.oHora = tiempo[0]
           this.oMinutos = tiempo[1]
           this.oSegundos = tiempo[2]
@@ -712,7 +715,7 @@ export default {
       this.isObservacionesTableroProduccion = this.isObservacionesTableroProduccion == true ? false : true
       if (this.isObservacionesTableroProduccion == true) {
         this.limpiarDatosJustificacion()
-      } 
+      }
       this.readDetalleTableroProduccionAnotaciones(item)
       await this.readDetalleTableroProduccion(item)
     },
@@ -734,7 +737,7 @@ export default {
         }
         )
 
-        if (datos.data.datos.length > 0) 
+        if (datos.data.datos.length > 0)
         {
           this.oUnidadModalTitle = datos.data.datos[0].Unidad
           this.oRutaModalTitle = datos.data.datos[0].DescRuta
@@ -782,7 +785,7 @@ export default {
 
     },
     async readDetalleTableroProduccionAnotaciones(item) {
-      this.$refs.myGridDespachoPanelOtros.clearselection();  
+      this.$refs.myGridDespachoPanelOtros.clearselection();
       var mListOtros = []
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionPanelControlAnotaciones", {
@@ -814,7 +817,7 @@ export default {
           source: obj,
           columns: this.columnsInfoOtros
         });
-      
+
       this.$refs.myGridDespachoPanelOtros.endupdate();
 
     },
@@ -841,7 +844,7 @@ export default {
       } catch (e) {
         console.log(e)
       }
-    }, 
+    },
     async readHISTORIALTrazadoAllTramosTableroProduccion(item) {
       this.oCenterTableroExVelocidad = { lat: -1.249546, lng: -78.585376 }
       this.oZoomTableroExVelocidad = 7
@@ -951,9 +954,9 @@ export default {
       }
       this.isLoadingRecorridoSalidaPanelBusqueda = false;
     },
-    async registerJustificacionProduccion() 
+    async registerJustificacionProduccion()
     {
-      var dinero = this.objSeleccionado.Tipo == 3 || this.objSeleccionado.Tipo == 4 ? (this.oDolaresPena+"."+this.oCentavosPena) : '0.00' 
+      var dinero = this.objSeleccionado.Tipo == 3 || this.objSeleccionado.Tipo == 4 ? (this.oDolaresPena+"."+this.oCentavosPena) : '0.00'
       var tiempo = this.objSeleccionado.Tipo == 1 || this.objSeleccionado.Tipo == 2 ? (this.oHora+":"+this.oMinutos+":"+this.oSegundos) : '00:00:00'
 
       var objBody = {
@@ -965,12 +968,12 @@ export default {
           dinero:parseFloat(dinero),
           motivo:this.oMotivoString
         }
-      
+
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/registroJustificacionProduccion",objBody)
-        
+
         if(datos.data.status_code == 200){
-          
+
           this.readDetalleTableroProduccion(this.objSeleccionado)
           this.readlPanelTableroProduccion()
           this.limpiarDatosJustificacion()
@@ -1015,7 +1018,7 @@ export default {
       }
 
     },
-    async deleteJustificacionProduccion() 
+    async deleteJustificacionProduccion()
     {
 
       var objBody = {
@@ -1024,23 +1027,23 @@ export default {
           codigo: this.objSeleccionado.Codigo,
           tipo: this.objSeleccionado.Tipo
         }
-      
+
       try {
         var datos = await this.$axios.delete(process.env.baseUrl + "/deleteJustificacionProduccion",{data:objBody} )
-        
+
         if(datos.data.status_code == 200)
         {
           this.readDetalleTableroProduccion(this.objSeleccionado)
           this.readlPanelTableroProduccion()
           this.limpiarDatosJustificacion()
-            
+
           /*this.$notify({
             message: datos.data.mensaje,
             timeout: 1500,
             icon: 'ni ni-check-bold',
             type: 'default'
           });*/
-          
+
         }else {
           this.$notify({
             message:datos.data.mensaje,
@@ -1116,8 +1119,8 @@ export default {
         }
         if(this.oDolaresPena < 0){
           return this.oDolaresPena = '00';
-        }  
-      }, 1000);   
+        }
+      }, 1000);
     },
     menorHoras(){
       setTimeout(() => {
@@ -1147,7 +1150,7 @@ export default {
         }
         if(this.oMinutos < 0){
           return this.oMinutos = '00';
-        }  
+        }
       }, 1000);
     },
     validarJustificacion(){
@@ -1198,12 +1201,12 @@ export default {
       }
       return this.valida;
     },
-    cellclassname(row, column, value, data) { 
+    cellclassname(row, column, value, data) {
       if(data.NombApellUsua != null){
         return "estadoJustificado";
       }
     },
-  }, mounted() 
+  }, mounted()
   {
     this.oEmpresa = this.$cookies.get("empresa")
 

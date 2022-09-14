@@ -31,7 +31,7 @@
 
 
         <div class="buttonsAdicionalesDespacho">
-          
+
           <base-button icon type="info" @click="showModalDespachoRecalificarSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recalificar Salida">
             <span class="btn-inner--icon"><i class="ni ni-watch-time"></i></span>
           </base-button>
@@ -52,7 +52,7 @@
             <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
           </base-button>
 
-          
+
           <base-button icon type="success" title="Despachar" size="sm" @click="showEnviarDespachoPanel()">
             <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
           </base-button>
@@ -197,7 +197,7 @@
         <div class="col-md-12">
 
           <el-date-picker type="datetime" placeholder="Select date and time" style="width: 100%;"
-            v-model="fechaActualSalidasPanelDespacho">
+            v-model="fechaActualSalidasPanelDespachoDespachador">
           </el-date-picker>
 
         </div>
@@ -356,6 +356,7 @@ export default {
       rowsToColor: [],
       isLoadingDespachoSalidaPanelBusqueda: true,
       fechaActualSalidasPanelDespacho: '',
+      fechaActualSalidasPanelDespachoDespachador :'',
       mListaUnidadesSalidasPanelDespacho: [],
       loadingTableUnidadesSalidasPanelBusquedaloading: false,
       optionsUnidadesSalidasPanelSalidas: [],
@@ -386,7 +387,7 @@ export default {
   },
   methods: {
     myGridOnRowSelect: function (event) {
-      
+
       this.selectedRowSalida = event.args.row
       this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(this.selectedRowSalida.idSali_m)
       this.selectedRowSalida.idSali_m = this.selectedRowSalida.idSali_m
@@ -457,6 +458,7 @@ export default {
         (day < 10 ? "0" + day : day);
       console.log(format)
       this.fechaActualSalidasPanelDespacho = format + " " + hora + ":" + minutes + ":00";
+      this.fechaActualSalidasPanelDespachoDespachador = format + " " + hora + ":" + minutes + ":00"
     },
     myGridOnContextMenu: function () {
       return false;
@@ -703,7 +705,7 @@ export default {
 
 
 
-    cellclassname(row, column, value, data) { 
+    cellclassname(row, column, value, data) {
       if (data.EstaSali_m == 'DIFERIDO') {
         return "estadodiferidoDespacho";
       } else if (data.EstaSali_m == 'EN RUTA') {
@@ -780,7 +782,7 @@ export default {
     this.initFechaActualSalidaDespachoPanel()
     /*document.addEventListener('contextmenu', event => event.preventDefault());
     document.oncontextmenu = function () { return false }*/
-    
+
 
     this.imagenBaseUrl = this.$cookies.get('logo')
 

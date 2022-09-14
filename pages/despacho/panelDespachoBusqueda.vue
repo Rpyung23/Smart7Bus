@@ -509,6 +509,7 @@ export default {
       isLoadingRecorridoSalidaPanelBusqueda: false,
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       mListControlesSalidaPanelBusquedaDespacho: [],
+      LogoVigitrackLatam: "",
     };
   },
   methods: {
@@ -649,8 +650,7 @@ export default {
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
-          fontSize: 8.5,
-          bold: true,
+          fontSize: 11,
           alignment: "left",
         },
       ];
@@ -661,13 +661,20 @@ export default {
             (this.itemUnidadSalidasPanelBusqueda.length > 0
               ? this.itemUnidadSalidasPanelBusqueda.toString()
               : "Toda la flota"),
-          fontSize: 8.5,
-          bold: true,
+          fontSize: 11,
           alignment: "left",
         },
       ];
       var ruta = [
-        { text: "Rutas : "+(this.mSelectRutaSalidaPanelBusqueda.length > 0 ? this.mSelectRutaSalidaPanelBusqueda.toString() : 'TODAS LAS LINEAS'), fontSize: 8.5, bold: true, alignment: "left" },
+        {
+          text:
+            "Rutas : " +
+            (this.mSelectRutaSalidaPanelBusqueda.length > 0
+              ? this.mSelectRutaSalidaPanelBusqueda.toString()
+              : "TODAS LAS LINEAS"),
+          fontSize: 11,
+          alignment: "left",
+        },
       ];
       var desde_hasta = [
         {
@@ -676,8 +683,7 @@ export default {
             this.fechaInicialSalidasPanelBusqueda +
             " hasta " +
             this.fechaFinalSalidasPanelBusqueda,
-          fontSize: 8.5,
-          bold: true,
+          fontSize: 11,
           alignment: "left",
         },
       ];
@@ -830,10 +836,8 @@ export default {
         resultadoString.push(arrys);
       }
 
-      var docDefinition = {
-        pageOrientation: "landscape",
-        pageSize: "A4",
-        header: function (currentPage, pageCount, pageSize) {
+      /**
+       * function (currentPage, pageCount, pageSize) {
           //"REPORTE INDICADORES DE CALIDAD \n Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com \n Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com"
           return [
             {
@@ -851,6 +855,46 @@ export default {
               fontSize: 8
             }
           ];
+        }
+       * ***/
+      var docDefinition = {
+        pageOrientation: "landscape",
+        pageSize: "A4",
+        pageMargins: [40, 80, 40, 60],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              layout: 'noBorders',
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE SALIDAS DETALLADAS",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
         },
         content: [
           {
@@ -872,8 +916,9 @@ export default {
           },
         ],
       };
-      var win = window.open("", "_blank");
-      pdfMake.createPdf(docDefinition).open({}, win);
+      /*var win = window.open("", "_blank");
+      pdfMake.createPdf(docDefinition).open({}, win);*/
+      pdfMake.createPdf(docDefinition).download("RSD_"+Date.now())
     },
   },
   mounted() {
