@@ -251,7 +251,7 @@
       size="xl"
       body-classes="p-1"
     >
-    <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
+      <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
       <!--<div class="containerModalRecorridoPanelDespacho">
         <div class="cardControlesMarc">
           <el-table
@@ -371,7 +371,7 @@
       size="sm"
       body-classes="p-0"
     >
-    <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta>
+      <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta>
     </modal>
   </div>
 </template>
@@ -407,14 +407,12 @@ import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { FechaStringToHour } from "../../util/fechas";
 
-
-
 export default {
   mixins: [clientPaginationMixin],
   layout: "DespachoDashboardLayout",
   components: {
-    'ComponenteRecorrido': recorrido,
-    'ComponenteTarjeta': tarjeta,
+    ComponenteRecorrido: recorrido,
+    ComponenteTarjeta: tarjeta,
     Tabs,
     TabPane,
     BasePagination,
@@ -641,11 +639,11 @@ export default {
     },
     showRecorridoSalidasPanelBusqueda(item) {
       this.modalSalidasPanelDespachoBusqueda = true;
-      this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(item)
+      this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(item);
     },
     showTarjetaSalidasPanelBusqueda(salida) {
       this.modalSalidasTarjetaPanelDespachoBusqueda = true;
-      this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida)
+      this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida);
     },
     exportPdfSalidasPanelBusqueda() {
       var empresa = [
@@ -669,7 +667,7 @@ export default {
         },
       ];
       var ruta = [
-        { text: "Rutas : ", fontSize: 8.5, bold: true, alignment: "left" },
+        { text: "Rutas : "+(this.mSelectRutaSalidaPanelBusqueda.length > 0 ? this.mSelectRutaSalidaPanelBusqueda.toString() : 'TODAS LAS LINEAS'), fontSize: 8.5, bold: true, alignment: "left" },
       ];
       var desde_hasta = [
         {
@@ -835,6 +833,25 @@ export default {
       var docDefinition = {
         pageOrientation: "landscape",
         pageSize: "A4",
+        header: function (currentPage, pageCount, pageSize) {
+          //"REPORTE INDICADORES DE CALIDAD \n Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com \n Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com"
+          return [
+            {
+              text: "REPORTE SALIDAS DETALLADAS",
+              alignment: "center",
+              fontSize: 16,bold:true
+            },
+            {
+              text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+              alignment: "center",
+              fontSize: 8
+            },{
+              text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+              alignment: "center",
+              fontSize: 8
+            }
+          ];
+        },
         content: [
           {
             layout: "noBorders",
@@ -857,7 +874,7 @@ export default {
       };
       var win = window.open("", "_blank");
       pdfMake.createPdf(docDefinition).open({}, win);
-    }
+    },
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();

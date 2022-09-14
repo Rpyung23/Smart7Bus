@@ -10,7 +10,7 @@
               </div>
               <br />
               <card
-                class="cardRutasFrecuencias no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular" 
+                class="cardRutasFrecuencias no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
                 footer-classes="pb-2">
                 <div class="col-12 text-right buttonNuevo">
                     <base-button type="primary" icon size="sm" @click="showModalAgregarRutaRutasFrecuencias()">
@@ -78,9 +78,9 @@
               </card>
             </tab-pane>
 
-           
+
             <tab-pane >
-              <div slot="title" @click="readAllFrecuenciasByRuta()">
+              <div slot="title">
                 Frecuencias
               </div>
               <br />
@@ -164,7 +164,7 @@
               </card>
             </tab-pane>
             <tab-pane >
-              <div slot="title" @click="readAllControlesByFrecuencia()">
+              <div slot="title">
                 Controles
               </div>
               <br />
@@ -316,7 +316,7 @@
               rules="required"
               v-model="intervaloRuta">
             </base-input>
-          </div> 
+          </div>
         </div>
         <div class="form-row">
           <div class="col-md-6">
@@ -343,11 +343,11 @@
         <div class="text-right">
           <base-button type="danger" @click="showModalAgregarRutaRutasFrecuencias()">Cancelar</base-button>
           <base-button v-if="editedIndexRuta == -1" type="primary" @click="registerRuta()" native-type="submit">Agregar</base-button>
-          <base-button v-else type="primary" @click="updateRuta()" native-type="submit">Actualizar</base-button>  
+          <base-button v-else type="primary" @click="updateRuta()" native-type="submit">Actualizar</base-button>
         </div>
       </form>
     </validation-observer>
-       
+
     </modal>
 
      <!--Form modal Agregar Frecuencia-->
@@ -409,11 +409,11 @@
         <div class="text-right">
           <base-button type="danger" @click="showModalAgregarFrecuenciaRutasFrecuencias()">Cancelar</base-button>
           <base-button v-if="editedIndexFrecuencia == -1" type="primary" @click="registerFrecuencia()" native-type="submit">Agregar</base-button>
-          <base-button v-else type="primary" @click="updateFrecuencia()" native-type="submit">Actualizar</base-button>  
+          <base-button v-else type="primary" @click="updateFrecuencia()" native-type="submit">Actualizar</base-button>
         </div>
       </form>
     </validation-observer>
-       
+
     </modal>
 
   </div>
@@ -487,13 +487,13 @@ export default {
           label: "Descripción",
           minWidth: 250,
         },
-        
+
         {
           prop: "DescRuta",
           label: "Ruta",
           minWidth: 230,
         },
-        
+
         {
           prop: "HoraInicFrec",
           label: "Salida",
@@ -578,6 +578,9 @@ export default {
         this.mListRutasSeleccionadas.push(val[i].idRuta)
       }
       this.mListRutasModalAgregar.push(...val)
+      if(this.mListRutasSeleccionadas.length > 0){
+        this.readAllFrecuenciasByRuta()
+      }
     },
     SelectionChangeFrecuencias(val) {
       this.mListFrecuenciasSeleccionadas = []
@@ -586,6 +589,10 @@ export default {
         this.mListFrecuenciasSeleccionadas.push(val[i].idFrec)
       }
       this.mListFrecuenciasModalAgregar.push(...val)
+      if(this.mListFrecuenciasSeleccionadas.length > 0)
+      {
+        this.readAllControlesByFrecuencia()
+      }
     },
     async readAllRutas() {
       this.tableData = []
@@ -595,7 +602,7 @@ export default {
         tipo:3
       });
 
-      if (datos.data.status_code == 200) 
+      if (datos.data.status_code == 200)
       {
         for (var i = 0; i < datos.data.data.length; i++) {
           datos.data.data[i].statusType = datos.data.data[i].ActiRuta == 1
@@ -633,7 +640,7 @@ export default {
         ruta:this.mListRutasSeleccionadas
       });
 
-      if (datos.data.status_code == 200) 
+      if (datos.data.status_code == 200)
       {
         for (var i = 0; i < datos.data.data.length; i++) {
           datos.data.data[i].statusType = datos.data.data[i].ActiFrec == 1
@@ -653,7 +660,7 @@ export default {
             timeout:3000,
             type: 'danger'
           });
-        
+
       }
       this.loadingFrecuenciaRutasFrecuencias = false
     },
@@ -665,7 +672,7 @@ export default {
         frecuencias:this.mListFrecuenciasSeleccionadas
       });
 
-      if (datos.data.status_code == 200) 
+      if (datos.data.status_code == 200)
       {
         this.mListControlesByFrecuencia.push(...datos.data.datos);
       }else if(datos.data.status_code == 400)
@@ -736,9 +743,9 @@ export default {
           timeout: 3000,
           message: result.data.msm,
           type: 'danger'
-          
+
         });
-    }  
+    }
     } catch (error) {
         this.$notify({
           title: 'Error TRY Permisos',
@@ -777,9 +784,9 @@ export default {
           timeout: 3000,
           message: result.data.msm,
           type: 'danger'
-          
+
         });
-    }  
+    }
     } catch (error) {
         this.$notify({
           title: 'Error TRY Permisos',
@@ -828,9 +835,9 @@ export default {
           timeout: 3000,
           message: result.data.msg,
           type: 'danger'
-          
+
         });
-    }  
+    }
     } catch (error) {
         this.$notify({
           title: 'Error TRY Permisos',
@@ -877,9 +884,9 @@ export default {
           timeout: 3000,
           message: result.data.msg,
           type: 'danger'
-          
+
         });
-    }  
+    }
     } catch (error) {
         this.$notify({
           title: 'Error TRY Permisos',
@@ -1030,9 +1037,9 @@ export default {
                 timeout: 3000,
                 message: result.data.msm,
                 type: 'danger'
-                
+
               });
-          }  
+          }
         }
       })
     } catch (error) {
@@ -1084,9 +1091,9 @@ export default {
                 timeout: 3000,
                 message: result.data.msg,
                 type: 'danger'
-                
+
               });
-          }  
+          }
         }
       })
     } catch (error) {
@@ -1128,7 +1135,7 @@ body {
 }
 
 .buttonNuevo{
-  padding-right: 25px; 
+  padding-right: 25px;
   padding-bottom: 5px;
 }
 </style>
