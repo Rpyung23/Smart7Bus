@@ -126,29 +126,29 @@
             <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
               <el-checkbox
                 label="2"
-                style="background-color: hsla(226, 88%, 61%, 0.301)"
+                style="background-color: hsla(226, 88%, 61%, 0.192)"
                 >EN RUTA</el-checkbox
               >
               <el-checkbox
                 label="0,1"
-                style="background-color: hsla(115, 100%, 59%, 0.301)"
+                style="background-color: rgba(140, 248, 126, 0.192)"
                 >SALIDAS DIFERIDAS
               </el-checkbox>
-              <el-checkbox label="5">FINALIZADOS</el-checkbox>
+              <el-checkbox label="3">FINALIZADOS</el-checkbox>
               <el-checkbox
-                label="3"
-                style="background-color: hsla(34, 93%, 61%, 0.479)"
+                label="5"
+                style="background-color: hsla(34, 88%, 61%, 0.292)"
                 >PENALIZADAS</el-checkbox
               >
               <el-checkbox
                 label="4"
-                style="background-color: rgba(252, 143, 143, 0.692)"
+                style="background-color: rgba(255, 0, 0, 0.192)"
                 >ANULADOS</el-checkbox
               >
               <!--<el-checkbox
                 label="31"
                 disabled="false"
-                style="background-color: hsla(34, 93%, 61%, 0.479)"
+                style="background-color: hsla(34, 88%, 61%, 0.192)"
                 >PENALIZADAS</el-checkbox
               >-->
             </el-checkbox-group>
@@ -222,7 +222,7 @@
                     ></i>-->
                     <span class="status"
                       ><strong>{{
-                        row.EstaSali_m == 1
+                        row.EstaSali_m == 1 || row.EstaSali_m == 0
                           ? "DIFERIDA"
                           : row.EstaSali_m == 4
                           ? "ANULADO"
@@ -948,19 +948,19 @@ export default {
 }
 
 .el-table .warning-row-panelControlProduccion {
-  background: rgba(252, 143, 143, 0.692) !important;
+  background: rgba(255, 0, 0, 0.192) !important;
 }
 
 .el-table .success-row-panelControlProduccion {
-  background: hsla(34, 93%, 61%, 0.479) !important;
+  background: hsla(34, 88%, 61%, 0.292) !important;
 }
 
 .el-table .finalizado-row-panelControlProduccion {
-  background: hsla(115, 100%, 59%, 0.301) !important;
+  background: rgba(140, 248, 126, 0.192) !important;
 }
 
 .el-table .diferido-row-panelControlProduccion {
-  background: hsla(226, 88%, 61%, 0.301) !important;
+  background: hsla(226, 88%, 61%, 0.192) !important;
 }
 
 .no-border-card .card-footer {
@@ -969,7 +969,7 @@ export default {
 
 .card-bodyRPagosVehiculoProduccion {
   padding: 0rem !important;
-  height: calc(100vh - 13rem);
+  height: calc(100vh - 13.2rem);
   overflow: none;
 }
 
