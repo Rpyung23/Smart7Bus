@@ -21,7 +21,7 @@
         <sidebar-item translate="no" v-if="permisos != null && permisos.despacho != null && permisos.despacho.active != null && permisos.despacho.active" :link="{
           name: 'Despacho',
           icon: 'ni ni-calendar-grid-58 text-dark',
-          path: '/despacho/panelDespacho',
+          path: (permisos != null && permisos.despacho != null && permisos.despacho.active != null && permisos.despacho.active && permisos.despacho.panelDespacho != null && permisos.despacho.panelDespacho.active != null && permisos.despacho.panelDespacho.active ? '/despacho/panelDespacho' : '/despacho/panelDespachoBusqueda' ),
         }">
         </sidebar-item>
 

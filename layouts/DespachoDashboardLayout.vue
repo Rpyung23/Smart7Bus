@@ -3,7 +3,8 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-        <sidebar-item translate="no" :link="{
+        <sidebar-item translate="no" v-if="permisos != null && permisos.despacho.panelDespacho != null && 
+                               permisos.despacho.panelDespacho.active"  :link="{
           name: 'Despacho',
           icon: 'ni ni-calendar-grid-58 text-success',
           path: './panelDespacho',
