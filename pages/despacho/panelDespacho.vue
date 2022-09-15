@@ -950,12 +950,12 @@ export default {
 }
 
 .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
-  background-color: hsla(226, 88%, 61%, 0.192);
+  background-color: hsla(226, 88%, 61%, 0.315);
   color: black;
 }
 
 .estadoanuladoDespacho {
-  background-color: rgba(255, 0, 0, 0.192) !important;
+  background-color: rgba(255, 0, 0, 0.315) !important;
   color: black;
 }
 
@@ -965,7 +965,7 @@ export default {
 }
 
 .estadodiferidoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected), .jqx-widget .estadodiferidoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
-  background-color: rgba(140, 248, 126, 0.192);
+  background-color: rgba(140, 248, 126, 0.315);
   color: black;
 }
 

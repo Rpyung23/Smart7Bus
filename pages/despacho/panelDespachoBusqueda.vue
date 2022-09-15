@@ -993,19 +993,19 @@ export default {
 }
 
 .el-table .warning-row-panelControlProduccion {
-  background: rgba(255, 0, 0, 0.192) !important;
+  background: rgba(255, 0, 0, 0.308) !important;
 }
 
 .el-table .success-row-panelControlProduccion {
-  background: hsla(34, 88%, 61%, 0.292) !important;
+  background: hsla(34, 88%, 61%, 0.308) !important;
 }
 
 .el-table .finalizado-row-panelControlProduccion {
-  background: rgba(140, 248, 126, 0.192) !important;
+  background: rgba(140, 248, 126, 0.308) !important;
 }
 
 .el-table .diferido-row-panelControlProduccion {
-  background: hsla(226, 88%, 61%, 0.192) !important;
+  background: hsla(226, 88%, 61%, 0.308) !important;
 }
 
 .no-border-card .card-footer {
