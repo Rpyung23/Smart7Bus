@@ -67,32 +67,33 @@
             </base-input>
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readConteoPasajeros()">
+
+          <div class="buttonsAdicionalesDespacho">
+            <base-button icon size="sm" title="Buscar" type="primary" @click="readConteoPasajeros()">
               <span class="btn-inner--icon"
                 ><i class="el-icon-search"></i
               ></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
             <download-excel
-              class="btn btn-outline-success"
+             class="btn btn-sm btn-success"
+              v-if="tableDataRecaudoContadorPasajerosVueltas.length > 0 ? true : false"
               outline
               :header="headerExcelRPagosVehiculoProduccion"
               :data="tableDataRecaudoContadorPasajerosVueltas"
               :fields="json_fields_excelRPagosVehiculoProduccion"
               :worksheet="WorksheetExcelRPagosVehiculoProduccion"
               :name="FileNameExcelRPagosVehiculoProduccion"
+              title="Excel"
             >
               <span class="btn-inner--icon"
                 ><i class="ni ni-collection"></i
               ></span>
-              <span class="btn-inner--text"> Excel</span>
             </download-excel>
-            <base-button outline type="danger">
+            <base-button type="danger" v-if="tableDataRecaudoContadorPasajerosVueltas.length > 0 ? true : false" title="PDF" size="sm">
               <span class="btn-inner--icon"><i class="ni ni-ungroup"></i></span>
-              <span class="btn-inner--text"> PDF</span>
             </base-button>
           </div>
+
         </card>
 
         <card
@@ -133,7 +134,7 @@
               element-loading-text="Cargando Datos..."
               :data="tableDataRecaudoContadorPasajerosVueltas"
               row-key="id"
-              height="440"
+              height="calc(100vh - 13rem)"
               style="width: 100%"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
@@ -380,7 +381,7 @@ export default {
               timeout: 600000,
             }
           );
-          console.log(datos.data)
+  
           if (datos.data.status_code == 200) 
           {
             this.tableDataRecaudoContadorPasajerosVueltas.push(...datos.data.datos);

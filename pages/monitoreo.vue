@@ -215,11 +215,11 @@
         
         <i class="bx bx-bus"></i>
       </div>
-      <div id="itemControles" class="itemOptionMonitoreo">
-        <i class="bx bx-time-five"></i>
-      </div>
       <div id="itemRutas" class="itemOptionMonitoreo">
         <i class="bx bx-git-repo-forked"></i>
+      </div>
+      <div id="itemControles" class="itemOptionMonitoreo">
+        <i class="bx bx-time-five"></i>
       </div>
       <div id="itemConfig" class="itemOptionMonitoreo">
         <i class="bx bx-cog"></i>
@@ -968,7 +968,7 @@ export default {
   },
   mounted() {
     this.initRutas();
-    //this.initControles();
+    this.initControles();
     this.initRastreo();
     this.initIntervalMonitoreoGeneral();
   },

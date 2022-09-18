@@ -123,26 +123,28 @@
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
+
+
             <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
               <el-checkbox
                 label="2"
-                style="background-color: hsla(226, 88%, 61%, 0.192)"
+                style="background-color: hsla(226, 88%, 61%, 0.274)"
                 >EN RUTA</el-checkbox
               >
               <el-checkbox
                 label="0,1"
-                style="background-color: rgba(140, 248, 126, 0.192)"
+                style="background-color: rgba(140, 248, 126, 0.384)"
                 >SALIDAS DIFERIDAS
               </el-checkbox>
               <el-checkbox label="3">FINALIZADOS</el-checkbox>
               <el-checkbox
-                label="5"
-                style="background-color: hsla(34, 88%, 61%, 0.292)"
+                label="500"
+                style="background-color: hsla(34, 88%, 61%, 0.384)"
                 >PENALIZADAS</el-checkbox
               >
               <el-checkbox
                 label="4"
-                style="background-color: rgba(255, 0, 0, 0.192)"
+                style="background-color: rgba(255, 0, 0, 0.342)"
                 >ANULADOS</el-checkbox
               >
               <!--<el-checkbox
@@ -993,19 +995,19 @@ export default {
 }
 
 .el-table .warning-row-panelControlProduccion {
-  background: rgba(255, 0, 0, 0.308) !important;
+  background: rgba(255, 0, 0, 0.342) !important;
 }
 
 .el-table .success-row-panelControlProduccion {
-  background: hsla(34, 88%, 61%, 0.308) !important;
+  background: hsla(34, 88%, 61%, 0.384) !important;
 }
 
 .el-table .finalizado-row-panelControlProduccion {
-  background: rgba(140, 248, 126, 0.308) !important;
+  background: rgba(140, 248, 126, 0.384) !important;
 }
 
 .el-table .diferido-row-panelControlProduccion {
-  background: hsla(226, 88%, 61%, 0.308) !important;
+  background: hsla(226, 88%, 61%, 0.274) !important;
 }
 
 .no-border-card .card-footer {

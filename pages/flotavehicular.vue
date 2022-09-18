@@ -22,7 +22,7 @@
                     </div>
                   <div>
                   <el-table v-loading="loadingUnidadesFlotaVehicular" element-loading-text="Cargando..."
-                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    element-loading-background="rgba(0, 0, 0, 0.8)"
                     class="table-responsive table-flush" :data="mListUnidadesFlotaVehicular"
                     header-row-class-name="thead-dark" height="calc(100vh - 13.4rem)">
                     <div slot="empty"></div>
@@ -83,7 +83,7 @@
                 </div>
                 <div>
                   <el-table v-loading="loadingGruposFlotaVehicular" element-loading-text="Cargando..."
-                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListGruposFlotaVehicular" height="calc(100vh - 13.4rem)"
                     header-row-class-name="thead-dark">
                     
@@ -136,7 +136,7 @@
                 <div>
 
                   <el-table v-loading="loadingPropietariosFlotaVehicular" element-loading-text="Cargando..."
-                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListPropietariosFlotaVehicular"
                     height="calc(100vh - 13.4rem)" header-row-class-name="thead-dark">
                     
@@ -190,7 +190,7 @@
                 </div>
                 <div>
                   <el-table v-loading="loadingAdministrativosFlotaVehicular" element-loading-text="Cargando..."
-                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListAdministrativosFlotaVehicular"
                     height="calc(100vh - 13.4rem)"
                     header-row-class-name="thead-dark">
@@ -247,7 +247,7 @@
                 </div>
                 <div>
                   <el-table v-loading="loadingChoferesFlotaVehicular" element-loading-text="Cargando..."
-                    element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"
+                    element-loading-background="rgba(0, 0, 0, 0.8)"
                     :data="mListChoferesFlotaVehicular" height="calc(100vh - 13.4rem)"
                     header-row-class-name="thead-dark">
                     <div slot="empty"></div>
