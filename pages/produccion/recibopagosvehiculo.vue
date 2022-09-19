@@ -8,11 +8,6 @@
           <div class="cardTextoRPagosVehiculoProduccion">
 
 
-            <!--<el-autocomplete class="inline-input" v-model="itemUnidadProduccionRPagoVehiculorecibo" []ltiple
-              collapse-tags :fetch-suggestions="
-                querySearchUnidadProduccionRPagoVehiculoRecibo
-              " style="margin-right: 0.5rem" placeholder="Unidad" prefix-icon="ni ni-bus-front-12"
-              :trigger-on-focus="false" @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"></el-autocomplete>-->
 
             <el-select v-model="itemUnidadProduccionRPagoVehiculorecibo" multiple filterable remote
               placeholder="Unidades" prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
@@ -22,17 +17,6 @@
                 :label="item.CodiVehi" :value="item.CodiVehi">
               </el-option>
             </el-select>
-
-            <!--<el-select v-model="itemCobradoresProduccionRPagoVehiculorecibo" multiple filterable remote
-              placeholder="Operador" prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
-              :remote-method="remoteMethodUnidadesRecibosProduccion"
-              :loading="loadingTableUnidadesRecibosVehiculoProduccion">
-              <el-option v-for="item in optionsCobradoresProduccionPagosVehiculo" :key="item.CodiVehi"
-                :label="item.CodiVehi" :value="item.CodiVehi">
-              </el-option>
-            </el-select>-->
-
-
 
 
             <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
@@ -54,18 +38,25 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readAllRPagosVehiculoProduccionRecibos()">
+
+
+            <div class="buttonCenterEndDerecha">
+
+              <base-button title="BUSCAR" icon size="sm" type="primary" @click="readAllRPagosVehiculoProduccionRecibos()">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
 
-            <download-excel v-if="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? true : false" class="btn btn-outline-success" outline :header="RecibosheaderExcelRPagosVehiculoProduccion"
-              :data="tableDataRPagosVEhiculoProduccionRecibo" :fields="json_fields_excelRecibosPagosVehiculoProduccion"
+            <download-excel title="EXCEL" v-if="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? true : false" 
+              class="btn btn-icon btn-fab btn-success btn-sm" :header="RecibosheaderExcelRPagosVehiculoProduccion"
+              :data="tableDataRPagosVEhiculoProduccionRecibo" 
+              :fields="json_fields_excelRecibosPagosVehiculoProduccion"
               :worksheet="RecibosWorksheetExcelRPagosVehiculoProduccion"
               :name="RecibosFileNameExcelRPagosVehiculoProduccion">
               <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-              <span class="btn-inner--text"> Exportar Excel</span>
             </download-excel>
+
+            </div>
+            
 
             <!--<base-button outline type="success">
               <span class="btn-inner--icon"
@@ -112,7 +103,7 @@
           body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
           <div>
             <el-table v-loading="loadingRPagosVehiculoRecibo" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="tableDataRPagosVEhiculoProduccionRecibo" row-key="id"
+              :data="tableDataRPagosVEhiculoProduccionRecibo" row-key="id"
               height="calc(100vh - 13.1rem)" style="width: 100%"
               :default-sort="{ prop: 'estado', order: 'descending' }" class="tablePanelControlProduccion"
               header-row-class-name="thead-dark" :row-class-name="tableRowClassNameRPagosVehiculoProduccionRecibo">

@@ -121,6 +121,7 @@
 </template>
 
 <style>
+
 .cardControlesMarc {
   height: calc(80vh);
   width: 25rem;
@@ -248,8 +249,10 @@ export default {
         console.log(error);
       }
     },
-    async readControlesMarcRuta(item) {
-      var datos = await this.$axios.post(
+    async readControlesMarcRuta(item) 
+    {
+      try {
+        var datos = await this.$axios.post(
         process.env.baseUrl + "/controlesMarcadosSalida",
         {
           token: this.token,
@@ -258,6 +261,9 @@ export default {
       );
 
       this.mListControlesMarcSalidaRecorrido.push(...datos.data.datos);
+      } catch (error) {
+        console.log(error)
+      }
     },
     handleCurrentChangeControlMarc(item) {
       this.oZoom = 17;

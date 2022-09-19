@@ -156,21 +156,6 @@
         </a>
 
         <template>
-          <!--<div class="dropdown-header noti-title">
-            <h6 class="text-overflow m-0">Welcome!</h6>
-          </div>
-          <a href="#!" class="dropdown-item">
-            <i class="ni ni-single-02"></i>
-            <span>My profile</span>
-          </a>
-          <a href="#!" class="dropdown-item">
-            <i class="ni ni-settings-gear-65"></i>
-            <span>Settings</span>
-          </a>
-          <a href="#!" class="dropdown-item">
-            <i class="ni ni-calendar-grid-58"></i>
-            <span>Activity</span>
-          </a>-->
           <li class="dropdown-item">
             <i class="ni ni-circle-08"></i>
             <span>{{
@@ -271,23 +256,6 @@ export default {
       this.$cookies.set("namesUsuario", null)
       this.$router.push({ path: "/" + this.$cookies.get("empresa"), replace: true });
     },
-    /*mueveReloj() {
-      var momentoActual = new Date();
-      var hora = momentoActual.getHours();
-      var minuto = momentoActual.getMinutes();
-      var segundo = momentoActual.getSeconds();
-
-      hora = hora < 1 ? 24 : hora;
-      console.log("hora : " + hora);
-
-      this.hora =
-        (hora < 10 ? "0" + hora : hora) +
-        " : " +
-        (minuto < 10 ? "0" + minuto : minuto) +
-        " : " +
-        (segundo < 10 ? "0" + segundo : segundo) +
-        (hora < 13 ? " AM " : " PM ");
-    },*/
     closeDropDown() {
       this.activeNotifications = false;
     },

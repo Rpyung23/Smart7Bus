@@ -627,6 +627,28 @@ body::-webkit-scrollbar{
     width: 3.5rem;
     animation: girarLoading 1s ease-in infinite;
   }
+
+
+  .circleProgressMini {
+    position: absolute;
+    padding: 0.5rem;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: transparent;
+    border-right-color: blue;
+    border-left-color: rgb(206, 197, 197);
+    border-top-color: rgb(206, 197, 197);
+    border-bottom-color: rgb(206, 197, 197);
+    border-width: 0.3rem;
+    border-radius: 50%;
+    border-style: solid;
+    height: 1.5rem;
+    width: 1.5rem;
+    animation: girarLoading 1s ease-in infinite;
+  }
   
   @keyframes girarLoading {
     0% {
@@ -751,3 +773,7 @@ body::-webkit-scrollbar{
     justify-content: flex-end;
     width: 50%;
   }
+
+.modal{
+    z-index: 30000 !important;
+}

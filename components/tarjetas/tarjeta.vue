@@ -90,9 +90,9 @@ export default {
           },
           {
             text:
-              this.mListSalidasTarjeta[i].FaltSali_d == "0"
+              (this.mListSalidasTarjeta[i].HoraMarcSali_d != '00:00:00' ? this.mListSalidasTarjeta[i].FaltSali_d : this.mListSalidasTarjeta[i].FaltSali_d == "0"
                 ? ""
-                : this.mListSalidasTarjeta[i].FaltSali_d,
+                : this.mListSalidasTarjeta[i].FaltSali_d),
             fontSize: 8.5,
             alignment: "center",
           },
