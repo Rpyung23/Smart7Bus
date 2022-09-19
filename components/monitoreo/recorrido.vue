@@ -7,7 +7,7 @@
         :data="mListControlesMarcSalidaRecorrido"
         @current-change="handleCurrentChangeControlMarc"
       >
-        <el-table-column prop="CodiCtrlSali_d" label="CONTROL" width="180">
+        <el-table-column prop="CodiCtrlSali_d" label="CONTROL" width="145">
           <template slot-scope="scope">
             <span :style="scope.row.isCtrlRefeSali_d == 1 ? 'color:red;' : ''">{{  scope.row.isCtrlRefeSali_d == 0 ? scope.row.DescCtrl : scope.row.DescCtrl+' (REF)' }}</span>
           </template>
@@ -123,13 +123,9 @@
 <style>
 .cardControlesMarc {
   height: calc(80vh);
-  width: 28rem;
+  width: 25rem;
 }
 
-.mapa2 {
-  width: 100%;
-  height: calc(80vh);
-}
 .mapa {
   width: 100%;
   height: calc(80vh);

@@ -21,9 +21,9 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readRSalidasDespacho()">
+            <div class="buttonCenterEndDerecha">
+            <base-button icon type="primary" title="Buscar" size="sm" @click="readRSalidasDespacho()">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
             <!--<download-excel
               class="btn btn-outline-success"
@@ -39,24 +39,24 @@
               ></span>
               <span class="btn-inner--text"> Excel</span>
             </download-excel>-->
-            <base-button outline type="danger">
+            <base-button title="PDF" type="danger" size = "sm">
               <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
-              <span class="btn-inner--text"> Descargas</span>
             </base-button>
 
-            <base-button outline type="success" v-if="isVisibleRecorrido">
-              <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
-              <span class="btn-inner--text" @click="showRecorridoSalidasPanelBusqueda()">
-                Recorrido</span>
-            </base-button>
           </div>
+          </div>
+
+
+
+
+
         </card>
 
         <card class="no-border-card" style="margin-bottom: 0rem"
           body-classes="card-bodyRPagosVehiculoProduccionRSalidas px-0 pb-1" footer-classes="pb-2">
           <div>
             <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="mListRSalidas" row-key="id"
+              :data="mListRSalidas" row-key="id"
               :row-class-name="tableRowClassNameSalidasPanelBusqueda"
               header-row-class-name="thead-dark" height="calc(100vh - 10rem)"
               >
@@ -157,7 +157,7 @@ export default {
         {
           prop: "DescRuta",
           label: "Ruta",
-          minWidth: 170,
+          minWidth: 350,
         },
         {
           prop: "NumeVuelSali_m",
@@ -167,12 +167,12 @@ export default {
         {
           prop: "DescFrec",
           label: "Frecuencia",
-          minWidth: 150,
+          minWidth: 350,
         },
         {
           prop: "atencion",
           label: "Atención",
-          minWidth: 150,
+          minWidth: 300,
         },
         {
           prop: "MontInfrUnidSali_m",

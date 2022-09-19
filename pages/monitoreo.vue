@@ -1,51 +1,89 @@
 <template>
   <!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
   <div id="rezizeArea">
-    <GmapMap :center="oCenter" :zoom="oZoom" :map-type-id="radioMapaMonitoreo" class="mapa" :options="{
-      zoomControl: false,
-      scaleControl: false,
-      mapTypeControl: false,
-      streetViewControl: false,
-      rotateControl: false,
-      fullscreenControl: false,
-      disableDefaultUi: true,
-    }">
-      <GmapMarker v-for="(unidad, index) in mListUnidades" :key="unidad.CodiVehiMoni" v-if="unidad.isvisible" :position="{
-        lat: parseFloat(unidad.UltiLatiMoni),
-        lng: parseFloat(unidad.UltiLongMoni),
-      }" :clickable="true" :draggable="false" :optimized="true" :icon="unidad.icono.imagen"
-        @click="showInfoWindows(unidad, index)" :options="{
+    <GmapMap
+      :center="oCenter"
+      :zoom="oZoom"
+      :map-type-id="radioMapaMonitoreo"
+      class="mapa"
+      :options="{
+        zoomControl: false,
+        scaleControl: false,
+        mapTypeControl: false,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false,
+        disableDefaultUi: true,
+      }"
+    >
+      <GmapMarker
+        v-for="(unidad, index) in mListUnidades"
+        :key="unidad.CodiVehiMoni"
+        v-if="unidad.isvisible"
+        :position="{
+          lat: parseFloat(unidad.UltiLatiMoni),
+          lng: parseFloat(unidad.UltiLongMoni),
+        }"
+        :clickable="true"
+        :draggable="false"
+        :optimized="true"
+        :icon="unidad.icono.imagen"
+        @click="showInfoWindows(unidad, index)"
+        :options="{
           label: {
             text: unidad.CodiVehiMoni,
             color: unidad.icono.color,
             className: 'paddingLabel',
           },
-        }" />
-      <GmapInfoWindow :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen"
-        @closeclick="infoWinOpen = false">
+        }"
+      />
+      <GmapInfoWindow
+        :options="infoOptions"
+        :position="infoWindowPos"
+        :opened="infoWinOpen"
+        @closeclick="infoWinOpen = false"
+      >
         <div v-html="infoContent"></div>
       </GmapInfoWindow>
 
-      <GmapPolygon v-for="control in mListControlesMonitoreoAux" :key="control.CodiCtrl" :options="{
-        strokeColor: '#172b4d',
-        fillColor: '#172b4d80',
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-      }" :strokeOpacity="0.5" :strokeWeight="1" :paths="control.calculator.coordinates" />
+      <GmapPolygon
+        v-for="control in mListControlesMonitoreoAux"
+        :key="control.CodiCtrl"
+        :options="{
+          strokeColor: '#172b4d',
+          fillColor: '#172b4d80',
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        }"
+        :strokeOpacity="0.5"
+        :strokeWeight="1"
+        :paths="control.calculator.coordinates"
+      />
 
-      <GmapMarker v-for="(control, index) in mListControlesMonitoreoAux" :key="control.DescCtrl + index" :position="{
-        lat: parseFloat(control.Lati1Ctrl),
-        lng: parseFloat(control.Long1Ctrl),
-      }" :optimized="true" icon="static/img/control/control.png" :options="{
-  label: {
-    text: control.DescCtrl,
-    color: '#172b4d',
-    className: 'paddingLabelControl',
-  },
-}" />
+      <GmapMarker
+        v-for="(control, index) in mListControlesMonitoreoAux"
+        :key="control.DescCtrl + index"
+        :position="{
+          lat: parseFloat(control.Lati1Ctrl),
+          lng: parseFloat(control.Long1Ctrl),
+        }"
+        :optimized="true"
+        icon="static/img/control/control.png"
+        :options="{
+          label: {
+            text: control.DescCtrl,
+            color: '#172b4d',
+            className: 'paddingLabelControl',
+          },
+        }"
+      />
     </GmapMap>
 
-    <div id="element2" class="container_unidades_monitoreo" :style="anchoPanelMonitoreoClickMinMax">
+    <div
+      id="element2"
+      class="container_unidades_monitoreo"
+      :style="anchoPanelMonitoreoClickMinMax"
+    >
       <div id="resizerXY"></div>
       <div class="min-max">
         <i class="bx-min-max bx bx-checkbox-minus" @click="minPanel()"></i>
@@ -53,12 +91,24 @@
       </div>
       <div class="searchInput">
         <i class="bx bx-search"></i>
-        <input type="text" class="inputSearchTexto" name="" id="" v-model="unidadInput" placeholder="Unidad"
-          @keypress.enter="centrarUnidadInput()" />
+        <input
+          type="text"
+          class="inputSearchTexto"
+          name=""
+          id=""
+          v-model="unidadInput"
+          placeholder="Unidad"
+          @keypress.enter="centrarUnidadInput()"
+        />
       </div>
       <div class="ListadoUnidades">
-        <div class="itemMonitoreoUnidad" :key="unidad.CodiVehiMoni" v-for="unidad in mListUnidades"
-          v-if="unidad.isvisible" @click="ubicarUnidad(unidad)">
+        <div
+          class="itemMonitoreoUnidad"
+          :key="unidad.CodiVehiMoni"
+          v-for="unidad in mListUnidades"
+          v-if="unidad.isvisible"
+          @click="ubicarUnidad(unidad)"
+        >
           <div class="itemContainerMonitoreo">
             <div class="imagenitem">
               <img :src="unidad.icono.imagenLista" />
@@ -68,70 +118,90 @@
                 <div class="unidadTitle">
                   <strong>Unidad : </strong>{{ unidad.CodiVehiMoni }} ({{
                     unidad.PlacVehiMoni
-                }})
+                  }})
                 </div>
 
                 <div class="iconosEventos">
                   <i class="bx bx-broadcast" style="color: green"></i>
-                  <strong style="color: green">{{ unidad.SateContMoni }}</strong>
+                  <strong style="color: green">{{
+                    unidad.SateContMoni
+                  }}</strong>
                 </div>
-
               </div>
               <strong>Ruta : </strong>
               {{
-                  unidad.DescRuta == null || unidad.DescRuta == ""
-                    ? "SIN RUTA"
-                    : unidad.DescRuta.substring(0, 23)
+                unidad.DescRuta == null || unidad.DescRuta == ""
+                  ? "SIN RUTA"
+                  : unidad.DescRuta.substring(0, 23)
               }}<br />
               <strong>Estado : </strong>{{ unidad.icono.detalle }}<br />
               <strong>Fecha : </strong>{{ unidad.UltiFechMoni }}<br />
-              <span class="dispositivo">{{ unidad.DescDispTipo }} {{ unidad.VersDispMoni }}</span><br />
+              <span class="dispositivo"
+                >{{ unidad.DescDispTipo }} {{ unidad.VersDispMoni }}</span
+              ><br />
             </div>
           </div>
 
           <div class="detalleIconos">
             <div class="iconosEventos">
               <i class="bx bx-tachometer" style="color: green"></i>
-              <strong style="color: green">{{ unidad.UltiVeloMoni }} KM/H</strong>
+              <strong style="color: green"
+                >{{ unidad.UltiVeloMoni }} KM/H</strong
+              >
             </div>
             <div class="iconosEventos">
-              <i class="bx bx-time" :style="
-                unidad.CtrlCounMoni >= 0
-                  ? 'color:midnightblue;'
-                  : 'color:red;'
-              "></i>
-              <strong :style="
-                unidad.CtrlCounMoni >= 0
-                  ? 'color:midnightblue;'
-                  : 'color:red;'
-              ">{{
-    unidad.CtrlCounMoni > 0 ? unidad.CtrlCounMoni : "E.C"
-}}</strong>
+              <i
+                class="bx bx-time"
+                :style="
+                  unidad.CtrlCounMoni >= 0
+                    ? 'color:midnightblue;'
+                    : 'color:red;'
+                "
+              ></i>
+              <strong
+                :style="
+                  unidad.CtrlCounMoni >= 0
+                    ? 'color:midnightblue;'
+                    : 'color:red;'
+                "
+                >{{
+                  unidad.CtrlCounMoni > 0 ? unidad.CtrlCounMoni : "E.C"
+                }}</strong
+              >
             </div>
             <div class="iconosEventos">
-              <i class="bx bx-wifi" :style="
-                unidad.AlarAnteGPSDescMoni == 1
-                  ? 'color:red;'
-                  : 'color:green;'
-              "></i>
+              <i
+                class="bx bx-wifi"
+                :style="
+                  unidad.AlarAnteGPSDescMoni == 1
+                    ? 'color:red;'
+                    : 'color:green;'
+                "
+              ></i>
               <strong style="color: red">{{
-                  unidad.AlarAnteGPSDescMoni == 1 ? "GPS" : ""
+                unidad.AlarAnteGPSDescMoni == 1 ? "GPS" : ""
               }}</strong>
             </div>
             <div class="iconosEventos">
-              <i class="bx bxs-car-battery" :style="
-                unidad.AlarCortAlimBateExteMoni == 1
-                  ? 'color:red;'
-                  : 'color:darkblue;'
-              "></i>
+              <i
+                class="bx bxs-car-battery"
+                :style="
+                  unidad.AlarCortAlimBateExteMoni == 1
+                    ? 'color:red;'
+                    : 'color:darkblue;'
+                "
+              ></i>
               <strong style="color: red">{{
-                  unidad.AlarCortAlimBateExteMoni == 1 ? "BAT" : ""
+                unidad.AlarCortAlimBateExteMoni == 1 ? "BAT" : ""
               }}</strong>
             </div>
             <div class="iconosEventos">
-              <i class="bx bx-key" :style="
-                unidad.AlarEnceChapMoni == 1 ? 'color:yellow;' : 'color:dark;'
-              "></i>
+              <i
+                class="bx bx-key"
+                :style="
+                  unidad.AlarEnceChapMoni == 1 ? 'color:yellow;' : 'color:dark;'
+                "
+              ></i>
             </div>
           </div>
         </div>
@@ -141,38 +211,53 @@
     <div id="PanelRutas" class="container_otrosPaneles">
       <div class="searchInput">
         <i class="bx bx-search"></i>
-        <input type="text" class="inputSearchTexto" name="" id="" placeholder="Ruta" />
+        <input
+          type="text"
+          class="inputSearchTexto"
+          name=""
+          id=""
+          placeholder="Ruta"
+        />
       </div>
       <div class="itemsRuta">
         <div class="cardRuta" v-for="ruta in mListRutas" :key="ruta.LetrRuta">
           <div class="checkboxRuta">
-            <input type="checkbox" :value="ruta.LetrRuta" v-model="mListRutasMonitoreo"
-              @change="selectedRutaMonitoreo()" />
+            <input
+              type="checkbox"
+              :value="ruta.LetrRuta"
+              v-model="mListRutasMonitoreo"
+              @change="selectedRutaMonitoreo()"
+            />
           </div>
           <div class="DetalleRuta">
             <div class="titleRuta">
               <span class="spanTitle">{{
-                  ruta.DescRuta.substring(0, 17)
+                ruta.DescRuta.substring(0, 17)
               }}</span>
               <div class="btn-iconos">
                 <i class="bx bx-time" style="color: green"></i>
-                <strong><span style="
+                <strong
+                  ><span
+                    style="
                       color: green;
                       margin-right: 0.5rem;
                       font-size: 0.8rem;
-                    ">{{ ruta.controles }}</span></strong>
+                    "
+                    >{{ ruta.controles }}</span
+                  ></strong
+                >
                 <i class="bx bx-git-merge"></i>
               </div>
             </div>
 
             <div class="footerRuta">
               <div>
-                <strong class="spanHoras">Hora Inicio : </strong><span class="spanHoras">{{ ruta.HoraInicSaliProgRuta
-                }}</span>
+                <strong class="spanHoras">Hora Inicio : </strong
+                ><span class="spanHoras">{{ ruta.HoraInicSaliProgRuta }}</span>
               </div>
               <div>
-                <strong class="spanHoras">Hora Final : </strong><span class="spanHoras">{{ ruta.HoraFinaSaliProgRuta
-                }}</span>
+                <strong class="spanHoras">Hora Final : </strong
+                ><span class="spanHoras">{{ ruta.HoraFinaSaliProgRuta }}</span>
               </div>
             </div>
           </div>
@@ -183,18 +268,35 @@
     <div id="PanelControles" class="container_otrosPaneles">
       <div class="searchInput" style="margin-bottom: 0.5rem">
         <i class="bx bx-search"></i>
-        <input type="text" class="inputSearchTexto" name="" id="" placeholder="Control" />
+        <input
+          type="text"
+          class="inputSearchTexto"
+          name=""
+          id=""
+          placeholder="Control"
+        />
       </div>
       <div>
-        <input type="checkbox" style="margin-bottom: 0.7rem" :checked="false" @change="showControles($event)" />
+        <input
+          type="checkbox"
+          style="margin-bottom: 0.7rem"
+          :checked="false"
+          @change="showControles($event)"
+        />
         Visualizar Controles (Mapa)
       </div>
       <div class="itemsRuta">
-        <div class="cardRuta" v-for="control in mListControlesMonitoreo" :key="control.CodiCtrl"
-          @click="centrarControl(control)">
+        <div
+          class="cardRuta"
+          v-for="control in mListControlesMonitoreo"
+          :key="control.CodiCtrl"
+          @click="centrarControl(control)"
+        >
           <div class="DetalleRuta">
             <div class="titleControl">
-              <span class="spanTitle">({{ control.CodiCtrl }}) {{ control.DescCtrl }}</span>
+              <span class="spanTitle"
+                >({{ control.CodiCtrl }}) {{ control.DescCtrl }}</span
+              >
             </div>
           </div>
         </div>
@@ -203,16 +305,26 @@
 
     <div id="PanelConfigMapaMonitoreo" class="container_otrosPaneles">
       <div class="RadioTiposMapaMonitoreo">
-        <el-radio v-model="radioMapaMonitoreo" label="roadmap" border>Mapa Vial</el-radio>
-        <el-radio v-model="radioMapaMonitoreo" label="satellite" border>Mapa Satelital</el-radio>
-        <el-radio v-model="radioMapaMonitoreo" label="hybrid" border>Mapa Hibrido</el-radio>
-        <el-radio v-model="radioMapaMonitoreo" label="terrain" border>Mapa Terrestre</el-radio>
+        <el-radio v-model="radioMapaMonitoreo" label="roadmap" border
+          >Mapa Vial</el-radio
+        >
+        <el-radio v-model="radioMapaMonitoreo" label="satellite" border
+          >Mapa Satelital</el-radio
+        >
+        <el-radio v-model="radioMapaMonitoreo" label="hybrid" border
+          >Mapa Hibrido</el-radio
+        >
+        <el-radio v-model="radioMapaMonitoreo" label="terrain" border
+          >Mapa Terrestre</el-radio
+        >
       </div>
     </div>
 
     <div id="tabOptionsMonitoreo" class="tabOptionsMonitoreo">
-      <div id="itemMonitoreo" class="itemOptionMonitoreo itemOptionMonitoreoActive">
-        
+      <div
+        id="itemMonitoreo"
+        class="itemOptionMonitoreo itemOptionMonitoreoActive"
+      >
         <i class="bx bx-bus"></i>
       </div>
       <div id="itemRutas" class="itemOptionMonitoreo">
@@ -257,7 +369,6 @@
 .itemsRuta::-webkit-scrollbar {
   display: none;
 }
-
 
 .min-max {
   display: flex;
@@ -538,11 +649,9 @@
 }
 </style>
 
-
 <script>
 import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
 import { Radio, RadioButton } from "element-ui";
-import axios from "@nuxtjs/axios";
 export default {
   layout: "DashboardLayout",
   components: {
@@ -618,8 +727,8 @@ export default {
         var datos = null;
         var rutaApi = "/monitoring";
         var bodyApi = {
-          token: this.token,
-        },
+            token: this.token,
+          },
           datos = await this.$axios.post(
             process.env.baseUrlPanel + rutaApi,
             bodyApi
@@ -661,7 +770,7 @@ export default {
         var datos = await this.$axios.post(
           process.env.baseUrlPanel + "/readRutasMonitoreo",
           {
-            token: this.token
+            token: this.token,
           }
         );
 
@@ -718,16 +827,6 @@ export default {
       }
     },
     getIcono(unidad) {
-      var date_ulti = new Date(unidad.fechaUltiMoni);
-      var fecha_ulti_moni_milisegundos = date_ulti.getTime();
-      var date_now = new Date();
-      var fecha_now_milisegundos = date_now.getTime();
-      var diferencia_time =
-        fecha_now_milisegundos - fecha_ulti_moni_milisegundos;
-      var convert_diferencia_from_minutes = Math.floor(
-        (diferencia_time / 1000 / 60) << 0
-      );
-
       //console.log("minutos trascurridos " + convert_diferencia_from_minutes);
       var imagen = "img/monitoreo/online.png#" + unidad.CodiVehiMoni;
       var imagenLista = "img/monitoreo/online_lista.png";
@@ -742,52 +841,50 @@ export default {
         return { imagen, color, imagenLista, detalle };
       }
 
-      if (
-        convert_diferencia_from_minutes >= -1000 &&
-        convert_diferencia_from_minutes <= 5
-      ) {
-        /**esta transmitiendo**/ /**IMAGEN ONLINE CON DESPACHO**/
-        if (unidad.LetrRutaMoni != "" && unidad.LetrRutaMoni != null) {
-          color = "#157347";
-          imagen =
-            unidad.UltiVeloMoni == 0
-              ? "img/monitoreo/stop_online.png#" + unidad.CodiVehiMoni
-              : "img/monitoreo/online.png#" + unidad.CodiVehiMoni;
-
-          detalle = "EN LINEA CON DESPACHO";
-          imagenLista = "img/monitoreo/online_lista.png";
-          return { imagen, color, imagenLista, detalle };
-        } else {
-          /**ONLINE SIN DESPACHO**/
-          color = "#060C92";
-          imagen =
-            unidad.UltiVeloMoni == 0
-              ? "img/monitoreo/online_sin_ruta_stop.png#" + unidad.CodiVehiMoni
-              : "img/monitoreo/online_sin_ruta.png#" + unidad.CodiVehiMoni;
-          imagenLista = "img/monitoreo/online_sin_ruta_lista.png";
-
-          detalle = "EN LINEA SIN DESPACHO";
-
-          return { imagen, color, imagenLista, detalle };
-        }
-      } else if (
-        convert_diferencia_from_minutes > 5 &&
-        convert_diferencia_from_minutes < 15
-      ) {
-        color = "#565656";
-        imagen =
-          "img/monitoreo/sin_gps_now.png#" +
-          unidad.CodiVehiMoni; /**recientemente dejo de transmitir**/
-        imagenLista = "img/monitoreo/sin_gps_now_lista.png";
-
-        detalle = "SIN TRANSMISION GPS RECIENTE";
-      } else {
+      if (unidad.SINGPSDAY > 0) {
+        /**UNIDAD PLOMO CLARO**/
         color = "#9B9999";
         imagen =
           "img/monitoreo/sin_gps_full.png#" +
           unidad.CodiVehiMoni; /** no  atransmitiendo en mucho tiempo**/
         imagenLista = "img/monitoreo/sin_gps_full_lista.png";
         detalle = "SIN TRANSMISION GPS";
+      } else {
+        if (unidad.MINUTESINGPS > 30) {
+          color = "#565656";
+          imagen =
+            "img/monitoreo/sin_gps_now.png#" +
+            unidad.CodiVehiMoni; /**recientemente dejo de transmitir**/
+          imagenLista = "img/monitoreo/sin_gps_now_lista.png";
+
+          detalle = "SIN TRANSMISION GPS";
+        } else {
+          /**esta transmitiendo**/ /**IMAGEN ONLINE CON DESPACHO**/
+          if (unidad.LetrRutaMoni != "" && unidad.LetrRutaMoni != null) {
+            color = "#157347";
+            imagen =
+              unidad.UltiVeloMoni == 0
+                ? "img/monitoreo/stop_online.png#" + unidad.CodiVehiMoni
+                : "img/monitoreo/online.png#" + unidad.CodiVehiMoni;
+
+            detalle = "EN LINEA CON DESPACHO";
+            imagenLista = "img/monitoreo/online_lista.png";
+            return { imagen, color, imagenLista, detalle };
+          } else {
+            /**ONLINE SIN DESPACHO**/
+            color = "#060C92";
+            imagen =
+              unidad.UltiVeloMoni == 0
+                ? "img/monitoreo/online_sin_ruta_stop.png#" +
+                  unidad.CodiVehiMoni
+                : "img/monitoreo/online_sin_ruta.png#" + unidad.CodiVehiMoni;
+            imagenLista = "img/monitoreo/online_sin_ruta_lista.png";
+
+            detalle = "EN LINEA SIN DESPACHO";
+
+            return { imagen, color, imagenLista, detalle };
+          }
+        }
       }
 
       return { imagen, color, imagenLista, detalle };
@@ -802,34 +899,119 @@ export default {
     async getInfoWindowContent(unidad) {
       var dir = await this.$axios.get(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-        parseFloat(unidad.UltiLatiMoni) +
-        "," +
-        parseFloat(unidad.UltiLongMoni) +
-        "&key="+process.env.mapaCredencial
+          parseFloat(unidad.UltiLatiMoni) +
+          "," +
+          parseFloat(unidad.UltiLongMoni) +
+          "&key=" +
+          process.env.mapaCredencial
       );
       var result = dir.data.results;
-      return `<div style="width:300px;padding:0.50rem">
-              <strong class="strongLetrasInfoWindows">UNIDAD N° : </strong> ${unidad.CodiVehiMoni
-        }<br>
-              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${unidad.UltiFechMoni
-        }<br>
+
+      if (unidad.SINGPSDAY == 0) 
+      {
+        if(unidad.MINUTESINGPS > 30){
+          return `<div style="width:300px;padding:0.50rem">
+              <strong class="strongLetrasInfoWindows">UNIDAD N° : </strong> ${
+                unidad.CodiVehiMoni
+              }<br>
+              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
+                unidad.UltiFechMoni
+              }<br>
+              <strong class="strongLetrasInfoWindows">MINUTOS SIN TRANSMISION : </strong> ${
+                unidad.timeSINGPS
+              }<br>
               <strong class="strongLetrasInfoWindows">RUTA : </strong> ${(unidad.LetrRutaMoni =
-          !""
-            ? unidad.DescRuta == null
-              ? "SIN RUTA"
-              : unidad.DescRuta
-            : "SIN RUTA")}<br>
-              <strong class="strongLetrasInfoWindows">EVENTO : </strong> ${unidad.AlarAnteGPSDescMoni == 1
-          ? "ALERTA GPS"
-          : unidad.AlarFuerRutaMoni == null ||
-            unidad.AlarFuerRutaMoni == 1
-            ? "FUERA DE RUTA"
-            : "EN RUTA"
-        }<br>
-              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${unidad.UltiVeloMoni
-        } <strong>KM/H</strong><br>
-              <strong class="strongLetrasInfoWindows">DIR : </strong> ${result.length > 0 ? result[0].formatted_address : "SIN NOMBRES"
-        }<br><strong class="strongLetrasInfoWindows">SATELITES : </strong> ${unidad.SateContMoni}
+                !""
+                  ? unidad.DescRuta == null
+                    ? "SIN RUTA"
+                    : unidad.DescRuta
+                  : "SIN RUTA")}<br>
+              <strong class="strongLetrasInfoWindows">EVENTO : </strong> ${
+                unidad.AlarAnteGPSDescMoni == 1
+                  ? "ALERTA GPS"
+                  : unidad.AlarFuerRutaMoni == null ||
+                    unidad.AlarFuerRutaMoni == 1
+                  ? "FUERA DE RUTA"
+                  : "EN RUTA"
+              }<br>
+              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
+                unidad.UltiVeloMoni
+              } <strong>KM/H</strong><br>
+              <strong class="strongLetrasInfoWindows">DIR : </strong> ${
+                result.length > 0 ? result[0].formatted_address : "SIN NOMBRES"
+              }<br><strong class="strongLetrasInfoWindows">SATELITES : </strong> ${
+          unidad.SateContMoni
+        }
+            </div>`;
+        }
+      } else {
+        if(unidad.SINGPSDAY > 0)
+        {
+          return `<div style="width:300px;padding:0.50rem">
+              <strong class="strongLetrasInfoWindows">UNIDAD N° : </strong> ${
+                unidad.CodiVehiMoni
+              }<br>
+              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
+                unidad.UltiFechMoni
+              }<br>
+              <strong class="strongLetrasInfoWindows">DIAS SIN TRANSMISION : </strong> ${
+                unidad.SINGPSDAY
+              } DIAS<br>
+              <strong class="strongLetrasInfoWindows">RUTA : </strong> ${(unidad.LetrRutaMoni =
+                !""
+                  ? unidad.DescRuta == null
+                    ? "SIN RUTA"
+                    : unidad.DescRuta
+                  : "SIN RUTA")}<br>
+              <strong class="strongLetrasInfoWindows">EVENTO : </strong> ${
+                unidad.AlarAnteGPSDescMoni == 1
+                  ? "ALERTA GPS"
+                  : unidad.AlarFuerRutaMoni == null ||
+                    unidad.AlarFuerRutaMoni == 1
+                  ? "FUERA DE RUTA"
+                  : "EN RUTA"
+              }<br>
+              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
+                unidad.UltiVeloMoni
+              } <strong>KM/H</strong><br>
+              <strong class="strongLetrasInfoWindows">DIR : </strong> ${
+                result.length > 0 ? result[0].formatted_address : "SIN NOMBRES"
+              }<br><strong class="strongLetrasInfoWindows">SATELITES : </strong> ${
+          unidad.SateContMoni
+        }
+            </div>`;
+        }
+      }
+
+      return `<div style="width:300px;padding:0.50rem">
+              <strong class="strongLetrasInfoWindows">UNIDAD N° : </strong> ${
+                unidad.CodiVehiMoni
+              }<br>
+              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
+                unidad.UltiFechMoni
+              }<br>
+              <strong class="strongLetrasInfoWindows">RUTA : </strong> ${(unidad.LetrRutaMoni =
+                !""
+                  ? unidad.DescRuta == null
+                    ? "SIN RUTA"
+                    : unidad.DescRuta
+                  : "SIN RUTA")}<br>
+              <strong class="strongLetrasInfoWindows">EVENTO : </strong> ${
+                unidad.AlarAnteGPSDescMoni == 1
+                  ? "ALERTA GPS"
+                  : unidad.AlarFuerRutaMoni == null ||
+                    unidad.AlarFuerRutaMoni == 1
+                  ? "FUERA DE RUTA"
+                  : "EN RUTA"
+              }<br>
+              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
+                unidad.UltiVeloMoni
+              } <strong>KM/H</strong><br>
+              <strong class="strongLetrasInfoWindows">DIR : </strong> ${
+                result.length > 0 ? result[0].formatted_address : "SIN NOMBRES"
+              }<br><strong class="strongLetrasInfoWindows">SATELITES : </strong> ${
+        unidad.SateContMoni
+      }
             </div>`;
     },
     async showInfoWindows(unidad, idx) {
@@ -892,8 +1074,8 @@ export default {
         }
       }
     },
-    prueba(){
-      alert()
+    prueba() {
+      alert();
     },
     updateInformationMarker(position, oUnidadAux) {
       //console.log("UPDATE INFO MARKER");
@@ -977,4 +1159,3 @@ export default {
   },
 };
 </script>
-
