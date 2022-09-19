@@ -26,6 +26,18 @@
                     class="table-responsive table-flush" :data="mListUnidadesFlotaVehicular"
                     header-row-class-name="thead-dark" height="calc(100vh - 13.4rem)">
                     <div slot="empty"></div>
+                    <el-table-column min-width="180px" align="right" label="Actions">
+                      <div slot-scope="{ row }" class="d-flex">
+                        <base-button class="edit" type="success" size="sm" icon @click="editUnidad(row)">
+                          <i class="text-white ni ni-ruler-pencil"></i>
+                        </base-button>
+                        <base-button class="remove btn-link" :type="row.idEstaVehi == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoUnidad(row)">
+                          <i :class="row.idEstaVehi == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
+                        </base-button>
+                        
+                      </div>
+                    </el-table-column>
+                    
                     <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label"
                       v-bind="column">
                     </el-table-column>
@@ -54,17 +66,7 @@
                       </template>
                     </el-table-column>
 
-                    <el-table-column min-width="180px" align="right" label="Actions">
-                      <div slot-scope="{ row }" class="d-flex">
-                        <base-button class="edit" type="success" size="sm" icon @click="editUnidad(row)">
-                          <i class="text-white ni ni-ruler-pencil"></i>
-                        </base-button>
-                        <base-button class="remove btn-link" :type="row.idEstaVehi == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoUnidad(row)">
-                          <i :class="row.idEstaVehi == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
-                        </base-button>
-                        
-                      </div>
-                    </el-table-column>
+                    
                   </el-table>
                 </div>
               </card>
@@ -88,7 +90,17 @@
                     header-row-class-name="thead-dark">
                     
                     <div slot="empty"></div>
-                      
+                    <el-table-column min-width="180px" align="right" label="Actions">
+                      <div slot-scope="{ row }" class="d-flex">
+                        <base-button class="edit" type="success" size="sm" icon @click="editGrupo(row)">
+                          <i class="text-white ni ni-ruler-pencil"></i>
+                        </base-button>
+                        <base-button class="remove btn-link" :type="row.activo == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoGrupo(row)">
+                          <i :class="row.activo == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
+                        </base-button>
+                      </div>
+                    </el-table-column>
+                    
                     <el-table-column v-for="column in tableColumnsGruposFlotaVehicular" :key="column.label"
                       v-bind="column">
                     </el-table-column>
@@ -105,16 +117,7 @@
                       </template>
                     </el-table-column>
 
-                    <el-table-column min-width="180px" align="right" label="Actions">
-                      <div slot-scope="{ row }" class="d-flex">
-                        <base-button class="edit" type="success" size="sm" icon @click="editGrupo(row)">
-                          <i class="text-white ni ni-ruler-pencil"></i>
-                        </base-button>
-                        <base-button class="remove btn-link" :type="row.activo == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoGrupo(row)">
-                          <i :class="row.activo == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
-                        </base-button>
-                      </div>
-                    </el-table-column>
+                    
                   </el-table>
                 </div>
               </card>
@@ -141,6 +144,21 @@
                     height="calc(100vh - 13.4rem)" header-row-class-name="thead-dark">
                     
                     <div slot="empty"></div>
+                    <el-table-column min-width="180px" align="right" label="Actions">
+                      <div slot-scope="{ $index, row }" class="d-flex">
+                        <base-button class="edit" type="success" size="sm" icon @click="editPropietario(row)">
+                          <i class="text-white ni ni-ruler-pencil"></i>
+                        </base-button>
+                        <base-button :type="row.activo == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoPropietario(row)">
+                          <i :class="row.activo == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
+                        </base-button>
+                        <base-button @click.native="initPropietariosUnidadSinAsignacionFlotaVehicular($index, row)"
+                          class="remove btn-link" type="default" size="sm" icon>
+                          <i class="text-white ni ni-bus-front-12"></i>
+                        </base-button>
+                      </div>
+                    </el-table-column>
+
                     <el-table-column v-for="column in tableColumnsPropietariosFlotaVehicular" :key="column.label"
                       v-bind="column">
                     </el-table-column>
@@ -156,20 +174,7 @@
                       </template>
                     </el-table-column>
 
-                    <el-table-column min-width="180px" align="right" label="Actions">
-                      <div slot-scope="{ $index, row }" class="d-flex">
-                        <base-button class="edit" type="success" size="sm" icon @click="editPropietario(row)">
-                          <i class="text-white ni ni-ruler-pencil"></i>
-                        </base-button>
-                        <base-button :type="row.activo == 1 ? 'danger' : 'primary'" size="sm" icon @click="sendChangeEstadoPropietario(row)">
-                          <i :class="row.activo == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
-                        </base-button>
-                        <base-button @click.native="initPropietariosUnidadSinAsignacionFlotaVehicular($index, row)"
-                          class="remove btn-link" type="default" size="sm" icon>
-                          <i class="text-white ni ni-bus-front-12"></i>
-                        </base-button>
-                      </div>
-                    </el-table-column>
+                    
                   </el-table>
                 </div>
               </card>
@@ -195,22 +200,6 @@
                     height="calc(100vh - 13.4rem)"
                     header-row-class-name="thead-dark">
                     <div slot="empty"></div>
-                    <el-table-column v-for="column in tableColumnsAdministrativosFlotaVehicular" :key="column.label"
-                      v-bind="column">
-                    </el-table-column>
-                    
-                    <el-table-column label="Estado" min-width="150px" prop="activo" sortable>
-                      <template v-slot="{ row }">
-                        <badge class="badge-dot mr-4" type="">
-                          <i :class="`bg-${row.activo == 1 ? 'success' : 'danger'
-                          }`"></i>
-                          <span class="status">{{
-                              row.activo == 1 ? "ACTIVO" : "INACTIVO"
-                          }}</span>
-                        </badge>
-                      </template>
-                    </el-table-column>
-
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
                         <base-button class="edit" type="success" size="sm" icon @click="editAdministrador(row)">
@@ -226,6 +215,23 @@
                         </base-button>
                       </div>
                     </el-table-column>
+
+                    <el-table-column v-for="column in tableColumnsAdministrativosFlotaVehicular" :key="column.label"
+                      v-bind="column">
+                    </el-table-column>
+                    
+                    <el-table-column label="Estado" min-width="150px" prop="activo" sortable>
+                      <template v-slot="{ row }">
+                        <badge class="badge-dot mr-4" type="">
+                          <i :class="`bg-${row.activo == 1 ? 'success' : 'danger'
+                          }`"></i>
+                          <span class="status">{{
+                              row.activo == 1 ? "ACTIVO" : "INACTIVO"
+                          }}</span>
+                        </badge>
+                      </template>
+                    </el-table-column>
+                    
                   </el-table>
                 </div>
               </card>
@@ -251,10 +257,6 @@
                     :data="mListChoferesFlotaVehicular" height="calc(100vh - 13.4rem)"
                     header-row-class-name="thead-dark">
                     <div slot="empty"></div>
-                    <el-table-column v-for="column in tableColumnsChoferesFlotaVehicular" :key="column.label"
-                      v-bind="column">
-                    </el-table-column>
-
                     <el-table-column min-width="180px" align="right" label="Actions">
                       <div slot-scope="{ $index, row }" class="d-flex">
                         <base-button class="edit" type="success" size="sm" icon @click="editChofer(row)">
@@ -270,6 +272,11 @@
                         </base-button>
                       </div>
                     </el-table-column>
+                    <el-table-column v-for="column in tableColumnsChoferesFlotaVehicular" :key="column.label"
+                      v-bind="column">
+                    </el-table-column>
+
+                    
                   </el-table>
                 </div>
               </card>
@@ -476,7 +483,6 @@
         <div class="form-row">
           <div class="col-md-6">
             <base-input
-              :disabled="editedIndexUnidad == 1"
               name="Unidad"
               placeholder="Unidad"
               prepend-icon="ni ni-bus-front-12"
@@ -492,6 +498,24 @@
               rules="required"
               v-model="serieVehiculo">
             </base-input>
+          </div>
+        </div>
+        <div class="form-row">  
+          <div class="col-md-6">
+            <base-input
+              prepend-icon="ni ni-single-copy-04"
+              name="Imei"
+              placeholder="Imei"
+              v-model="imeiVehiculo">
+            </base-input>
+          </div>
+          <div class="col-md-6">
+            <el-select  placeholder="Grupos" v-model="mSelectGrupo" style="width:220px">
+              <el-option :key="0" label=" " :value="0">
+              </el-option>
+              <el-option v-for="item in mListGruposFlotaVehicular" :key="item.id" :label="item.descripcion" :value="item.id">
+              </el-option>
+            </el-select>
           </div>
         </div>
         <div class="form-row">  
@@ -692,6 +716,7 @@ export default {
       validaUnidad:0,
       validaGrupo:0,
       validaAdministrador:0,
+      mListValidaUnidad:[],
       mSelectUnidadChofer:null,
       rowSeleccionadoChofer:[],
       indexSeleccionadoChofer:'',
@@ -711,9 +736,11 @@ export default {
       editedIndexChofer:-1,
       editedIndexAdministrador:-1,
       unidadVehiculo:'',
+      auxUnidadVehiculo:'',
       serieVehiculo:'',
       placaVehiculo:'',
       numsimVehiculo:'',
+      imeiVehiculo:'',
       descripcionGrupo:'',
       fondoGrupo:'',
       textoGrupo:'',
@@ -723,6 +750,7 @@ export default {
       usuarioAdmin:'',
       nombreAdmin:'',
       passAdmin:'',
+      mSelectGrupo:'',
       mSelectTerminalAdmin:'',
       mListTerminalesAdmin:[],
       currentPageUnidadesFlotaVehicular: 1,
@@ -752,6 +780,12 @@ export default {
           minWidth: 170,
         },
         {
+          prop: "EmaiVehi",
+          label: "Imei",
+          minWidth: 170,
+        },
+        
+        {
           prop: "PlacVehi",
           label: "Placa",
           minWidth: 130,
@@ -761,12 +795,17 @@ export default {
           label: "Número Sim",
           minWidth: 160,
         },
+        {
+          prop: "descripcion",
+          label: "Grupo",
+          minWidth: 150,
+        },
       ],
       tableColumnsGruposFlotaVehicular: [
         {
           prop: "id",
           label: "Código",
-          minWidth: 120,
+          minWidth: 135,
           sortable: true,
         },
         {
@@ -1203,30 +1242,35 @@ export default {
     },
     showModalAgregarChoferFlotavehicular(index, row) {
       this.modalAgregarChoferFlotaVehicular = this.modalAgregarChoferFlotaVehicular ? false : true
+      this.limpiarRegisterChofer()
       if (this.modalAgregarChoferFlotaVehicular == false) {
         this.cancelarRegisterChofer()
       }
     },
     showModalAgregarPropietarioFlotavehicular(index, row) {
       this.modalAgregarPropietarioFlotaVehicular = this.modalAgregarPropietarioFlotaVehicular ? false : true
+      this.limpiarRegisterPropietario()
       if (this.modalAgregarPropietarioFlotaVehicular == false) {
         this.cancelarRegisterPropietario()
       }
     },
     showModalAgregarUnidadFlotavehicular(index, row) {
       this.modalAgregarUnidadFlotaVehicular = this.modalAgregarUnidadFlotaVehicular ? false : true
+      this.limpiarRegisterUnidad()
       if (this.modalAgregarUnidadFlotaVehicular == false) {
         this.cancelarRegisterUnidad()
       }
     },
     showModalAgregarGrupoFlotavehicular(index, row) {
       this.modalAgregarGrupoFlotaVehicular = this.modalAgregarGrupoFlotaVehicular ? false : true
+      this.limpiarRegisterGrupo()
       if (this.modalAgregarGrupoFlotaVehicular == false) {
         this.cancelarRegisterGrupo()
       }
     },
     showModalAgregarAdministradorFlotavehicular(index, row) {
       this.modalAgregarAdministradorFlotaVehicular = this.modalAgregarAdministradorFlotaVehicular ? false : true
+      this.limpiarRegisterAdministrador()
       if (this.modalAgregarAdministradorFlotaVehicular == false) {
         this.cancelarRegisterAdministrador()
       }
@@ -1351,36 +1395,21 @@ export default {
             token: this.token,
             datos: {
                 _codivehiculo: this.unidadVehiculo,
-                _idtipodispositivo:null,
                 _autodespvehi: 1,
                 _anotacionesvehi: null,
                 _infoctrlvehi: 1,
                 _codidispvehi: this.serieVehiculo,
                 _placavehi: this.placaVehiculo,
+                _imeivehi:this.imeiVehiculo,
                 _numsim: this.numsimVehiculo,
-                _idestavehi: null,
-                _grupoid: null,
-                _badge_estado: null,
-                _badge_inform: null,
-                _label_estado: null,
-                _label_inform: null,
                 _oGrupo: {
-                    _grupoid: 1,
-                    _descripcion: null,
-                    _activo: null,
-                    _color: null,
-                    _color1: null,
-                    _color2: null,
-                    _activolabel: "Activo",
-                    _badge_estado: ""
+                    _grupoid: this.mSelectGrupo == '' ? 0 : this.mSelectGrupo
                 },
                 _oEstadoVehi: {
-                    _idestado: 1,
-                    _descripcion: null
+                    _idestado: 1
                 },
                 _oTipoDispo: {
-                    _iddisptipo: 3,
-                    _descripcion: null
+                    _iddisptipo: 3
                 }
             }
         }
@@ -1549,10 +1578,24 @@ export default {
         var objBody= {
         token:this.token,
         datos: {
+          _auxcodivehiculo :this.auxUnidadVehiculo,
           _codivehiculo: this.unidadVehiculo,
+          _autodespvehi: 1,
+          _anotacionesvehi: '',
+          _infoctrlvehi: 1,
           _codidispvehi: this.serieVehiculo,
           _placavehi: this.placaVehiculo,
+          _imeivehi:this.imeiVehiculo,
           _numsim: this.numsimVehiculo,
+          _oGrupo: {
+            _grupoid: this.mSelectGrupo == '' ? 0 : this.mSelectGrupo
+          },
+          _oEstadoVehi: {
+            _idestado: 1
+          },
+          _oTipoDispo: {
+            _iddisptipo: 3
+          }
         }
       }
       var result = await this.$axios.put(process.env.baseUrl + "/update-unidad", objBody)
@@ -2141,10 +2184,13 @@ export default {
       this.modalAgregarPropietarioFlotaVehicular = true
     },
     editUnidad(row){
+      this.auxUnidadVehiculo = row.CodiVehi
       this.unidadVehiculo = row.CodiVehi
       this.serieVehiculo = row.CodiDispVehi
       this.placaVehiculo = row.PlacVehi
       this.numsimVehiculo = row.NumeSIMVehi
+      this.imeiVehiculo = row.EmaiVehi
+      this.mSelectGrupo = row.grupo_id == 0 ? '' : row.grupo_id
       this.editedIndexUnidad = 1
       this.modalAgregarUnidadFlotaVehicular = true
     },
@@ -2241,16 +2287,22 @@ export default {
     },
     limpiarRegisterUnidad(){
       this.unidadVehiculo = ''
+      this.auxUnidadVehiculo = ''
       this.placaVehiculo = ''
       this.numsimVehiculo = ''
       this.serieVehiculo = ''
+      this.imeiVehiculo = ''
+      this.mSelectGrupo = ''
       this.editedIndexUnidad = -1
     },
     cancelarRegisterUnidad(){
       this.unidadVehiculo = ''
+      this.auxUnidadVehiculo = ''
       this.placaVehiculo = ''
       this.numsimVehiculo = ''
       this.serieVehiculo = ''
+      this.imeiVehiculo = ''
+      this.mSelectGrupo = ''
       this.editedIndexUnidad = -1
       this.modalAgregarUnidadFlotaVehicular = false
     },
@@ -2336,6 +2388,7 @@ export default {
     },
   },
   mounted() {
+    this.initGruposFlotaVehicular();
     this.initUnidadesFlotaVEhicular();
   },
 };
@@ -2344,6 +2397,11 @@ export default {
 .cardFlotavehicular {
   height: calc(100vh - 11rem) !important;
   overflow: auto;
+}
+
+.red--text{
+  padding: 0%;
+  color: coral;
 }
 
 .cardBodyFlotavehicular {
