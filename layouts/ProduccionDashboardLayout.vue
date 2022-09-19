@@ -63,6 +63,16 @@
 
         </sidebar-item>
 
+        <sidebar-item
+      translate="no"
+          :link="{
+            name: 'Estadistico',
+            icon: 'ni ni-chart-bar-32 text-success',
+            path: './estadistico',
+          }"
+        >
+        </sidebar-item>
+
       </template>
     </side-bar>
     <div class="main-content">
