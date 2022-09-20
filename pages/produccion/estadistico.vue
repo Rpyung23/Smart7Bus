@@ -385,24 +385,6 @@
     margin-bottom: 0rem;
   }
   
-  .form-controlPersonal {
-    display: block;
-    width: 100%;
-    /* height: calc(1.5em + 1.25rem + 2px); */
-    padding: 0.625rem 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #8898aa;
-    background-color: #fff;
-    background-clip: padding-box;
-    outline: none;
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-    margin-bottom: 0rem;
-    box-shadow: 0 3px 2px rgba(233, 236, 239, 0.05);
-    transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  }
   
   .el-loading-text {
     color: black !important;
@@ -430,10 +412,6 @@
     padding: 0rem !important;
     height: calc(100vh - 9.5em);
     overflow: none;
-  }
-  
-  .card-bodyTopOpcionesEstadisticoPRoduccion {
-    padding-top: 0.25rem !important;
   }
   
   .card-bodyTopOpcionesEstadisticoPRoduccion {

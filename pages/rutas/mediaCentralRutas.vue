@@ -4,8 +4,8 @@
       <div class="row align-items-center">
         <div class="col" style="margin-top: 1rem">
           <card
-            class="cardRutasFrecuencias no-border-card"
-            body-classes="px-0 pb-1 cardBodyFlotavehicular"
+            class="cardMediaCentralControles no-border-card"
+            body-classes="px-0 pb-1 cardBodyMediaCentral"
             footer-classes="pb-2"
           >
             <div class="col-12 text-right buttonNuevo">
@@ -39,18 +39,18 @@
                     type="success"
                     size="sm"
                     icon
-                    @click="editRuta(row)"
+                    @click="editMediaCentral(row)"
                   >
                     <i class="text-white ni ni-ruler-pencil"></i>
                   </base-button>
                   <base-button
                     class="remove btn-link"
-                    type="danger"
+                    :type="row.estado == 1 ? 'danger': 'primary' "
                     size="sm"
                     icon
-                    @click="changeEstadoRuta(row)"
+                    @click="changeEstadoMediaCentral(row)"
                   >
-                    <i class="text-white ni ni-fat-remove"></i>
+                    <i :class="row.estado == 1 ? 'text-white ni ni-fat-remove' :'text-white ni ni-check-bold' "></i>
                   </base-button>
                 </div>
               </el-table-column>
@@ -95,6 +95,7 @@
                 name="Nombre"
                 placeholder="Nombre Media Central"
                 rules="required"
+                v-model="descripcionPonderada"
               >
               </base-input>
             </div>
@@ -103,6 +104,7 @@
                 name="Código"
                 placeholder="Valor ($)"
                 rules="required"
+                v-model="valorPondera"
               >
                 <small slot="append" class="font-weight-bold">USD</small>
               </base-input>
@@ -115,15 +117,19 @@
                 name="Descripción Media Central"
                 placeholder="Descripción Media Central"
                 rules="required"
+                v-model="anotacionPonderada"
               >
               </base-input>
             </div>
           </div>
 
           <div class="text-right">
-            <base-button type="danger">Cancelar</base-button>
-            <base-button type="primary" native-type="submit"
+            <base-button type="danger" @click="cancelarRegisterMediaCentral()">Cancelar</base-button>
+            <base-button v-if="editIndexPonderada == -1" type="primary" native-type="submit" @click="insertMediaCentral()"
               >Agregar</base-button
+            >
+            <base-button v-else type="primary" native-type="submit" @click="updateMediaCentral()"
+              >Actualizar</base-button
             >
           </div>
         </form>
@@ -170,12 +176,12 @@ export default {
         {
           prop: "valorPonderada",
           label: "Valor ($)",
-          minWidth: 160,
+          minWidth: 130,
         },
         {
           prop: "detallePonderada",
           label: "Anotaciones",
-          minWidth: 240,
+          minWidth: 260,
         },
         {
           prop: "fechaRegistro",
@@ -189,11 +195,20 @@ export default {
       mSelectRutaFrecuencia: "",
       tableData: [],
       modalRegistroMediaCentraslRutas: false,
+      descripcionPonderada:'',
+      anotacionPonderada:'',
+      valorPondera:'',
+      editIndexPonderada: -1,
+      idPRuta:''
     };
   },
   methods: {
     showRegistroMediaCentrasl() {
+      this.limpiarRegisterMediaCentral()
       this.modalRegistroMediaCentraslRutas = true;
+      if (this.modalRegistroMediaCentraslRutas == false) {
+        this.cancelarRegisterMediaCentral()
+      }
     },
     async readAllMediaCentral() {
       this.tableData = [];
@@ -232,6 +247,155 @@ export default {
       }
       this.loadingRutaRutasFrecuencias = false;
     },
+    async insertMediaCentral(){
+      try {
+        var objBody= {
+          token: this.token,
+          datos: {
+            _nomponde : this.descripcionPonderada,
+            _detaponde : this.anotacionPonderada,
+            _valoponde : this.valorPondera,
+            _usuario : this.$cookies.get("namesUsuario")
+          }
+        }
+      var result = await this.$axios.post(process.env.baseUrl + "/register-mediaCentral", objBody)
+    if (result.data.status_code == 200) {
+      this.readAllMediaCentral()
+      this.limpiarRegisterMediaCentral()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al insertar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async updateMediaCentral(){
+      try {
+        var objBody= {
+          token: this.token,
+          datos: {
+            _nomponde : this.descripcionPonderada,
+            _detaponde : this.anotacionPonderada,
+            _valoponde : this.valorPondera,
+            _idpruta: this.idPRuta
+          }
+        }
+      var result = await this.$axios.put(process.env.baseUrl + "/update-mediaCentral", objBody)
+    if (result.data.status_code == 200) {
+      this.readAllMediaCentral()
+      this.limpiarRegisterMediaCentral()
+      this.$notify({
+          message: result.data.msm,
+          timeout: 1500,
+          type: 'default'
+        });
+    } else {
+      this.$notify({
+          title: 'Error al actualizar',
+          timeout: 3000,
+          message: result.data.msm,
+          type: 'danger'
+          
+        });
+    }  
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    limpiarRegisterMediaCentral(){
+      this.descripcionPonderada = ''
+      this.anotacionPonderada = ''
+      this.valorPondera = ''
+      this.editIndexPonderada = -1
+    },
+    cancelarRegisterMediaCentral(){
+      this.descripcionPonderada = ''
+      this.anotacionPonderada = ''
+      this.valorPondera = ''
+      this.editIndexPonderada = -1
+      this.modalRegistroMediaCentraslRutas = false
+    },
+    editMediaCentral(row){
+      this.descripcionPonderada = row.nombrePonderada
+      this.anotacionPonderada = row.detallePonderada
+      this.valorPondera = row.valorPonderada
+      this.idPRuta = row.idPRuta
+      this.editIndexPonderada = 1
+      this.modalRegistroMediaCentraslRutas = true
+    },
+    async changeEstadoMediaCentral(row){
+      var _estado
+      if (row.estado == 1) {
+        _estado = 0
+      }else{
+        _estado = 1
+      }
+      try {
+        var objBody= {
+        token:this.token,
+        datos:{
+          _estado:_estado,
+          _idpruta:row.idPRuta,
+          _usuario : this.$cookies.get("namesUsuario")
+        }
+      }
+      Swal.fire({
+        title: row.estado == 1 ? 'Desactivar Media Central':'Activar Media Central',
+        text: row.nombrePonderada,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: row.estado == 1 ? 'Si, desactivar.' : 'Si, activar.'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          var result = await this.$axios.delete(process.env.baseUrl + "/delete-mediaCentral", {data:objBody})
+          if (result.data.status_code == 200) {
+            this.readAllMediaCentral()
+            this.$notify({
+                message: result.data.msm,
+                timeout: 1500,
+                type: 'default'
+              });
+          } else {
+            this.$notify({
+                title: 'Error al eliminar',
+                timeout: 3000,
+                message: result.data.msm,
+                type: 'danger'
+                
+              });
+          }  
+        }
+      })
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
   },
   mounted() {
     this.readAllMediaCentral();
@@ -239,16 +403,12 @@ export default {
 };
 </script>
 <style>
-.cardRutasFrecuencias {
-  height: calc(100vh - 6.6rem) !important;
+.cardMediaCentralControles {
+  height: calc(100vh - 6.7rem) !important;
   overflow: auto;
 }
 
-.cardBodyRutasFrecuencias {
-  padding: 0%;
-}
-
-.cardRutasFrecuenciasr::-webkit-scrollbar {
+.cardMediaCentralControles::-webkit-scrollbar {
   display: none;
 }
 

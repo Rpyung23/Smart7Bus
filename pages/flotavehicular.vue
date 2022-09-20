@@ -2399,10 +2399,6 @@ export default {
   overflow: auto;
 }
 
-.red--text{
-  padding: 0%;
-  color: coral;
-}
 
 .cardBodyFlotavehicular {
   padding: 0%;

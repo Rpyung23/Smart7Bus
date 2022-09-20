@@ -27,7 +27,7 @@
             </base-input>
           </div>
 
-          <div class="buttonsAdicionalesDespacho">
+          <div class="buttonsAdicionalesRVelocidad">
             <base-button icon type="primary" size="sm" @click="readRVelocidades()">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>

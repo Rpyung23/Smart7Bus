@@ -69,7 +69,7 @@
 
           </div>
 
-          <div class="buttonsAdicionalesDespacho">
+          <div class="buttonsAdicionalesRContador">
             <base-button
               icon
               size="sm"
