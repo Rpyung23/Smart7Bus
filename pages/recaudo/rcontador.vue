@@ -51,7 +51,7 @@
               v-model="fechaInicialConteoPasajeros"
               type="datetime"
               format="yyyy-MM-dd HH:mm:ss"
-              value-format ="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               style="margin-right: 0.5rem"
               placeholder="Fecha/Hora inicial"
             >
@@ -61,12 +61,10 @@
               v-model="fechaFinalConteoPasajeros"
               type="datetime"
               format="yyyy-MM-dd HH:mm:ss"
-              value-format ="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="Fecha/Hora final"
             >
             </el-date-picker>
-
-
           </div>
 
           <div class="buttonsAdicionalesDespacho">
@@ -136,6 +134,7 @@
               v-loading="loadingUnidadesContadorPasajerosPasajeros"
               element-loading-text="Cargando Datos..."
               :data="tableDataRecaudoContadorPasajeros"
+              highlight-current-row
               row-key="id"
               height="calc(100vh - 13rem)"
               style="width: 100%"
@@ -154,20 +153,20 @@
 
               <el-table-column
                 prop="subida1"
-                label="Puerta 1 (S)"
-                minWidth="160"
+                label="Puerta 1"
+                minWidth="130"
               >
               </el-table-column>
               <el-table-column
                 prop="subida2"
-                label="Puerta 2 (S)"
-                minWidth="160"
+                label="Puerta 2"
+                minWidth="130"
               >
               </el-table-column>
               <el-table-column
                 prop="subida3"
-                label="Puerta 3 (S)"
-                minWidth="160"
+                label="Puerta 3"
+                minWidth="130"
               >
               </el-table-column>
               <!--<el-table-column
@@ -190,27 +189,40 @@
               </el-table-column>-->
               <el-table-column
                 prop="totalSubidas"
-                label="Total Subidas"
-                minWidth="180"
+                label="T. Subidas"
+                minWidth="140"
               >
               </el-table-column>
-
-              <!--<el-table-column
-                prop="totalBajadas"
-                label="Total Bajadas"
-                minWidth="180"
-              >
-              </el-table-column>-->
-
-              <!--<el-table-column prop="error" label="% Error" minWidth="140">
-              </el-table-column>-->
 
               <el-table-column
                 prop="dinero"
-                label="D. Recaudado ($)"
-                minWidth="180"
+                label="T. Dinero"
+                minWidth="140"
+              >
+                <template slot-scope="scope">
+                  <strong style="color: black">{{ scope.row.dinero }}</strong>
+                </template>
+              </el-table-column>
+
+
+              <el-table-column
+                prop="valorPonderada"
+                label="T. Central ($)"
+                minWidth="150"
               >
               </el-table-column>
+
+              <el-table-column
+                prop="Odometro"
+                label="Km/H"
+                minWidth="110"
+              >
+              </el-table-column>
+
+              <el-table-column prop="ipk" label="IPK" minWidth="90">
+              </el-table-column>
+
+
 
               <div slot="empty"></div>
             </el-table>
@@ -261,7 +273,7 @@ export default {
     [TableColumn.name]: TableColumn,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
-    [Button.name]:Button
+    [Button.name]: Button,
   },
   data() {
     return {
@@ -279,16 +291,18 @@ export default {
       ConteoPasajerosFileNameExcelRPagosVehiculoProduccion: "",
       headerExcelRPagosVehiculoProduccion: [],
       optionsUnidadesSelectContadorPasajero: [],
-      json_fields_excelRPagosVehiculoProduccion: 
-      {
-        "Unidad": "unidad",
+      json_fields_excelRPagosVehiculoProduccion: {
+        Unidad: "unidad",
         "Linea - Ruta": "DescRutaSali_m",
         "Subida 1": "subida1",
         "Subida 2": "subida2",
         "Subida 3": "subida3",
         "Total Subidas": "totalSubidas",
-        "Dinero Recaudado": "dinero"
-      }
+        "T Central ($)": "valorPonderada",
+        "KM/H Recorridos": "Odometro",
+        "IPK": "ipk",
+        "Dinero Recaudado": "dinero",
+      },
     };
   },
   methods: {
@@ -320,8 +334,8 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialConteoPasajeros = format+" 05:00:00";
-      this.fechaFinalConteoPasajeros = format+" 23:59:59"
+      this.fechaInicialConteoPasajeros = format + " 05:00:00";
+      this.fechaFinalConteoPasajeros = format + " 23:59:59";
     },
     async readAllUnidadesContadorPasajeros() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
@@ -345,11 +359,11 @@ export default {
         this.mListLineasContadorPasajeros.push(...datos.data.data);
       }
     },
-    async readConteoPasajeros() 
-    {
-
-      this.ConteoPasajerosWorksheetExcelRPagosVehiculoProduccion = "RCP_W_" + Date.now()
-      this.ConteoPasajerosFileNameExcelRPagosVehiculoProduccion = "RCP_" + Date.now() + ".xls"
+    async readConteoPasajeros() {
+      this.ConteoPasajerosWorksheetExcelRPagosVehiculoProduccion =
+        "RCP_W_" + Date.now();
+      this.ConteoPasajerosFileNameExcelRPagosVehiculoProduccion =
+        "RCP_" + Date.now() + ".xls";
 
       if (this.loadingUnidadesContadorPasajerosPasajeros) {
         Notification.info({
@@ -362,7 +376,7 @@ export default {
         try {
           /*console.log(this.itemUnidadContadorPasajero)
           console.log(this.mSelectRutaContadorPasajero)*/
-          console.log(this.fechaInicialConteoPasajeros.toString())
+          console.log(this.fechaInicialConteoPasajeros.toString());
 
           var body = {
             token: this.token,
@@ -375,7 +389,7 @@ export default {
                 ? "*"
                 : this.mSelectRutaContadorPasajero,
             fechaI: this.fechaInicialConteoPasajeros.toString(),
-            fechaF: this.fechaFinalConteoPasajeros.toString()
+            fechaF: this.fechaFinalConteoPasajeros.toString(),
           };
           //console.log(body)
           var datos = await this.$axios.post(
@@ -388,9 +402,6 @@ export default {
           //console.log(datos.data);
           if (datos.data.status_code == 200) {
             this.tableDataRecaudoContadorPasajeros.push(...datos.data.datos);
-
-
-
           } else if (datos.data.status_code == 300) {
             Notification.info({
               title: "Conteo de Pasajeros",
@@ -462,8 +473,7 @@ export default {
 .no-border-card .card-footer {
   border-top: 0;
 }
-.card-bodyRPagosVehiculoProduccion 
-{
+.card-bodyRPagosVehiculoProduccion {
   padding: 0rem !important;
   height: calc(100vh - 13rem);
   overflow: auto;
