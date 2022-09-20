@@ -777,3 +777,15 @@ body::-webkit-scrollbar{
 .modal{
     z-index: 30000 !important;
 }
+
+.buttonsAdicionalesRContador{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.buttonsAdicionalesRContadorVuelta{
+    display: flex;
+    align-items: center;
+}
