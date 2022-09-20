@@ -10,7 +10,7 @@
               </div>
               <br />
               <card
-                class="cardRutasFrecuencias no-border-card" body-classes="px-0 pb-1 cardBodyFlotavehicular"
+                class="cardRutasFrecuenciasFlotaVehicular no-border-card" body-classes="px-0 pb-1 cardBodyRutasFrecuencias"
                 footer-classes="pb-2">
                 <div class="col-12 text-right buttonNuevo">
                     <base-button type="primary" icon size="sm" @click="showModalAgregarRutaRutasFrecuencias()">
@@ -96,8 +96,8 @@
               </div>
               <br />
               <card
-                class="no-border-card cardRutasFrecuencias no-border-card"
-                body-classes="px-0 pb-1 cardBodyFlotavehicular"
+                class="no-border-card cardRutasFrecuenciasFlotaVehicular no-border-card"
+                body-classes="px-0 pb-1 cardBodyRutasFrecuencias"
                 footer-classes="pb-2"
               >
                 <div class="col-12 text-right buttonNuevo">
@@ -180,8 +180,8 @@
               </div>
               <br />
               <card
-                class="no-border-card cardRutasFrecuencias no-border-card"
-                body-classes="px-0 pb-1 cardBodyFlotavehicular"
+                class="no-border-card cardRutasFrecuenciasFlotaVehicular no-border-card"
+                body-classes="px-0 pb-1 cardBodyRutasFrecuencias"
                 footer-classes="pb-2"
               >
                 <div class="col-12 text-right buttonNuevo">
@@ -410,7 +410,7 @@
         </div>
         <div class="form-row">
           <div class="col-md-12">
-            <el-select  placeholder="Rutas" v-model="mSelectRutaFrecuencia" style="width:450px">
+            <el-select  placeholder="Rutas" v-model="mSelectRutaFrecuencia" style="width:250px">
               <el-option v-for="item in mListRutasModalAgregar" :key="item.DescRuta" :label="item.DescRuta" :value="item.idRuta">
               </el-option>
             </el-select>
@@ -1124,14 +1124,11 @@ export default {
 </script>
 <style>
 
-.cardRutasFrecuencias {
+.cardRutasFrecuenciasFlotaVehicular {
   height: calc(100vh - 11rem) !important;
   overflow: auto;
 }
 
-.cardBodyRutasFrecuencias {
-  padding: 0%;
-}
 
 .cardRutasFrecuenciasr::-webkit-scrollbar {
   display: none;

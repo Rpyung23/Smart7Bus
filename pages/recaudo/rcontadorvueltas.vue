@@ -68,7 +68,7 @@
           </div>
 
 
-          <div class="buttonsAdicionalesDespacho">
+          <div class="buttonsAdicionalesRContadorVuelta">
             <base-button icon size="sm" title="Buscar" type="primary" @click="readConteoPasajeros()">
               <span class="btn-inner--icon"
                 ><i class="el-icon-search"></i
