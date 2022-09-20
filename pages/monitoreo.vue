@@ -106,7 +106,6 @@
           class="itemMonitoreoUnidad"
           :key="unidad.CodiVehiMoni"
           v-for="unidad in mListUnidades"
-          v-if="unidad.isvisible"
           @click="ubicarUnidad(unidad)"
         >
           <div class="itemContainerMonitoreo">

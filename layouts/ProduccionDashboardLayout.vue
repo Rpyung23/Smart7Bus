@@ -66,7 +66,7 @@
         <sidebar-item
       translate="no"
           :link="{
-            name: 'Estadistico',
+            name: 'Estadistico Controles',
             icon: 'ni ni-chart-bar-32 text-success',
             path: './estadistico',
           }"

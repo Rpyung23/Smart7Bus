@@ -1,15 +1,19 @@
 <template>
     <div class="content">
-      <base-header class="py-3">
+      <base-header>
         <div class="align-items-center py-3" >
-          <card class="no-border-card col" style="margin-bottom: 0.5rem"
-        body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-        footer-classes="pb-2">
+          <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesEstadisticoPRoduccion cardSelectEstadisticoProduccionContainer"
+          footer-classes="pb-2"
+        >
+          <div class="cardTextoEstadisticoProduccion">
+            <!--<el-autocomplete class="inline-input" v-model="itemUnidadPanelProduccion"
+              :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo" style="margin-right: 0.5rem"
+              placeholder="Unidad" prefix-icon="ni ni-bus-front-12" :trigger-on-focus="false"></el-autocomplete>-->
 
-
-        <div class="cardHeaderPanelEstadistico">
-
-          <el-select
+              <el-select
                 v-model="mSelectLineasValueTableroEstadistico"
                 style="margin-right: 0.5rem"
                 multiple
@@ -57,39 +61,23 @@
                 >
                 </flat-picker>
               </base-input>
-        </div>
+          </div>
 
-
-        <div class="buttonsAdicionalesDespacho">
-
-          <base-button icon type="info" @click="showModalDespachoRecalificarSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recalificar Salida">
-            <span class="btn-inner--icon"><i class="ni ni-watch-time"></i></span>
-          </base-button>
-
-          <base-button icon type="danger" @click="showModalDespachoAnularSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'FINALIZADO'" size="sm" title="Anular Salida">
-            <span class="btn-inner--icon"><i class="ni ni-scissors"></i></span>
-          </base-button>
-
-          <base-button icon type="warning" @click="showModalDespachoFinalizarSalida()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'FINALIZADO' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Finalizar Salida">
-            <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
-          </base-button>
-
-          <base-button icon type="default"  @click="showRecorridoSalidaPanelDespacho()" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != '' && this.selectRowEstado != 'DIFERIDO'" size="sm" title="Recorrido">
-            <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
-          </base-button>
-
-          <base-button icon type="primary" v-show="this.selectRowId != null && this.selectRowId != '' && this.selectRowEstado != ''" @click="showReporteLlegadaSAlida()" size="sm" title="Ver Tarjeta">
-            <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-          </base-button>
-
-
-          <base-button icon type="primary" title="Buscar" size="sm" @click="readlPanelTableroEstadistico()">
-            <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-          </base-button>
-
-        </div>
-
-      </card>
+          <div class="cardSelectEstadisticoProduccionContainer">
+            <div class="buttonCenterEndDerecha">
+              <base-button
+                icon
+                type="primary"
+                size="sm"
+                @click="readlPanelTableroEstadistico()"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="el-icon-search"></i
+                ></span>
+              </base-button>
+            </div>
+          </div>
+        </card>
   
   
           <card
@@ -108,7 +96,7 @@
                   :data="tableDataDesviacionControl"
                   row-key="id"
                   header-row-class-name="thead-dark"
-                  height="calc(100vh - 11.5rem)"
+                  height="calc(100vh - 9.5rem)"
                   style="width: 100%"
                   @selection-change="SelectionChangeControl"
                 >
@@ -149,17 +137,17 @@
                   :data="tableDataFaltasUnidad"
                   row-key="id"
                   header-row-class-name="thead-dark"
-                  height="calc(100vh - 11.5rem)"
+                  height="calc(100vh - 9.5rem)"
                   style="width: 100%"
                 >
   
-                  <el-table-column prop="Unidad" label="Unidad" minWidth="60">
+                  <el-table-column prop="Unidad" label="Unidad" minWidth="70">
                   </el-table-column>
   
                   <el-table-column prop="NombreRuta" label="Ruta" minWidth="70">
                   </el-table-column>
 
-                  <el-table-column prop="SumaFalta" label="Faltas" minWidth="60">
+                  <el-table-column prop="SumaFalta" label="Faltas" minWidth="65">
                   </el-table-column>
 
                   <div slot="empty"></div>
@@ -172,7 +160,7 @@
                   :data="tableDataFaltasControl"
                   row-key="id"
                   header-row-class-name="thead-dark"
-                  height="calc(100vh - 11.5rem)"
+                  height="calc(100vh - 9.5rem)"
                 >
   
                   <el-table-column prop="Control" label="Control" minWidth="145">
@@ -424,14 +412,11 @@
     color: black !important;
   }
   
-  .cardHeaderPanelEstadistico {
+  .cardTextoEstadisticoProduccion {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    width: 60%;
-    justify-content: flex-start;
   }
-  
+
   .cardSelectEstadisticoProduccionContainer {
     display: flex;
     justify-content: space-between;
@@ -443,8 +428,12 @@
   
   .card-bodyEstadisticoProduccionPC {
     padding: 0rem !important;
-    height: calc(100vh - 11.5em);
+    height: calc(100vh - 9.5em);
     overflow: none;
+  }
+  
+  .card-bodyTopOpcionesEstadisticoPRoduccion {
+    padding-top: 0.25rem !important;
   }
   
   .card-bodyTopOpcionesEstadisticoPRoduccion {
