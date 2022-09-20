@@ -459,7 +459,7 @@
         </modal>
 
         <!--Classic modal EX VELOCIDAD-->
-        <modal :show.sync="isExVelocidadTableroProduccion" size="xl">
+        <modal :show.sync="isExVelocidadTableroProduccion" size="xl" body-classes="p-1">
           <template slot="header" style="background-color: #2dce89"> </template>
 
           <GmapMap
@@ -1412,10 +1412,67 @@ export default {
       }
       this.loadingCodigoSalidasFrecuenciasControles = false
     },
+
+    async readHISTORIALTrazadoAllTramosTableroProduccion(item) {
+      this.oCenterTableroExVelocidad = { lat: -1.249546, lng: -78.585376 }
+      this.oZoomTableroExVelocidad = 7
+      this.oHistorialExVelocidad = []
+      try {
+        var obj = {
+          token: this.token,
+          codigoDM: item.Codigo,
+          unidad: item.Unidad
+        }
+        console.log(obj)
+        var datos = await this.$axios.post(process.env.baseUrl + "/readTrazadoHistorialExVelocidad", obj)
+        if (datos.data.status_code == 200) {
+          var mList = []
+          for (var i = 0; i < datos.data.datos.length; i++) {
+            var obj = datos.data.datos[i]
+            obj.icono = {
+              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+              fillColor: "red",
+              fillOpacity: 1,
+              strokeWeight: 0,
+              rotation: obj.RumbHistEven,
+              scale: 3,
+              anchor: new google.maps.Point(0, 0),
+            }
+            mList.push(obj)
+          }
+          if (mList.length > 0) {
+            this.oCenterTableroExVelocidad = {
+              lat: parseFloat(mList[0].LatHistTrama),
+              lng: parseFloat(mList[0].LongHistTrama)
+            }
+            this.oZoomTableroExVelocidad = 16
+          }
+          this.oHistorialExVelocidad.push(...mList)
+        } else {
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
+    async readTrazadoAllTramosTableroProduccion() {
+      this.mListaTrazadoAllTramsExVelocidad = []
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/readAllTrazadoTramosExVelocidad", {
+          token: this.token
+        })
+        if (datos.data.status_code == 200) {
+          this.mListaTrazadoAllTramsExVelocidad = datos.data.datos
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
   },
   mounted() {
     this.oEmpresa = this.$cookies.get("empresa");
-
+    this.readTrazadoAllTramosTableroProduccion()
+    this.readTrazadoAllTramosTableroProduccion()
     this.readUnidadesTableroProduccion();
     this.readLineasTableroProduccion();
     this.readRubrosTableroProduccion();

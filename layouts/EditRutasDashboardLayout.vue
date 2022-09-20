@@ -33,6 +33,16 @@
         </sidebar-item>
 
 
+        <sidebar-item
+        translate="no"
+          :link="{
+            name: 'Tendencia Central Rutas',
+            icon: 'ni ni-sound-wave text-primary',
+            path: './mediaCentralRutas'
+          }">
+        </sidebar-item>
+
+
 
       </template>
 

@@ -170,7 +170,7 @@
                 minWidth="160"
               >
               </el-table-column>
-              <el-table-column
+              <!--<el-table-column
                 prop="bajada1"
                 label="Puerta 1 (B)"
                 minWidth="160"
@@ -187,7 +187,7 @@
                 label="Puerta 3 (B)"
                 minWidth="160"
               >
-              </el-table-column>
+              </el-table-column>-->
               <el-table-column
                 prop="totalSubidas"
                 label="Total Subidas"
@@ -195,12 +195,12 @@
               >
               </el-table-column>
 
-              <el-table-column
+              <!--<el-table-column
                 prop="totalBajadas"
                 label="Total Bajadas"
                 minWidth="180"
               >
-              </el-table-column>
+              </el-table-column>-->
 
               <!--<el-table-column prop="error" label="% Error" minWidth="140">
               </el-table-column>-->
@@ -286,11 +286,7 @@ export default {
         "Subida 1": "subida1",
         "Subida 2": "subida2",
         "Subida 3": "subida3",
-        "Bajada 1": "bajada1",
-        "Bajada 2": "bajada2",
-        "Bajada 3": "bajada3",
         "Total Subidas": "totalSubidas",
-        "Total Bajadas": "totalBajadas",
         "Dinero Recaudado": "dinero"
       }
     };

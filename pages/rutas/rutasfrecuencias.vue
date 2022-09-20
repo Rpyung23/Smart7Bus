@@ -49,7 +49,7 @@
                       </el-table-column>
 
                       <el-table-column
-                        min-width="180px"
+                        min-width="190"
                         align="right"
                         label="Actions"
                       >
@@ -72,6 +72,17 @@
                           >
                             <i class="text-white ni ni-fat-remove"></i>
                           </base-button>
+
+                          <base-button
+                            class="edit"
+                            type="default"
+                            title="MEDIA CENTRAL"
+                            size="sm"
+                            icon
+                          >
+                            <i class="text-white ni ni-money-coins"></i>
+                          </base-button>
+
                         </div>
                       </el-table-column>
                 </el-table>
