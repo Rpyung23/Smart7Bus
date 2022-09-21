@@ -74,6 +74,7 @@
                           </base-button>
 
                           <base-button
+                          @click="showModalRutasVincularPonderada(row)"
                             class="edit"
                             type="default"
                             title="MEDIA CENTRAL"
@@ -410,7 +411,7 @@
         </div>
         <div class="form-row">
           <div class="col-md-12">
-            <el-select  placeholder="Rutas" v-model="mSelectRutaFrecuencia" style="width:250px">
+            <el-select  placeholder="Rutas" v-model="mSelectRutaFrecuencia" style="width:450px">
               <el-option v-for="item in mListRutasModalAgregar" :key="item.DescRuta" :label="item.DescRuta" :value="item.idRuta">
               </el-option>
             </el-select>
@@ -427,10 +428,30 @@
 
     </modal>
 
+     <!--Form modal Ruta Vincular Ponderada-->
+     <modal :show.sync="modalRutasVincularPonderada" size="lg" body-classes="p-0" gradient="default"
+               modal-classes="modal-danger modal-dialog-centered">
+      <h6 slot="header" class="modal-title">{{ this.modalTitleVincularPonderada }}</h6>
+      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
+        <div style="text-align: center">
+            <el-transfer
+              style="text-align: left; display: inline-block;"
+              v-model="mListPonderadasAsignar"
+              filter-placeholder="Ponderadas"
+              filterable
+              :titles="['Ponderadas', 'Ponderadas Asignadas']"
+              :button-texts="['Quitar', 'Agregar']"
+              @change="changePonderadaSeleccionada"
+              :data="mListPonderadas">
+            </el-transfer>
+        </div>
+      </card>
+    </modal>
+   
   </div>
 </template>
 <script>
-import { Table, TableColumn, Select, Option } from "element-ui";
+import { Table, TableColumn, Select, Option, Transfer } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
@@ -451,6 +472,7 @@ export default {
     [Option.name]: Option,
     [Table.name]: Table,
     [TableColumn.name]: TableColumn,
+    [Transfer.name]: Transfer
   },
   data() {
     return {
@@ -563,6 +585,8 @@ export default {
       mListFrecuenciasSeleccionadas:[],
       mListRutasModalAgregar:[],
       mListFrecuenciasModalAgregar:[],
+      mListPonderadasAsignar:[],
+      mListPonderadas:[],
       HoraInicFrec:'',
       LetrFrec:'',
       DescFrec:'',
@@ -578,10 +602,27 @@ export default {
       HoraInic1Frec:'',
       HoraFina2Frec:'',
       _frecuenciaId:'',
-      mSelectRutaFrecuencia:''
+      mSelectRutaFrecuencia:'',
+      modalRutasVincularPonderada:false,
+      modalTitleVincularPonderada:'',
+      idRutaAsignar:'',
+      mSelectPonderadasRuta:[],
+      rowSeleccionadoRuta:''
     };
   },
   methods: {
+    changePonderadaSeleccionada(value, direction, movedKeys) {
+        if(direction == "right"){
+          this.mSelectPonderadasRuta = []
+          this.mSelectPonderadasRuta.push(...movedKeys)
+          this.asignarPonderadaRuta()
+        }else{
+          this.mSelectPonderadasRuta = []
+          this.mSelectPonderadasRuta.push(...movedKeys)
+          this.deletePonderadaRuta()
+        }
+        
+    },
     SelectionChangeRutas(val) {
       this.mListRutasSeleccionadas = []
       this.mListRutasModalAgregar = []
@@ -906,6 +947,66 @@ export default {
         });
       }
     },
+    readAllMediaCentral: async function(row) {
+      this.idRutaAsignar = row.idRuta
+      this.mListPonderadas = [];
+      var datos = await this.$axios.post(
+        process.env.baseUrlPanel + "/todasMediasCentrales",
+        {
+          token: this.token,
+          tipo: 3,
+        }
+      );
+
+      if (datos.data.status_code == 200) {
+          for (var i = 0; i < datos.data.datos.length; i++) {
+            this.mListPonderadas.push({
+            key: datos.data.datos[i]['idPRuta'],
+            label: `${ datos.data.datos[i]['nombrePonderada'] }`
+          });
+        }
+      } else if (datos.data.status_code == 400) {
+        //this.showToast('danger',datos.data.msm)
+        this.$notify({
+          message: datos.data.msm,
+          timeout: 3000,
+          type: "danger",
+        });
+      } else {
+        //this.showToast('warning','No existen rutas disponibles')
+        this.$notify({
+          message: "No existen rutas disponibles",
+          timeout: 3000,
+          type: "warning",
+        });
+      }
+      this.readPonderadaByRuta(row);
+    },
+    readPonderadaByRuta : async function(row) {
+      this.mListPonderadasAsignar = [];
+      var datos = await this.$axios.post(
+        process.env.baseUrlPanel + "/ponderadaByRuta",
+        {
+          token: this.token,
+          idruta: row.idRuta,
+        }
+      );
+      if (datos.data.status_code == 200) {
+        for (var i = 0; i < datos.data.datos.length; i++) {
+            for (var j = 0; j < this.mListPonderadas.length; j++) {
+              if(datos.data.datos[i]['idPRuta'] == this.mListPonderadas[j]['key']){
+                this.mListPonderadasAsignar.push(this.mListPonderadas[j]['key'])
+              }
+            }
+          }
+      }
+    },
+    showModalRutasVincularPonderada(row) {
+      this.modalTitleVincularPonderada = row.DescRuta
+      this.rowSeleccionadoRuta = row
+      this.readAllMediaCentral(row);
+      this.modalRutasVincularPonderada = true
+    },
     limpiarRegisterRuta(){
       this.letraRuta  = ''
       this.descripcionRuta   = ''
@@ -986,8 +1087,6 @@ export default {
       this.modalAgregarRutaRutasFrecuencias = true
     },
     editFrecuencia(row){
-      console.log("row f")
-      console.log(row)
       this._frecuenciaId=row.idFrec,
       this.mSelectRutaFrecuencia=row.idRuta,
       this.HoraInicFrec=row.HoraInicFrec,
@@ -1107,6 +1206,69 @@ export default {
           }
         }
       })
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async asignarPonderadaRuta(){
+      try {      
+      var objBody= {
+        token:this.token,
+        idruta: this.idRutaAsignar,
+        idpruta: this.mSelectPonderadasRuta,
+      }
+      var result = await this.$axios.post(process.env.baseUrl + "/register-ruta-ponderada", objBody)
+      if (result.data.status_code == 200) {
+        this.readAllMediaCentral(this.rowSeleccionadoRuta)
+      } else {
+        this.$notify({
+            timeout: 3000,
+            message: result.data.msm,
+            type: 'danger'
+            
+          });
+      }
+    } catch (error) {
+        this.$notify({
+          title: 'Error TRY Permisos',
+          message: error.toString(),
+          type: 'danger'
+        });
+      }
+    },
+    async deletePonderadaRuta(){
+      try {      
+        var objBody= {
+          token:this.token,
+          datos:{
+            _idruta: this.idRutaAsignar,
+            _idpruta: this.mSelectPonderadasRuta,
+          }
+        }
+        console.log("objBody")
+        console.log(objBody) 
+      var result = await this.$axios.delete(process.env.baseUrl + "/delete-ruta-ponderada", {data:objBody})
+      
+      if (result.data.status_code == 200) {
+        //this.initPropietariosUnidadSinAsignacionFlotaVehicular(this.indexSeleccionadoPropietario,this.rowSeleccionadoPropietario)
+        //this.mListUnidadesVinculadasPropietario = []
+        this.$notify({
+            message: result.data.msm,
+            timeout: 1500,
+            type: 'default'
+          });
+      } else {
+        this.$notify({
+            timeout: 3000,
+            message: result.data.msm,
+            type: 'danger'
+            
+          });
+      }
     } catch (error) {
         this.$notify({
           title: 'Error TRY Permisos',
