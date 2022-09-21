@@ -71,19 +71,21 @@
                 ></span>
               </base-button>
               <download-excel
-              class="btn btn-icon btn-fab btn-success btn-sm"
-              title="Excel"
-              v-if="mListSalidasFrecuenciasControles.length > 0 ? true : false"
-              :header="oHeaderRSalidasFrecuenciasControles"
-              :data="mListSalidasFrecuenciasControles"
-              :fields="oJSONFieldsRSalidasFrecuenciasControles"
-              :worksheet="oWorkSheetRSalidasFrecuenciasControles"
-              :name="oFileNameRSalidasFrecuenciasControles"
-            >
-              <span class="btn-inner--icon"
-                ><i class="ni ni-collection"></i
-              ></span>
-            </download-excel>
+                class="btn btn-icon btn-fab btn-success btn-sm"
+                title="Excel"
+                v-if="
+                  mListSalidasFrecuenciasControles.length > 0 ? true : false
+                "
+                :header="oHeaderRSalidasFrecuenciasControles"
+                :data="mListSalidasFrecuenciasControles"
+                :fields="oJSONFieldsRSalidasFrecuenciasControles"
+                :worksheet="oWorkSheetRSalidasFrecuenciasControles"
+                :name="oFileNameRSalidasFrecuenciasControles"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="ni ni-collection"></i
+                ></span>
+              </download-excel>
             </div>
           </div>
         </card>
@@ -137,6 +139,16 @@
                 :key="column.label"
                 v-bind="column"
               >
+              </el-table-column>
+
+              <el-table-column
+                label="PEN ($)"
+                min-width="170"
+                prop="PenaCtrlSali_d"
+              >
+                <template slot-scope="scope">
+                  <strong style="color: black;">{{ scope.row.PenaCtrlSali_d }}</strong>
+                </template>
               </el-table-column>
 
               <div slot="empty"></div>
@@ -278,26 +290,39 @@ export default {
           label: "T. Adelantos",
           minWidth: 170,
         },
+        {
+          prop: "atrasoFaltas",
+          label: "F. Atrasos",
+          minWidth: 170,
+        },
+        {
+          prop: "adelantoFaltas",
+          label: "F. Adelantos",
+          minWidth: 170,
+        },
       ],
       mListSalidasFrecuenciasControles: [],
-      oHeaderRSalidasFrecuenciasControles:[],
+      oHeaderRSalidasFrecuenciasControles: [],
       oWorkSheetRSalidasFrecuenciasControles: "",
       oFileNameRSalidasFrecuenciasControles: "",
-      oJSONFieldsRSalidasFrecuenciasControles : {
-            "Unidad":"CodiVehiSali_m",
-            "Placa":"PlacVehi",
-            "Salida":"idSali_m",
-            "N° Vuelta":"NumeVuelSali_m",
-            "Detalle Ruta":"DescRuta",
-            "Detalle Frecuecnia":"DescFrec",
-            "Fecha Hora Salida":"HoraSaliProgSali_m",
-            "Hora Llegada":"HoraLlegProgSali_m",
-            "Detalle Control":"DescCtrl",
-            "Hora Programada":"HoraProgSali_d",
-            "Hora Marcación":"HoraMarcSali_d",
-            "Tiempo Atraso":"atraso",
-            "Tiempo Adelanto":"adelanto"
-        }
+      oJSONFieldsRSalidasFrecuenciasControles: {
+        Unidad: "CodiVehiSali_m",
+        Placa: "PlacVehi",
+        Salida: "idSali_m",
+        "N° Vuelta": "NumeVuelSali_m",
+        "Detalle Ruta": "DescRuta",
+        "Detalle Frecuecnia": "DescFrec",
+        "Fecha Hora Salida": "HoraSaliProgSali_m",
+        "Hora Llegada": "HoraLlegProgSali_m",
+        "Detalle Control": "DescCtrl",
+        "Hora Programada": "HoraProgSali_d",
+        "Hora Marcación": "HoraMarcSali_d",
+        "Tiempo Atraso": "atraso",
+        "Tiempo Adelanto": "adelanto",
+        "Faltas Atrasos": "atrasoFaltas",
+        "Faltas Adelantos": "adelantoFaltas",
+        "PENALIDAD $": "PenaCtrlSali_d",
+      },
     };
   },
   methods: {
@@ -344,8 +369,7 @@ export default {
         }
       }
     },
-    async readLineasRSalidasFrecuenciasControles() 
-    {
+    async readLineasRSalidasFrecuenciasControles() {
       this.mListLineasFecuenciasControles = [];
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
@@ -358,23 +382,25 @@ export default {
       }
     },
     getNombresRutasRSalidasFrecuenciasControles() {
-      var mlist = []
+      var mlist = [];
       for (var j = 0; j < this.mSelectRutaSalidaPanelBusqueda.length; j++) {
-        for (var i = 0; i < this.mListLineasFecuenciasControles.length; i++) 
-        {
-          if (this.mSelectRutaSalidaPanelBusqueda[j] ==  this.mListLineasFecuenciasControles[i].LetrRuta)
-          {
-            mlist.push(this.mListLineasFecuenciasControles[i].DescRuta)
+        for (var i = 0; i < this.mListLineasFecuenciasControles.length; i++) {
+          if (
+            this.mSelectRutaSalidaPanelBusqueda[j] ==
+            this.mListLineasFecuenciasControles[i].LetrRuta
+          ) {
+            mlist.push(this.mListLineasFecuenciasControles[i].DescRuta);
           }
         }
       }
-      return mlist
+      return mlist;
     },
     async readReporteSalidasControles() {
       this.loadingTableRSalidasFrecuenciasControles = true;
       this.mListSalidasFrecuenciasControles = [];
-      this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now()
-      this.oFileNameRSalidasFrecuenciasControles = "RSFC_" + Date.now() + ".xls"
+      this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now();
+      this.oFileNameRSalidasFrecuenciasControles =
+        "RSFC_" + Date.now() + ".xls";
 
       try {
         var datos = await this.$axios.post(
@@ -394,30 +420,39 @@ export default {
           }
         );
 
-        if(datos.data.status_code == 200)
-        {
+        if (datos.data.status_code == 200) {
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
 
-        this.oHeaderRSalidasFrecuenciasControles = [
+          this.oHeaderRSalidasFrecuenciasControles = [
             "REPORTE DE CUMPLIMIENTO DE SALIDAS, RUTAS Y FRECUENCIAS ",
-            "Fechas : " + this.fechaInicialSalidasPanelBusqueda + " hasta " + this.fechaFinalSalidasPanelBusqueda,
-            "Unidades : " + (this.itemUnidadSalidasPanelBusqueda.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadSalidasPanelBusqueda),
-            "Rutas : " + (this.mSelectRutaSalidaPanelBusqueda.length <= 0 ? "TODAS LAS RUTAS" : this.getNombresRutasRSalidasFrecuenciasControles(this.mSelectRutaSalidaPanelBusqueda)),
-          ]
-        }else{
+            "Fechas : " +
+              this.fechaInicialSalidasPanelBusqueda +
+              " hasta " +
+              this.fechaFinalSalidasPanelBusqueda,
+            "Unidades : " +
+              (this.itemUnidadSalidasPanelBusqueda.length <= 0
+                ? "TODAS LAS UNIDADES"
+                : this.itemUnidadSalidasPanelBusqueda),
+            "Rutas : " +
+              (this.mSelectRutaSalidaPanelBusqueda.length <= 0
+                ? "TODAS LAS RUTAS"
+                : this.getNombresRutasRSalidasFrecuenciasControles(
+                    this.mSelectRutaSalidaPanelBusqueda
+                  )),
+          ];
+        } else {
           this.$notify({
-            title: 'Reporte Salidas Frecuencia Controles',
+            title: "Reporte Salidas Frecuencia Controles",
             message: datos.data.msm,
-            type : 'default'
-          })
+            type: "default",
+          });
         }
-
       } catch (error) {
         this.$notify({
-            title: 'Reporte Salidas Frecuencia Controles',
-            message: error.toString(),
-            type : 'danger'
-          })
+          title: "Reporte Salidas Frecuencia Controles",
+          message: error.toString(),
+          type: "danger",
+        });
       }
       this.loadingTableRSalidasFrecuenciasControles = false;
     },

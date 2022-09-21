@@ -123,8 +123,6 @@
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-
-
             <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
               <el-checkbox
                 label="2"
@@ -496,6 +494,17 @@ export default {
           label: "N° Tarjeta",
           minWidth: 160,
         },
+
+        {
+          prop: "atrasoFaltas",
+          label: "F. Atrasos",
+          minWidth: 160,
+        },
+        {
+          prop: "adelantoFaltas",
+          label: "F. Adelantos",
+          minWidth: 160,
+        },
         {
           prop: "PenaCtrlSali_d",
           label: "PEN ($)",
@@ -511,7 +520,7 @@ export default {
       isLoadingRecorridoSalidaPanelBusqueda: false,
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       mListControlesSalidaPanelBusquedaDespacho: [],
-      LogoVigitrackLatam: "",
+      vigitrackLatamLogo: "",
     };
   },
   methods: {
@@ -648,7 +657,37 @@ export default {
       this.modalSalidasTarjetaPanelDespachoBusqueda = true;
       this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida);
     },
-    exportPdfSalidasPanelBusqueda() {
+
+    getBase64ImageFromURL(url) {
+      return new Promise((resolve, reject) => {
+        var img = new Image();
+        img.setAttribute("crossOrigin", "anonymous");
+
+        img.onload = () => {
+          var canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+
+          var dataURL = canvas.toDataURL("image/png");
+
+          resolve(dataURL);
+        };
+
+        img.onerror = (error) => {
+          reject(error);
+        };
+
+        img.src = url;
+      });
+    },
+
+    async exportPdfSalidasPanelBusqueda() 
+    {
+      /*this.vigitrackLatamLogo = await this.getBase64ImageFromURL('https://firebasestorage.googleapis.com/v0/b/smart7bus.appspot.com/o/empresas%2Fvigitracklatam.jpeg?alt=media&token=9eec4995-1e4d-4492-90d1-406c2c6b4d71')*/
+      console.log(this.vigitrackLatamLogo)
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
@@ -717,7 +756,7 @@ export default {
             alignment: "center",
           },
           {
-            text: "N° Vuelta",
+            text: "Vuelta",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
@@ -764,6 +803,24 @@ export default {
             color: "white",
             alignment: "center",
           },
+
+          {
+            text: "F. Atraso",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "F. Adelanto",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+
           {
             text: "PEN ($)",
             fontSize: 8.5,
@@ -798,42 +855,65 @@ export default {
         var arrys = [
           {
             text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
+            alignment: "center",
             fontSize: 8.5,
           },
-          { text: this.mListaSalidasPanelBusqueda[i].idSali_m, fontSize: 8.5 },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].idSali_m,
+            alignment: "center",
+            fontSize: 8.5,
+          },
           {
             text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m,
             fontSize: 8.5,
+            alignment: "center",
           },
           {
             text: this.mListaSalidasPanelBusqueda[i].NumeVuelSali_m,
             fontSize: 8.5,
+            alignment: "center",
           },
           {
             text: this.mListaSalidasPanelBusqueda[i].HoraSaliProgSali_mF,
             fontSize: 8.5,
+            alignment: "center",
           },
           {
             text: this.mListaSalidasPanelBusqueda[i].HoraLlegProgSali_m,
             fontSize: 8.5,
+            alignment: "center",
           },
           {
             text: this.mListaSalidasPanelBusqueda[i].atrasoTime,
             fontSize: 8.5,
+            alignment: "center",
           },
           {
             text: this.mListaSalidasPanelBusqueda[i].adelantoTime,
             fontSize: 8.5,
+            alignment: "center",
           },
           {
             text: this.mListaSalidasPanelBusqueda[i].VeloMaxiSali_m,
             fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].atrasoFaltas,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaSalidasPanelBusqueda[i].adelantoFaltas,
+            fontSize: 8.5,
+            alignment: "center",
           },
           {
             text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
             fontSize: 8.5,
+            alignment: "center",
           },
-          { text: estado, fontSize: 8.5 },
+          { text: estado, fontSize: 7.5 },
         ];
         resultadoString.push(arrys);
       }
@@ -867,11 +947,17 @@ export default {
           margin: 15,
           columns: [
             {
-              layout: 'noBorders',
+              layout: "noBorders",
               table: {
                 widths: ["*"],
                 body: [
+                  /*[{
+                    image: this.vigitrackLatamLogo,
+                    width: 150,
+			              height: 150,
+                  }],*/
                   [
+                    
                     {
                       text: "REPORTE SALIDAS DETALLADAS",
                       alignment: "center",
@@ -912,7 +998,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 40, 100, 40, 90, 50, 60, 60, 35, 35, 90],
+              widths: [30, 25, 100, 35, 85, 50, 50, 50, 35, 35, 35, 35, 70],
               body: resultadoString,
             },
           },
@@ -920,7 +1006,7 @@ export default {
       };
       /*var win = window.open("", "_blank");
       pdfMake.createPdf(docDefinition).open({}, win);*/
-      pdfMake.createPdf(docDefinition).download("RSD_"+Date.now())
+      pdfMake.createPdf(docDefinition).download("RSD_" + Date.now());
     },
   },
   mounted() {
