@@ -98,7 +98,7 @@
           id=""
           v-model="unidadInput"
           placeholder="Unidad"
-          @keypress.enter="centrarUnidadInput()"
+          @keydown="initRastreo()"
         />
       </div>
       <div class="ListadoUnidades">
@@ -669,8 +669,10 @@ export default {
       mListControlesMonitoreo: [],
       mListControlesMonitoreoAux: [],
       banderaCenter: true,
+      banderaUnidad : false,
       mListUnidades: [],
       mListRutas: [],
+      unidadInputRuta:'',
       infoContent: "",
       infoWindowPos: {
         lat: 0,
@@ -702,22 +704,99 @@ export default {
     },
     procedimientoMonitoreo(datos) {
       if (datos.data.status_code == 200) {
-        if (this.mListUnidades.length == 0) {
-          for (var i = 0; i < datos.data.data.length; i++) {
-            this.mListUnidades[i] = datos.data.data[i];
-            this.mListUnidades[i].isvisible = true;
-            this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
-            if (i == 0 && this.banderaCenter) {
-              this.oCenter = {
-                lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
-                lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
-              };
-              this.oZoom = 12.5;
-              this.banderaCenter = false;
+        if (this.unidadInput != '' && this.mListRutasMonitoreo.length == 0) {
+          this.banderaUnidad = true
+          this.mListUnidades = []
+          if (this.mListUnidades.length == 0) {
+            for (var i = 0; i < datos.data.data.length; i++) {
+              if (datos.data.data[i].CodiVehiMoni == this.unidadInput) {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = true;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.oCenter = {
+                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
+                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
+                };
+                this.oZoom = 18;
+                this.banderaCenter = false;
+              } else {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = false;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+              }
             }
+          } else {
+            this.updatemListaUnidades(datos.data.data);
           }
-        } else {
-          this.updatemListaUnidades(datos.data.data);
+        } else if(this.unidadInput == '' && this.mListRutasMonitoreo.length == 0){
+          this.mListUnidades = []
+          if (this.mListUnidades.length == 0) {
+            for (var i = 0; i < datos.data.data.length; i++) {
+              this.mListUnidades[i] = datos.data.data[i];
+              this.mListUnidades[i].isvisible = true;
+              this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+              if (i == 0 && this.banderaCenter) {
+                this.oCenter = {
+                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
+                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
+                };
+                this.oZoom = 12.5;
+                this.banderaCenter = false;
+              }
+            }
+          } else {
+            this.updatemListaUnidades(datos.data.data);
+          }  
+        }else if(this.unidadInput == '' && this.mListControlesMonitoreo.length > 0 && this.banderaUnidad == true){
+          this.banderaUnidad = false
+        }
+        else if (this.unidadInput == '' && this.mListControlesMonitoreo.length > 0) {
+          this.banderaUnidad = false
+          this.selectedRutaMonitoreo()
+        }
+        else if (this.unidadInput != '' && this.mListControlesMonitoreo.length > 0 && this.banderaUnidad == false) {
+          this.banderaUnidad = true
+          this.mListUnidades = []
+          if (this.mListUnidades.length == 0) {
+            for (var i = 0; i < datos.data.data.length; i++) {
+              if (datos.data.data[i].CodiVehiMoni == this.unidadInput) {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = true;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.oCenter = {
+                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
+                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
+                };
+                this.oZoom = 18;
+                this.banderaCenter = false;
+              } else {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = false;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+              }
+            }
+          } else {
+            this.updatemListaUnidades(datos.data.data);
+          }
+        }  
+        else {
+          if (this.mListUnidades.length == 0) {
+            for (var i = 0; i < datos.data.data.length; i++) {
+              this.mListUnidades[i] = datos.data.data[i];
+              this.mListUnidades[i].isvisible = true;
+              this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+              if (i == 0 && this.banderaCenter) {
+                this.oCenter = {
+                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
+                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
+                };
+                this.oZoom = 12.5;
+                this.banderaCenter = false;
+              }
+            }
+          } else {
+            this.updatemListaUnidades(datos.data.data);
+          }  
         }
         //this.girarMarcador()
       }
@@ -750,20 +829,25 @@ export default {
               bandera = true;
             }
           }
-
           this.mListUnidades[i].isvisible = bandera ? true : false;
         }
-      } else {
-        this.initControles();
+        this.unidadInputRuta = ''
         for (var k = 0; k < this.mListUnidades.length; k++) {
-          this.mListUnidades[k].isvisible = true;
+          if (this.mListUnidades[k].isvisible == true) {
+            if (this.mListUnidades[k].CodiVehiMoni == this.unidadInput) {
+              this.unidadInputRuta = this.mListUnidades[k].CodiVehiMoni
+            }
+          }
         }
+        this.unidadInput = this.unidadInputRuta == '' ? '' : this.unidadInputRuta
+      } else {
+        this.initRastreo()
       }
     },
     initIntervalMonitoreoGeneral: function () {
       this.intervaloMonitoreoGeneral = setInterval(() => {
         this.initRastreo();
-      }, 10000);
+      }, 5000);
     },
     async initRutas() {
       try {
