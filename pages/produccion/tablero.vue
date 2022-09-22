@@ -386,8 +386,8 @@
               ></base-button>
             </div>
           </div>
-
-          <JqxGrid
+         <!-- Tabla de Anotaciones-->
+         <!--<JqxGrid
             v-if="isVisibleTableroAnotaciones"
             ref="myGridDespachoPanelOtros"
             :height="'150px'"
@@ -396,13 +396,42 @@
             :enabletooltips="true"
             :width="getWidth"
           >
-          </JqxGrid>
+          </JqxGrid>-->
+
+          <el-table
+              :data="mListOtros"
+              row-key="id"
+              class="tablePanelControlRubrosProduccion"
+              header-row-class-name="thead-dark"
+              height="150px"
+              style="width:100%;"
+              v-if="isVisibleTableroAnotaciones"
+            >
+              <el-table-column prop="fecha_creacion" label="Hora" minWidth="200">
+              </el-table-column>
+             
+              <el-table-column
+                prop="descripcion"
+                label="Rubro"
+                minWidth="150"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="anotaciones"
+                label="Nota"
+                minWidth="700"
+              >
+              </el-table-column>
+              <div slot="empty">
+                <span>No existe datos</span>
+              </div>
+            </el-table>
 
           <br
             v-if="isVisibleTableroAnotaciones"
           />
           
-          <JqxGrid
+          <!--<JqxGrid
             ref="myGridDespachoPanel"
             :height="(isVisibleTableroAnotaciones ? '225px' : '350px')"
             @rowselect="myGridOnRowSelect($event)"
@@ -411,7 +440,123 @@
             :enabletooltips="true"
             :width="getWidth"
           >
-          </JqxGrid>
+          </JqxGrid>-->
+
+          <el-table
+              :data="mList"
+              highlight-current-row
+              ref="singleTable"
+              row-key="id"
+              @current-change="selectionChange"
+              :row-class-name="tableRowClassNameJustificado"
+              class="tablePanelControlRubrosProduccion"
+              :height="(isVisibleTableroAnotaciones ? '225px' : '400px')"
+              style="width:100%;"
+            >
+        
+              <el-table-column prop="Numero" label="Número" minWidth="100">
+              </el-table-column>
+             
+              <el-table-column
+                prop="DescripcionControl"
+                label="Control"
+                minWidth="200"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="NumeVuelSali_m"
+                label="Vuelta"
+                minWidth="100"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="Programado"
+                label="Prog"
+                minWidth="90"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="Marcado"
+                label="Marc"
+                minWidth="90"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="AtrasoFTiempo"
+                label="Atraso Tiempo"
+                minWidth="110"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="AdelantoFTiempo"
+                label="Adelanto Tiempo"
+                minWidth="125"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="AtrasoJTiempo"
+                label="Atraso Jus."
+                minWidth="150"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="AdelantoJTiempo"
+                label="Adelanto Jus."
+                minWidth="150"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="RubroFalta"
+                label="Rubros"
+                minWidth="60"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="RubroJustificacion"
+                label="Rubros Jus."
+                minWidth="100"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="VelocidadFalta"
+                label="Velo"
+                minWidth="70"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="VelocidadJustificacion"
+                label="Velo Jus."
+                minWidth="70"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="TarjetaTrabajo"
+                label="Tarjeta"
+                minWidth="70"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="NombApellUsua"
+                label="Usuario Justificador"
+                minWidth="250"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="Motivo"
+                label="Motivo"
+                minWidth="250"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="Notas"
+                label="Notas"
+                minWidth="260"
+              >
+              </el-table-column>
+              <div slot="empty">
+                <span>No existe datos</span>
+              </div>
+            </el-table>
 
           <!--<template slot="footer">
             <base-button type="primary">Guardar Cambios</base-button>
@@ -760,7 +905,9 @@ export default {
       mListCodigoSalidasProduccion: [],
       loadingCodigoSalidasFrecuenciasControles:false,
       isVisibleTableroAnotaciones : true,
-      isRecorridoPorVueltas:true
+      isRecorridoPorVueltas:true,
+      mListOtros:[],
+      mList:[]
     };
   },
   methods: {
@@ -804,8 +951,8 @@ export default {
 
       this.fechaInicialTableroProduccion = format;
     },
-    myGridOnRowSelect: function (event) {
-      var obj = event.args.row;
+    selectionChange(selectedRows) {
+      var obj = selectedRows;
       this.objSeleccionado = obj;
       console.log("objSeleccionado");
       console.log(this.objSeleccionado);
@@ -898,9 +1045,6 @@ export default {
           this.oBanderaCentavos = 0;
         }
       }
-    },
-    selectionChange(selectedRows) {
-      this.selectedRows = selectedRows;
     },
     async readlPanelTableroProduccion() {
       this.mPagadoRPagosVehiculo = "0.00";
@@ -1039,7 +1183,7 @@ export default {
       this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(item);
     },
     async readDetalleTableroProduccion(item) {
-      var mList = [];
+      this.mList = [];
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/ProduccionDetallePanelControl",
@@ -1054,12 +1198,12 @@ export default {
           this.oRutaModalTitle = datos.data.datos[0].DescRuta;
           this.oPriceModalTitle = datos.data.datos[0].DeudaTotal;
         }
-        mList.push(...datos.data.datos);
+        this.mList.push(...datos.data.datos);
       } catch (error) {
-        mList = [];
+        this.mList = [];
       }
-      this.$refs.myGridDespachoPanel.clearselection();
-      var obj = {
+      //this.$refs.myGridDespachoPanel.clearselection();
+      /*var obj = {
         localdata: mList,
         datatype: "array",
         datafields: [
@@ -1083,18 +1227,12 @@ export default {
           { name: "Codigo", type: "string" },
           { name: "Numero", type: "string" },
         ],
-      };
+      };*/
 
-      this.$refs.myGridDespachoPanel.setOptions({
-        source: obj,
-        columns: this.columnsInfo,
-      });
-      this.isLoadingDespachoSalidaPanelBusqueda = false;
-      this.$refs.myGridDespachoPanel.endupdate();
     },
     async readDetalleTableroProduccionAnotaciones(item) {
-      this.$refs.myGridDespachoPanelOtros.clearselection();
-      var mListOtros = [];
+     // this.$refs.myGridDespachoPanelOtros.clearselection();
+      this.mListOtros = [];
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/ProduccionPanelControlAnotaciones",
@@ -1104,28 +1242,13 @@ export default {
             fecha: this.fechaInicialTableroProduccion,
           }
         );
+        
 
-        mListOtros.push(...datos.data.datos);
+        this.mListOtros.push(...datos.data.datos);
       } catch (error) {
-        mListOtros = [];
+        console.log(error)
+        this.mListOtros = [];
       }
-
-      var obj = {
-        localdata: mListOtros,
-        datatype: "array",
-        datafields: [
-          { name: "fecha_creacion", type: "string" },
-          { name: "anotaciones", type: "string" },
-          { name: "descripcion", type: "string" },
-        ],
-      };
-
-      this.$refs.myGridDespachoPanelOtros.setOptions({
-        source: obj,
-        columns: this.columnsInfoOtros,
-      });
-
-      this.$refs.myGridDespachoPanelOtros.endupdate();
     },
     sendJustify() {
       if (this.validarJustificacion()) {
@@ -1363,9 +1486,11 @@ export default {
       }
       return this.valida;
     },
-    cellclassname(row, column, value, data) {
-      if (data.NombApellUsua != null) {
+    tableRowClassNameJustificado({row}) {
+      if (row.NombApellUsua != null) {
         return "estadoJustificado";
+      }else{
+        return ""
       }
     },
     async oClickDropdownSalidasCodigo(item) 
@@ -1639,19 +1764,17 @@ export default {
   overflow: auto;
 }
 
+.el-table__body tr.current-row> td{
+  background-color: rgb(220, 220, 220)! important;
+  color: #000;
+}
+
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
 }
 
-.estadoJustificado {
-  background-color: rgb(220, 220, 220);
-  color: black;
+.el-table .estadoJustificado {
+  background: rgba(140, 248, 126, 0.384) !important;
 }
 
-.estadoJustificado:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected),
-.jqx-widget
-  .estadoJustificado:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
-  background-color: rgb(203, 243, 198);
-  color: black;
-}
 </style>
