@@ -693,6 +693,17 @@ body::-webkit-scrollbar{
     border-radius: 1rem;
   }
 
+  .paddingLabelEventosDispositivos {
+    margin-top: 1rem;
+    border-color: #c71010d2;
+    border-style: solid;
+    border-width: 1px;
+    background-color: white;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    border-radius: 1rem;
+  }
+
 
 .paddingLabelPosicionesRuta {
     margin-top: 2.5rem;

@@ -176,10 +176,17 @@
                 <template slot-scope="scope">
                   <base-button
                     size="sm"
-                    title="Tarjeta"
+                    title="TARJETA PEQUEÑA"
                     @click="showTarjetaSalidasPanelBusqueda(scope.row)"
                     type="primary"
-                    ><i class="ni ni-ungroup"></i
+                    ><i class="ni ni-single-copy-04"></i
+                  ></base-button>
+                  <base-button
+                    size="sm"
+                    title="TARJETA GRANDE(A4)"
+                    @click="showTarjetaSalidasPanelBusqueda(scope.row)"
+                    type="danger"
+                    ><i class="ni ni-book-bookmark"></i
                   ></base-button>
                   <base-button
                     size="sm"
@@ -521,7 +528,6 @@ export default {
       isLoadingRecorridoSalidaPanelBusqueda: false,
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       mListControlesSalidaPanelBusquedaDespacho: [],
-      vigitrackLatamLogo: "",
     };
   },
   methods: {
@@ -802,14 +808,14 @@ export default {
             color: "white",
             alignment: "center",
           },
-          {
+          /*{
             text: "ESTADO",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
+          },*/
         ],
       ];
 
@@ -857,12 +863,12 @@ export default {
             alignment: "center",
           },
           {
-            text: this.mListaSalidasPanelBusqueda[i].atrasoTime,
+            text: this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime,
             fontSize: 8.5,
             alignment: "center",
           },
           {
-            text: this.mListaSalidasPanelBusqueda[i].adelantoTime,
+            text: this.mListaSalidasPanelBusqueda[i].adelantoFaltasTime,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -871,7 +877,7 @@ export default {
             fontSize: 8.5,
             alignment: "center",
           },
-          {
+          /*{
             text: this.mListaSalidasPanelBusqueda[i].atrasoFaltas,
             fontSize: 8.5,
             alignment: "center",
@@ -880,13 +886,13 @@ export default {
             text: this.mListaSalidasPanelBusqueda[i].adelantoFaltas,
             fontSize: 8.5,
             alignment: "center",
-          },
+          },*/
           {
             text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
             fontSize: 8.5,
             alignment: "center",
-          },
-          { text: estado, fontSize: 7.5 },
+          }/*,
+          { text: estado, fontSize: 7.5 },*/
         ];
         resultadoString.push(arrys);
       }
@@ -959,7 +965,7 @@ export default {
         },
         content: [
           {
-            //layout: "noBorders",
+            layout: "noBorders",
             table: {
               headerRows: 0,
               widths: [450, 450, 450, 450],
@@ -971,7 +977,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 100, 35, 85, 50, 50, 50, 35, 35, 35, 35, 70],
+              widths: [30, 170, 35, 85, 50, 50, 50, 35, 35],
               body: resultadoString,
             },
           },
