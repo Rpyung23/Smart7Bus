@@ -172,7 +172,7 @@
               header-row-class-name="thead-dark"
               height="calc(100vh - 13rem)"
             >
-              <el-table-column label="Actions" width="170">
+              <el-table-column label="Actions" width="210">
                 <template slot-scope="scope">
                   <base-button
                     size="sm"
