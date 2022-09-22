@@ -194,8 +194,8 @@
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="130">
               </el-table-column>
 
-              <el-table-column prop="idSali_m" label="Salida" width="140">
-              </el-table-column>
+              <!--<el-table-column prop="idSali_m" label="Salida" width="140">
+              </el-table-column>-->
 
               <el-table-column
                 v-for="column in tableColumnsUnidadesFlotaVehicular"
@@ -379,6 +379,7 @@
 import recorrido from "../../components/monitoreo/recorrido.vue";
 import tarjeta from "../../components/tarjetas/tarjeta.vue";
 import flatPicker from "vue-flatpickr-component";
+import {getBase64LogoReportes} from '../../util/logoReport'
 import "flatpickr/dist/flatpickr.css";
 
 import {
@@ -451,7 +452,7 @@ export default {
         {
           prop: "DescRutaSali_m",
           label: "Ruta",
-          minWidth: 220,
+          minWidth: 250,
         },
         {
           prop: "DescFrec",
@@ -475,12 +476,12 @@ export default {
           minWidth: 160,
         },
         {
-          prop: "atrasoTime",
+          prop: "atrasoFaltasTime",
           label: "Min Atraso",
           minWidth: 150,
         },
         {
-          prop: "adelantoTime",
+          prop: "adelantoFaltasTime",
           label: "Min Adelantos",
           minWidth: 170,
         },
@@ -493,7 +494,7 @@ export default {
           prop: "NumeTarjSali_m",
           label: "N° Tarjeta",
           minWidth: 160,
-        },
+        },/*
 
         {
           prop: "atrasoFaltas",
@@ -504,7 +505,7 @@ export default {
           prop: "adelantoFaltas",
           label: "F. Adelantos",
           minWidth: 160,
-        },
+        },*/
         {
           prop: "PenaCtrlSali_d",
           label: "PEN ($)",
@@ -658,36 +659,8 @@ export default {
       this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida);
     },
 
-    getBase64ImageFromURL(url) {
-      return new Promise((resolve, reject) => {
-        var img = new Image();
-        img.setAttribute("crossOrigin", "anonymous");
-
-        img.onload = () => {
-          var canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0);
-
-          var dataURL = canvas.toDataURL("image/png");
-
-          resolve(dataURL);
-        };
-
-        img.onerror = (error) => {
-          reject(error);
-        };
-
-        img.src = url;
-      });
-    },
-
     async exportPdfSalidasPanelBusqueda() 
     {
-      /*this.vigitrackLatamLogo = await this.getBase64ImageFromURL('https://firebasestorage.googleapis.com/v0/b/smart7bus.appspot.com/o/empresas%2Fvigitracklatam.jpeg?alt=media&token=9eec4995-1e4d-4492-90d1-406c2c6b4d71')*/
-      console.log(this.vigitrackLatamLogo)
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
@@ -739,14 +712,14 @@ export default {
             color: "white",
             alignment: "center",
           },
-          {
+          /*{
             text: "Salida",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
+          },*/
           {
             text: "Ruta",
             fontSize: 8.5,
@@ -802,7 +775,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
+          },/*
 
           {
             text: "F. Atraso",
@@ -819,7 +792,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
+          },*/
 
           {
             text: "PEN ($)",
@@ -857,12 +830,12 @@ export default {
             text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
             alignment: "center",
             fontSize: 8.5,
-          },
+          }/*,
           {
             text: this.mListaSalidasPanelBusqueda[i].idSali_m,
             alignment: "center",
             fontSize: 8.5,
-          },
+          }*/,
           {
             text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m,
             fontSize: 8.5,
@@ -946,18 +919,18 @@ export default {
         header: {
           margin: 15,
           columns: [
-            {
+          {
+              image: getBase64LogoReportes(this.$cookies.get('empresa')),
+                    width: 100,
+			              height: 50,
+                    margin: [30, 0, 0, 0]
+            },  
+          {
               layout: "noBorders",
               table: {
                 widths: ["*"],
-                body: [
-                  /*[{
-                    image: this.vigitrackLatamLogo,
-                    width: 150,
-			              height: 150,
-                  }],*/
-                  [
-                    
+                body: [  
+                [
                     {
                       text: "REPORTE SALIDAS DETALLADAS",
                       alignment: "center",
@@ -986,7 +959,7 @@ export default {
         },
         content: [
           {
-            layout: "noBorders",
+            //layout: "noBorders",
             table: {
               headerRows: 0,
               widths: [450, 450, 450, 450],
@@ -998,7 +971,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 25, 100, 35, 85, 50, 50, 50, 35, 35, 35, 35, 70],
+              widths: [30, 100, 35, 85, 50, 50, 50, 35, 35, 35, 35, 70],
               body: resultadoString,
             },
           },

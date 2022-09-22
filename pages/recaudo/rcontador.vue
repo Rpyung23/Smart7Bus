@@ -78,10 +78,24 @@
                 ><i class="el-icon-search"></i
               ></span>
             </base-button>
+            <base-button
+              icon
+              size="sm"
+              v-if="false"
+              title="EXPORTAR A PDF"
+              type="danger"
+              
+            >
+              <span class="btn-inner--icon"
+                ><i class="ni ni-single-copy-04"></i
+              ></span>
+            </base-button>
             <download-excel
               class="btn btn-sm btn-success"
+              title="EXPORTAR A EXCEL"
+              v-if="tableDataRecaudoContadorPasajeros.length > 0 ? true : false"
               outline
-              :header="headerExcelRPagosVehiculoProduccion"
+              :header="oHeaderExcelConteoPasajeros"
               :data="tableDataRecaudoContadorPasajeros"
               :fields="json_fields_excelRPagosVehiculoProduccion"
               :worksheet="ConteoPasajerosWorksheetExcelRPagosVehiculoProduccion"
@@ -289,8 +303,8 @@ export default {
       fechaFinalConteoPasajeros: "",
       ConteoPasajerosWorksheetExcelRPagosVehiculoProduccion: "",
       ConteoPasajerosFileNameExcelRPagosVehiculoProduccion: "",
-      headerExcelRPagosVehiculoProduccion: [],
       optionsUnidadesSelectContadorPasajero: [],
+      oHeaderExcelConteoPasajeros:[],
       json_fields_excelRPagosVehiculoProduccion: {
         Unidad: "unidad",
         "Linea - Ruta": "DescRutaSali_m",
@@ -322,7 +336,20 @@ export default {
         this.optionsUnidadesSelectContadorPasajero = [];
       }
     },
-
+    getNombresRutasRConteoPasajeros() {
+      var mlist = [];
+      for (var j = 0; j < this.mSelectRutaContadorPasajero.length; j++) {
+        for (var i = 0; i < this.mListLineasContadorPasajeros.length; i++) {
+          if (
+            this.mSelectRutaContadorPasajero[j] ==
+            this.mListLineasContadorPasajeros[i].LetrRuta
+          ) {
+            mlist.push(this.mListLineasContadorPasajeros[i].DescRuta);
+          }
+        }
+      }
+      return mlist;
+    },
     initFechaActualContadorPasajeros() {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
@@ -364,6 +391,25 @@ export default {
         "RCP_W_" + Date.now();
       this.ConteoPasajerosFileNameExcelRPagosVehiculoProduccion =
         "RCP_" + Date.now() + ".xls";
+
+
+        this.oHeaderExcelConteoPasajeros = [
+            "REPORTE CONTEO DE PASAJEROS DIARIO",
+            "Fechas : " +
+              this.fechaInicialConteoPasajeros.toString()+
+              " hasta " +
+              this.fechaFinalConteoPasajeros.toString(),
+            "Unidades : " +
+              (this.itemUnidadContadorPasajero.length <= 0
+                ? "TODAS LAS UNIDADES"
+                : this.itemUnidadContadorPasajero),
+            "Rutas : " +
+              (this.mSelectRutaContadorPasajero.length <= 0
+                ? "TODAS LAS RUTAS"
+                : this.getNombresRutasRConteoPasajeros(
+                    this.mSelectRutaContadorPasajero
+                  )),
+          ];  
 
       if (this.loadingUnidadesContadorPasajerosPasajeros) {
         Notification.info({

@@ -132,11 +132,7 @@
             >
               <el-table-column
                 label="Acciones"
-                :minWidth="
-                  oEmpresa == 'smiguel' || oEmpresa == '28septiembre'
-                    ? '220'
-                    : '200'
-                "
+                :minWidth="'220'"
               >
                 <template slot-scope="scope">
                   <base-button
@@ -148,11 +144,7 @@
                   ></base-button>
 
                   <base-button
-                    v-if="
-                      oEmpresa != 'smiguel' && oEmpresa != '28septiembre'
-                        ? true
-                        : false
-                    "
+                    v-if="isRecorridoPorVueltas ? false : true"
                     size="sm"
                     @click="
                       showVisibleModalRecorridoTableroProduccion(scope.row)
@@ -164,11 +156,7 @@
 
                   <el-popover
                     slot="refPopoverCodigoSalidas"
-                    v-if="
-                      oEmpresa == 'smiguel' || oEmpresa == '28septiembre'
-                        ? true
-                        : false
-                    "
+                    v-if="isRecorridoPorVueltas"
                     title=""
                     @show="oClickDropdownSalidasCodigo(scope.row)"
                     placement="right"
@@ -400,10 +388,7 @@
           </div>
 
           <JqxGrid
-            v-if="
-              (oEmpresa != null && oEmpresa == 'smiguel') ||
-              oEmpresa == '28septiembre'
-            "
+            v-if="isVisibleTableroAnotaciones"
             ref="myGridDespachoPanelOtros"
             :height="'150px'"
             :columns="columnsInfoOtros"
@@ -414,20 +399,12 @@
           </JqxGrid>
 
           <br
-            v-if="
-              (oEmpresa != null && oEmpresa == 'smiguel') ||
-              oEmpresa == '28septiembre'
-            "
+            v-if="isVisibleTableroAnotaciones"
           />
+          
           <JqxGrid
             ref="myGridDespachoPanel"
-            :height="
-              oEmpresa != null &&
-              oEmpresa != 'smiguel' &&
-              oEmpresa != '28septiembre'
-                ? '350px'
-                : '225px'
-            "
+            :height="(isVisibleTableroAnotaciones ? '225px' : '350px')"
             @rowselect="myGridOnRowSelect($event)"
             :columns="columnsInfo"
             :source="dataAdapter"
@@ -781,7 +758,9 @@ export default {
       mListControlesSalidaPanelBusquedaDespacho: [],
       oEmpresa: null,
       mListCodigoSalidasProduccion: [],
-      loadingCodigoSalidasFrecuenciasControles:false
+      loadingCodigoSalidasFrecuenciasControles:false,
+      isVisibleTableroAnotaciones : true,
+      isRecorridoPorVueltas:true
     };
   },
   methods: {
@@ -1471,6 +1450,20 @@ export default {
   },
   mounted() {
     this.oEmpresa = this.$cookies.get("empresa");
+    if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel')
+    {
+      this.isVisibleTableroAnotaciones = true
+    }else{
+      this.isVisibleTableroAnotaciones = false
+    }
+
+    if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel' || this.oEmpresa == 'tatahualpa')
+    {
+      this.isRecorridoPorVueltas = true
+    }else{
+      this.isRecorridoPorVueltas = false
+    }
+
     this.readTrazadoAllTramosTableroProduccion()
     this.readTrazadoAllTramosTableroProduccion()
     this.readUnidadesTableroProduccion();

@@ -77,19 +77,19 @@
             <download-excel
              class="btn btn-sm btn-success"
               v-if="tableDataRecaudoContadorPasajerosVueltas.length > 0 ? true : false"
-              outline
-              :header="headerExcelRPagosVehiculoProduccion"
+               outline
+              :header="oHeaderExcelConteoPasajerosVueltas"
+              :worksheet="ConteoPasajerosWorksheetExcelRPagosVehiculoProduccionVueltas"
+              :name="ConteoPasajerosFileNameExcelRPagosVehiculoProduccionVueltas"
               :data="tableDataRecaudoContadorPasajerosVueltas"
               :fields="json_fields_excelRPagosVehiculoProduccion"
-              :worksheet="WorksheetExcelRPagosVehiculoProduccion"
-              :name="FileNameExcelRPagosVehiculoProduccion"
-              title="Excel"
+              title="EXPORTAR A EXCEL"
             >
               <span class="btn-inner--icon"
                 ><i class="ni ni-collection"></i
               ></span>
             </download-excel>
-            <base-button type="danger" v-if="tableDataRecaudoContadorPasajerosVueltas.length > 0 ? true : false" title="PDF" size="sm">
+            <base-button type="danger" v-if="false" title="EXPORTAR A PDF" size="sm">
               <span class="btn-inner--icon"><i class="ni ni-ungroup"></i></span>
             </base-button>
           </div>
@@ -141,8 +141,11 @@
             >
               <el-table-column prop="unidad" label="Unidad" minWidth="110">
               </el-table-column>
-
+              
               <el-table-column prop="salida_m_id" label="N° Salida" minWidth="140">
+              </el-table-column>
+
+              <el-table-column prop="NumeVuelSali_m" label="N° Vuelta" minWidth="140">
               </el-table-column>
 
               <el-table-column
@@ -212,6 +215,23 @@
               >
               </el-table-column>
 
+              <el-table-column
+                prop="valorPonderada"
+                label="T. Central ($)"
+                minWidth="150"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="Odometro"
+                label="Km/H"
+                minWidth="110"
+              >
+              </el-table-column>
+
+              <el-table-column prop="ipk" label="IPK" minWidth="90">
+              </el-table-column>
+
               <div slot="empty"></div>
             </el-table>
           </div>
@@ -273,24 +293,23 @@ export default {
       token: this.$cookies.get("token"),
       fechaInicialConteoPasajerosVueltas: "",
       fechaFinalConteoPasajerosVueltas: "",
-      WorksheetExcelRPagosVehiculoProduccion: "",
-      FileNameExcelRPagosVehiculoProduccion: "",
-      headerExcelRPagosVehiculoProduccion: [],
+      ConteoPasajerosWorksheetExcelRPagosVehiculoProduccionVueltas: [],
+      ConteoPasajerosFileNameExcelRPagosVehiculoProduccionVueltas: [],
+      oHeaderExcelConteoPasajerosVueltas:[],
       optionsUnidadesSelectContadorPasajero: [],
       json_fields_excelRPagosVehiculoProduccion: {
-        Unidad: "vehiculo_codigo",
-        Salida: "salida_id",
+        Unidad: "unidad",
+        "Salida":"salida_m_id",
+        "N° Vuelta":"NumeVuelSali_m",
         "Linea - Ruta": "DescRutaSali_m",
-        "Fecha Salida": "HoraSaliProgSali_m",
-        "Fecha Creación": "fecha_creacion",
-        "Fecha Pago": "fecha_pago",
-        "Minutos ($)": "montoControles",
-        "Minutos Just($)": "montoControlesDesc",
-        "Detalle Rubro": "descripcion_rubro",
-        "Rubros ($)": "montoMultas",
-        "Rubros Jus ($)": "montoMultasDesc",
-        "Monto Pagado": "monto_pagado",
-        Estado: "estado",
+        "Subida 1": "subida1",
+        "Subida 2": "subida2",
+        "Subida 3": "subida3",
+        "Total Subidas": "totalSubidas",
+        "T Central ($)": "valorPonderada",
+        "KM/H Recorridos": "Odometro",
+        "IPK": "ipk",
+        "Dinero Recaudado": "dinero",
       },
     };
   },
@@ -311,7 +330,20 @@ export default {
         this.optionsUnidadesSelectContadorPasajero = [];
       }
     },
-
+    getNombresRutasRConteoPasajerosVueltas() {
+      var mlist = [];
+      for (var j = 0; j < this.mSelectRutaContadorPasajeroVueltas.length; j++) {
+        for (var i = 0; i < this.mListLineasContadorPasajeros.length; i++) {
+          if (
+            this.mSelectRutaContadorPasajeroVueltas[j] ==
+            this.mListLineasContadorPasajeros[i].LetrRuta
+          ) {
+            mlist.push(this.mListLineasContadorPasajeros[i].DescRuta);
+          }
+        }
+      }
+      return mlist;
+    },
     initFechaActualContadorPasajerosVueltas() {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
@@ -348,7 +380,32 @@ export default {
         this.mListLineasContadorPasajeros.push(...datos.data.data);
       }
     },
-    async readConteoPasajeros() {
+    async readConteoPasajeros() 
+    {
+      this.ConteoPasajerosWorksheetExcelRPagosVehiculoProduccionVueltas =
+        "RCPV_W_" + Date.now();
+      this.ConteoPasajerosFileNameExcelRPagosVehiculoProduccionVueltas =
+        "RCPV_" + Date.now() + ".xls";
+
+
+        this.oHeaderExcelConteoPasajerosVueltas = [
+            "REPORTE CONTEO DE PASAJEROS POR SALIDA",
+            "Fechas : " +
+              this.fechaInicialConteoPasajerosVueltas.toString()+
+              " hasta " +
+              this.fechaFinalConteoPasajerosVueltas.toString(),
+            "Unidades : " +
+              (this.itemUnidadContadorPasajeroVuetas.length <= 0
+                ? "TODAS LAS UNIDADES"
+                : this.itemUnidadContadorPasajeroVuetas),
+            "Rutas : " +
+              (this.mSelectRutaContadorPasajeroVueltas.length <= 0
+                ? "TODAS LAS RUTAS"
+                : this.getNombresRutasRConteoPasajerosVueltas(
+                    this.mSelectRutaContadorPasajeroVueltas
+                  )),
+          ];  
+
       if (this.loadingUnidadesContadorPasajerosPasajerosVueltas) {
         Notification.info({
           title: "Conteo de Pasajeros",

@@ -83,7 +83,7 @@
           footer-classes="pb-2">
           <div>
             <el-table v-loading="loadingRPagosVehiculo" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="tableDataResumidoVehiculos" row-key="id"
+              :data="tableDataResumidoVehiculos" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               :row-class-name="tableRowClassNameRPagosVehiculoProduccion"
               height="calc(100vh - 12rem)" style="width: 100%">
