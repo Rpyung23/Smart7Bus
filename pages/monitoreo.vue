@@ -77,22 +77,22 @@
           },
         }"
       />
-      <GmapPolyline v-for="subida in mListRutaSubida" :key="subida.lat + subida.lng"
-        :path="[{lat: parseFloat(subida.lat), lng: parseFloat(subida.lng) }, { lat: parseFloat(subida.lat), lng: parseFloat(subida.lng) }]"
+      <GmapPolyline 
+        :path="mListRutaSubida"
         :options="{
           strokeColor: '#A52714',
           fillColor: '#A52714',
           strokeOpacity: 0.6,
-          strokeWeight: 8
+          strokeWeight: 4
         }">
       </GmapPolyline>
-      <GmapPolyline v-for="bajada in mListRutaBajada" :key="bajada.lat + bajada.lng"
-        :path="[{ lat: parseFloat(bajada.lat), lng: parseFloat(bajada.lng) }, { lat: parseFloat(bajada.lat), lng: parseFloat(bajada.lng) }]"
+      <GmapPolyline
+        :path="mListRutaBajada"
         :options="{
           strokeColor: '#01579B',
           fillColor: '#01579B',
           strokeOpacity: 0.6,
-          strokeWeight: 8
+          strokeWeight: 4
         }">
       </GmapPolyline>
       <GmapMarker
@@ -1310,6 +1310,7 @@ export default {
     this.initControles();
     this.initRastreo();
     this.initIntervalMonitoreoGeneral();
+    console.log(this.mListRutaSubida)
   },
   destroyed() {
     clearInterval(this.initIntervalMonitoreoGeneral);
