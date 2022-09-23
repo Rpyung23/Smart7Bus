@@ -81,10 +81,10 @@
             <base-button
               icon
               size="sm"
-              v-if="false"
+              v-if="tableDataRecaudoContadorPasajeros.length > 0 ? true : false"
               title="EXPORTAR A PDF"
+              @click="exportConteoPasajerosPDf()"
               type="danger"
-              
             >
               <span class="btn-inner--icon"
                 ><i class="ni ni-single-copy-04"></i
@@ -93,7 +93,7 @@
             <download-excel
               class="btn btn-sm btn-success"
               title="EXPORTAR A EXCEL"
-              v-if="tableDataRecaudoContadorPasajeros.length > 0 ? true : false"
+              v-if="tableDataRecaudoContadorPasajeros.length > 0 ? (permisos != null && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active && permisos.recaudo.ExportarExcel != null && permisos.recaudo.ExportarExcel) ?  true : false  : false"
               outline
               :header="oHeaderExcelConteoPasajeros"
               :data="tableDataRecaudoContadorPasajeros"
@@ -165,23 +165,11 @@
               >
               </el-table-column>
 
-              <el-table-column
-                prop="subida1"
-                label="Puerta 1"
-                minWidth="130"
-              >
+              <el-table-column prop="subida1" label="Puerta 1" minWidth="130">
               </el-table-column>
-              <el-table-column
-                prop="subida2"
-                label="Puerta 2"
-                minWidth="130"
-              >
+              <el-table-column prop="subida2" label="Puerta 2" minWidth="130">
               </el-table-column>
-              <el-table-column
-                prop="subida3"
-                label="Puerta 3"
-                minWidth="130"
-              >
+              <el-table-column prop="subida3" label="Puerta 3" minWidth="130">
               </el-table-column>
               <!--<el-table-column
                 prop="bajada1"
@@ -208,16 +196,11 @@
               >
               </el-table-column>
 
-              <el-table-column
-                prop="dinero"
-                label="T. Dinero"
-                minWidth="140"
-              >
+              <el-table-column prop="dinero" label="T. Dinero" minWidth="140">
                 <template slot-scope="scope">
                   <strong style="color: black">{{ scope.row.dinero }}</strong>
                 </template>
               </el-table-column>
-
 
               <el-table-column
                 prop="valorPonderada"
@@ -226,17 +209,11 @@
               >
               </el-table-column>
 
-              <el-table-column
-                prop="Odometro"
-                label="Km/H"
-                minWidth="110"
-              >
+              <el-table-column prop="Odometro" label="Km/H" minWidth="110">
               </el-table-column>
 
               <el-table-column prop="ipk" label="IPK" minWidth="90">
               </el-table-column>
-
-
 
               <div slot="empty"></div>
             </el-table>
@@ -268,6 +245,11 @@ import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPag
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
+import pdfMake from "pdfmake/build/pdfmake.js";
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
+import { getBase64LogoReportes } from "../../util/logoReport";
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
   mixins: [clientPaginationMixin],
@@ -304,7 +286,7 @@ export default {
       ConteoPasajerosWorksheetExcelRPagosVehiculoProduccion: "",
       ConteoPasajerosFileNameExcelRPagosVehiculoProduccion: "",
       optionsUnidadesSelectContadorPasajero: [],
-      oHeaderExcelConteoPasajeros:[],
+      oHeaderExcelConteoPasajeros: [],
       json_fields_excelRPagosVehiculoProduccion: {
         Unidad: "unidad",
         "Linea - Ruta": "DescRutaSali_m",
@@ -314,9 +296,10 @@ export default {
         "Total Subidas": "totalSubidas",
         "T Central ($)": "valorPonderada",
         "KM/H Recorridos": "Odometro",
-        "IPK": "ipk",
+        IPK: "ipk",
         "Dinero Recaudado": "dinero",
       },
+      permisos: null
     };
   },
   methods: {
@@ -392,24 +375,23 @@ export default {
       this.ConteoPasajerosFileNameExcelRPagosVehiculoProduccion =
         "RCP_" + Date.now() + ".xls";
 
-
-        this.oHeaderExcelConteoPasajeros = [
-            "REPORTE CONTEO DE PASAJEROS DIARIO",
-            "Fechas : " +
-              this.fechaInicialConteoPasajeros.toString()+
-              " hasta " +
-              this.fechaFinalConteoPasajeros.toString(),
-            "Unidades : " +
-              (this.itemUnidadContadorPasajero.length <= 0
-                ? "TODAS LAS UNIDADES"
-                : this.itemUnidadContadorPasajero),
-            "Rutas : " +
-              (this.mSelectRutaContadorPasajero.length <= 0
-                ? "TODAS LAS RUTAS"
-                : this.getNombresRutasRConteoPasajeros(
-                    this.mSelectRutaContadorPasajero
-                  )),
-          ];  
+      this.oHeaderExcelConteoPasajeros = [
+        "REPORTE CONTEO DE PASAJEROS DIARIO",
+        "Fechas : " +
+          this.fechaInicialConteoPasajeros.toString() +
+          " hasta " +
+          this.fechaFinalConteoPasajeros.toString(),
+        "Unidades : " +
+          (this.itemUnidadContadorPasajero.length <= 0
+            ? "TODAS LAS UNIDADES"
+            : this.itemUnidadContadorPasajero),
+        "Rutas : " +
+          (this.mSelectRutaContadorPasajero.length <= 0
+            ? "TODAS LAS RUTAS"
+            : this.getNombresRutasRConteoPasajeros(
+                this.mSelectRutaContadorPasajero
+              )),
+      ];
 
       if (this.loadingUnidadesContadorPasajerosPasajeros) {
         Notification.info({
@@ -469,8 +451,308 @@ export default {
         this.loadingUnidadesContadorPasajerosPasajeros = false;
       }
     },
+    async exportConteoPasajerosPDf() {
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var unidad = [
+        {
+          text:
+            "Unidad : " +
+            (this.itemUnidadContadorPasajero.length > 0
+              ? this.itemUnidadContadorPasajero
+              : "Todas las Unidades"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var ruta = [
+        {
+          text:
+            "Ruta : " +
+            (this.mSelectRutaContadorPasajero.length > 0
+              ? this.getNombresRutasRConteoPasajeros()
+              : "Todas las Lineas"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var desde_hasta = [
+        {
+          text:
+            "Fecha Salida : " +
+            this.fechaInicialConteoPasajeros +
+            " Hasta " +
+            this.fechaFinalConteoPasajeros,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+
+      var resultadoString = [
+        [
+          {
+            text: "UNIDAD",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "RUTA - LINEA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "PUERTA 1",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "PUERTA 2",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "PUERTA 3",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "TOTAL SUBIDAS",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "T. CENTRAL ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "KM/H",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "IPK",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "T. DINERO ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+        ],
+      ];
+
+      var totalSubidas = 0;
+
+      for (var i = 0; i < this.tableDataRecaudoContadorPasajeros.length; i++) {
+        totalSubidas =
+          totalSubidas +
+          parseFloat(this.tableDataRecaudoContadorPasajeros[i].totalSubidas);
+        var obj = [
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].unidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].DescRutaSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].subida1,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].subida2,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].subida3,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].totalSubidas,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].valorPonderada,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].Odometro,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].ipk,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].dinero,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+        ];
+
+        resultadoString.push(obj);
+      }
+
+      var resultadoStringTotalSubidas = [
+        [
+          {
+            text: "TOTAL PASAJEROS",
+            fontSize: 13,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+        ],
+        [
+          {
+            text: totalSubidas,
+            fontSize: 14,
+            bold: true,
+            alignment: "center",
+          },
+        ],
+      ];
+
+      var docDefinition = {
+        pageOrientation: "landscape",
+        pageSize: "A4",
+        pageMargins: [40, 80, 40, 60],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE SALIDAS DETALLADAS",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450, 450, 450, 450],
+              body: [empresa, unidad, ruta, desde_hasta],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40, 130, 50, 50, 50, 80, 60, 45, 40, 60],
+              body: resultadoString,
+            },
+          },
+          {
+            fontSize: 6,
+            layout: "noBorders", // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+
+              body: [["."]],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [140],
+              body: resultadoStringTotalSubidas,
+            },
+          },
+        ],
+      };
+
+      pdfMake.createPdf(docDefinition).download("RCP_" + Date.now());
+    },
   },
-  mounted() {
+  mounted() 
+  {
+    this.permisos = this.$cookies.get("permisos")
+
     this.readAllUnidadesContadorPasajeros();
     this.initFechaActualContadorPasajeros();
     this.readAllLineasContadorPasajeros();
