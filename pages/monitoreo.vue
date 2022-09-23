@@ -102,6 +102,7 @@
           lng: parseFloat(mListRutaBajada[0].lng),
         }"
         :optimized="true"
+        :icon= '"img/monitoreo/start_route.png"'
       />
       <GmapMarker
         v-if="mListRutaSubida.length > 0"
@@ -110,6 +111,7 @@
           lng: parseFloat(mListRutaSubida[0].lng),
         }"
         :optimized="true"
+        :icon= '"img/monitoreo/end_route.png"'
       />
     </GmapMap>
 
