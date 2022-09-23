@@ -107,7 +107,7 @@
         v-if="mListRutaSubida.length > 0"
         :position="{
           lat: parseFloat(mListRutaSubida[0].lat),
-          lng: parseFloat(mListRutaBajada[0].lng),
+          lng: parseFloat(mListRutaSubida[0].lng),
         }"
         :optimized="true"
       />
