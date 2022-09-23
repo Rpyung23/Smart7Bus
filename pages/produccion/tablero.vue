@@ -403,7 +403,7 @@
               row-key="id"
               class="tablePanelControlRubrosProduccion"
               header-row-class-name="thead-dark"
-              height="150px"
+              height="11rem"
               style="width:100%;"
               v-if="isVisibleTableroAnotaciones"
             >
@@ -450,7 +450,125 @@
               @current-change="selectionChange"
               :row-class-name="tableRowClassNameJustificado"
               class="tablePanelControlRubrosProduccion"
-              :height="(isVisibleTableroAnotaciones ? '225px' : '400px')"
+              :style="isVisibleTableroAnotaciones != true ? 'display:none;' : ''"
+              height="17rem"
+              style="width:100%;"
+            >
+        
+              <el-table-column prop="Numero" label="Número" minWidth="100">
+              </el-table-column>
+             
+              <el-table-column
+                prop="DescripcionControl"
+                label="Control"
+                minWidth="200"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="NumeVuelSali_m"
+                label="Vuelta"
+                minWidth="100"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="Programado"
+                label="Prog"
+                minWidth="90"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="Marcado"
+                label="Marc"
+                minWidth="90"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="AtrasoFTiempo"
+                label="Atraso Tiempo"
+                minWidth="110"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="AdelantoFTiempo"
+                label="Adelanto Tiempo"
+                minWidth="125"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="AtrasoJTiempo"
+                label="Atraso Jus."
+                minWidth="150"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="AdelantoJTiempo"
+                label="Adelanto Jus."
+                minWidth="150"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="RubroFalta"
+                label="Rubros"
+                minWidth="60"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="RubroJustificacion"
+                label="Rubros Jus."
+                minWidth="100"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="VelocidadFalta"
+                label="Velo"
+                minWidth="70"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="VelocidadJustificacion"
+                label="Velo Jus."
+                minWidth="70"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="TarjetaTrabajo"
+                label="Tarjeta"
+                minWidth="70"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="NombApellUsua"
+                label="Usuario Justificador"
+                minWidth="250"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="Motivo"
+                label="Motivo"
+                minWidth="250"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="Notas"
+                label="Notas"
+                minWidth="260"
+              >
+              </el-table-column>
+              <div slot="empty">
+                <span>No existe datos</span>
+              </div>
+            </el-table>
+
+          <el-table
+              :data="mList"
+              highlight-current-row
+              ref="singleTable"
+              row-key="id"
+              @current-change="selectionChange"
+              :row-class-name="tableRowClassNameJustificado"
+              class="tablePanelControlRubrosProduccion"
+              :style="isVisibleTableroAnotaciones == true ? 'display:none;' : ''"
+              height="30rem"
               style="width:100%;"
             >
         
@@ -1577,6 +1695,7 @@ export default {
     this.oEmpresa = this.$cookies.get("empresa");
     if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel')
     {
+      //trabaja por vueltas
       this.isVisibleTableroAnotaciones = true
     }else{
       this.isVisibleTableroAnotaciones = false
@@ -1584,6 +1703,7 @@ export default {
 
     if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel' || this.oEmpresa == 'tatahualpa')
     {
+      //trabaja por vueltas
       this.isRecorridoPorVueltas = true
     }else{
       this.isRecorridoPorVueltas = false
