@@ -812,6 +812,7 @@ export default {
             process.env.baseUrlPanel + rutaApi,
             bodyApi
           );
+          console.log(datos.data)
         this.procedimientoMonitoreo(datos);
       } catch (error) {
         console.log(error);

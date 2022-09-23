@@ -141,7 +141,7 @@
 
             <el-table-column prop="NumeVuelSali_m" label="Vuelta" min-width="110px">
             </el-table-column>
-            <el-table-column prop="SumaMinuPosiSali_m" label="Falta" min-width="100px">
+            <el-table-column prop="SumaMinuPosiSali_m" label="Falta" min-width="150px">
             </el-table-column>
 
             <el-table-column prop="Intervalo" label="Inte." min-width="100px">
@@ -507,12 +507,16 @@ export default {
         this.mListDespachosPanel = []
         this.mListDespachosPanelAuxiliar = []
         this.isLoadingDespachoSalidaPanelBusqueda = true
-        var datos = await this.$axios.post(process.env.baseUrl + "/readSalidasPanelDespacho", {
+        var datos = await this.$axios.post(process.env.baseUrl + "/readSalidasPanel", {
           token: this.token,
-          ruta: oRuta.LetrRuta,
-          fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
-          anuladas: 0
+          unidades:"*",
+          rutas: oRuta.LetrRuta,
+          fechaI: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
+          fechaF: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
+          tipo: '*',
         })
+
+        //console.log(datos.data.datos)
         this.mListDespachosPanel.push(...datos.data.datos)
         this.mListDespachosPanelAuxiliar.push(...datos.data.datos)
         this.$refs.myGridDespachoPanel.beginupdate();
@@ -523,12 +527,15 @@ export default {
         this.columnsInfo[3] = { text: 'N° Salida', datafield: 'idSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
         this.columnsInfo[4] = { text: 'Estado', datafield: 'EstaSali_m', width: 150, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
         this.columnsInfo[5] = { text: 'Vuelta', datafield: 'NumeVuelSali_m', width: 70, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[6] = { text: 'Falta', datafield: 'SumaMinuPosiSali_m', width: 50, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[7] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[8] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[9] = { text: 'Multa', datafield: 'MontInfrUnidSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[10] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
-        this.columnsInfo[11] = { text: 'Chofer', datafield: 'Country23', width: 150, cellsalign: 'left', cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[6] = { text: 'F. Atraso', datafield: 'atrasoFaltasTime', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        
+        this.columnsInfo[7] = { text: 'F. Adelanto', datafield: 'adelantoFaltasTime', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        
+        this.columnsInfo[8] = { text: 'Inte.', datafield: 'Intervalo', width: 40, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[9] = { text: 'Frecuencia Salida', datafield: 'DescFrec', width: 250, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[10] = { text: 'Multa', datafield: 'PenaCtrlSali_d', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[11] = { text: 'KM/H', datafield: 'VeloMaxiSali_m', width: 100, cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
+        this.columnsInfo[12] = { text: 'Chofer', datafield: 'Country23', width: 150, cellsalign: 'left', cellclassname: this.cellclassname, cellbeginedit: this.cellbeginedit }
 
 
 
@@ -610,10 +617,11 @@ export default {
             EstaSali_m: '',
             idFrecSali_m: '',
             DescFrec: "",
-            MontInfrUnidSali_m: "",
+            PenaCtrlSali_d: "",
             VeloMaxiSali_m: '',
             NumeVuelSali_m: '',
-            SumaMinuPosiSali_m: '',
+            atrasoFaltasTime: '',
+            adelantoFaltasTime:'',
             Country23: '',
             Intervalo: ""
           } : (obj)
@@ -643,10 +651,11 @@ export default {
         { name: 'idFrecSali_m', type: 'string' },
         { name: 'Intervalo', type: 'string' },
         { name: 'DescFrec', type: 'string' },
-        { name: 'MontInfrUnidSali_m', type: 'string' },
+        { name: 'PenaCtrlSali_d', type: 'string' },
         { name: 'VeloMaxiSali_m', type: 'string' },
         { name: 'NumeVuelSali_m', type: 'string' },
-        { name: 'SumaMinuPosiSali_m', type: 'string' },
+        { name: 'atrasoFaltasTime', type: 'string' },
+        { name:'adelantoFaltasTime',type:'string'},
         { name: 'Country23', type: 'string' }]
       }
     },

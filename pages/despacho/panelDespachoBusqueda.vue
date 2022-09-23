@@ -184,7 +184,7 @@
                   <base-button
                     size="sm"
                     title="TARJETA GRANDE(A4)"
-                    @click="showTarjetaSalidasPanelBusqueda(scope.row)"
+                    @click="showTarjetaSalidasPanelBusquedaA4(scope.row)"
                     type="danger"
                     ><i class="ni ni-book-bookmark"></i
                   ></base-button>
@@ -380,13 +380,23 @@
     >
       <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta>
     </modal>
+
+    <!--Form modal TICKET (A4) SALIDA-->
+    <modal
+      :show.sync="modalSalidasTarjetaPanelDespachoBusquedaA4"
+      size="xl"
+      body-classes="p-1"
+    >
+      <ComponenteTarjetaA4 ref="ComponenteTarjetaA4"></ComponenteTarjetaA4>
+    </modal>
   </div>
 </template>
 <script>
 import recorrido from "../../components/monitoreo/recorrido.vue";
+import tarjetaA4 from "../../components/tarjetas/tarjetaA4.vue";
 import tarjeta from "../../components/tarjetas/tarjeta.vue";
 import flatPicker from "vue-flatpickr-component";
-import {getBase64LogoReportes} from '../../util/logoReport'
+import { getBase64LogoReportes } from "../../util/logoReport";
 import "flatpickr/dist/flatpickr.css";
 
 import {
@@ -421,6 +431,7 @@ export default {
   components: {
     ComponenteRecorrido: recorrido,
     ComponenteTarjeta: tarjeta,
+    ComponenteTarjetaA4: tarjetaA4,
     Tabs,
     TabPane,
     BasePagination,
@@ -501,7 +512,7 @@ export default {
           prop: "NumeTarjSali_m",
           label: "N° Tarjeta",
           minWidth: 160,
-        },/*
+        } /*
 
         {
           prop: "atrasoFaltas",
@@ -512,7 +523,7 @@ export default {
           prop: "adelantoFaltas",
           label: "F. Adelantos",
           minWidth: 160,
-        },*/
+        },*/,
         {
           prop: "PenaCtrlSali_d",
           label: "PEN ($)",
@@ -527,6 +538,7 @@ export default {
       filaSelectionCurrentSalidaPanelBusqueda: null,
       isLoadingRecorridoSalidaPanelBusqueda: false,
       modalSalidasTarjetaPanelDespachoBusqueda: false,
+      modalSalidasTarjetaPanelDespachoBusquedaA4: false,
       mListControlesSalidaPanelBusquedaDespacho: [],
     };
   },
@@ -664,9 +676,14 @@ export default {
       this.modalSalidasTarjetaPanelDespachoBusqueda = true;
       this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida);
     },
-
-    async exportPdfSalidasPanelBusqueda() 
+    showTarjetaSalidasPanelBusquedaA4(salida)
     {
+      console.log(salida)
+      this.modalSalidasTarjetaPanelDespachoBusquedaA4 = true;
+      this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusqueda(salida);
+    },
+
+    async exportPdfSalidasPanelBusqueda() {
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
@@ -781,7 +798,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },/*
+          } /*
 
           {
             text: "F. Atraso",
@@ -798,7 +815,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },*/
+          },*/,
 
           {
             text: "PEN ($)",
@@ -836,7 +853,7 @@ export default {
             text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
             alignment: "center",
             fontSize: 8.5,
-          }/*,
+          } /*,
           {
             text: this.mListaSalidasPanelBusqueda[i].idSali_m,
             alignment: "center",
@@ -891,8 +908,8 @@ export default {
             text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
             fontSize: 8.5,
             alignment: "center",
-          }/*,
-          { text: estado, fontSize: 7.5 },*/
+          } /*,
+          { text: estado, fontSize: 7.5 },*/,
         ];
         resultadoString.push(arrys);
       }
@@ -925,18 +942,18 @@ export default {
         header: {
           margin: 15,
           columns: [
-          {
-              image: getBase64LogoReportes(this.$cookies.get('empresa')),
-                    width: 100,
-			              height: 50,
-                    margin: [30, 0, 0, 0]
-            },  
-          {
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
               layout: "noBorders",
               table: {
                 widths: ["*"],
-                body: [  
-                [
+                body: [
+                  [
                     {
                       text: "REPORTE SALIDAS DETALLADAS",
                       alignment: "center",

@@ -211,15 +211,13 @@ export default {
           { text: "Cobrador: ", fontSize: 8 },
           {
             text:
-              "Adelanto: " +
-              (salida.adelantoTime == null ? "00:00:00" : salida.adelantoTime),
+              "Adelanto: " + salida.adelantoFaltasTime,
             fontSize: 8,
             fontSize: 8,
           },
           {
             text:
-              "Atrasos: " +
-              (salida.atrasoTime == null ? "00:00:00" : salida.atrasoTime),
+              "Atrasos: " + salida.atrasoFaltasTime,
             fontSize: 8,
           },
 
@@ -234,6 +232,19 @@ export default {
               body: [
                 ["TOTAL Faltas : +" + sumFalt],
                 ["TOTAL Dinero : " + Number(penFalt).toFixed(2)],
+              ],
+            },
+          },
+
+          {
+            fontSize: 6,
+            layout: "noBorders", // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+
+              body: [
+                ["."]
               ],
             },
           },
