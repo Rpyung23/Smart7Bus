@@ -77,6 +77,42 @@
           },
         }"
       />
+      <GmapPolyline v-for="subida in mListRutaSubida" :key="subida.lat + subida.lng"
+        :path="[{lat: parseFloat(subida.lat), lng: parseFloat(subida.lng) }, { lat: parseFloat(subida.lat), lng: parseFloat(subida.lng) }]"
+        :options="{
+          strokeColor: '#A52714',
+          fillColor: '#A52714',
+          strokeOpacity: 0.6,
+          strokeWeight: 8
+        }">
+      </GmapPolyline>
+      <GmapPolyline v-for="bajada in mListRutaBajada" :key="bajada.lat + bajada.lng"
+        :path="[{ lat: parseFloat(bajada.lat), lng: parseFloat(bajada.lng) }, { lat: parseFloat(bajada.lat), lng: parseFloat(bajada.lng) }]"
+        :options="{
+          strokeColor: '#01579B',
+          fillColor: '#01579B',
+          strokeOpacity: 0.6,
+          strokeWeight: 8
+        }">
+      </GmapPolyline>
+      <GmapMarker
+        v-if="mListRutaBajada.length > 0"
+        :position="{
+          lat: parseFloat(mListRutaBajada[0].lat),
+          lng: parseFloat(mListRutaBajada[0].lng),
+        }"
+        :optimized="true"
+        :icon= '"img/monitoreo/start_route.png"'
+      />
+      <GmapMarker
+        v-if="mListRutaSubida.length > 0"
+        :position="{
+          lat: parseFloat(mListRutaSubida[0].lat),
+          lng: parseFloat(mListRutaSubida[0].lng),
+        }"
+        :optimized="true"
+        :icon= '"img/monitoreo/end_route.png"'
+      />
     </GmapMap>
 
     <div
@@ -226,7 +262,7 @@
               type="checkbox"
               :value="ruta.LetrRuta"
               v-model="mListRutasMonitoreo"
-              @change="selectedRutaMonitoreo()"
+              @change="changeRutaSeleccionada()"
             />
           </div>
           <div class="DetalleRuta">
@@ -690,6 +726,9 @@ export default {
           height: -35,
         },
       },
+      mListRutaSubida:[],
+      mListRutaBajada:[],
+
       anchoPanelMonitoreoClickMinMax: "width: 17rem",
     };
   },
@@ -818,6 +857,10 @@ export default {
         console.log(error);
       }
     },
+    changeRutaSeleccionada(){
+      this.selectedRutaMonitoreo()
+      this.readRutaByLetraRuta()
+    },
     selectedRutaMonitoreo() {
       if (this.mListRutasMonitoreo.length > 0) {
         this.initControleMonitoreoRutas();
@@ -843,6 +886,35 @@ export default {
         this.unidadInput = this.unidadInputRuta == '' ? '' : this.unidadInputRuta
       } else {
         this.initRastreo()
+      }
+    },
+    async readRutaByLetraRuta(){
+      try{
+        this.mListRutaBajada = []
+        this.mListRutaSubida = []
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/readRutasMongoAllByLetraRuta",
+          {
+            token: this.token,
+            ruta:this.mListRutasMonitoreo[0]
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          for (var i = 0; i < datos.data.datos[0].polilineasRutaSubida.length; i++) {
+            this.mListRutaSubida.push(datos.data.datos[0].polilineasRutaSubida[i])
+          }
+          for (var j = 0; j < datos.data.datos[0].polilineasRutaBajada.length; j++) {
+            this.mListRutaBajada.push(datos.data.datos[0].polilineasRutaBajada[j])
+          }
+          
+        }
+
+        console.log("ruta linea")
+        console.log(this.mListRutaBajada)
+        console.log(this.mListRutaSubida)
+      } catch (error) {
+        console.log(error);
       }
     },
     initIntervalMonitoreoGeneral: function () {
