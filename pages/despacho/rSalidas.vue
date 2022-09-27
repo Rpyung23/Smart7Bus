@@ -39,7 +39,7 @@
               ></span>
               <span class="btn-inner--text"> Excel</span>
             </download-excel>-->
-            <base-button title="PDF" type="danger" size = "sm">
+            <base-button title="EXPORTAR A PDF" @click="exportRSalidasPDF()" v-if="mListRSalidas.length > 0 ? true : false" type="danger" size = "sm">
               <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
             </base-button>
 
@@ -57,7 +57,6 @@
           <div>
             <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
               :data="mListRSalidas" row-key="id"
-              :row-class-name="tableRowClassNameSalidasPanelBusqueda"
               header-row-class-name="thead-dark" height="calc(100vh - 10rem)"
               >
               <el-table-column v-for="column in tableRSalidasDespachos" :key="column.label" v-bind="column">
@@ -73,7 +72,11 @@
   </div>
 </template>
 <script>
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+
+import { getBase64LogoReportes } from "../../util/logoReport";
+import pdfMake from "pdfmake/build/pdfmake.js";
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import {
@@ -103,6 +106,7 @@ import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { FechaStringToHour } from "../../util/fechas"
 import isThisHour from 'date-fns/esm/isThisHour';
+import RecaudoDashboardLayoutVue from "../../layouts/RecaudoDashboardLayout.vue";
 
 export default {
   mixins: [clientPaginationMixin],
@@ -225,6 +229,285 @@ export default {
       })
       this.mListRSalidas.push(...datos.data.datos)
       this.loadingTableUnidadesSalidasPanelBusqueda = false
+    },
+    getNombresRutasRSalidas() {
+      var mlist = [];
+      for (var j = 0; j < this.mSelectRutaSalidaPanelBusqueda.length; j++) {
+        for (var i = 0; i < this.mListLineasSalidasPanelBusqueda.length; i++) {
+          if (
+            this.mSelectRutaSalidaPanelBusqueda[j] ==
+            this.mListLineasSalidasPanelBusqueda[i].LetrRuta
+          ) {
+            mlist.push(this.mListLineasSalidasPanelBusqueda[i].DescRuta);
+          }
+        }
+      }
+      return mlist;
+    },
+    exportRSalidasPDF()
+    {
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var ruta = [
+        {
+          text:
+            "Ruta : " +
+            (this.mSelectRutaSalidaPanelBusqueda.length > 0
+              ? this.getNombresRutasRSalidas()
+              : "Todas las Lineas"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var desde_hasta = [
+        {
+          text:
+            "Fecha : " +
+            this.fechaInicialSalidasPanelBusqueda +
+            " Hasta " +
+            this.fechaInicialSalidasPanelBusqueda,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+
+      /**
+       *         {
+          prop: "idSali_m",
+          label: "Salida",
+          minWidth: 120,
+        },
+        {
+          prop: "CodiVehiSali_m",
+          label: "Unidad",
+          minWidth: 120,
+        },
+        {
+          prop: "",
+          label: "H. Salida",
+          minWidth: 130,
+        },
+        {
+          prop: "",
+          label: "Ruta",
+          minWidth: 350,
+        },
+        {
+          prop: "",
+          label: "Vuelta",
+          minWidth: 110,
+        },
+        {
+          prop: "",
+          label: "Frecuencia",
+          minWidth: 350,
+        },
+        {
+          prop: "",
+          label: "Atención",
+          minWidth: 300,
+        },
+        {
+          prop: "",
+          label: "Multa ($)",
+          minWidth: 120,
+        },
+        {
+          prop: "recaudo",
+          label: "Recaudo ($)",
+          minWidth: 150
+        },**/
+
+      var resultadoString = [
+        [
+          {
+            text: "UNIDAD",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "N° VUELTA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. SALIDA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "RUTA - LINEA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+
+          {
+            text: "FRECUENCIA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "ATENCION",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "MULTAS ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "RECAUDO ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }
+        ],
+      ]
+
+
+      for (let i = 0; i < this.mListRSalidas.length; i++) 
+      {
+        var obj =[
+          {
+            text: this.mListRSalidas[i].CodiVehiSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListRSalidas[i].NumeVuelSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListRSalidas[i]. HoraSaliProgSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListRSalidas[i].DescRuta,
+            fontSize: 8.5,
+            alignment: "left",
+          },
+
+          {
+            text: this.mListRSalidas[i].DescFrec,
+            fontSize: 8.5,
+            alignment: "left",
+          },
+          {
+            text: this.mListRSalidas[i].atencion,
+            fontSize: 8.5,
+            alignment: "left",
+          },
+          {
+            text: this.mListRSalidas[i].MontInfrUnidSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListRSalidas[i].RecaudoDashboardLayoutVue,
+            fontSize: 8.5,
+            alignment: "center",
+          }
+        ]
+
+        resultadoString.push(obj)
+      }
+
+      var docDefinition = {
+        pageOrientation: "landscape",
+        pageSize: "A4",
+        pageMargins: [40, 80, 40, 60],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE SALIDAS DETALLADAS",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450, 450, 450],
+              body: [empresa, ruta, desde_hasta],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40, 50, 50,140, 140, 140, 50, 70],
+              body: resultadoString,
+            },
+          },
+        ],
+      };
+
+      pdfMake.createPdf(docDefinition).download("RCP_" + Date.now());
     }
   },
   mounted() {

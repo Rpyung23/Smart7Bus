@@ -94,7 +94,6 @@
               class="btn btn-sm btn-success"
               title="EXPORTAR A EXCEL"
               v-if="tableDataRecaudoContadorPasajeros.length > 0 ? (permisos != null && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active && permisos.recaudo.ExportarExcel != null && permisos.recaudo.ExportarExcel) ?  true : false  : false"
-              outline
               :header="oHeaderExcelConteoPasajeros"
               :data="tableDataRecaudoContadorPasajeros"
               :fields="json_fields_excelRPagosVehiculoProduccion"
