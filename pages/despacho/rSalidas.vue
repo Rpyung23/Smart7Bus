@@ -463,7 +463,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE SALIDAS DETALLADAS",
+                      text: "REPORTE DE SALIDAS",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
@@ -507,7 +507,7 @@ export default {
         ],
       };
 
-      pdfMake.createPdf(docDefinition).download("RCP_" + Date.now());
+      pdfMake.createPdf(docDefinition).download("RS_" + Date.now());
     }
   },
   mounted() {
