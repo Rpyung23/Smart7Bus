@@ -125,9 +125,11 @@
               </el-table-column>
               <el-table-column prop="V_EJEC" label="Vue. EJEC" width="150">
               </el-table-column>
-              <el-table-column prop="KMSTOTAL" label="KMS TOTAL" width="150">
+              <el-table-column prop="KMSTOTAL" label="KMS RUTA" width="150">
               </el-table-column>
-              <el-table-column prop="KMSRUTA" label="KMS RUTA" width="150">
+              <el-table-column prop="KMSRUTA" label="KMS EJEC" width="150">
+              </el-table-column>
+              <el-table-column prop="Odometro" label="KMS TOTAL" width="150">
               </el-table-column>
               <!--<el-table-column prop="KMSREC" label="KMS RECORRIDO" width="180">
               </el-table-column>-->
@@ -141,6 +143,7 @@
               </el-table-column>
               <el-table-column prop="MinAtraso" label="MIN ATRASO" width="180">
               </el-table-column>
+              
               <el-table-column prop="MinAdelanto" label="MIN ADELANTO" width="180">
               </el-table-column>
               <el-table-column prop="ConductorManana" label="CONDUCTOR MAÑANA" width="350">
@@ -233,8 +236,9 @@ export default {
         "TURNO": "Turno",
         "VUELTAS PROGAMADA": "V_PROG",
         "VUELTAS EJECUTADAS": "V_EJEC",
-        "KMS TOTAL": "KMSTOTAL",
-        "KMS RUTA": "KMSRUTA",
+        "KMS RUTA": "KMSTOTAL",
+        "KMS EJECUTADOS": "KMSRUTA",
+        "KMS TOTALES":"Odometro",
         "PASAJEROS SUBIDA": "PASS_SUB",
         "COLECCIÓN": "Coleccion",
         "DEPÓSITO TOTAL": "DepositoTotal",

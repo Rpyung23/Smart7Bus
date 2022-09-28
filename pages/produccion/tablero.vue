@@ -403,7 +403,7 @@
               row-key="id"
               class="tablePanelControlRubrosProduccion"
               header-row-class-name="thead-dark"
-              height="11rem"
+              height="10rem"
               style="width:100%;"
               v-if="isVisibleTableroAnotaciones"
             >
@@ -451,7 +451,7 @@
               :row-class-name="tableRowClassNameJustificado"
               class="tablePanelControlRubrosProduccion"
               :style="isVisibleTableroAnotaciones != true ? 'display:none;' : ''"
-              height="17rem"
+              height="14rem"
               style="width:100%;"
             >
         
