@@ -568,7 +568,7 @@
               :row-class-name="tableRowClassNameJustificado"
               class="tablePanelControlRubrosProduccion"
               :style="isVisibleTableroAnotaciones == true ? 'display:none;' : ''"
-              height="30rem"
+              height="25rem"
               style="width:100%;"
             >
         

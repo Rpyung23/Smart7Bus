@@ -39,10 +39,9 @@
                 @on-open="focus"
                 @on-close="blur"
                 :config="{ allowInput: true }"
-                disabled
                 format="yyyy/MM/dd"
                 class="form-controlPersonal datepicker"
-                v-model="fechaDia7SalidasPanelBusqueda"
+                v-model="fechaDia2SalidasPanelBusqueda"
               >
               </flat-picker>
             </base-input>
@@ -56,7 +55,7 @@
                 icon
                 type="primary"
                 size="sm"
-                @click="readSalidasPanelBusqueda()"
+                @click="readApiPenalidades()"
               >
                 <span class="btn-inner--icon"
                   ><i class="el-icon-search"></i
@@ -66,6 +65,7 @@
               <base-button
                 type="danger"
                 size="sm"
+                v-if="mListDatosPenalidades.length > 0 ? true : false"
                 @click="exportPdfRPenalidadesSemanales()"
                 title="Exportar PDF"
               >
@@ -93,17 +93,49 @@
               header-row-class-name="thead-dark"
               height="calc(100vh - 9.5rem)"
             >
-              <el-table-column prop="CodiVehi" label="Unidad" width="150">
+              <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
               </el-table-column>
 
               <el-table-column
-                v-for="column in tableColumnPenalidades"
-                :key="column.label"
-                v-bind="column"
+                prop="HoraSaliProgSali_m"
+                label="F. Inicio"
+                width="170"
               >
               </el-table-column>
 
-              <el-table-column prop="Total" label="Total" width="145">
+              <el-table-column
+                prop="HoraLlegProgSali_m"
+                label="F. Final"
+                width="170"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="totalSalidas"
+                label="Total Salidas"
+                width="150"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="FaltSali_dAdelanto"
+                label="F. Adelanto"
+                width="150"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="FaltSali_dAtraso"
+                label="F. Atraso"
+                width="150"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="EstadoFaltasSumatoria"
+                label="Estado"
+                width="325"
+              >
               </el-table-column>
 
               <div slot="empty"></div>
@@ -137,7 +169,7 @@ import {
   Button,
   Loading,
 } from "element-ui";
-
+import { getBase64LogoReportes } from "../../util/logoReport";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -179,11 +211,6 @@ export default {
       token: this.$cookies.get("token"),
       fechaDia1SalidasPanelBusqueda: "",
       fechaDia2SalidasPanelBusqueda: "",
-      fechaDia3SalidasPanelBusqueda: "",
-      fechaDia4SalidasPanelBusqueda: "",
-      fechaDia5SalidasPanelBusqueda: "",
-      fechaDia6SalidasPanelBusqueda: "",
-      fechaDia7SalidasPanelBusqueda: "",
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
@@ -192,126 +219,28 @@ export default {
   },
   methods: {
     initPrimerDiaSemanaActualSalidaBusquedaPanel() {
-      this.fechaDia1SalidasPanelBusqueda = moment().startOf("week").toDate();
-      this.fechaDia2SalidasPanelBusqueda = moment().startOf("week").toDate();
-      this.fechaDia3SalidasPanelBusqueda = moment().startOf("week").toDate();
-      this.fechaDia4SalidasPanelBusqueda = moment().startOf("week").toDate();
-      this.fechaDia5SalidasPanelBusqueda = moment().startOf("week").toDate();
-      this.fechaDia6SalidasPanelBusqueda = moment().startOf("week").toDate();
-      this.fechaDia7SalidasPanelBusqueda = moment().startOf("week").toDate();
+      var fecha = new Date();
+      var mes = fecha.getMonth() + 1;
+      var day = fecha.getDate();
+      var format =
+        fecha.getFullYear() +
+        "-" +
+        (mes < 10 ? "0" + mes : mes) +
+        "-" +
+        (day < 10 ? "0" + day : day);
 
-      this.fechaDia1SalidasPanelBusqueda.setDate(
-        this.fechaDia1SalidasPanelBusqueda.getDate() + 1
-      );
-      this.fechaDia2SalidasPanelBusqueda.setDate(
-        this.fechaDia1SalidasPanelBusqueda.getDate() + 1
-      );
-      this.fechaDia3SalidasPanelBusqueda.setDate(
-        this.fechaDia2SalidasPanelBusqueda.getDate() + 1
-      );
-      this.fechaDia4SalidasPanelBusqueda.setDate(
-        this.fechaDia3SalidasPanelBusqueda.getDate() + 1
-      );
-      this.fechaDia5SalidasPanelBusqueda.setDate(
-        this.fechaDia4SalidasPanelBusqueda.getDate() + 1
-      );
-      this.fechaDia6SalidasPanelBusqueda.setDate(
-        this.fechaDia5SalidasPanelBusqueda.getDate() + 1
-      );
-      this.fechaDia7SalidasPanelBusqueda.setDate(
-        this.fechaDia6SalidasPanelBusqueda.getDate() + 1
-      );
-
-      this.tableColumnPenalidades.push({
-        prop: "Dia1",
-        label: getFechatoDDMM(this.fechaDia1SalidasPanelBusqueda),
-        minWidth: 140,
-      });
-
-      this.tableColumnPenalidades.push({
-        prop: "Dia2",
-        label: getFechatoDDMM(this.fechaDia2SalidasPanelBusqueda),
-        minWidth: 140,
-      });
-
-      this.tableColumnPenalidades.push({
-        prop: "Dia3",
-        label: getFechatoDDMM(this.fechaDia3SalidasPanelBusqueda),
-        minWidth: 140,
-      });
-
-      this.tableColumnPenalidades.push({
-        prop: "Dia4",
-        label: getFechatoDDMM(this.fechaDia4SalidasPanelBusqueda),
-        minWidth: 140,
-      });
-
-      this.tableColumnPenalidades.push({
-        prop: "Dia5",
-        label: getFechatoDDMM(this.fechaDia5SalidasPanelBusqueda),
-        minWidth: 140,
-      });
-
-      this.tableColumnPenalidades.push({
-        prop: "Dia6",
-        label: getFechatoDDMM(this.fechaDia6SalidasPanelBusqueda),
-        minWidth: 140,
-      });
-
-      this.tableColumnPenalidades.push({
-        prop: "Dia7",
-        label: getFechatoDDMM(this.fechaDia7SalidasPanelBusqueda),
-        minWidth: 140,
-      });
+      this.fechaDia1SalidasPanelBusqueda = format;
+      this.fechaDia2SalidasPanelBusqueda = format;
     },
     async readApiPenalidades() {
+      this.mListDatosPenalidades = [];
       this.loadingPenalidadesSemanales = true;
 
       try {
         var obj = {
           token: this.token,
-          fecha1:
-            getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda) +
-            " 00:00:00",
-          fecha1F:
-            getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda) +
-            " 23:59:59",
-          fecha2:
-            getFecha_dd_mm_yyyy(this.fechaDia2SalidasPanelBusqueda) +
-            " 00:00:00",
-          fecha2F:
-            getFecha_dd_mm_yyyy(this.fechaDia2SalidasPanelBusqueda) +
-            " 23:59:59",
-          fecha3:
-            getFecha_dd_mm_yyyy(this.fechaDia3SalidasPanelBusqueda) +
-            " 00:00:00",
-          fecha3F:
-            getFecha_dd_mm_yyyy(this.fechaDia3SalidasPanelBusqueda) +
-            " 23:59:59",
-          fecha4:
-            getFecha_dd_mm_yyyy(this.fechaDia4SalidasPanelBusqueda) +
-            " 00:00:00",
-          fecha4F:
-            getFecha_dd_mm_yyyy(this.fechaDia4SalidasPanelBusqueda) +
-            " 23:59:59",
-          fecha5:
-            getFecha_dd_mm_yyyy(this.fechaDia5SalidasPanelBusqueda) +
-            " 00:00:00",
-          fecha5F:
-            getFecha_dd_mm_yyyy(this.fechaDia5SalidasPanelBusqueda) +
-            " 23:59:59",
-          fecha6:
-            getFecha_dd_mm_yyyy(this.fechaDia6SalidasPanelBusqueda) +
-            " 00:00:00",
-          fecha6F:
-            getFecha_dd_mm_yyyy(this.fechaDi61SalidasPanelBusqueda) +
-            " 23:59:59",
-          fecha7:
-            getFecha_dd_mm_yyyy(this.fechaDia7SalidasPanelBusqueda) +
-            " 00:00:00",
-          fecha7F:
-            getFecha_dd_mm_yyyy(this.fechaDia7SalidasPanelBusqueda) +
-            " 23:59:59",
+          fechaI: this.fechaDia1SalidasPanelBusqueda,
+          fechaF: this.fechaDia2SalidasPanelBusqueda,
         };
 
         console.log(obj);
@@ -329,49 +258,151 @@ export default {
 
       this.loadingPenalidadesSemanales = false;
     },
-    exportPdfRPenalidadesSemanales() {
+    exportPdfRPenalidadesSemanales() 
+    {
+
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
-          fontSize: 12,
-          bold: true,
+          fontSize: 11,
           alignment: "left",
         },
       ];
+
       var desde_hasta = [
         {
           text:
             "Fecha : " +
-            getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda) +
+            this.fechaDia1SalidasPanelBusqueda +
             " hasta " +
-            getFecha_dd_mm_yyyy(this.fechaDia7SalidasPanelBusqueda),
-          fontSize: 12,
-          bold: true,
+            this.fechaDia2SalidasPanelBusqueda,
+          fontSize: 11,
           alignment: "left",
         },
       ];
 
-      var mList = []
-      mList.push([{text:"Unidad",bold:true,alignment:'center'}, 
-                 {text:getFechatoDDMM(this.fechaDia1SalidasPanelBusqueda),bold:true,alignment:'center'},
-                 {text:getFechatoDDMM(this.fechaDia2SalidasPanelBusqueda),bold:true,alignment:'center'},
-                 {text:getFechatoDDMM(this.fechaDia3SalidasPanelBusqueda),bold:true,alignment:'center'},
-                 {text:getFechatoDDMM(this.fechaDia4SalidasPanelBusqueda),bold:true,alignment:'center'},
-                 {text:getFechatoDDMM(this.fechaDia5SalidasPanelBusqueda),bold:true,alignment:'center'},
-                 {text:getFechatoDDMM(this.fechaDia6SalidasPanelBusqueda),bold:true,alignment:'center'},
-                 {text:getFechatoDDMM(this.fechaDia7SalidasPanelBusqueda),bold:true,alignment:'center'},
-                 {text:"Total",bold:true,alignment:'center'}])
+      var mList = [];
+      mList.push([
+        {
+          text: "UNIDAD",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. INICIO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. FINAL",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "T. SALIDAS",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. ADELANTO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. ATRASO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "ESTADO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+      ]);
 
-
-      for(var i = 0;i<this.mListDatosPenalidades.length;i++)
-      {
-        mList.push(['1','1','1','1','1','1','1','1','1'])
+      for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
+        var obj = [
+          { text: this.mListDatosPenalidades[i].CodiVehiSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
+          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
+          { text: this.mListDatosPenalidades[i].HoraLlegProgSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
+          { text: this.mListDatosPenalidades[i].totalSalidas, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
+          { text: this.mListDatosPenalidades[i].FaltSali_dAdelanto, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
+          { text: this.mListDatosPenalidades[i].FaltSali_dAtraso, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
+         {
+            text: this.mListDatosPenalidades[i].EstadoFaltasSumatoria,
+            fontSize: 8.5,
+            color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red",
+            alignment: "left",
+          },
+        ];
+        mList.push(obj);
       }
-
-      
 
       var docDefinition = {
         pageSize: "A4",
+        pageMargins: [40, 80, 40, 60],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE PENALIDADES SEMANALES",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
         content: [
           {
             layout: "noBorders",
@@ -393,19 +424,19 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [60, 45, 45, 45,45,45,45,45,50],
+              widths: [40, 60, 60, 45, 70, 50, 130],
               body: mList,
             },
           },
         ],
       };
-      var win = window.open("", "_blank");
-      pdfMake.createPdf(docDefinition).open({}, win);
+      
+      pdfMake.createPdf(docDefinition).download("RPS_" + Date.now());
     },
   },
   mounted() {
     this.initPrimerDiaSemanaActualSalidaBusquedaPanel();
-    this.readApiPenalidades();
+    //this.readApiPenalidades();
   },
 };
 </script>
