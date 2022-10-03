@@ -2,24 +2,36 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardTextoRPagosVehiculoProduccion">
-
-
             <!--<el-autocomplete class="inline-input" v-model="itemUnidadRDespachosGenerados" []ltiple
               collapse-tags :fetch-suggestions="
                 querySearchUnidadProduccionRPagoVehiculoRecibo
               " style="margin-right: 0.5rem" placeholder="Unidad" prefix-icon="ni ni-bus-front-12"
               :trigger-on-focus="false" @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"></el-autocomplete>-->
 
-            <el-select v-model="itemUnidadRDespachosGenerados" multiple filterable remote placeholder="Unidades"
-              prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
+            <el-select
+              v-model="itemUnidadRDespachosGenerados"
+              multiple
+              filterable
+              remote
+              placeholder="Unidades"
+              prefix-icon="ni ni-bus-front-12"
+              style="margin-right: 0.5rem"
               :remote-method="remoteMethodUnidadesRecibosProduccion"
-              :loading="loadingTableUnidadesRecibosVehiculoProduccion">
-              <el-option v-for="item in optionsUnidadesProduccionPagosVehiculo" :key="item.CodiVehi"
-                :label="item.CodiVehi" :value="item.CodiVehi">
+              :loading="loadingTableUnidadesRecibosVehiculoProduccion"
+            >
+              <el-option
+                v-for="item in optionsUnidadesProduccionPagosVehiculo"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
               </el-option>
             </el-select>
 
@@ -32,47 +44,72 @@
               </el-option>
             </el-select>-->
 
-
-
-
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaInicialRDespachosGenerados">
+            <base-input
+              addon-left-icon="ni ni-calendar-grid-58"
+              style="margin-right: 0.5rem"
+            >
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaInicialRDespachosGenerados"
+              >
               </flat-picker>
             </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaFinalRDespachosGenerados">
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaFinalRDespachosGenerados"
+              >
               </flat-picker>
             </base-input>
 
             <!-- DOWNLOAD EXCEL-->
 
-
-
+            <el-switch
+              v-model="oSwitchOrdenarSalidasDespachoPanelBusqueda"
+              active-text="ORDERNADOR POR UNIDAD"
+              inactive-text="ORDERNADOR POR H.SALIDA"
+            >
+            </el-switch>
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-
-            <div style="height: 100%;display: flex;">
-              <base-button icon type="primary" size="sm" @click="readDespachosGenerados()">
-                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+            <div style="height: 100%; display: flex">
+              <base-button
+                icon
+                type="primary"
+                size="sm"
+                @click="readDespachosGenerados()"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="el-icon-search"></i
+                ></span>
               </base-button>
 
-              <download-excel v-if="tableDataDespachosGenerados.length > 0 ? true : false"
-                class="btn btn-icon btn-fab btn-success btn-sm" outline :header="RecibosheaderExcelRDespachosGEnerados"
-                title="Exportar a Excel" :data="tableDataDespachosGenerados"
-                :fields="json_fields_excelRDespachosGenerados" :worksheet="RecibosWorksheetExcelRDespachosGenerados"
-                :name="RecibosFileNameExcelRDespachosGenerados">
-                <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-
+              <download-excel
+                v-if="tableDataDespachosGenerados.length > 0 ? true : false"
+                class="btn btn-icon btn-fab btn-success btn-sm"
+                outline
+                :header="RecibosheaderExcelRDespachosGEnerados"
+                title="Exportar a Excel"
+                :data="tableDataDespachosGenerados"
+                :fields="json_fields_excelRDespachosGenerados"
+                :worksheet="RecibosWorksheetExcelRDespachosGenerados"
+                :name="RecibosFileNameExcelRDespachosGenerados"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="ni ni-collection"></i
+                ></span>
               </download-excel>
-
             </div>
-
-
-
 
             <!--<base-button outline type="success">
               <span class="btn-inner--icon"
@@ -83,41 +120,61 @@
           </div>
         </card>
 
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
-
-            <el-select style="margin-right: 0.5rem;" collapse-tags v-model="itemRutasRDespachosGenerados" multiple
-              placeholder="Rutas">
-              <el-option v-for="item in mListaRutasIndicadoresCalidad" :key="item.LetrRuta" :label="item.DescRuta"
-                :value="item.LetrRuta">
+            <el-select
+              style="margin-right: 0.5rem"
+              collapse-tags
+              v-model="itemRutasRDespachosGenerados"
+              multiple
+              placeholder="Rutas"
+            >
+              <el-option
+                v-for="item in mListaRutasIndicadoresCalidad"
+                :key="item.LetrRuta"
+                :label="item.DescRuta"
+                :value="item.LetrRuta"
+              >
               </el-option>
             </el-select>
-
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccion">
-
-          </div>
+          <div class="cardTextoRPagosVehiculoProduccion"></div>
         </card>
 
-
-        <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
+        <card
+          class="no-border-card"
+          style="margin-bottom: 0rem"
+          body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1"
+          footer-classes="pb-2"
+        >
           <div>
-            <el-table :data="tableDataDespachosGenerados" height="calc(100vh - 13rem)" style="width: 100%"
-              v-loading="loadingDespachosGenerados" element-loading-text="Cargando Despachos..."
-              element-loading-background="rgba(0, 0, 0, 0.8)">
+            <el-table
+              :data="tableDataDespachosGenerados"
+              height="calc(100vh - 13rem)"
+              style="width: 100%"
+              v-loading="loadingDespachosGenerados"
+              element-loading-text="Cargando Despachos..."
+              element-loading-background="rgba(0, 0, 0, 0.8)"
+            >
               <el-table-column prop="Fecha" label="FECHA" width="140">
               </el-table-column>
               <el-table-column prop="LetraRutaSali_m" label="RUTA" width="150">
               </el-table-column>
-              <el-table-column prop="Fecha1" label="DATE" width="150">
+              <el-table-column prop="Fecha" label="DATE" width="150">
               </el-table-column>
-              <el-table-column prop="Unidad" label="UNIDAD" width="150">
+              <el-table-column prop="CodiVehiSali_m" label="UNIDAD" width="150">
               </el-table-column>
-              <el-table-column prop="NombreRuta" label="RUTA DETALLE" width="350">
+              <el-table-column
+                prop="DescRutaSali_m"
+                label="RUTA DETALLE"
+                width="350"
+              >
               </el-table-column>
               <el-table-column prop="Turno" label="TURNO" width="150">
               </el-table-column>
@@ -125,11 +182,11 @@
               </el-table-column>
               <el-table-column prop="V_EJEC" label="Vue. EJEC" width="150">
               </el-table-column>
-              <el-table-column prop="KMSTOTAL" label="KMS RUTA" width="150">
+              <el-table-column prop="KMS_RUTA" label="KMS RUTA" width="150">
               </el-table-column>
-              <el-table-column prop="KMSRUTA" label="KMS EJEC" width="150">
+              <el-table-column prop="KMS_EJEC" label="KMS EJEC" width="150">
               </el-table-column>
-              <el-table-column prop="Odometro" label="KMS TOTAL" width="150">
+              <el-table-column prop="KMSTOTAL" label="KMS TOTAL" width="150">
               </el-table-column>
               <!--<el-table-column prop="KMSREC" label="KMS RECORRIDO" width="180">
               </el-table-column>-->
@@ -139,32 +196,58 @@
               </el-table-column>-->
               <el-table-column prop="Coleccion" label="COLECCIÓN" width="180">
               </el-table-column>
-              <el-table-column prop="DepositoTotal" label="DEPÓSITO TOTAL" width="180">
+              <el-table-column
+                prop="DepositoTotal"
+                label="DEPÓSITO TOTAL"
+                width="180"
+              >
               </el-table-column>
-              <el-table-column prop="MinAtraso" label="MIN ATRASO" width="180">
+              <el-table-column prop="atraso" label="MIN ATRASO" width="180">
               </el-table-column>
-              
-              <el-table-column prop="MinAdelanto" label="MIN ADELANTO" width="180">
+
+              <el-table-column prop="adelanto" label="MIN ADELANTO" width="180">
               </el-table-column>
-              <el-table-column prop="ConductorManana" label="CONDUCTOR MAÑANA" width="350">
+              <el-table-column
+                prop="ConductorManana"
+                label="CONDUCTOR MAÑANA"
+                width="350"
+              >
               </el-table-column>
-              <el-table-column prop="ConductorTarde" label="CONDUCTOR OPCIONAL" width="350">
+              <el-table-column
+                prop="ConductorTarde"
+                label="CONDUCTOR OPCIONAL"
+                width="350"
+              >
               </el-table-column>
-              <el-table-column prop="AyudanteManana" label="AYUDANTE MAÑANA" width="250">
+              <el-table-column
+                prop="AyudanteManana"
+                label="AYUDANTE MAÑANA"
+                width="250"
+              >
               </el-table-column>
-              <el-table-column prop="AyudanteTarde" label="AYUDANTE OPCIONAL" width="250">
+              <el-table-column
+                prop="AyudanteTarde"
+                label="AYUDANTE OPCIONAL"
+                width="250"
+              >
               </el-table-column>
-              <el-table-column prop="CantidadIncidencias" label="CANT. INCIDENCIAS" width="250">
+              <el-table-column
+                prop="CantidadIncidencias"
+                label="CANT. INCIDENCIAS"
+                width="250"
+              >
               </el-table-column>
-              <el-table-column prop="ExcesoVelocidad" label="EXCESO. VELOCIDAD" width="250">
+              <el-table-column
+                prop="ExcesoVelocidad"
+                label="EXCESO. VELOCIDAD"
+                width="250"
+              >
               </el-table-column>
             </el-table>
           </div>
         </card>
-
       </div>
     </base-header>
-
   </div>
 </template>
 <script>
@@ -181,6 +264,7 @@ import {
   Radio,
   Notification,
   Button,
+  Switch
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -209,6 +293,7 @@ export default {
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
     [Button.name]: Button,
+    [Switch.name]:Switch
   },
   data() {
     return {
@@ -219,31 +304,32 @@ export default {
       token: this.$cookies.get("token"),
       fechaInicialRDespachosGenerados: "",
       fechaFinalRDespachosGenerados: "",
-      loadingTableUnidadesRecibosVehiculoProduccion :false,
+      loadingTableUnidadesRecibosVehiculoProduccion: false,
       tableDataDetalleReciboPAgoVehiculoProduccion: [],
       optionsUnidadesProduccionPagosVehiculo: [],
       optionsCobradoresProduccionPagosVehiculo: [],
       tableDataDespachosGenerados: [],
       loadingDespachosGenerados: false,
+      oSwitchOrdenarSalidasDespachoPanelBusqueda:false,
       RecibosWorksheetExcelRDespachosGenerados: "",
       RecibosFileNameExcelRDespachosGenerados: "",
       json_fields_excelRDespachosGenerados: {
-        "FECHA": "Fecha",
-        "RUTA": "LetraRutaSali_m",
-        "DATE": "Fecha1",
-        "UNIDAD": "Unidad",
-        "RUTA DETALLE": "NombreRuta",
-        "TURNO": "Turno",
+        FECHA: "Fecha",
+        RUTA: "LetraRutaSali_m",
+        DATE: "Fecha",
+        UNIDAD: "CodiVehiSali_m",
+        "RUTA DETALLE": "DescRutaSali_m",
+        TURNO: "Turno",
         "VUELTAS PROGAMADA": "V_PROG",
         "VUELTAS EJECUTADAS": "V_EJEC",
-        "KMS RUTA": "KMSTOTAL",
-        "KMS EJECUTADOS": "KMSRUTA",
-        "KMS TOTALES":"Odometro",
+        "KMS RUTA": "KMS_RUTA",
+        "KMS EJECUTADOS": "KMS_EJEC",
+        "KMS TOTALES": "KMSTOTAL",
         "PASAJEROS SUBIDA": "PASS_SUB",
-        "COLECCIÓN": "Coleccion",
+        COLECCIÓN: "Coleccion",
         "DEPÓSITO TOTAL": "DepositoTotal",
-        "MINUTOS ATRASO": "MinAtraso",
-        "MINUTOS ADELANTO": "MinAdelanto",
+        "MINUTOS ATRASO": "atraso",
+        "MINUTOS ADELANTO": "adelanto",
         "CONDUCTOR MAÑANA": "ConductorManana",
         "CONDUCTOR OPCIONAL": "ConductorTarde",
         "AYUDANTE MAÑANA": "AyudanteManana",
@@ -251,7 +337,7 @@ export default {
         "CANTIDAD INCIDENCIAS": "CantidadIncidencias",
         "EXCESO VELOCIDAD": "ExcesoVelocidad",
       },
-    }
+    };
   },
   methods: {
     remoteMethodUnidadesRecibosProduccion(query) {
@@ -300,75 +386,92 @@ export default {
       }
     },
     async readAllRutasIndicadoresCalidad() {
-      this.mListaRutasIndicadoresCalidad = []
+      this.mListaRutasIndicadoresCalidad = [];
 
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
-        tipo: 1
+        tipo: 1,
       });
 
-      if (datos.data.status_code == 200) 
-      {
-        this.mListaRutasIndicadoresCalidad.push(...datos.data.data)
+      if (datos.data.status_code == 200) {
+        this.mListaRutasIndicadoresCalidad.push(...datos.data.data);
       }
     },
     getNombresRutasRDespachosGenerados() {
-      var mlist = []
+      var mlist = [];
       for (var j = 0; j < this.itemRutasRDespachosGenerados.length; j++) {
-        for (var i = 0; i < this.mListaRutasIndicadoresCalidad.length; i++) 
-        {
-          if (this.itemRutasRDespachosGenerados[j] ==  this.mListaRutasIndicadoresCalidad[i].LetrRuta)
-          {
-            mlist.push(this.mListaRutasIndicadoresCalidad[i].DescRuta)
+        for (var i = 0; i < this.mListaRutasIndicadoresCalidad.length; i++) {
+          if (
+            this.itemRutasRDespachosGenerados[j] ==
+            this.mListaRutasIndicadoresCalidad[i].LetrRuta
+          ) {
+            mlist.push(this.mListaRutasIndicadoresCalidad[i].DescRuta);
           }
         }
       }
-      return mlist
+      return mlist;
     },
     async readDespachosGenerados() {
-      this.loadingDespachosGenerados = true
-      this.RecibosWorksheetExcelRDespachosGenerados = "RDG_W_" + Date.now()
-      this.RecibosFileNameExcelRDespachosGenerados = "RDG_" + Date.now() + ".xls"
-      this.tableDataDespachosGenerados = []
+      this.loadingDespachosGenerados = true;
+      this.RecibosWorksheetExcelRDespachosGenerados = "RDG_W_" + Date.now();
+      this.RecibosFileNameExcelRDespachosGenerados =
+        "RDG_" + Date.now() + ".xls";
+      this.tableDataDespachosGenerados = [];
       try {
-        var datos = await this.$axios.post(process.env.baseUrl + "/rDespachosGenerados", {
-          token: this.token,
-          unidades: this.itemUnidadRDespachosGenerados.length <= 0 ? "*" : this.itemUnidadRDespachosGenerados,
-          rutas: this.itemRutasRDespachosGenerados.length <= 0 ? "*" : this.itemRutasRDespachosGenerados,
-          fechaI: this.fechaInicialRDespachosGenerados + " 05:00:00",
-          fechaF: this.fechaFinalRDespachosGenerados + " 23:59:59"
-        })
-        if (datos.data.status_code == 200) {
-          
-          for(var i = 0;i<datos.data.datos.length;i++)
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/rDespachosGenerados",
           {
-            datos.data.datos[i].Turno = i + 1            
+            token: this.token,
+            unidades:
+              this.itemUnidadRDespachosGenerados.length <= 0
+                ? "*"
+                : this.itemUnidadRDespachosGenerados,
+            rutas:
+              this.itemRutasRDespachosGenerados.length <= 0
+                ? "*"
+                : this.itemRutasRDespachosGenerados,
+            fechaI: this.fechaInicialRDespachosGenerados,
+            fechaF: this.fechaFinalRDespachosGenerados,
+          }
+        );
+        if (datos.data.status_code == 200) {
+          for (var i = 0; i < datos.data.datos.length; i++) {
+            datos.data.datos[i].Turno = i + 1;
           }
 
-          this.tableDataDespachosGenerados.push(...datos.data.datos)
-
-
+          this.tableDataDespachosGenerados.push(...datos.data.datos);
 
           this.RecibosheaderExcelRDespachosGEnerados = [
             "Reporte Despachos Generados",
-            "Fechas : " + this.fechaInicialRDespachosGenerados + " hasta " + this.fechaFinalRDespachosGenerados,
-            "Unidades : " + (this.itemUnidadRDespachosGenerados.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadRDespachosGenerados),
-            "Rutas : " + (this.itemRutasRDespachosGenerados.length <= 0 ? "TODAS LAS RUTAS" : this.getNombresRutasRDespachosGenerados(this.itemRutasRDespachosGenerados)),
-          ]
+            "Fechas : " +
+              this.fechaInicialRDespachosGenerados +
+              " hasta " +
+              this.fechaFinalRDespachosGenerados,
+            "Unidades : " +
+              (this.itemUnidadRDespachosGenerados.length <= 0
+                ? "TODAS LAS UNIDADES"
+                : this.itemUnidadRDespachosGenerados),
+            "Rutas : " +
+              (this.itemRutasRDespachosGenerados.length <= 0
+                ? "TODAS LAS RUTAS"
+                : this.getNombresRutasRDespachosGenerados(
+                    this.itemRutasRDespachosGenerados
+                  )),
+          ];
         } else {
           this.$notify({
-            title: 'Despachos Generados',
-            message: 'No existen datos disponibles.'
-          })
+            title: "Despachos Generados",
+            message: "No existen datos disponibles.",
+          });
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-      this.loadingDespachosGenerados = false
-    }
+      this.loadingDespachosGenerados = false;
+    },
   },
   mounted() {
-    this.readAllRutasIndicadoresCalidad()
+    this.readAllRutasIndicadoresCalidad();
     this.readAllUnidadesPagosVehiculoProduccionRecibo();
     this.initFechaActualProduccionRPAgosVehiculoRecibo();
   },
@@ -378,7 +481,6 @@ export default {
 .card-bodyRPagosVehiculoReciboProduccion::-webkit-scrollbar {
   display: none;
 }
-
 
 .form-group {
   margin-bottom: 0rem;

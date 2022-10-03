@@ -684,7 +684,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE SALIDAS DETALLADAS",
+                      text: "REPORTE CONTEO DE PASAJEROS DIARIO",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,

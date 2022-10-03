@@ -283,12 +283,12 @@ export default {
         },
         {
           prop: "atrasoFaltasTime",
-          label: "F. Atrasos",
+          label: "T. Atrasos",
           minWidth: 170,
         },
         {
           prop: "adelantoFaltasTime",
-          label: "F. Adelantos",
+          label: "T. Adelantos",
           minWidth: 170,
         },
       ],
@@ -308,8 +308,8 @@ export default {
         "Detalle Control": "DescCtrl",
         "Hora Programada": "HoraProgSali_d",
         "Hora Marcación": "HoraMarcSali_d",
-        "Faltas Atrasos": "atrasoFaltasTime",
-        "Faltas Adelantos": "adelantoFaltasTime",
+        "Tiempo Atrasos": "atrasoFaltasTime",
+        "Tiempo Adelantos": "adelantoFaltasTime",
         "PENALIDAD $": "PenaCtrlSali_d",
       },
     };

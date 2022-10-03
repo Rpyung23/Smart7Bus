@@ -43,7 +43,7 @@
               </flat-picker>
             </base-input>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
               <flat-picker
                 slot-scope="{ focus, blur }"
                 @on-open="focus"
@@ -54,6 +54,15 @@
               >
               </flat-picker>
             </base-input>
+
+            <el-switch
+              v-model="oSwitchOrdenarSalidasDespachoPanelBusqueda"
+              active-text="ORDENAR POR UNIDAD"
+              inactive-text=""
+            >
+            </el-switch>
+
+
           </div>
 
           <div
@@ -415,6 +424,7 @@ import {
   Popover,
   Button,
   Loading,
+  Switch
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -437,6 +447,7 @@ export default {
     BasePagination,
     flatPicker,
     RouteBreadCrumb,
+    [Switch.name]:Switch,
     [DatePicker.name]: DatePicker,
     [Select.name]: Select,
     [Option.name]: Option,
@@ -535,6 +546,7 @@ export default {
       mListPosicionesHistorialSalidasPanelBusqueda: [],
       mListPosicionesHistorialMarcSalidasPanelBusqueda: [],
       isVisibleRecorrido: false,
+      oSwitchOrdenarSalidasDespachoPanelBusqueda:false,
       filaSelectionCurrentSalidaPanelBusqueda: null,
       isLoadingRecorridoSalidaPanelBusqueda: false,
       modalSalidasTarjetaPanelDespachoBusqueda: false,
