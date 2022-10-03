@@ -901,11 +901,13 @@ export default {
         );
 
         if (datos.data.status_code == 200) {
-          for (var i = 0; i < datos.data.datos[0].polilineasRutaSubida.length; i++) {
-            this.mListRutaSubida.push(datos.data.datos[0].polilineasRutaSubida[i])
+          console.log("datos")
+          console.log(datos.data.datos.polilineasRutaSubida)
+          for (var i = 0; i < datos.data.datos.polilineasRutaSubida.length; i++) {
+            this.mListRutaSubida.push(datos.data.datos.polilineasRutaSubida[i])
           }
-          for (var j = 0; j < datos.data.datos[0].polilineasRutaBajada.length; j++) {
-            this.mListRutaBajada.push(datos.data.datos[0].polilineasRutaBajada[j])
+          for (var j = 0; j < datos.data.datos.polilineasRutaBajada.length; j++) {
+            this.mListRutaBajada.push(datos.data.datos.polilineasRutaBajada[j])
           }
           
         }
