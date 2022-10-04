@@ -445,6 +445,8 @@
           <el-table
               :data="mList"
               highlight-current-row
+              v-loading="loadingTableroJustificacion"
+              element-loading-text="Cargando Datos..."
               ref="singleTable"
               row-key="id"
               @current-change="selectionChange"
@@ -563,6 +565,8 @@
               :data="mList"
               highlight-current-row
               ref="singleTable"
+              v-loading="loadingTableroJustificacion"
+              element-loading-text="Cargando Datos..."
               row-key="id"
               @current-change="selectionChange"
               :row-class-name="tableRowClassNameJustificado"
@@ -871,6 +875,7 @@ export default {
       dataAdapter: new jqx.dataAdapter([]),
       dataAdapterOtros: new jqx.dataAdapter([]),
       getWidth: "100%",
+      loadingTableroJustificacion:false,
 
       valida: 0,
       columnsInfo: [
@@ -1302,6 +1307,7 @@ export default {
     },
     async readDetalleTableroProduccion(item) {
       this.mList = [];
+      this.loadingTableroJustificacion = true
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/ProduccionDetallePanelControl",
@@ -1320,6 +1326,9 @@ export default {
       } catch (error) {
         this.mList = [];
       }
+
+      this.loadingTableroJustificacion = false
+
       //this.$refs.myGridDespachoPanel.clearselection();
       /*var obj = {
         localdata: mList,
@@ -1701,7 +1710,9 @@ export default {
       this.isVisibleTableroAnotaciones = false
     }
 
-    if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel' || this.oEmpresa == 'tatahualpa')
+    if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel' 
+          || this.oEmpresa == 'tatahualpa' || this.oEmpresa == 'cazul'
+          || this.oEmpresa == 'cotopaxi')
     {
       //trabaja por vueltas
       this.isRecorridoPorVueltas = true
