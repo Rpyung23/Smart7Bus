@@ -76,7 +76,7 @@
             <el-switch
               v-model="oSwitchOrdenarSalidasDespachoPanelBusqueda"
               active-text="ORDERNADOR POR UNIDAD"
-              inactive-text="ORDERNADOR POR H.SALIDA"
+              inactive-text=""
             >
             </el-switch>
           </div>
