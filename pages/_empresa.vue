@@ -108,18 +108,22 @@ export default {
     let empresa = params.empresa;
     var empresa_name = null;
     let logo_empresa = ""
+    let oPermisosWebProduccionJSON = null
     try {
       var datos = await axios_.post(
         process.env.baseUrl +"/" + empresa + "/infoEmpresa"
       );
       
+      console.log(datos.data.data)
+      oPermisosWebProduccionJSON = datos.data.data.web.produccion
       empresa_name = datos.data.data.name;
       logo_empresa = datos.data.data.logo;
+
     } catch (error) {
       console.log(error)
       empresa_name = error.toString();
     }
-    return { empresa, empresa_name,logo_empresa };
+    return { empresa, empresa_name,logo_empresa,oPermisosWebProduccionJSON};
   },
   head() {
     return {
@@ -131,6 +135,7 @@ export default {
       user: "",
       pass: "",
       app: this,
+      oPermisosWebProduccionJSON:null,
       sub_empresa_texto: this.empresa_name,
       context: this,
       model: {
@@ -141,8 +146,9 @@ export default {
     };
   },
   methods: {
-    async OnLogin() {
-
+    async OnLogin() 
+    {
+      
       if (this.model.email != "" && this.model.password != "") {
 
         var api =
@@ -172,6 +178,7 @@ export default {
               this.$cookies.set("permisos",obj.permisos)
               this.$cookies.set("namesUsuario",obj.names)
               this.$cookies.set("logo",this.logo_empresa)
+              this.$cookies.set("WebProduccion",this.oPermisosWebProduccionJSON)
               this.$router.push("/monitoreo");
               
             }

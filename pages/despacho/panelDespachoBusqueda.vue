@@ -43,7 +43,10 @@
               </flat-picker>
             </base-input>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+            <base-input
+              addon-left-icon="ni ni-calendar-grid-58"
+              style="margin-right: 0.5rem"
+            >
               <flat-picker
                 slot-scope="{ focus, blur }"
                 @on-open="focus"
@@ -61,8 +64,6 @@
               inactive-text=""
             >
             </el-switch>
-
-
           </div>
 
           <div
@@ -406,6 +407,7 @@ import tarjetaA4 from "../../components/tarjetas/tarjetaA4.vue";
 import tarjeta from "../../components/tarjetas/tarjeta.vue";
 import flatPicker from "vue-flatpickr-component";
 import { getBase64LogoReportes } from "../../util/logoReport";
+import { convertSecondtoTimeString } from "../../util/fechas";
 import "flatpickr/dist/flatpickr.css";
 
 import {
@@ -424,7 +426,7 @@ import {
   Popover,
   Button,
   Loading,
-  Switch
+  Switch,
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -447,7 +449,7 @@ export default {
     BasePagination,
     flatPicker,
     RouteBreadCrumb,
-    [Switch.name]:Switch,
+    [Switch.name]: Switch,
     [DatePicker.name]: DatePicker,
     [Select.name]: Select,
     [Option.name]: Option,
@@ -546,7 +548,7 @@ export default {
       mListPosicionesHistorialSalidasPanelBusqueda: [],
       mListPosicionesHistorialMarcSalidasPanelBusqueda: [],
       isVisibleRecorrido: false,
-      oSwitchOrdenarSalidasDespachoPanelBusqueda:false,
+      oSwitchOrdenarSalidasDespachoPanelBusqueda: false,
       filaSelectionCurrentSalidaPanelBusqueda: null,
       isLoadingRecorridoSalidaPanelBusqueda: false,
       modalSalidasTarjetaPanelDespachoBusqueda: false,
@@ -631,6 +633,8 @@ export default {
                 this.radioEstadoRSalidasPanelBusqueda.length <= 0
                   ? "*"
                   : this.radioEstadoRSalidasPanelBusqueda,
+              orderUnidad:
+                this.oSwitchOrdenarSalidasDespachoPanelBusqueda == true ? 1 : 0,
             }
           );
 
@@ -688,14 +692,21 @@ export default {
       this.modalSalidasTarjetaPanelDespachoBusqueda = true;
       this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida);
     },
-    showTarjetaSalidasPanelBusquedaA4(salida)
-    {
-      console.log(salida)
+    showTarjetaSalidasPanelBusquedaA4(salida) {
+      console.log(salida);
       this.modalSalidasTarjetaPanelDespachoBusquedaA4 = true;
       this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusqueda(salida);
     },
 
     async exportPdfSalidasPanelBusqueda() {
+      let totalPenalidad = 0;
+      let totalTimeAdelantos = 0;
+      let totalTimeAtrasos = 0;
+
+      var totalPenalidadLocal = 0;
+          var totalTimeAdelantosLocal = 0;
+          var totalTimeAtrasosLocal = 0;
+
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
@@ -848,82 +859,330 @@ export default {
         ],
       ];
 
-      for (var i = 0; i < this.mListaSalidasPanelBusqueda.length; i++) {
-        var estado =
-          this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1
-            ? "DIFERIDA"
-            : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 4
-            ? "ANULADO"
-            : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
-            ? "EN RUTA"
-            : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
-              parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d) > 0
-            ? "FINALIZADO CON PENALIDAD"
-            : "FINALIZADA SIN PENALIDAD";
-        var arrys = [
-          {
-            text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
-            alignment: "center",
-            fontSize: 8.5,
-          } /*,
-          {
-            text: this.mListaSalidasPanelBusqueda[i].idSali_m,
-            alignment: "center",
-            fontSize: 8.5,
-          }*/,
-          {
-            text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].NumeVuelSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].HoraSaliProgSali_mF,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].HoraLlegProgSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].adelantoFaltasTime,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].VeloMaxiSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          /*{
-            text: this.mListaSalidasPanelBusqueda[i].atrasoFaltas,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListaSalidasPanelBusqueda[i].adelantoFaltas,
-            fontSize: 8.5,
-            alignment: "center",
-          },*/
-          {
-            text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
-            fontSize: 8.5,
-            alignment: "center",
-          } /*,
-          { text: estado, fontSize: 7.5 },*/,
-        ];
-        resultadoString.push(arrys);
+      if (this.oSwitchOrdenarSalidasDespachoPanelBusqueda || this.itemUnidadSalidasPanelBusqueda.length == 1) 
+      {
+        for (var i = 0; i < this.mListaSalidasPanelBusqueda.length; i++) {
+ 
+          totalPenalidad =
+            totalPenalidad +
+            parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d);
+          totalTimeAdelantos =
+            totalTimeAdelantos +
+            parseInt(this.mListaSalidasPanelBusqueda[i].adelantoFaltas);
+          totalTimeAtrasos =
+            totalTimeAtrasos +
+            parseInt(this.mListaSalidasPanelBusqueda[i].atrasoFaltas);
+
+          totalPenalidadLocal =
+            totalPenalidadLocal +
+            parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d);
+          totalTimeAdelantosLocal =
+            totalTimeAdelantosLocal +
+            parseInt(this.mListaSalidasPanelBusqueda[i].adelantoFaltas);
+          totalTimeAtrasosLocal =
+            totalTimeAtrasosLocal +
+            parseInt(this.mListaSalidasPanelBusqueda[i].atrasoFaltas);
+
+          var estado =
+            this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1
+              ? "DIFERIDA"
+              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 4
+              ? "ANULADO"
+              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
+              ? "EN RUTA"
+              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
+                parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d) >
+                  0
+              ? "FINALIZADO CON PENALIDAD"
+              : "FINALIZADA SIN PENALIDAD";
+          var arrys = [
+            {
+              text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
+              alignment: "center",
+              fontSize: 8.5,
+              
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].NumeVuelSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].HoraSaliProgSali_mF,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].HoraLlegProgSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].adelantoFaltasTime,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].VeloMaxiSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+          ];
+          resultadoString.push(arrys);
+          if (i < this.mListaSalidasPanelBusqueda.length - 1) {
+            if (
+              this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m !=
+              this.mListaSalidasPanelBusqueda[i + 1].CodiVehiSali_m
+            ) {
+              resultadoString.push([
+                {
+                  text: "",
+                  fontSize: 9,
+                  bold: true,
+                  fillColor: "#039BC4",
+              color: "white",
+                  alignment: "center",
+                },
+                {
+                  text: "",
+                  fontSize: 9,
+                  bold: true,
+                  fillColor: "#039BC4",
+              color: "white",
+                  alignment: "center",
+                },
+                {
+                  text: "",
+                  fontSize: 9,
+                  bold: true,
+                  fillColor: "#039BC4",
+              color: "white",
+                  alignment: "center",
+                },
+                {
+                  text: "",
+                  fontSize: 9,
+                  bold: true,
+                  fillColor: "#039BC4",
+              color: "white",
+                  alignment: "center",
+                },
+                {
+                  text: "TOTALES",
+                  fontSize: 9,
+                  bold: true,
+                  fillColor: "#039BC4",
+              color: "white",
+                  alignment: "center",
+                },
+                {
+                  text: convertSecondtoTimeString(totalTimeAtrasosLocal * 60),
+                  fontSize: 9,
+                  bold: true,
+                  fillColor: "#039BC4",
+              color: "white",
+                  alignment: "center",
+                },
+                {
+                  text: convertSecondtoTimeString(totalTimeAdelantosLocal * 60),
+                  fontSize:9,
+                  bold: true,
+                  fillColor: "#039BC4",
+              color: "white",
+                  alignment: "center",
+                },
+                {
+                  text: "",
+                  fontSize: 9,
+                  bold: true,
+                  fillColor: "#039BC4",
+              color: "white",
+                  alignment: "center",
+                },
+
+                {
+                  text: Number(totalPenalidadLocal).toFixed(2),
+                  fontSize: 9,
+                  bold: true,
+                  fillColor: "#039BC4",
+              color: "white",
+                  alignment: "center",
+                },
+              ]);
+              totalPenalidadLocal = 0;
+            totalTimeAdelantosLocal = 0;
+            totalTimeAtrasosLocal = 0;
+            }
+          } else {
+            resultadoString.push([
+              {
+                text: "",
+                fontSize: 9,
+                bold: true,
+                fillColor: "#039BC4",
+              color: "white",
+                alignment: "center",
+              },
+              {
+                text: "",
+                fontSize: 9,
+                bold: true,
+                fillColor: "#039BC4",
+              color: "white",
+                alignment: "center",
+              },
+              {
+                text: "",
+                fontSize: 9,
+                bold: true,
+                fillColor: "#039BC4",
+              color: "white",
+                alignment: "center",
+              },
+              {
+                text: "",
+                fontSize: 9,
+                bold: true,
+                fillColor: "#039BC4",
+              color: "white",
+                alignment: "center",
+              },
+              {
+                text: "TOTALES",
+                fontSize: 9,
+                bold: true,
+                fillColor: "#039BC4",
+              color: "white",
+                alignment: "center",
+              },
+              {
+                text: convertSecondtoTimeString(totalTimeAtrasosLocal * 60),
+                fontSize: 9,
+                bold: true,
+                fillColor: "#039BC4",
+              color: "white",
+                alignment: "center",
+              },
+              {
+                text: convertSecondtoTimeString(totalTimeAdelantosLocal * 60),
+                fontSize: 9,
+                bold: true,
+                fillColor: "#039BC4",
+              color: "white",
+                alignment: "center",
+              },
+              {
+                text: "",
+                fontSize: 9,
+                bold: true,
+                fillColor: "#039BC4",
+              color: "white",
+                alignment: "center",
+              },
+
+              {
+                text: Number(totalPenalidadLocal).toFixed(2),
+                fontSize: 9,
+                bold: true,
+                fillColor: "#039BC4",
+              color: "white",
+                alignment: "center",
+              },
+            ])
+
+            totalPenalidadLocal = 0;
+            totalTimeAdelantosLocal = 0;
+            totalTimeAtrasosLocal = 0;
+          }
+        }
+      } else {
+        for (var i = 0; i < this.mListaSalidasPanelBusqueda.length; i++) {
+          totalPenalidad =
+            totalPenalidad +
+            parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d);
+          totalTimeAdelantos =
+            totalTimeAdelantos +
+            parseInt(this.mListaSalidasPanelBusqueda[i].adelantoFaltas);
+          totalTimeAtrasos =
+            totalTimeAtrasos +
+            parseInt(this.mListaSalidasPanelBusqueda[i].atrasoFaltas);
+
+          var estado =
+            this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1
+              ? "DIFERIDA"
+              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 4
+              ? "ANULADO"
+              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
+              ? "EN RUTA"
+              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
+                parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d) >
+                  0
+              ? "FINALIZADO CON PENALIDAD"
+              : "FINALIZADA SIN PENALIDAD";
+          var arrys = [
+            {
+              text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
+              alignment: "center",
+              fontSize: 8.5,
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].NumeVuelSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].HoraSaliProgSali_mF,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].HoraLlegProgSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].adelantoFaltasTime,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].VeloMaxiSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+          ];
+          resultadoString.push(arrys);
+        }
       }
 
       /**
@@ -1008,6 +1267,69 @@ export default {
               headerRows: 0,
               widths: [30, 170, 35, 85, 50, 50, 50, 35, 35],
               body: resultadoString,
+            },
+          },
+          {
+            text: ".",
+            fontSize: 6,
+            bold: true,
+            color: "white",
+            alignment: "center",
+          },
+          {
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [80, 80, 80],
+              body: [
+                [
+                  {
+                    text: "TOTAL ATRASOS",
+                    fontSize: 8.5,
+                    bold: true,
+                    fillColor: "#039BC4",
+                    color: "white",
+                    alignment: "center",
+                  },
+                  {
+                    text: "TOTAL ADELANTOS",
+                    fontSize: 8.5,
+                    bold: true,
+                    fillColor: "#039BC4",
+                    color: "white",
+                    alignment: "center",
+                  },
+                  {
+                    text: "T. PENALIDAD ($)",
+                    fontSize: 8.5,
+                    bold: true,
+                    fillColor: "#039BC4",
+                    color: "white",
+                    alignment: "center",
+                  },
+                ],
+                [
+                  {
+                    text: convertSecondtoTimeString(totalTimeAtrasos * 60),
+                    fontSize: 9.5,
+                    bold: true,
+                    alignment: "center",
+                  },
+                  {
+                    text: convertSecondtoTimeString(totalTimeAdelantos * 60),
+                    fontSize: 9.5,
+                    bold: true,
+                    alignment: "center",
+                  },
+                  {
+                    text: Number(totalPenalidad).toFixed(2),
+                    fontSize: 9.5,
+                    bold: true,
+                    alignment: "center",
+                  },
+                ],
+              ],
             },
           },
         ],

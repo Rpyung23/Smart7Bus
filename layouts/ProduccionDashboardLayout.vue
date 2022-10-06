@@ -8,7 +8,7 @@
           :link="{
             name: 'Tablero',
             icon: 'ni ni-collection text-default',
-            path: './tablero',
+            path: ( oPermisosWebProduccionPanelJSON != null && oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroVueltas' :  './tablero',
           }"
         >
         </sidebar-item>
@@ -114,6 +114,12 @@ export default {
     DashboardNavbar,
     DashboardContent,
   },
+  data()
+  {
+    return {
+      oPermisosWebProduccionPanelJSON:null
+    }
+  },
   methods: {
     initScrollbar() {
       let isWindows = navigator.platform.startsWith("Win");
@@ -125,6 +131,7 @@ export default {
     },
   },
   mounted() {
+    this.oPermisosWebProduccionPanelJSON = this.$cookies.get("WebProduccion")
     this.initScrollbar();
   },
 };

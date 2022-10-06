@@ -59,7 +59,7 @@
               </flat-picker>
             </base-input>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
+            <base-input style="margin-right: 0.5rem" addon-left-icon="ni ni-calendar-grid-58">
               <flat-picker
                 slot-scope="{ focus, blur }"
                 @on-open="focus"
@@ -73,12 +73,7 @@
 
             <!-- DOWNLOAD EXCEL-->
 
-            <el-switch
-              v-model="oSwitchOrdenarSalidasDespachoPanelBusqueda"
-              active-text="ORDERNADOR POR UNIDAD"
-              inactive-text=""
-            >
-            </el-switch>
+  
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
@@ -310,7 +305,6 @@ export default {
       optionsCobradoresProduccionPagosVehiculo: [],
       tableDataDespachosGenerados: [],
       loadingDespachosGenerados: false,
-      oSwitchOrdenarSalidasDespachoPanelBusqueda:false,
       RecibosWorksheetExcelRDespachosGenerados: "",
       RecibosFileNameExcelRDespachosGenerados: "",
       json_fields_excelRDespachosGenerados: {

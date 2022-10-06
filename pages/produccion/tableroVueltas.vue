@@ -93,19 +93,6 @@
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: dark; margin-right: 0.5rem"
-              >Recaudado :
-              {{
-                (
-                  parseFloat(mPagadoRPagosVehiculo) +
-                  parseFloat(mJustificadoRPagosVehiculo)
-                ).toFixed(2)
-              }}
-              $</strong
-            >
-            <strong style="color: lightseagreen; margin-right: 0.5rem"
-              >Descuentos : {{ mJustificadoRPagosVehiculo }} $</strong
-            >
             <strong style="color: green; margin-right: 0.5rem"
               >Total : {{ mPagadoRPagosVehiculo }} $</strong
             >
@@ -132,7 +119,7 @@
             >
               <el-table-column
                 label="Acciones"
-                :minWidth="'220'"
+                :minWidth="'150'"
               >
                 <template slot-scope="scope">
                   <base-button
@@ -144,7 +131,6 @@
                   ></base-button>
 
                   <base-button
-                    v-if="isRecorridoPorVueltas ? false : true"
                     size="sm"
                     @click="
                       showVisibleModalRecorridoTableroProduccion(scope.row)
@@ -153,57 +139,17 @@
                     type="success"
                     ><i class="ni ni-world"></i>
                   </base-button>
-
-                  <el-popover
-                    slot="refPopoverCodigoSalidas"
-                    v-if="isRecorridoPorVueltas"
-                    title=""
-                    @show="oClickDropdownSalidasCodigo(scope.row)"
-                    placement="right"
-                    trigger="click"
-                  >
-
-
-                  
-
-                  <div v-if="loadingCodigoSalidasFrecuenciasControles" class="circleProgressMini"></div>
-
-                    <a
-                      class="dropdown-item"
-                      v-for="item in mListCodigoSalidasProduccion"
-                      :key="item.idSali_m"
-                      href="#"
-                      @click.prevent="
-                        showVisibleModalRecorridoTableroProduccion(item)
-                      "
-                      >Unidad : {{ item.CodiVehiSali_m }} Salida :
-                      {{ item.idSali_m }} Vuelta : {{ item.NumeVuelSali_m }}</a
-                    >
-
-                    <base-button
-                      slot="reference"
-                      title="RECORRIDO SALIDAS"
-                      size="sm"
-                      type="success"
-                      ><i class="ni ni-world"></i
-                    ></base-button>
-                  </el-popover>
-
-                  <base-button
-                    size="sm"
-                    v-if="scope.row.VelocidadPenalidad != '0.00' ? true : false"
-                    @click="
-                      showVisibleModalExVelocidadTableroProduccion(scope.row)
-                    "
-                    title="Excesos de Velocidad"
-                    type="danger"
-                    ><i class="ni ni-delivery-fast"></i>
-                  </base-button>
                 </template>
               </el-table-column>
 
-              <el-table-column prop="Unidad" label="Unidad" minWidth="110">
+              <el-table-column prop="CodiVehiSali_m" label="Unidad" minWidth="110">
               </el-table-column>
+
+              <el-table-column prop="NumeVuelSali_m" label="N° Vuelta" minWidth="150">
+              </el-table-column>
+
+              
+
               <el-table-column
                 prop="DeudaTotal"
                 sortable
@@ -217,47 +163,34 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="AdelantoTiempo"
-                label="Min. Adelantos"
-                minWidth="160"
-              >
-              </el-table-column>
-              <el-table-column
                 prop="AtrasoTiempo"
                 label="Min. Atrasos"
                 minWidth="150"
               >
               </el-table-column>
+
               <el-table-column
-                prop="AdelantoPenalidad"
-                label="Adelantos ($)"
+                prop="HoraSaliProgSali_mF"
+                label="H. Salida"
+                minWidth="180"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="HoraLlegProgSali_m"
+                label="H. Llegada"
                 minWidth="150"
               >
               </el-table-column>
+
+
               <el-table-column
-                prop="AtrasoPenalidad"
-                label="Atrasos ($)"
-                minWidth="140"
+                prop="DescRutaSali_m"
+                label="Detalle Ruta"
+                minWidth="300"
               >
               </el-table-column>
-              <el-table-column
-                prop="TarjetaDiaria"
-                label="Tarjeta ($)"
-                minWidth="130"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="VelocidadPenalidad"
-                label="Ex. Velocidad ($)"
-                minWidth="170"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="RubroPenalidad"
-                label="Rubros ($)"
-                minWidth="150"
-              >
-              </el-table-column>
+
 
               <div slot="empty"></div>
             </el-table>
@@ -386,180 +319,7 @@
               ></base-button>
             </div>
           </div>
-         <!-- Tabla de Anotaciones-->
-         <!--<JqxGrid
-            v-if="isVisibleTableroAnotaciones"
-            ref="myGridDespachoPanelOtros"
-            :height="'150px'"
-            :columns="columnsInfoOtros"
-            :source="dataAdapterOtros"
-            :enabletooltips="true"
-            :width="getWidth"
-          >
-          </JqxGrid>-->
 
-          <el-table
-              :data="mListOtros"
-              row-key="id"
-              class="tablePanelControlRubrosProduccion"
-              header-row-class-name="thead-dark"
-              height="10rem"
-              style="width:100%;"
-              v-if="isVisibleTableroAnotaciones"
-            >
-              <el-table-column prop="fecha_creacion" label="Hora" minWidth="200">
-              </el-table-column>
-             
-              <el-table-column
-                prop="descripcion"
-                label="Rubro"
-                minWidth="150"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="anotaciones"
-                label="Nota"
-                minWidth="700"
-              >
-              </el-table-column>
-              <div slot="empty">
-                <span>No existe datos</span>
-              </div>
-            </el-table>
-
-          <br
-            v-if="isVisibleTableroAnotaciones"
-          />
-          
-          <!--<JqxGrid
-            ref="myGridDespachoPanel"
-            :height="(isVisibleTableroAnotaciones ? '225px' : '350px')"
-            @rowselect="myGridOnRowSelect($event)"
-            :columns="columnsInfo"
-            :source="dataAdapter"
-            :enabletooltips="true"
-            :width="getWidth"
-          >
-          </JqxGrid>-->
-
-          <el-table
-              :data="mList"
-              highlight-current-row
-              v-loading="loadingTableroJustificacion"
-              element-loading-text="Cargando Datos..."
-              ref="singleTable"
-              row-key="id"
-              @current-change="selectionChange"
-              :row-class-name="tableRowClassNameJustificado"
-              class="tablePanelControlRubrosProduccion"
-              :style="isVisibleTableroAnotaciones != true ? 'display:none;' : ''"
-              height="14rem"
-              style="width:100%;"
-            >
-        
-              <el-table-column prop="Numero" label="Número" minWidth="100">
-              </el-table-column>
-             
-              <el-table-column
-                prop="DescripcionControl"
-                label="Control"
-                minWidth="200"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="NumeVuelSali_m"
-                label="Vuelta"
-                minWidth="100"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Programado"
-                label="Prog"
-                minWidth="90"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Marcado"
-                label="Marc"
-                minWidth="90"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AtrasoFTiempo"
-                label="Atraso Tiempo"
-                minWidth="110"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AdelantoFTiempo"
-                label="Adelanto Tiempo"
-                minWidth="125"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AtrasoJTiempo"
-                label="Atraso Jus."
-                minWidth="150"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AdelantoJTiempo"
-                label="Adelanto Jus."
-                minWidth="150"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="RubroFalta"
-                label="Rubros"
-                minWidth="60"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="RubroJustificacion"
-                label="Rubros Jus."
-                minWidth="100"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="VelocidadFalta"
-                label="Velo"
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="VelocidadJustificacion"
-                label="Velo Jus."
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="TarjetaTrabajo"
-                label="Tarjeta"
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="NombApellUsua"
-                label="Usuario Justificador"
-                minWidth="250"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Motivo"
-                label="Motivo"
-                minWidth="250"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Notas"
-                label="Notas"
-                minWidth="260"
-              >
-              </el-table-column>
-              <div slot="empty">
-                <span>No existe datos</span>
-              </div>
-            </el-table>
 
           <el-table
               :data="mList"
@@ -571,16 +331,15 @@
               @current-change="selectionChange"
               :row-class-name="tableRowClassNameJustificado"
               class="tablePanelControlRubrosProduccion"
-              :style="isVisibleTableroAnotaciones == true ? 'display:none;' : ''"
               height="25rem"
               style="width:100%;"
             >
         
-              <el-table-column prop="Numero" label="Número" minWidth="100">
+              <el-table-column prop="Codigo" label="Número" minWidth="100">
               </el-table-column>
              
               <el-table-column
-                prop="DescripcionControl"
+                prop="DescCtrl"
                 label="Control"
                 minWidth="200"
               >
@@ -592,13 +351,13 @@
               >
               </el-table-column>
               <el-table-column
-                prop="Programado"
+                prop="HoraProgSali_d"
                 label="Prog"
                 minWidth="90"
               >
               </el-table-column>
               <el-table-column
-                prop="Marcado"
+                prop="HoraMarcSali_d"
                 label="Marc"
                 minWidth="90"
               >
@@ -610,53 +369,19 @@
               >
               </el-table-column>
               <el-table-column
-                prop="AdelantoFTiempo"
-                label="Adelanto Tiempo"
-                minWidth="125"
-              >
-              </el-table-column>
-              <el-table-column
                 prop="AtrasoJTiempo"
                 label="Atraso Jus."
                 minWidth="150"
               >
               </el-table-column>
+
               <el-table-column
-                prop="AdelantoJTiempo"
-                label="Adelanto Jus."
-                minWidth="150"
+                prop="FechaJustifica"
+                label="F. Justificación"
+                minWidth="170"
               >
               </el-table-column>
-              <el-table-column
-                prop="RubroFalta"
-                label="Rubros"
-                minWidth="60"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="RubroJustificacion"
-                label="Rubros Jus."
-                minWidth="100"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="VelocidadFalta"
-                label="Velo"
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="VelocidadJustificacion"
-                label="Velo Jus."
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="TarjetaTrabajo"
-                label="Tarjeta"
-                minWidth="70"
-              >
-              </el-table-column>
+
               <el-table-column
                 prop="NombApellUsua"
                 label="Usuario Justificador"
@@ -667,12 +392,6 @@
                 prop="Motivo"
                 label="Motivo"
                 minWidth="250"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Notas"
-                label="Notas"
-                minWidth="260"
               >
               </el-table-column>
               <div slot="empty">
@@ -702,90 +421,7 @@
           <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
         </modal>
 
-        <!--Classic modal EX VELOCIDAD-->
-        <modal :show.sync="isExVelocidadTableroProduccion" size="xl" body-classes="p-1">
-          <template slot="header" style="background-color: #2dce89"> </template>
 
-          <GmapMap
-            map-type-id="roadmap"
-            class="mapa"
-            :center="oCenterTableroExVelocidad"
-            :zoom="oZoomTableroExVelocidad"
-            :options="{
-              zoomControl: false,
-              scaleControl: false,
-              mapTypeControl: false,
-              streetViewControl: false,
-              rotateControl: false,
-              fullscreenControl: false,
-              disableDefaultUi: true,
-            }"
-          >
-            <GmapPolygon
-              :key="index"
-              v-for="(item, index) in mListaTrazadoAllTramsExVelocidad"
-              :options="{
-                strokeColor: '#000000',
-                fillColor: '#00000040',
-                strokeOpacity: 1.0,
-                strokeWeight: 2,
-              }"
-              :editable="false"
-              :strokeOpacity="0.5"
-              :strokeWeight="1"
-              :paths="item.posiciones"
-            />
-
-            <GmapMarker
-              v-for="marker in oHistorialExVelocidad"
-              :key="marker.idHistEve"
-              :position="{
-                lat: parseFloat(marker.LatHistTrama),
-                lng: parseFloat(marker.LongHistTrama),
-              }"
-              :icon="marker.icono"
-              :clickable="false"
-              :draggable="false"
-              :optimized="true"
-            />
-
-            <!--MARCADORES CON MARCACION-->
-            <GmapMarker
-              v-for="(marker, index) in oHistorialExVelocidad"
-              :key="index"
-              :position="{
-                lat: parseFloat(marker.LatHistTrama),
-                lng: parseFloat(marker.LongHistTrama),
-              }"
-              icon="../static/img/control/control.png"
-              :clickable="false"
-              :draggable="false"
-              :optimized="true"
-              :options="{
-                label: {
-                  text:
-                    'UNIDAD : ' +
-                    marker.CodiVehiHistTrama +
-                    '... VEL : ' +
-                    marker.VeloHistTrama +
-                    ' ... FECHA : ' +
-                    marker.FechaHistTrama,
-                  color: '#c70808',
-                  className: 'paddingLabelTramaExVelocidad',
-                },
-              }"
-            />
-          </GmapMap>
-
-          <!--<div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingRecorridoSalidaPanelBusqueda">
-            <div class="circleProgress"></div>
-          </div>-->
-
-          <!--<template slot="footer">
-            <base-button type="primary">Guardar Cambios</base-button>
-            <base-button type="link" class="ml-auto" @click="modals.classic = false">Cancelar</base-button>
-          </template>-->
-        </modal>
       </div>
     </base-header>
   </div>
@@ -871,137 +507,12 @@ export default {
       itemUnidadPanelProduccion: [],
       isObservacionesTableroProduccion: false,
       isRecorridoTableroProduccion: false,
-      isExVelocidadTableroProduccion: false,
-      dataAdapter: new jqx.dataAdapter([]),
-      dataAdapterOtros: new jqx.dataAdapter([]),
+
       getWidth: "100%",
       loadingTableroJustificacion:false,
 
       valida: 0,
-      columnsInfo: [
-        {
-          text: "Numero",
-          datafield: "Numero",
-          width: 100,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Control",
-          datafield: "DescripcionControl",
-          width: 200,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Vuelta",
-          datafield: "NumeVuelSali_m",
-          width: 100,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "PROG",
-          datafield: "Programado",
-          width: 90,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "MARC",
-          datafield: "Marcado",
-          width: 90,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Atraso Tiempo",
-          datafield: "AtrasoFTiempo",
-          width: 110,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Adelanto Tiempo",
-          datafield: "AdelantoFTiempo",
-          width: 120,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Atraso Jus.",
-          datafield: "AtrasoJTiempo",
-          width: 150,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Adelanto Jus.",
-          datafield: "AdelantoJTiempo",
-          width: 150,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Rubros",
-          datafield: "RubroFalta",
-          width: 60,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Rubros Jus.",
-          datafield: "RubroJustificacion",
-          width: 100,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Velo",
-          datafield: "VelocidadFalta",
-          width: 70,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Velo Jus.",
-          datafield: "VelocidadJustificacion",
-          width: 70,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Tarjeta",
-          datafield: "TarjetaTrabajo",
-          width: 70,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Usuario Justificador",
-          datafield: "NombApellUsua",
-          width: 250,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Motivo",
-          datafield: "Motivo",
-          width: 250,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Notas",
-          datafield: "Notas",
-          width: 250,
-          cellclassname: this.cellclassname,
-        },
-      ],
-      columnsInfoOtros: [
-        {
-          text: "Hora",
-          datafield: "fecha_creacion",
-          width: 200,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Rubro",
-          datafield: "descripcion",
-          width: 150,
-          cellclassname: this.cellclassname,
-        },
-        {
-          text: "Nota",
-          datafield: "anotaciones",
-          width: 850,
-          cellclassname: this.cellclassname,
-        },
-      ],
+
       oTiempoFalta: "00:00:00",
       oPriceFalta: "0.00",
       oHora: "00",
@@ -1079,9 +590,9 @@ export default {
       this.objSeleccionado = obj;
       console.log("objSeleccionado");
       console.log(this.objSeleccionado);
-      if (obj != null && obj != undefined) {
-        if (parseInt(obj.Tipo) <= 2) {
-          this.oMotivoString = obj.Motivo;
+      if (obj != null && obj != undefined) 
+      {
+        this.oMotivoString = obj.Motivo;
           this.oPriceFalta = "00.00";
           this.oDolaresPena = "00";
           this.oCentavosPena = "00";
@@ -1102,71 +613,6 @@ export default {
           this.oBanderaSegundos = 0;
           this.oBanderaDolares = 1;
           this.oBanderaCentavos = 1;
-        } else {
-          this.oUsuarioJustificador = obj.NombApellUsua;
-          this.oMotivoString = obj.Motivo;
-
-          if (obj.RubroFalta == "0.00") {
-            if (obj.TarjetaTrabajo == "0.00") {
-              if (obj.VelocidadFalta == "0.00") {
-                this.oPriceFalta = "0.00";
-              } else {
-                this.oPriceFalta = obj.VelocidadFalta;
-                var dinero = this.oPriceFalta.split(".");
-                if (dinero[0].length == 1) {
-                  this.oDolaresPena = 0 + dinero[0];
-                } else if (this.oDolaresPena > dinero[0]) {
-                  this.oDolaresPena = dinero[0];
-                }
-                if (dinero[1].length == 1) {
-                  this.oCentavosPena = 0 + dinero[1];
-                } else if (this.oCentavosPena > dinero[1]) {
-                  this.oCentavosPena = dinero[1];
-                }
-              }
-            } else {
-              this.oPriceFalta = obj.TarjetaTrabajo;
-              var dinero = this.oPriceFalta.split(".");
-              if (dinero[0].length == 1) {
-                this.oDolaresPena = 0 + dinero[0];
-              } else if (this.oDolaresPena > dinero[0]) {
-                this.oDolaresPena = dinero[0];
-              }
-              if (dinero[1].length == 1) {
-                this.oCentavosPena = 0 + dinero[1];
-              } else if (this.oCentavosPena > dinero[1]) {
-                this.oCentavosPena = dinero[1];
-              }
-            }
-          } else {
-            this.oPriceFalta = obj.RubroFalta;
-            var dinero = this.oPriceFalta.split(".");
-            if (dinero[0].length == 1) {
-              this.oDolaresPena = 0 + dinero[0];
-            } else if (this.oDolaresPena > dinero[0]) {
-              this.oDolaresPena = dinero[0];
-            } else {
-              this.oDolaresPena = dinero[0];
-            }
-            if (dinero[1].length == 1) {
-              this.oCentavosPena = 0 + dinero[1];
-            } else if (this.oCentavosPena > dinero[1]) {
-              this.oCentavosPena = dinero[1];
-            }
-          }
-          if (this.oPriceFalta > 0) {
-            this.oTiempoFalta = "00:00:00";
-            var tiempo = this.oTiempoFalta.split(":");
-            this.oHora = tiempo[0];
-            this.oMinutos = tiempo[1];
-            this.oSegundos = tiempo[2];
-            this.oBanderaHora = 1;
-            this.oBanderaMinutos = 1;
-            this.oBanderaSegundos = 1;
-          }
-          this.oBanderaDolares = this.oDolaresPena == "00" ? 1 : 0;
-          this.oBanderaCentavos = 0;
-        }
       }
     },
     async readlPanelTableroProduccion() {
@@ -1177,7 +623,7 @@ export default {
       this.tableDataPanelControlProduccion = [];
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/ProduccionPanelControl",
+          process.env.baseUrl + "/ProduccionPanelControlVueltas",
           {
             token: this.token,
             fecha: this.fechaInicialTableroProduccion,
@@ -1291,13 +737,7 @@ export default {
       if (this.isObservacionesTableroProduccion == true) {
         this.limpiarDatosJustificacion();
       }
-      this.readDetalleTableroProduccionAnotaciones(item);
       await this.readDetalleTableroProduccion(item);
-    },
-    async showVisibleModalExVelocidadTableroProduccion(item) {
-      this.isExVelocidadTableroProduccion =
-        this.isExVelocidadTableroProduccion == true ? false : true;
-      this.readHISTORIALTrazadoAllTramosTableroProduccion(item);
     },
     async showVisibleModalRecorridoTableroProduccion(item) {
       console.log(item);
@@ -1310,10 +750,10 @@ export default {
       this.loadingTableroJustificacion = true
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/ProduccionDetallePanelControl",
+          process.env.baseUrl + "/ProduccionDetallePanelControlVueltas",
           {
             token: this.token,
-            codigoPanel: item.Codigo,
+            codigoPanel: item.idSali_m,
           }
         );
 
@@ -1356,26 +796,6 @@ export default {
         ],
       };*/
 
-    },
-    async readDetalleTableroProduccionAnotaciones(item) {
-     // this.$refs.myGridDespachoPanelOtros.clearselection();
-      this.mListOtros = [];
-      try {
-        var datos = await this.$axios.post(
-          process.env.baseUrl + "/ProduccionPanelControlAnotaciones",
-          {
-            token: this.token,
-            unidad: item.Unidad,
-            fecha: this.fechaInicialTableroProduccion,
-          }
-        );
-        
-
-        this.mListOtros.push(...datos.data.datos);
-      } catch (error) {
-        console.log(error)
-        this.mListOtros = [];
-      }
     },
     sendJustify() {
       if (this.validarJustificacion()) {
@@ -1702,23 +1122,6 @@ export default {
   },
   mounted() {
     this.oEmpresa = this.$cookies.get("empresa");
-    if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel')
-    {
-      //trabaja por vueltas
-      this.isVisibleTableroAnotaciones = true
-    }else{
-      this.isVisibleTableroAnotaciones = false
-    }
-
-    if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel' 
-          || this.oEmpresa == 'tatahualpa' || this.oEmpresa == 'cazul'
-          || this.oEmpresa == 'cotopaxi')
-    {
-      //trabaja por vueltas
-      this.isRecorridoPorVueltas = true
-    }else{
-      this.isRecorridoPorVueltas = false
-    }
 
     this.readTrazadoAllTramosTableroProduccion()
     this.readTrazadoAllTramosTableroProduccion()
