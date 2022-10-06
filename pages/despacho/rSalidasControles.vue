@@ -291,6 +291,16 @@ export default {
           label: "T. Adelantos",
           minWidth: 170,
         },
+        {
+          prop: "atrasoFaltas",
+          label: "F. Atrasos",
+          minWidth: 170,
+        },
+        {
+          prop: "adelantoFaltas",
+          label: "F. Adelantos",
+          minWidth: 170,
+        },
       ],
       mListSalidasFrecuenciasControles: [],
       oHeaderRSalidasFrecuenciasControles: [],
@@ -310,6 +320,8 @@ export default {
         "Hora Marcación": "HoraMarcSali_d",
         "Tiempo Atrasos": "atrasoFaltasTime",
         "Tiempo Adelantos": "adelantoFaltasTime",
+        "Fata Atrasos": "atrasoFaltas",
+        "Talta Adelantos": "adelantoFaltas",
         "PENALIDAD $": "PenaCtrlSali_d",
       },
     };
