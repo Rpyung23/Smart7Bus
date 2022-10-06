@@ -752,110 +752,67 @@ export default {
         [
           {
             text: "Unidad",
-            fontSize: 8.5,
+            fontSize: 11,
             bold: true,
             fillColor: "#039BC4",
-            color: "white",
             alignment: "center",
           },
-          /*{
-            text: "Salida",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },*/
           {
             text: "Ruta",
-            fontSize: 8.5,
+            fontSize: 11,
             bold: true,
             fillColor: "#039BC4",
-            color: "white",
             alignment: "center",
           },
           {
             text: "Vuelta",
-            fontSize: 8.5,
+            fontSize: 11,
             bold: true,
             fillColor: "#039BC4",
-            color: "white",
             alignment: "center",
           },
           {
             text: "H.Salida",
-            fontSize: 8.5,
+            fontSize: 11,
             bold: true,
             fillColor: "#039BC4",
-            color: "white",
             alignment: "center",
           },
           {
             text: "H. Llegada",
-            fontSize: 8.5,
+            fontSize: 11,
             bold: true,
             fillColor: "#039BC4",
-            color: "white",
             alignment: "center",
           },
           {
             text: "T. Atraso",
-            fontSize: 8.5,
+            fontSize:11,
             bold: true,
             fillColor: "#039BC4",
-            color: "white",
             alignment: "center",
           },
           {
             text: "T. Adelanto",
-            fontSize: 8.5,
+            fontSize: 11,
             bold: true,
             fillColor: "#039BC4",
-            color: "white",
             alignment: "center",
           },
           {
             text: "V. Max",
-            fontSize: 8.5,
+            fontSize: 11,
             bold: true,
             fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          } /*
-
-          {
-            text: "F. Atraso",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
             alignment: "center",
           },
-          {
-            text: "F. Adelanto",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },*/,
-
           {
             text: "PEN ($)",
-            fontSize: 8.5,
+            fontSize: 11,
             bold: true,
             fillColor: "#039BC4",
-            color: "white",
             alignment: "center",
-          },
-          /*{
-            text: "ESTADO",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },*/
+          }
         ],
       ];
 
@@ -1265,7 +1222,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 170, 35, 85, 50, 50, 50, 35, 35],
+              widths: [45, 220, 45, 95, 60, 60, 60, 45, 45],
               body: resultadoString,
             },
           },
