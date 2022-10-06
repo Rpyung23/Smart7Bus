@@ -321,7 +321,7 @@ export default {
         "Tiempo Atrasos": "atrasoFaltasTime",
         "Tiempo Adelantos": "adelantoFaltasTime",
         "Fata Atrasos": "atrasoFaltas",
-        "Talta Adelantos": "adelantoFaltas",
+        "Falta Adelantos": "adelantoFaltas",
         "PENALIDAD $": "PenaCtrlSali_d",
       },
     };
