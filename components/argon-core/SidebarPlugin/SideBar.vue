@@ -107,7 +107,7 @@ export default {
     }
   },
   mounted() {
-    this.$sidebar.isMinimized = this.$sidebar.breakpoint < window.innerWidth
+    //this.$sidebar.isMinimized = this.$sidebar.breakpoint < window.innerWidth
     this.$sidebar.onMouseLeave()
     //this.minimizeSidebar()
   },
