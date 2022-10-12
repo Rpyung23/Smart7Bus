@@ -108,7 +108,8 @@ export default {
   },
   mounted() {
     this.$sidebar.isMinimized = this.$sidebar.breakpoint < window.innerWidth
-    this.minimizeSidebar()
+    this.$sidebar.onMouseLeave()
+    //this.minimizeSidebar()
   },
   beforeDestroy() {
     if (this.$sidebar.showSidebar) {

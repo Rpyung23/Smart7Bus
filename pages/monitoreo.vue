@@ -901,8 +901,6 @@ export default {
         );
 
         if (datos.data.status_code == 200) {
-          console.log("datos")
-          console.log(datos.data.datos.polilineasRutaSubida)
           for (var i = 0; i < datos.data.datos.polilineasRutaSubida.length; i++) {
             this.mListRutaSubida.push(datos.data.datos.polilineasRutaSubida[i])
           }
@@ -911,10 +909,6 @@ export default {
           }
           
         }
-
-        console.log("ruta linea")
-        console.log(this.mListRutaBajada)
-        console.log(this.mListRutaSubida)
       } catch (error) {
         console.log(error);
       }
@@ -986,7 +980,6 @@ export default {
       }
     },
     getIcono(unidad) {
-      console.log(unidad.UltiRumbMoni);
       var imagen = "img/monitoreo/online.png#" + unidad.CodiVehiMoni;
       var imagenLista = "img/monitoreo/online_lista.png";
       var color = "";
@@ -1265,21 +1258,19 @@ export default {
     girarMarcador() {
       for (var i = 0; i < this.mListUnidades.length; i++) 
       {
-        /*var rotation = this.mListUnidades[i].UltiRumbMoni +180
+        var rotation = this.mListUnidades[i].UltiRumbMoni
 
-        console.log(this.mListUnidades[i].icono.imagen)
         $('img[src*="' + this.mListUnidades[i].icono.imagen + '"]').css({
           transform: "rotate(" + rotation + "deg)",
-        });*/
+        });
       }
     },
     girarMarcadorUnitario(unidad) 
     {
-      console.log(this.unidad.icono.imagen)
 
-      var rotation = unidad.UltiRumbMoni 
+      var rotation = unidad.UltiRumbMoni
 
-     /* $(`img[src='"${unidad.icono.imagen}"']`).css({
+      /*$(`img[src='"${unidad.icono.imagen}"']`).css({
         "-webkit-transform": "rotate(" + rotation + "deg)",
         "-moz-transform": "rotate(" + rotation + "deg)",
         "-ms-transform": "rotate(" + rotation + "deg)",
