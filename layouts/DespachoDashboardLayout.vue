@@ -28,8 +28,9 @@
                                permisos.despacho.reportes.despachoGenerados" 
                                :link="{ name: 'Despachos Generados', path: './rDespachosGenerados' }" />
 
-          <!--<sidebar-item translate="no" v-if="permisos != null && permisos.despacho.reportes.reportePenalidades != null && 
-                               permisos.despacho.reportes.reportePenalidades" :link="{ name: 'R. Penalidades Semanales', path: './rPenalidadesSemanales' }" />-->
+          <sidebar-item translate="no" v-if="this.permisos != null && 
+                                  this.permisos.despacho.reportes.despachoGeneradosSimplificado != null && 
+                                  this.permisos.despacho.reportes.despachoGeneradosSimplificado" :link="{ name: 'Despachos Generados S/P', path: './rDespachosGeneradosSim' }" />
 
           <sidebar-item translate="no" v-if="permisos != null && permisos.despacho.reportes.reporteSalidasFrecuenciasControles != null && 
                                permisos.despacho.reportes.reporteSalidasFrecuenciasControles" :link="{ name: 'R. Salidas F. Controles', path: './rSalidasControles' }" />
@@ -80,7 +81,7 @@ export default {
   },
   data() {
     return {
-      permisos: null
+      permisos: null,
     }
   },
   methods: {
@@ -95,6 +96,8 @@ export default {
   },
   mounted() {
     this.permisos = this.$cookies.get("permisos")
+
+    
     this.initScrollbar();
   },
 };
