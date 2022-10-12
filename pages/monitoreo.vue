@@ -837,7 +837,7 @@ export default {
             this.updatemListaUnidades(datos.data.data);
           }  
         }
-        //this.girarMarcador()
+        this.girarMarcador()
       }
     },
     async initRastreo() {
@@ -986,14 +986,16 @@ export default {
       }
     },
     getIcono(unidad) {
-      //console.log("minutos trascurridos " + convert_diferencia_from_minutes);
+      console.log(unidad.UltiRumbMoni);
       var imagen = "img/monitoreo/online.png#" + unidad.CodiVehiMoni;
       var imagenLista = "img/monitoreo/online_lista.png";
       var color = "";
       var detalle = "";
 
-      if (unidad.AlarAnteGPSDescMoni == 1) {
+      if (unidad.AlarAnteGPSDescMoni == 1) 
+      {
         imagen = "img/monitoreo/alerta.png#" + unidad.CodiVehiMoni;
+        
         color = "#D50303";
         imagenLista = "img/monitoreo/alerta_lista.png";
         detalle = "ALERTA GPS";
@@ -1261,28 +1263,32 @@ export default {
       this.girarMarcadorUnitario(this.mListUnidades[position]);
     },
     girarMarcador() {
-      for (var i = 0; i < this.mListUnidades.length; i++) {
+      for (var i = 0; i < this.mListUnidades.length; i++) 
+      {
+        /*var rotation = this.mListUnidades[i].UltiRumbMoni +180
+
+        console.log(this.mListUnidades[i].icono.imagen)
         $('img[src*="' + this.mListUnidades[i].icono.imagen + '"]').css({
-          transform: "rotate(" + this.mListUnidades[i].UltiRumbMoni + "deg)",
-        });
+          transform: "rotate(" + rotation + "deg)",
+        });*/
       }
     },
-    girarMarcadorUnitario(unidad) {
-      var rotation = unidad.UltiRumbMoni + 180;
-      $(`img[src='"${unidad.icono.imagen}"']`).css({
+    girarMarcadorUnitario(unidad) 
+    {
+      console.log(this.unidad.icono.imagen)
+
+      var rotation = unidad.UltiRumbMoni 
+
+     /* $(`img[src='"${unidad.icono.imagen}"']`).css({
         "-webkit-transform": "rotate(" + rotation + "deg)",
         "-moz-transform": "rotate(" + rotation + "deg)",
         "-ms-transform": "rotate(" + rotation + "deg)",
         transform: "rotate(" + rotation + "deg)",
-      })
+      })*/
 
-      $('img[src*="' + unidad.icono.imagen + '"]').css({
-        transform: "rotate(" + rotation + "deg)",
-      });
-
-      /*$('img[src*="' + unidad.icono.imagen + '"]')
+      $('img[src*="' + unidad.icono.imagen + '"]')
         .parent()
-        .css("transform", "rotate(" + unidad.UltiRumbMoni + "deg)");*/
+        .css("transform", "rotate(" +rotation + "deg)");
     },
     ubicarUnidad(unidad) {
       this.oCenter = {
@@ -1312,7 +1318,7 @@ export default {
     this.initControles();
     this.initRastreo();
     this.initIntervalMonitoreoGeneral();
-    console.log(this.mListRutaSubida)
+    
   },
   destroyed() {
     clearInterval(this.initIntervalMonitoreoGeneral);

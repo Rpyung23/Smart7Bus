@@ -264,7 +264,7 @@
                 </div>
               </div>
 
-              <div class="navbarModal">
+              <!--<div class="navbarModal">
                 <strong style="color: red">{{ oPriceFalta }} $</strong>
                 <div
                   class="containerButtonMasMenos bg-gradient-default border-0"
@@ -287,7 +287,7 @@
                     class="inputTimer"
                   />
                 </div>
-              </div>
+              </div>-->
             </div>
 
             <div class="containerRigthTopNavbarModal">
@@ -731,7 +731,11 @@ export default {
         console.log(error);
       }
     },
-    async showVisibleModalTableroProduccion(item) {
+    async showVisibleModalTableroProduccion(item) 
+    {
+      console.log("*******************************************")
+      console.log(item)
+      console.log("-------------------------------------------")
       this.isObservacionesTableroProduccion =
         this.isObservacionesTableroProduccion == true ? false : true;
       if (this.isObservacionesTableroProduccion == true) {
@@ -807,28 +811,20 @@ export default {
       this.deleteJustificacionProduccion();
     },
     async registerJustificacionProduccion() {
-      var dinero =
-        this.objSeleccionado.Tipo == 3 || this.objSeleccionado.Tipo == 4
-          ? this.oDolaresPena + "." + this.oCentavosPena
-          : "0.00";
-      var tiempo =
-        this.objSeleccionado.Tipo == 1 || this.objSeleccionado.Tipo == 2
-          ? this.oHora + ":" + this.oMinutos + ":" + this.oSegundos
-          : "00:00:00";
+
+      var tiempo = this.oHora + ":" + this.oMinutos + ":" + this.oSegundos
 
       var objBody = {
         token: this.token,
-        numero: this.objSeleccionado.Numero,
-        codigo: this.objSeleccionado.Codigo,
-        tipo: this.objSeleccionado.Tipo,
-        minutos: tiempo,
-        dinero: parseFloat(dinero),
-        motivo: this.oMotivoString,
+        salida: this.objSeleccionado.idSali_m,
+        salidaD: this.objSeleccionado.Codigo,
+        tiempo: tiempo,
+        motivo: this.oMotivoString == null ? '' : this.oMotivoString,
       };
 
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/registroJustificacionProduccion",
+          process.env.baseUrl + "/registroJustificacionProduccionVueltas",
           objBody
         );
 
@@ -849,18 +845,11 @@ export default {
             icon: "ni ni-fat-delete",
             type: "warning",
           });
-        } else if (datos.data.status_code == 400) {
+        } else{
           this.$notify({
             message: datos.data.mensaje,
             timeout: 3000,
             icon: "ni ni-fat-delete",
-            type: "warning",
-          });
-        } else if (datos.data.status_code == 500) {
-          this.$notify({
-            message: datos.data.mensaje,
-            timeout: 3000,
-            icon: "ni ni-fat-remove",
             type: "warning",
           });
         }
@@ -877,14 +866,12 @@ export default {
     async deleteJustificacionProduccion() {
       var objBody = {
         token: this.token,
-        numero: this.objSeleccionado.Numero,
         codigo: this.objSeleccionado.Codigo,
-        tipo: this.objSeleccionado.Tipo,
       };
 
       try {
         var datos = await this.$axios.delete(
-          process.env.baseUrl + "/deleteJustificacionProduccion",
+          process.env.baseUrl + "/deleteJustificacionProduccionVueltas",
           { data: objBody }
         );
 
@@ -1040,29 +1027,7 @@ export default {
         return ""
       }
     },
-    async oClickDropdownSalidasCodigo(item) 
-    {
-      this.loadingCodigoSalidasFrecuenciasControles = true
-      this.mListCodigoSalidasProduccion = [];
-      try {
-        var datos = await this.$axios.post(
-          process.env.baseUrl + "/CodigoSalidasProduccion",
-          {
-            token: this.token,
-            codigoItem: item.Codigo,
-            unidad: item.Unidad,
-          }
-        );
 
-        if (datos.data.status_code == 200) {
-          console.log(datos.data.datos);
-          this.mListCodigoSalidasProduccion.push(...datos.data.datos);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-      this.loadingCodigoSalidasFrecuenciasControles = false
-    },
 
     async readHISTORIALTrazadoAllTramosTableroProduccion(item) {
       this.oCenterTableroExVelocidad = { lat: -1.249546, lng: -78.585376 }

@@ -64,6 +64,7 @@
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
 
             <div class="buttonCenterEndDerecha">
+
               <base-button
               icon
               type="primary"
@@ -85,7 +86,10 @@
               <span class="btn-inner--icon"><i class="ni ni-money-coins"></i></span>
               <span class="btn-inner--text">GENERAR PAGO</span>
             </base-button>
+
             </div>
+
+
 
           </div>
         </card>
@@ -393,7 +397,7 @@ export default {
       this.tableDataPanelControlProduccion = [];
 
       var datos = await this.$axios.post(
-        process.env.baseUrl + "/ProduccionPanelProduccionCobranza",
+        process.env.baseUrl + "/ProduccionPanelProduccionCobranzaVueltas",
         {
           token: this.token,
           fechaI: this.fechaInicialTableroProduccion,

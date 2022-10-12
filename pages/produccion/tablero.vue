@@ -1712,7 +1712,8 @@ export default {
 
     if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel' 
           || this.oEmpresa == 'tatahualpa' || this.oEmpresa == 'cazul'
-          || this.oEmpresa == 'cotopaxi')
+          || this.oEmpresa == 'mazul'
+          || this.oEmpresa == 'cotopaxi' || this.oEmpresa == 'cquisapincha')
     {
       //trabaja por vueltas
       this.isRecorridoPorVueltas = true

@@ -8,17 +8,17 @@
           :link="{
             name: 'Tablero',
             icon: 'ni ni-collection text-default',
-            path: ( oPermisosWebProduccionPanelJSON != null && oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroVueltas' :  './tablero',
+            path: pathTableroVueltas,
           }"
         >
         </sidebar-item>
-
+  
       <sidebar-item
       translate="no"
           :link="{
             name: 'Tablero Cobros',
             icon: 'ni ni-money-coins text-success',
-            path: './tableroCobros',
+            path: pathTableroVueltasCobros,
           }"
         >
         </sidebar-item>
@@ -117,7 +117,9 @@ export default {
   data()
   {
     return {
-      oPermisosWebProduccionPanelJSON:null
+      oPermisosWebProduccionPanelJSON:null,
+      pathTableroVueltas:'./tablero',
+      pathTableroVueltasCobros:'./tableroCobros'
     }
   },
   methods: {
@@ -132,6 +134,13 @@ export default {
   },
   mounted() {
     this.oPermisosWebProduccionPanelJSON = this.$cookies.get("WebProduccion")
+    this.pathTableroVueltas = (this.oPermisosWebProduccionPanelJSON != null &&  
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroVueltas' :  './tablero'
+    
+    this.pathTableroVueltasCobros = (this.oPermisosWebProduccionPanelJSON != null &&  
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroCobrosVueltas' :  './tableroCobros'
     this.initScrollbar();
   },
 };

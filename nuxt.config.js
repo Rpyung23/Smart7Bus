@@ -27,6 +27,8 @@ module.exports = {
       src:"https://code.jquery.com/jquery-3.6.0.js"
     },{
       src:"https://unpkg.com/boxicons@2.1.2/dist/boxicons.js"
+    },{
+      src:"https://raw.githubusercontent.com/wilq32/jqueryrotate/master/jQueryRotate.js"
     }]
     ,
     link: [

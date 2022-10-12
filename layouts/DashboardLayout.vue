@@ -43,7 +43,7 @@
         <sidebar-item translate="no" v-if="permisos != null && permisos.produccion != null && permisos.produccion.active != null && permisos.produccion.active" :link="{
           name: 'Producción',
           icon: 'ni ni-money-coins text-green',
-          path: './produccion/tablero',
+          path: pathProduccionTablero,
         }">
         </sidebar-item>
         
@@ -130,7 +130,8 @@ export default {
   },
   data() {
     return {
-      permisos: null
+      permisos: null,
+      pathProduccionTablero: './produccion/tablero'
     }
   },
   methods: {
@@ -148,7 +149,14 @@ export default {
       this.permisos = this.$cookies.get("permisos")
     }
   },
-  mounted() {
+  mounted() 
+  {
+    this.oPermisosWebProduccionPanelJSON = this.$cookies.get("WebProduccion")
+    this.pathProduccionTablero = (this.oPermisosWebProduccionPanelJSON != null &&  
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? 
+                               './produccion/tableroVueltas' :  './produccion/tablero'
+
     this.decodedPermisos()
     this.initScrollbar()
   },
