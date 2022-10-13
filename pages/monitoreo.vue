@@ -791,7 +791,7 @@ export default {
         }
         else if (this.unidadInput == '' && this.mListControlesMonitoreo.length > 0) {
           this.banderaUnidad = false
-          this.selectedRutaMonitoreo()
+          //this.selectedRutaMonitoreo()
         }
         else if (this.unidadInput != '' && this.mListControlesMonitoreo.length > 0 && this.banderaUnidad == false) {
           this.banderaUnidad = true
@@ -885,6 +885,7 @@ export default {
         }
         this.unidadInput = this.unidadInputRuta == '' ? '' : this.unidadInputRuta
       } else {
+        this.initControles()
         this.initRastreo()
       }
     },
@@ -956,7 +957,7 @@ export default {
       }
     },
     async initControleMonitoreoRutas() {
-      console.log("INICIANDO CONTROLES");
+      console.log("INICIANDO CONTROLES POR RUTA");
       try {
         var datos = await this.$axios.post(
           process.env.baseUrlPanel + "/AllControlesPorRuta",
