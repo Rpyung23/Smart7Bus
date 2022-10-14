@@ -1310,7 +1310,6 @@ export default {
     this.initControles();
     this.initRastreo();
     this.initIntervalMonitoreoGeneral();
-    
   },
   destroyed() {
     clearInterval(this.initIntervalMonitoreoGeneral);
