@@ -1270,7 +1270,6 @@ export default {
     {
 
       var rotation = unidad.UltiRumbMoni + 180
-
     *$(`img[src='"${unidad.icono.imagen}"']`).css({
         "-webkit-transform": "rotate(" + rotation + "deg)",
         "-moz-transform": "rotate(" + rotation + "deg)",
