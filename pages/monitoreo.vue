@@ -1259,7 +1259,7 @@ export default {
     girarMarcador() {
       for (var i = 0; i < this.mListUnidades.length; i++) 
       {
-        var rotation = this.mListUnidades[i].UltiRumbMoni
+        var rotation = this.mListUnidades[i].UltiRumbMoni + 180
 
         $('img[src*="' + this.mListUnidades[i].icono.imagen + '"]').css({
           transform: "rotate(" + rotation + "deg)",
@@ -1269,14 +1269,14 @@ export default {
     girarMarcadorUnitario(unidad) 
     {
 
-      var rotation = unidad.UltiRumbMoni
+      var rotation = unidad.UltiRumbMoni + 180
 
-      /*$(`img[src='"${unidad.icono.imagen}"']`).css({
+    *$(`img[src='"${unidad.icono.imagen}"']`).css({
         "-webkit-transform": "rotate(" + rotation + "deg)",
         "-moz-transform": "rotate(" + rotation + "deg)",
         "-ms-transform": "rotate(" + rotation + "deg)",
         transform: "rotate(" + rotation + "deg)",
-      })*/
+      })
 
       $('img[src*="' + unidad.icono.imagen + '"]')
         .parent()
