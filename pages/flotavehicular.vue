@@ -651,6 +651,7 @@
         </div>
         <div class="form-row">  
           <div class="col-md-12">
+            {{mListTerminalesAdmin}}
             <el-select  placeholder="Terminales" v-model="mSelectTerminalAdmin" style="width:450px">
               <el-option v-for="item in mListTerminalesAdmin" :key="item.CodiTerm" :label="item.DescTerm" :value="item.CodiTerm">
               </el-option>
@@ -1072,7 +1073,9 @@ export default {
           }
         );
 
-        if (datos.data.status_code == 200) {
+        if (datos.data.status_code == 200) 
+        {
+          
           this.mListTerminalesAdmin.push(...datos.data.data);
         } else if (datos.data.status_code == 300) {
           Notification.info({
