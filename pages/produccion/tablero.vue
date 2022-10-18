@@ -158,6 +158,7 @@
                     slot="refPopoverCodigoSalidas"
                     v-if="isRecorridoPorVueltas"
                     title=""
+                    style="z-index: 100 !important;"
                     @show="oClickDropdownSalidasCodigo(scope.row)"
                     placement="right"
                     trigger="click"
@@ -1732,6 +1733,9 @@ export default {
 };
 </script>
 <style>
+.el-popover{
+  z-index: 100 !important;
+}
 .buttonCircleModalClose {
   height: 40px;
   width: 40px;

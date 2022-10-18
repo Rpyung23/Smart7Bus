@@ -785,9 +785,6 @@ body::-webkit-scrollbar{
     width: 50%;
   }
 
-.modal{
-    z-index: 30000 !important;
-}
 
 .buttonsAdicionalesRContador{
     display: flex;

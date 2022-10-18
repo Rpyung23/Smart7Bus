@@ -43,15 +43,25 @@
       <GmapMarker
         v-for="marker in mListPosicionesHistorialSalidasPanelBusqueda"
         :key="marker.idHistEve"
+        @mouseover="showInfoWindowsRecorrido(marker, index)"
+        @mouseout="closeInfoWindowsRecorrido()"
         :position="{
           lat: parseFloat(marker.LatiHistEven),
           lng: parseFloat(marker.LongHistEven),
         }"
         :icon="marker.icono"
-        :clickable="false"
         :draggable="false"
         :optimized="true"
       />
+
+      <GmapInfoWindow
+        :options="infoOptions"
+        :position="infoWindowPos"
+        :opened="infoWinOpen"
+        @closeclick="infoWinOpen = false"
+      >
+        <div v-html="infoContent"></div>
+      </GmapInfoWindow>
 
       <GmapMarker
         v-for="marker in mListPosicionesHistorialMarcSalidasPanelBusqueda"
@@ -148,6 +158,19 @@ export default {
   },
   data() {
     return {
+      infoContent: "",
+      infoWindowPos: {
+        lat: 0,
+        lng: 0,
+      },
+       infoOptions: {
+        pixelOffset: {
+          width: 0,
+          height: -17,
+        },
+      },
+      infoWinOpen: false,
+      currentMidx: null,
       token: this.$cookies.get("token"),
       oCenter: { lat: -1.249546, lng: -78.585376 },
       oZoom: 7,
@@ -181,6 +204,7 @@ export default {
             fechaI: item.HoraSaliProgSali_mF,
           }
         );
+
 
         for (var i = 0; i < datos.data.datos.length; i++) {
           var obj = datos.data.datos[i];
@@ -271,6 +295,41 @@ export default {
         lat: parseFloat(item.Lati1Ctrl),
         lng: parseFloat(item.Long1Ctrl),
       };
+    },
+    async getInfoWindowContentRecorrido(unidad) 
+    {
+      return `<div style="width:300px;padding:0.50rem">
+              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
+                unidad.FechHistEven
+              }<br>
+              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
+                unidad.VeloHistEven
+              } <strong>KM/H</strong><br>
+              <strong class="strongLetrasInfoWindows">SATELITES : </strong> ${
+                unidad.SateHistEven
+              }
+            </div>`;
+    },
+    async closeInfoWindowsRecorrido()
+    {
+      this.infoWinOpen = false
+    },
+    async showInfoWindowsRecorrido(unidad, idx) {
+      this.infoWindowPos = {
+        lat: parseFloat(unidad.LatiHistEven),
+        lng: parseFloat(unidad.LongHistEven),
+      };
+      this.infoContent = await this.getInfoWindowContentRecorrido(unidad);
+
+      //check if its the same marker that was selected if yes toggle
+      if (this.currentMidx == idx) {
+        this.infoWinOpen = !this.infoWinOpen;
+      }
+      //if different marker set infowindow to open and reset current marker index
+      else {
+        this.infoWinOpen = true;
+        this.currentMidx = idx;
+      }
     },
   },
   mounted() {},

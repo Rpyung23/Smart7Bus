@@ -32,20 +32,26 @@
               </el-option>
             </el-select>-->
 
-
-
-
             <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker" v-model="fechaInicialRPagosVehiculoProduccionRecibo">
               </flat-picker>
             </base-input>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
+            <base-input style="margin-right: 0.5rem" addon-left-icon="ni ni-calendar-grid-58">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker" v-model="fechaFinalRPagosVehiculoProduccionRecibo">
               </flat-picker>
             </base-input>
+
+            <el-switch
+              v-model="oSwitchOrdenarCobrosRubrosFechas"
+              active-text="F. CREACION"
+              inactive-text="F. PAGO"
+            >
+            </el-switch>
+
+
 
             <!-- DOWNLOAD EXCEL-->
 
@@ -54,19 +60,26 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readAllRPagosVehiculoProduccionRecibos()">
+
+
+            <div class="buttonCenterEndDerecha">
+              <base-button icon type="primary" size="sm" @click="readAllRPagosVehiculoProduccionRecibos()">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
 
             <download-excel v-if="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? true : false" 
-              class="btn btn-outline-success" outline :header="RecibosheaderExcelRPagosVehiculoProduccion"
+              class="btn btn-icon btn-fab btn-success btn-sm" outline :header="RecibosheaderExcelRPagosVehiculoProduccion"
               :data="tableDataRPagosVEhiculoProduccionRecibo" :fields="json_fields_excelRecibosPagosVehiculoProduccion"
               :worksheet="RecibosWorksheetExcelRPagosVehiculoProduccion"
               :name="RecibosFileNameExcelRPagosVehiculoProduccion">
               <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-              <span class="btn-inner--text"> Exportar Excel</span>
             </download-excel>
+            </div>
+
+
+
+
+
 
             <!--<base-button outline type="success">
               <span class="btn-inner--icon"
@@ -123,7 +136,7 @@
           body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
           <div>
             <el-table v-loading="loadingRPagosVehiculoRecibo" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="tableDataRPagosVEhiculoProduccionRecibo" row-key="id"
+              :data="tableDataRPagosVEhiculoProduccionRecibo" row-key="id"
               height="calc(100vh - 13rem)" style="width: 100%"
               :default-sort="{ prop: 'estado', order: 'descending' }" class="tablePanelControlProduccion"
               header-row-class-name="thead-dark" :row-class-name="tableRowClassNameRPagosVehiculoProduccionRecibo">
@@ -132,6 +145,9 @@
               </el-table-column>
 
               <el-table-column prop="DescRuta" label="Ruta - Linea" minWidth="230">
+              </el-table-column>
+
+              <el-table-column prop="Marcado" label="F. Asignación Rubro" minWidth="200">
               </el-table-column>
 
               <el-table-column prop="DescripcionControl" label="Rubro" minWidth="200">
@@ -185,6 +201,7 @@ import {
   Select,
   Option,
   Autocomplete,
+  Switch,
   DatePicker,
   RadioButton,
   Radio,
@@ -218,6 +235,7 @@ export default {
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
     [Button.name]: Button,
+    [Switch.name]: Switch
   },
   data() {
     return {
@@ -237,6 +255,7 @@ export default {
       mPagadoRPagosVehiculoRecibo: "0.00",
       mPendienteRPagosVehiculoRecibo: "0.00",
       modalsReciboProduccion: false,
+      oSwitchOrdenarCobrosRubrosFechas:true,
       tableDataDetalleReciboPAgoVehiculoProduccion: [],
       itemModalIdReciboPagoVehiculoProduccion: "",
       itemModalUnidadReciboPagoVehiculoProduccion: "",
@@ -252,6 +271,7 @@ export default {
         "UNIDAD": "Unidad",
         "Ruta - Linea":"DescRuta",
         "Detalle Rubro":"DescripcionControl",
+        "Fecha Asignación Rubro":"Marcado",
         "Rubro Falta ($)":"RubroFalta", 
         "Rubro Justificación  ($)":"RubroJustificacion",
         "Total Rubro  ($)":"RubroPenalidad",
@@ -362,6 +382,7 @@ export default {
             fechaF: this.fechaFinalRPagosVehiculoProduccionRecibo,
             rubros: this.itemRubroCobrosPorRubros.length <= 0 ? "*" : this.itemRubroCobrosPorRubros,
             rutas: this.itemLineaCobrosPorRubros.length <= 0 ? "*" : this.itemLineaCobrosPorRubros,
+            fechaCreacion:this.oSwitchOrdenarCobrosRubrosFechas
           };
           console.log(body);
           var datos = await this.$axios.post(
