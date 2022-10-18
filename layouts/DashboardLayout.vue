@@ -32,6 +32,14 @@
         }">
         </sidebar-item>
 
+        
+        <sidebar-item translate="no" :link="{
+          name: 'Mantenimiento',
+          icon: 'ni ni-settings text-primary',
+          path: './produccion/tablero',
+              }">
+        </sidebar-item>
+
         <sidebar-item translate="no" v-if="permisos != null && permisos.cajaComun != null && permisos.cajaComun.active != null && permisos.cajaComun.active" :link="{
           name: 'Caja Común',
           icon: 'ni ni-lock-circle-open text-green',

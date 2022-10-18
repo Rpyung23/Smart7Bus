@@ -240,7 +240,7 @@ export default {
       } else {
         //this.showToast('warning','No existen rutas disponibles')
         this.$notify({
-          message: "No existen rutas disponibles",
+          message: "No existen TENDENCIAS CENTRALES disponibles",
           timeout: 3000,
           type: "warning",
         });
