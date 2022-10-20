@@ -500,7 +500,7 @@
             </base-input>
           </div>
         </div>
-        <div class="form-row">  
+        <div class="form-row" style="margin-bottom: 1rem;">  
           <div class="col-md-6">
             <base-input
               prepend-icon="ni ni-single-copy-04"
@@ -510,7 +510,7 @@
             </base-input>
           </div>
           <div class="col-md-6">
-            <el-select  placeholder="Grupos" v-model="mSelectGrupo" style="width:220px">
+            <el-select  placeholder="Grupos" v-model="mSelectGrupo" style="width:100%" >
               <el-option :key="0" label=" " :value="0">
               </el-option>
               <el-option v-for="item in mListGruposFlotaVehicular" :key="item.id" :label="item.descripcion" :value="item.id">
@@ -651,7 +651,7 @@
         </div>
         <div class="form-row">  
           <div class="col-md-12">
-            <el-select  placeholder="Terminales" v-model="mSelectTerminalAdmin" style="width:450px">
+            <el-select  placeholder="Terminales" v-model="mSelectTerminalAdmin" style="width:100%">
               <el-option v-for="item in mListTerminalesAdmin" :key="item.CodiTerm" :label="item.DescTerm" :value="item.CodiTerm">
               </el-option>
             </el-select>
