@@ -180,7 +180,6 @@
 
       <div class="row">
         <div class="col-md-12">
-
           <el-radio-group v-model="radioTipoDespacho" style="display: flex;justify-content: center;">
             <el-radio :label="3">Salida Normal.</el-radio>
             <el-radio :label="9">Generar Tarjeta</el-radio>
@@ -207,19 +206,14 @@
 
       <div class="row" style="margin-bottom: 0.5rem;">
         <div class="col-md-6">
-
-
-
           <el-select v-model="itemUnidadSalidasPanelBusqueda" filterable remote placeholder="Ingrese unidad"
+          style="width:100%;margin-bottom: 0.5rem;"
             :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
             :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
             <el-option v-for="item in optionsUnidadesSalidasPanelSalidas" :key="item.CodiVehi" :label="item.CodiVehi"
               :value="item.CodiVehi">
             </el-option>
           </el-select>
-
-
-
 
         </div>
         <div class="col-md-6">
@@ -848,7 +842,7 @@ export default {
 .cardTiposDespachosPanelDespacho {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   width: 60%;
   justify-content: flex-start;
 }
