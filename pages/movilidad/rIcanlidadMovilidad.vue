@@ -35,17 +35,13 @@
 
 
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaInicialIndicadorCalidad">
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaInicialIndicadorCalidad">
+            </el-date-picker>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaFinalIndicadorCalidad">
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaFinalIndicadorCalidad">
+            </el-date-picker>
 
             <!-- DOWNLOAD EXCEL-->
 
@@ -54,9 +50,8 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readAllIndicadoresCalidad()">
+            <base-button icon type="primary" @click="readAllIndicadoresCalidad()" size="sm">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
 
             <!--<base-button outline type="success">
@@ -112,6 +107,8 @@
 <script>
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
+
 import {
   Table,
   TableColumn,
@@ -272,8 +269,8 @@ export default {
           token: this.token,
           unidades: this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemUnidadProduccionRPagoVehiculorecibo,
           rutas: this.itemRutasIndicadoresCalidad.length <= 0 ? "*" : this.itemRutasIndicadoresCalidad,
-          fechaI: this.fechaInicialIndicadorCalidad,
-          fechaF: this.fechaFinalIndicadorCalidad,
+          fechaI: getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
+          fechaF: getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
           rutasString: rutasString,
           nameEmpresa: this.$cookies.get("nameEmpresa"),
           usuarioName: this.$cookies.get("namesUsuario")
@@ -347,6 +344,7 @@ export default {
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  width: 90%;
 }
 
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {

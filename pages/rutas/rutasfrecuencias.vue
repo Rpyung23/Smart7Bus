@@ -314,7 +314,7 @@
         </div>
         <div class="form-row">
           <div class="col-md-6">
-            <el-select  placeholder="Terminales" v-model="mSelectTerminalAdmin" style="width:220px">
+            <el-select  placeholder="Terminales" v-model="mSelectTerminalAdmin" style="width:100%;margin-bottom: 1rem;">
               <el-option v-for="item in mListTerminalesAdmin" :key="item.idTerm" :label="item.DescTerm" :value="item">
               </el-option>
             </el-select>
@@ -411,7 +411,7 @@
         </div>
         <div class="form-row">
           <div class="col-md-12">
-            <el-select  placeholder="Rutas" v-model="mSelectRutaFrecuencia" style="width:450px">
+            <el-select  placeholder="Rutas" v-model="mSelectRutaFrecuencia" style="width:100%">
               <el-option v-for="item in mListRutasModalAgregar" :key="item.DescRuta" :label="item.DescRuta" :value="item.idRuta">
               </el-option>
             </el-select>

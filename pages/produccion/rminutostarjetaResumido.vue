@@ -46,9 +46,8 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="createPDFMinutosTarjetas()">
+            <base-button icon type="primary" @click="createPDFMinutosTarjetas()" size="sm">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
           </div>
         </card>

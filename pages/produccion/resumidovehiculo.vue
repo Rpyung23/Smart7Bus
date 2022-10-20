@@ -29,16 +29,17 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readAllRPagosVehiculoProduccion()">
-              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
-            </base-button>
-            <download-excel class="btn btn-outline-success" outline :header="headerExcelRPagosVehiculoProduccion"
-              :data="tableDataResumidoVehiculos" :fields="json_fields_excelRPagosVehiculoProduccion"
-              :worksheet="WorksheetExcelRPagosVehiculoProduccion" :name="FileNameExcelRPagosVehiculoProduccion">
-              <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-              <span class="btn-inner--text"> Exportar Excel</span>
-            </download-excel>
+            <div class="buttonsAdicionalesRContadorVuelta">
+              <base-button icon type="primary" @click="readAllRPagosVehiculoProduccion()" size="sm">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              </base-button>
+              <download-excel class="btn btn-outline-success" outline :header="headerExcelRPagosVehiculoProduccion"
+                :data="tableDataResumidoVehiculos" :fields="json_fields_excelRPagosVehiculoProduccion"
+                :worksheet="WorksheetExcelRPagosVehiculoProduccion" :name="FileNameExcelRPagosVehiculoProduccion">
+                <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
+                <span class="btn-inner--text"> Exportar Excel</span>
+              </download-excel>
+            </div>
             <!--<base-button outline type="success">
               <span class="btn-inner--icon"
                 ><i class="ni ni-collection"></i
@@ -555,6 +556,7 @@ export default {
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {

@@ -181,7 +181,7 @@
       </base-button>
     </div>
 
-    <el-dialog title="Recorrido Unidad" :visible.sync="dialogFormVisible">
+    <el-dialog title="Recorrido Unidad" :visible.sync="dialogFormVisible" style="size" width="">
       <el-form>
         <div class="row">
           <el-form-item class="col" label="Unidad">
@@ -213,7 +213,7 @@
           </el-form-item>
         </div>
 
-        <el-form-item label="Horas">
+        <el-form-item  label="Horas">
           <el-time-picker
             is-range
             range-separator="Hasta"

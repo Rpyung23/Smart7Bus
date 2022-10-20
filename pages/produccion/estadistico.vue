@@ -30,37 +30,13 @@
                 </el-option>
               </el-select>
 
-              <base-input
-                addon-left-icon="ni ni-calendar-grid-58"
-                style="margin-right: 0.5rem"
-              >
-                <flat-picker
-                  slot-scope="{ focus, blur }"
-                  :max="{ fechaInicialEstadisticoProduccion }"
-                  @on-open="focus"
-                  @on-close="blur"
-                  :config="{ allowInput: true }"
-                  class="form-controlPersonal datepicker"
-                  v-model="fechaInicialEstadisticoProduccion"
-                >
-                </flat-picker>
-              </base-input>
+              <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+                v-model="fechaInicialEstadisticoProduccion">
+              </el-date-picker>
 
-              <base-input
-                addon-left-icon="ni ni-calendar-grid-58"
-                style="margin-right: 0.5rem"
-              >
-                <flat-picker
-                  slot-scope="{ focus, blur }"
-                  :max="{ fechaFinalEstadisticoProduccion }"
-                  @on-open="focus"
-                  @on-close="blur"
-                  :config="{ allowInput: true }"
-                  class="form-controlPersonal datepicker"
-                  v-model="fechaFinalEstadisticoProduccion"
-                >
-                </flat-picker>
-              </base-input>
+              <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+                v-model="fechaFinalEstadisticoProduccion">
+              </el-date-picker>
           </div>
 
           <div class="cardSelectEstadisticoProduccionContainer">
@@ -88,9 +64,10 @@
             footer-classes="pb-2"
           >
             <div>
-              <div class="row">
-                <div class="col-sm-4">
+              <div class="row row-example">
+                
                     <el-table
+                    class="col-6 col-md-4"
                   v-loading="loadingEstadisticoDesviacionControl"
                   element-loading-text="Cargando Datos..."
                   :data="tableDataDesviacionControl"
@@ -128,9 +105,8 @@
 
                   <div slot="empty"></div>
                 </el-table>
-                </div>
-                <div class="col-sm-4">
                     <el-table
+                    class="col-6 col-md-4"
                   v-loading="loadingEstadisticoFaltasUnidad"
                   ref="multipleTableCobrosPagar"
                   element-loading-text="Cargando Datos..."
@@ -141,20 +117,19 @@
                   style="width: 100%"
                 >
   
-                  <el-table-column prop="Unidad" label="Unidad" minWidth="70">
+                  <el-table-column prop="Unidad" label="Unidad" minWidth="110">
                   </el-table-column>
   
-                  <el-table-column prop="NombreRuta" label="Ruta" minWidth="70">
+                  <el-table-column prop="NombreRuta" label="Ruta" minWidth="90">
                   </el-table-column>
 
-                  <el-table-column prop="SumaFalta" label="Faltas" minWidth="65">
+                  <el-table-column prop="SumaFalta" label="Faltas" minWidth="110">
                   </el-table-column>
 
                   <div slot="empty"></div>
                 </el-table>
-                </div>
-                <div class="col-sm-4">
                     <el-table
+                    class="col-6 col-md-4"
                   v-loading="loadingEstadisticoFaltasControl"
                   element-loading-text="Cargando Datos..."
                   :data="tableDataFaltasControl"
@@ -180,8 +155,7 @@
 
                   <div slot="empty"></div>
                 </el-table>
-                </div>
-  
+                
               </div>
             </div>
           </card>
@@ -193,6 +167,7 @@
   <script>
   import flatPicker from "vue-flatpickr-component";
   import "flatpickr/dist/flatpickr.css";
+  import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
   
   import {
     Table,
@@ -263,8 +238,8 @@
           "-" +
           (day < 10 ? "0" + day : day);
   
-        this.fechaInicialEstadisticoProduccion = format;
-        this.fechaFinalEstadisticoProduccion = format;
+        this.fechaInicialEstadisticoProduccion = format + " ";
+        this.fechaFinalEstadisticoProduccion = format + " ";
       },
       async readlPanelTableroEstadisticoDesviacionControl() {
         this.loadingEstadisticoDesviacionControl = true;
@@ -274,8 +249,8 @@
           process.env.baseUrl + "/ProduccionDesviacionControlEstadisticas",
           {
             token: this.token,
-            fechaI: this.fechaInicialEstadisticoProduccion,
-            fechaF: this.fechaFinalEstadisticoProduccion,
+            fechaI: getFecha_dd_mm_yyyy(this.fechaInicialEstadisticoProduccion),
+            fechaF: getFecha_dd_mm_yyyy(this.fechaFinalEstadisticoProduccion),
             idRuta:this.mSelectLineasValueTableroEstadistico
           }
         );
@@ -296,8 +271,8 @@
           process.env.baseUrl + "/ProduccionFaltasControlEstadisticas",
           {
             token: this.token,
-            fechaI: this.fechaInicialEstadisticoProduccion,
-            fechaF: this.fechaFinalEstadisticoProduccion,
+            fechaI: getFecha_dd_mm_yyyy(this.fechaInicialEstadisticoProduccion),
+            fechaF: getFecha_dd_mm_yyyy(this.fechaFinalEstadisticoProduccion),
             ruta:this.mListControlesSeleccionados,
             idRuta:this.mSelectLineasValueTableroEstadistico
           }
@@ -319,8 +294,8 @@
           process.env.baseUrl + "/ProduccionFaltasUnidadesEstadisticas",
           {
             token: this.token,
-            fechaI: this.fechaInicialEstadisticoProduccion,
-            fechaF: this.fechaFinalEstadisticoProduccion,
+            fechaI: getFecha_dd_mm_yyyy(this.fechaInicialEstadisticoProduccion),
+            fechaF: getFecha_dd_mm_yyyy(this.fechaFinalEstadisticoProduccion),
             ruta:this.mSelectLineasValueTableroEstadistico
           }
         );
@@ -397,6 +372,7 @@
   .cardTextoEstadisticoProduccion {
     display: flex;
     align-items: center;
+    width: 90%;
   }
 
   .cardSelectEstadisticoProduccionContainer {

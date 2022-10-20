@@ -22,10 +22,10 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readReporteAnt()">
-              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
-            </base-button>
+            <div class="buttonsAdicionalesRContadorVuelta">
+              <base-button icon type="primary" @click="readReporteAnt()" size="sm">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              </base-button>
             <!--<download-excel
               class="btn btn-outline-success"
               outline
@@ -40,10 +40,11 @@
               ></span>
               <span class="btn-inner--text"> Excel</span>
             </download-excel>-->
-            <base-button outline type="danger">
-              <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
-              <span class="btn-inner--text"> Exportar PDF</span>
-            </base-button>
+              <base-button outline type="danger">
+                <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
+                <span class="btn-inner--text"> Exportar PDF</span>
+              </base-button>
+            </div>
           </div>
         </card>
 

@@ -27,11 +27,11 @@
             </base-input>
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readRDistancias()">
-              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
-            </base-button>
+          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer" size="sm">
+            <div class="buttonsAdicionalesRContadorVuelta">
+              <base-button icon type="primary" @click="readRDistancias()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              </base-button>
             <!--<download-excel
               class="btn btn-outline-success"
               outline
@@ -56,6 +56,7 @@
               <span class="btn-inner--text" @click="showRecorridoSalidasPanelBusqueda()">
                 Recorrido</span>
             </base-button>
+          </div>
           </div>
         </card>
 
@@ -296,6 +297,7 @@ export default {
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {

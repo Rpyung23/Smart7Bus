@@ -27,7 +27,7 @@
             </base-input>
           </div>
 
-          <div class="buttonsAdicionalesRVelocidad">
+          <div class="buttonsAdicionalesRbuttonsAdicionalesRVelocidadVelocidad">
             <base-button icon type="primary" size="sm" @click="readRVelocidades()">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>
@@ -301,5 +301,10 @@ export default {
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
+}
+
+.buttonsAdicionalesRbuttonsAdicionalesRVelocidadVelocidad{
+    display: flex;
+    align-items: center;
 }
 </style>

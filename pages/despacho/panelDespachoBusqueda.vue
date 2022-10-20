@@ -28,35 +28,13 @@
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialSalidasPanelBusqueda"
-              >
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+            v-model="fechaInicialSalidasPanelBusqueda">
+          </el-date-picker>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalSalidasPanelBusqueda"
-              >
-              </flat-picker>
-            </base-input>
+          <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+            v-model="fechaFinalSalidasPanelBusqueda">
+          </el-date-picker>
 
             <el-switch
               v-model="oSwitchOrdenarSalidasDespachoPanelBusqueda"
@@ -132,7 +110,7 @@
             </el-select>
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
+          <div class="cardOpcinesRPagosVehiculoProduccionPanelDespachoBusqueda">
             <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
               <el-checkbox
                 label="2"
@@ -409,6 +387,7 @@ import flatPicker from "vue-flatpickr-component";
 import { getBase64LogoReportes } from "../../util/logoReport";
 import { convertSecondtoTimeString } from "../../util/fechas";
 import "flatpickr/dist/flatpickr.css";
+import { getFecha_dd_mm_yyyy } from '../../util/fechas'
 
 import {
   Table,
@@ -577,15 +556,17 @@ export default {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
       var day = fecha.getDate();
+      var hora = fecha.getHours() < 10 ? '0' + fecha.getHours() : fecha.getHours()
+      var minutes = fecha.getMinutes() < 10 ? '0' + fecha.getMinutes() : fecha.getMinutes()
       var format =
         fecha.getFullYear() +
         "-" +
         (mes < 10 ? "0" + mes : mes) +
         "-" +
         (day < 10 ? "0" + day : day);
-
-      this.fechaInicialSalidasPanelBusqueda = format;
-      this.fechaFinalSalidasPanelBusqueda = format;
+      console.log(format)
+      this.fechaInicialSalidasPanelBusqueda = format + " " + hora + ":" + minutes + ":00";
+      this.fechaFinalSalidasPanelBusqueda = format + " " + hora + ":" + minutes + ":00"
     },
     async readAllUnidadesSalidasPanelBusqueda() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
@@ -627,8 +608,8 @@ export default {
                 this.mSelectRutaSalidaPanelBusqueda.length <= 0
                   ? "*"
                   : this.mSelectRutaSalidaPanelBusqueda,
-              fechaI: this.fechaInicialSalidasPanelBusqueda,
-              fechaF: this.fechaFinalSalidasPanelBusqueda,
+              fechaI: getFecha_dd_mm_yyyy(this.fechaInicialSalidasPanelBusqueda),
+              fechaF: getFecha_dd_mm_yyyy(this.fechaFinalSalidasPanelBusqueda),
               tipo:
                 this.radioEstadoRSalidasPanelBusqueda.length <= 0
                   ? "*"
@@ -1358,6 +1339,12 @@ export default {
 }
 
 .cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cardopcinesRPagosVehiculoProduccionPanelDespachoBusqueda {
   display: flex;
   align-items: center;
 }

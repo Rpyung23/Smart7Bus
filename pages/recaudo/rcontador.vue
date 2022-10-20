@@ -784,6 +784,7 @@ export default {
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  width: 90%;
 }
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
   display: flex;

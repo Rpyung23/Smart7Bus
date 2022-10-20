@@ -519,6 +519,7 @@ export default {
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
@@ -547,4 +548,6 @@ export default {
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
 }
+
+
 </style>

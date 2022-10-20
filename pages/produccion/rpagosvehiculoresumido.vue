@@ -53,11 +53,11 @@
               icon
               type="primary"
               @click="readAllRPagosVehiculoProduccionresumido()"
+              size="sm"
             >
               <span class="btn-inner--icon"
                 ><i class="el-icon-search"></i
               ></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
             <download-excel
               class="btn btn-outline-success"

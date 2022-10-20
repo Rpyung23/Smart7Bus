@@ -39,32 +39,13 @@
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialConteoPasajerosVueltas"
-              >
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaInicialConteoPasajerosVueltas">
+            </el-date-picker>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalConteoPasajerosVueltas"
-              >
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaFinalConteoPasajerosVueltas">
+            </el-date-picker>
           </div>
 
 
@@ -262,6 +243,7 @@ import "flatpickr/dist/flatpickr.css";
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
 import { getBase64LogoReportes } from "../../util/logoReport";
+import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -378,8 +360,8 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialConteoPasajerosVueltas = format;
-      this.fechaFinalConteoPasajerosVueltas = format;
+      this.fechaInicialConteoPasajerosVueltas = format + " ";
+      this.fechaFinalConteoPasajerosVueltas = format + " ";
     },
     async readAllUnidadesContadorPasajerosVueltas() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
@@ -450,8 +432,8 @@ export default {
               this.mSelectRutaContadorPasajeroVueltas.length == 0
                 ? "*"
                 : this.mSelectRutaContadorPasajeroVueltas,
-            fechaI: this.fechaInicialConteoPasajerosVueltas + " 01:00:00",
-            fechaF: this.fechaFinalConteoPasajerosVueltas + " 23:59:59",
+            fechaI: getFecha_dd_mm_yyyy(this.fechaInicialConteoPasajerosVueltas) + " 01:00:00",
+            fechaF: getFecha_dd_mm_yyyy(this.fechaFinalConteoPasajerosVueltas) + " 23:59:59",
           };
           //console.log(body)
           var datos = await this.$axios.post(
@@ -900,6 +882,7 @@ export default {
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  width: 90%;
 }
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
   display: flex;

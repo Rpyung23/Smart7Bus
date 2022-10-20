@@ -8,7 +8,7 @@
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
           footer-classes="pb-2"
         >
-          <div class="cardTextoRPagosVehiculoProduccion">
+          <div class="cardOpcionesRPagosVehiculoProduccion">
             <!--<el-autocomplete class="inline-input" v-model="itemUnidadPanelProduccion"
               :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo" style="margin-right: 0.5rem"
               placeholder="Unidad" prefix-icon="ni ni-bus-front-12" :trigger-on-focus="false"></el-autocomplete>-->
@@ -32,33 +32,13 @@
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                :max="{ fechaInicialTableroProduccion }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialTableroProduccion"
-              >
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaInicialTableroProduccion">
+            </el-date-picker>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalTableroProduccion"
-              >
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaFinalTableroProduccion">
+            </el-date-picker>
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
@@ -237,6 +217,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
 
 import {
   Table,
@@ -360,8 +341,8 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialTableroProduccion = format;
-      this.fechaFinalTableroProduccion = format;
+      this.fechaInicialTableroProduccion = format + " ";
+      this.fechaFinalTableroProduccion = format + " ";
     },
     initFechaActualTicket() {
       const today = new Date();
@@ -396,8 +377,8 @@ export default {
         process.env.baseUrl + "/ProduccionPanelProduccionCobranza",
         {
           token: this.token,
-          fechaI: this.fechaInicialTableroProduccion,
-          fechaF: this.fechaFinalTableroProduccion,
+          fechaI: getFecha_dd_mm_yyyy(this.fechaInicialTableroProduccion),
+          fechaF: getFecha_dd_mm_yyyy(this.fechaFinalTableroProduccion),
           rutas:
             this.mSelectLineasValueTablero.length <= 0
               ? "*"
@@ -888,6 +869,14 @@ export default {
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.cardOpcionesRPagosVehiculoProduccion {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: 90%;
 }
 
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {

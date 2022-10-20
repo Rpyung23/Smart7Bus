@@ -30,26 +30,23 @@
             </el-select>-->
 
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaInicialReporteMinutosTarjetas">
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaInicialReporteMinutosTarjetas">
+            </el-date-picker>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaFinalReporteMinutosTarjetas">
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaFinalReporteMinutosTarjetas">
+            </el-date-picker>
 
 
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="createPDFMinutosTarjetas()">
-              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
-            </base-button>
+            <div class="buttonsAdicionalesRMinutosTarjeta">
+              <base-button icon type="primary" @click="createPDFMinutosTarjetas()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              </base-button>
+            </div>
           </div>
         </card>
 
@@ -87,6 +84,8 @@
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import { PDFDocument, StandardFonts, rgb, PageSizes } from 'pdf-lib'
+import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
+
 import {
   Table,
   TableColumn,
@@ -170,8 +169,8 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialReporteMinutosTarjetas = format;
-      this.fechaFinalReporteMinutosTarjetas = format
+      this.fechaInicialReporteMinutosTarjetas = format + " ";
+      this.fechaFinalReporteMinutosTarjetas = format + " "
     },
     selectionChange(selectedRows) {
       this.selectedRows = selectedRows;
@@ -216,8 +215,8 @@ export default {
 
       var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionMinutosTarjetas", {
         token: this.token,
-        fechaI: this.fechaInicialReporteMinutosTarjetas,
-        fechaF: this.fechaFinalReporteMinutosTarjetas,
+        fechaI: getFecha_dd_mm_yyyy(this.fechaInicialReporteMinutosTarjetas),
+        fechaF: getFecha_dd_mm_yyyy(this.fechaFinalReporteMinutosTarjetas),
         unidades: this.itemUnidadPanelProduccion.length > 0 ? this.itemUnidadPanelProduccion : '*',
         nameEmpresa: this.$cookies.get('nameEmpresa')
       })
@@ -316,6 +315,7 @@ export default {
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  width: 60%;
 }
 
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {

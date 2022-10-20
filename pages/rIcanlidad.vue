@@ -54,9 +54,8 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readAllIndicadoresCalidad()">
+            <base-button icon type="primary" @click="readAllIndicadoresCalidad()" size="sm">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-              <span class="btn-inner--text">Buscar</span>
             </base-button>
 
             <!--<base-button outline type="success">
