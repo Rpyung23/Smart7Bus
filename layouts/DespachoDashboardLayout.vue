@@ -3,47 +3,118 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-        <sidebar-item translate="no" v-if="permisos != null && permisos.despacho.panelDespacho != null && 
-                               permisos.despacho.panelDespacho.active"  :link="{
-          name: 'Despacho',
-          icon: 'ni ni-calendar-grid-58 text-success',
-          path: './panelDespacho',
-        }">
+        <sidebar-item
+          translate="no"
+          v-if="
+            permisos != null &&
+            permisos.despacho.panelDespacho != null &&
+            permisos.despacho.panelDespacho.active
+          "
+          :link="{
+            name: 'Despacho',
+            icon: 'ni ni-calendar-grid-58 text-success',
+            path: './panelDespacho',
+          }"
+        >
         </sidebar-item>
 
-        <sidebar-item translate="no" :link="{
-          name: 'Despacho Busqueda',
-          icon: 'ni ni-collection text-primary',
-          path: './panelDespachoBusqueda',
-        }">
+        <sidebar-item
+          translate="no"
+          :link="{
+            name: 'Despacho Busqueda',
+            icon: 'ni ni-collection text-primary',
+            path: './panelDespachoBusqueda',
+          }"
+        >
         </sidebar-item>
 
+        <sidebar-item
+          translate="no"
+          :link="{
+            name: 'Reportes',
+            icon: 'ni ni-ungroup text-blank',
+          }"
+        >
+          <sidebar-item
+            translate="no"
+            :link="{ name: 'R. Salidas', path: './rSalidas' }"
+          />
+          <sidebar-item
+            translate="no"
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.despachoGenerados != null &&
+              permisos.despacho.reportes.despachoGenerados
+            "
+            :link="{
+              name: 'Despachos Generados',
+              path: './rDespachosGenerados',
+            }"
+          />
 
-        <sidebar-item translate="no" :link="{
-          name: 'Reportes',
-          icon: 'ni ni-ungroup text-blank',
-        }">
-          <sidebar-item translate="no" :link="{ name: 'R. Salidas', path: './rSalidas' }" />
-          <sidebar-item translate="no"  v-if="permisos != null && permisos.despacho.reportes.despachoGenerados != null && 
-                               permisos.despacho.reportes.despachoGenerados" 
-                               :link="{ name: 'Despachos Generados', path: './rDespachosGenerados' }" />
+          <sidebar-item
+            translate="no"
+            v-if="
+              this.permisos != null &&
+              this.permisos.despacho.reportes.despachoGeneradosSimplificado !=
+                null &&
+              this.permisos.despacho.reportes.despachoGeneradosSimplificado
+            "
+            :link="{
+              name: 'Despachos Generados S/P',
+              path: './rDespachosGeneradosSim',
+            }"
+          />
 
-          <sidebar-item translate="no" v-if="this.permisos != null && 
-                                  this.permisos.despacho.reportes.despachoGeneradosSimplificado != null && 
-                                  this.permisos.despacho.reportes.despachoGeneradosSimplificado" :link="{ name: 'Despachos Generados S/P', path: './rDespachosGeneradosSim' }" />
+          <sidebar-item
+            translate="no"
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles !=
+                null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles
+            "
+            :link="{
+              name: 'R. Salidas F. Controles',
+              path: './rSalidasControles',
+            }"
+          />
 
-          <sidebar-item translate="no" v-if="permisos != null && permisos.despacho.reportes.reporteSalidasFrecuenciasControles != null && 
-                               permisos.despacho.reportes.reporteSalidasFrecuenciasControles" :link="{ name: 'R. Salidas F. Controles', path: './rSalidasControles' }" />
+          <sidebar-item
+            translate="no"
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles1 !=
+                null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles1
+            "
+            :link="{
+              name: 'R. Salidas Controles (ESPECIFICOS)',
+              path: './rSalidasControles1',
+            }"
+          />
 
-
+          <sidebar-item
+            translate="no"
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles2 !=
+                null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles2
+            "
+            :link="{
+              name: 'R. Salidas Controles (OTROS)',
+              path: './rSalidasControles2',
+            }"
+          />
 
         </sidebar-item>
-
-
       </template>
     </side-bar>
     <div class="main-content">
-      <dashboard-navbar :type="$route.name === 'alternative' ? 'light' : 'default'"></dashboard-navbar>
+      <dashboard-navbar
+        :type="$route.name === 'alternative' ? 'light' : 'default'"
+      ></dashboard-navbar>
 
       <div @click="$sidebar.displaySidebar(false)">
         <nuxt></nuxt>
@@ -82,7 +153,7 @@ export default {
   data() {
     return {
       permisos: null,
-    }
+    };
   },
   methods: {
     initScrollbar() {
@@ -95,12 +166,10 @@ export default {
     },
   },
   mounted() {
-    this.permisos = this.$cookies.get("permisos")
+    this.permisos = this.$cookies.get("permisos");
 
-    
     this.initScrollbar();
   },
 };
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>

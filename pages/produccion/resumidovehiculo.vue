@@ -33,11 +33,10 @@
               <base-button icon type="primary" @click="readAllRPagosVehiculoProduccion()" size="sm">
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
-              <download-excel class="btn btn-outline-success" outline :header="headerExcelRPagosVehiculoProduccion"
+              <download-excel title="EXPORTAR A EXCEL" class="btn btn-icon btn-fab btn-success btn-sm"  :header="headerExcelRPagosVehiculoProduccion"
                 :data="tableDataResumidoVehiculos" :fields="json_fields_excelRPagosVehiculoProduccion"
                 :worksheet="WorksheetExcelRPagosVehiculoProduccion" :name="FileNameExcelRPagosVehiculoProduccion">
                 <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-                <span class="btn-inner--text"> Exportar Excel</span>
               </download-excel>
             </div>
             <!--<base-button outline type="success">

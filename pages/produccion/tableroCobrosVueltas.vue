@@ -323,7 +323,9 @@ export default {
         this.optionsUnidadesPanelProduccion = [];
       }
     },
-    handleSelectionChangeTableCobros(val) {
+    handleSelectionChangeTableCobros(val) 
+    {
+      console.log(val)
       if (val != undefined && val != null) {
         if (this.banderaMarcoAguaRecibo) {
           this.multipleSelectionProduccionCobros = val;
@@ -525,7 +527,7 @@ export default {
             table: {
               // 19, 65, 44, 27
               headerRows: 0,
-              widths: [19, 65, 44, 27],
+              widths: [23, 61, 44, 27],
               body: [
                 [
                   { text: "VEHI", alignment: "center", bold: true },
@@ -544,7 +546,7 @@ export default {
             layout: "noBorders",
             table: {
               headerRows: 0,
-              widths: [19, 65, 44, 27],
+              widths: [23, 61, 44, 27],
               body: mLista.length > 0 ? mListaCuerpoRecibo : [[]],
             },
           },
@@ -729,7 +731,7 @@ export default {
       var totalC = 0;
       for (var i = 0; i < this.multipleSelectionProduccionCobros.length; i++) {
         unidades.push(this.multipleSelectionProduccionCobros[i].Unidad);
-        codigos.push(this.multipleSelectionProduccionCobros[i].Codigo);
+        codigos.push(this.multipleSelectionProduccionCobros[i].CodigoDeuda);
         totalC =
           totalC +
           parseFloat(this.multipleSelectionProduccionCobros[i].DeudaTotal);
@@ -737,7 +739,7 @@ export default {
 
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/RegistrarProduccionPagos",
+          process.env.baseUrl + "/RegistrarProduccionPagosVueltas",
           {
             token: this.token,
             unidades: unidades,

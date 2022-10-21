@@ -149,7 +149,6 @@
           body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1"
           footer-classes="pb-2"
         >
-          <div>
             <el-table
               v-loading="loadingTableUnidadesSalidasPanelBusqueda"
               element-loading-text="Cargando Datos..."
@@ -159,6 +158,7 @@
               :row-class-name="tableRowClassNameSalidasPanelBusqueda"
               header-row-class-name="thead-dark"
               height="calc(100vh - 13rem)"
+              style="width: 100%"
             >
               <el-table-column label="Actions" width="210">
                 <template slot-scope="scope">
@@ -235,7 +235,6 @@
 
               <div slot="empty"></div>
             </el-table>
-          </div>
         </card>
       </div>
     </base-header>
@@ -1382,5 +1381,10 @@ export default {
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda {
   padding-top: 0.25rem !important;
+}
+.cardOpcinesRPagosVehiculoProduccionPanelDespachoBusqueda
+{
+  display: flex;
+  align-items: center;
 }
 </style>

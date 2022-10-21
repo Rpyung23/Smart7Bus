@@ -4,32 +4,9 @@
       <div class="align-items-center py-3">
 
         <card class="no-border-card col" style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectMinutosTarjetasResumido"
           footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
-
-            <!--<el-autocomplete class="inline-input" v-model="itemUnidadPanelProduccion"
-              :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo" style="margin-right: 0.5rem"
-              placeholder="Unidad" prefix-icon="ni ni-bus-front-12" :trigger-on-focus="false"></el-autocomplete>-->
-
-            <!--<el-select v-model="itemUnidadPanelProduccion" multiple filterable style="margin-right: 0.5rem" remote
-              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
-              :loading="loadingTableUnidadesPanelProduccoionLoading">
-              <el-option v-for="item in optionsUnidadesPanelProduccion" :key="item.CodiVehi" :label="item.CodiVehi"
-                :value="item.CodiVehi">
-              </el-option>
-            </el-select>-->
-
-
-
-            <!--<el-select v-model="mSelectLineasValueTablero" style="margin-right: 0.5rem" multiple collapse-tags
-              placeholder="Rutas">
-              <el-option v-for="item in mListLineasTableroProduccion" :key="item.LetrRuta" :label="item.DescRuta"
-                :value="item.idRuta">
-              </el-option>
-            </el-select>-->
-
-
             <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker" v-model="fechaInicialReporteMinutosTarjetas">
@@ -45,27 +22,16 @@
 
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="createPDFMinutosTarjetas()" size="sm">
+          <div class="cardSelectMinutosTarjetasResumido">
+            <div class="buttonsAdicionalesRMinutosTarjeta">
+              <base-button icon type="primary" @click="createPDFMinutosTarjetas()" size="sm">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>
+            </div>
+            
           </div>
         </card>
 
-        <!--<card class="no-border-card col" style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2">
-          <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
-            
-          </div>
-
-          <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: dark; margin-right: 0.5rem">Recaudados : {{ mPagadoRPagosVehiculo }} $</strong>
-            <strong style="color: lightseagreen; margin-right: 0.5rem">Descuentos : {{ mPendienteRPagosVehiculo }}
-              $</strong>
-            <strong style="color: green">Total : {{ mTotalRPagosVehiculo }} $</strong>
-          </div>
-        </card>-->
 
         <card class="no-border-card" style="margin-bottom: 0rem"
           body-classes="cardMinutosTarjetasResumido card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
@@ -313,9 +279,10 @@ export default {
   align-items: center;
 }
 
-.cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
+.cardSelectMinutosTarjetasResumido {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 

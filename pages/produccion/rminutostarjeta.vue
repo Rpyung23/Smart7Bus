@@ -4,13 +4,10 @@
       <div class="align-items-center py-3">
 
         <card class="no-border-card col" style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelecMinutosTarjetas"
           footer-classes="pb-2">
-          <div class="cardTextoRPagosVehiculoProduccion">
+          <div class="cardTextoRPagosMinutosTarjetas">
 
-            <!--<el-autocomplete class="inline-input" v-model="itemUnidadPanelProduccion"
-              :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo" style="margin-right: 0.5rem"
-              placeholder="Unidad" prefix-icon="ni ni-bus-front-12" :trigger-on-focus="false"></el-autocomplete>-->
 
             <el-select v-model="itemUnidadPanelProduccion" multiple filterable style="margin-right: 0.5rem" remote
               placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
@@ -19,16 +16,6 @@
                 :value="item.CodiVehi">
               </el-option>
             </el-select>
-
-
-
-            <!--<el-select v-model="mSelectLineasValueTablero" style="margin-right: 0.5rem" multiple collapse-tags
-              placeholder="Rutas">
-              <el-option v-for="item in mListLineasTableroProduccion" :key="item.LetrRuta" :label="item.DescRuta"
-                :value="item.idRuta">
-              </el-option>
-            </el-select>-->
-
 
             <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
               v-model="fechaInicialReporteMinutosTarjetas">
@@ -41,9 +28,9 @@
 
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
+          <div class="cardSelecMinutosTarjetas">
             <div class="buttonsAdicionalesRMinutosTarjeta">
-              <base-button icon type="primary" @click="createPDFMinutosTarjetas()">
+              <base-button icon type="primary" size="sm" @click="createPDFMinutosTarjetas()">
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
             </div>
@@ -51,13 +38,13 @@
         </card>
 
         <!--<card class="no-border-card col" style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelecMinutosTarjetas"
           footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
             
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccion">
+          <div class="cardTextoRPagosMinutosTarjetas">
             <strong style="color: dark; margin-right: 0.5rem">Recaudados : {{ mPagadoRPagosVehiculo }} $</strong>
             <strong style="color: lightseagreen; margin-right: 0.5rem">Descuentos : {{ mPendienteRPagosVehiculo }}
               $</strong>
@@ -312,15 +299,16 @@ export default {
 
 
 
-.cardTextoRPagosVehiculoProduccion {
+.cardTextoRPagosMinutosTarjetas {
   display: flex;
   align-items: center;
   width: 60%;
 }
 
-.cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
+.cardSelecMinutosTarjetas {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 
