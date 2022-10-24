@@ -32,7 +32,7 @@
         >
           <sidebar-item
           translate="no"
-            :link="{ name: 'Recibos Pagos Vehiculo', path: './recibopagosvehiculo' }"
+            :link="{ name: 'Recibos Pagos Vehiculo', path: pathRecibopagosvehiculo }"
           />
           <!--<sidebar-item
             :link="{ name: 'Recibos Lineas', path: '#' }"
@@ -48,14 +48,14 @@
         >
           <sidebar-item
           translate="no"
-            :link="{ name: 'Minutos y Tarjetas', path: './rminutostarjeta' }"
+            :link="{ name: 'Minutos y Tarjetas', path: pathRminutostarjeta }"
           />
           <sidebar-item
           translate="no"
-            :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: './rminutostarjetaResumido' }"
+            :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }"
           />
           <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
-          <sidebar-item translate="no" :link="{ name: 'Resumidos Vehiculo', path: './resumidovehiculo' }" />
+          <sidebar-item translate="no" :link="{ name: 'Resumidos Vehiculo', path: pathResumidoVehiculo }" />
           
           <!--<sidebar-item
             :link="{ name: 'Pagos Vehiculo Resumido', path: './rpagosvehiculoresumido' }"
@@ -119,7 +119,11 @@ export default {
     return {
       oPermisosWebProduccionPanelJSON:null,
       pathTableroVueltas:'./tablero',
-      pathTableroVueltasCobros:'./tableroCobros'
+      pathTableroVueltasCobros:'./tableroCobros',
+      pathRecibopagosvehiculo: './recibopagosvehiculo',
+      pathRminutostarjetaResumidoVueltas: './rminutostarjetaResumido',
+      pathRminutostarjeta : './rminutostarjeta',
+      pathResumidoVehiculo : './resumidovehiculo'
     }
   },
   methods: {
@@ -140,7 +144,25 @@ export default {
     
     this.pathTableroVueltasCobros = (this.oPermisosWebProduccionPanelJSON != null &&  
                                this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroCobrosVueltas' :  './tableroCobros'
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroCobrosVueltas' :  './tableroCobros'  
+
+    this.pathRecibopagosvehiculo = (this.oPermisosWebProduccionPanelJSON != null &&  
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './recibopagosvehiculoVueltas' : './recibopagosvehiculo'
+    
+    this.pathRminutostarjetaResumidoVueltas = (this.oPermisosWebProduccionPanelJSON != null &&  
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaResumidoVueltas' : './rminutostarjetaResumido'
+   
+    this.pathRminutostarjeta = (this.oPermisosWebProduccionPanelJSON != null &&  
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaVueltas' : './rminutostarjeta'
+   
+    this.pathResumidoVehiculo = (this.oPermisosWebProduccionPanelJSON != null &&  
+                                this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
+                                this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './resumidovehiculoVueltas' : './resumidovehiculo'
+   
+                               
     this.initScrollbar();
   },
 };

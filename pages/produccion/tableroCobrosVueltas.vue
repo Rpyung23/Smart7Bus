@@ -165,10 +165,14 @@
 
                 <el-table-column prop="Unidad" label="Unidad" minWidth="70">
                 </el-table-column>
+
+                <el-table-column prop="NumeVuelSali_m" label="N° Vuelta" minWidth="65">
+                </el-table-column>
+
                 <el-table-column
                   prop="DescRuta"
                   label="Ruta - Linea"
-                  minWidth="140"
+                  minWidth="130"
                 >
                 </el-table-column>
 
