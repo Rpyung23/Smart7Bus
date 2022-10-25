@@ -9,6 +9,30 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
+
+            
+            <el-select
+              v-model="itemUnidadRSemanales"
+              multiple
+              filterable
+              remote
+              placeholder="Unidades"
+              prefix-icon="ni ni-bus-front-12"
+              style="margin-right: 0.5rem"
+              :remote-method="remoteMethodUnidadesRecibosProduccion"
+              :loading="loadingTableUnidadesSemanales"
+            >
+              <el-option
+                v-for="item in optionsUnidadesSemanales"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
+              </el-option>
+            </el-select>
+
+
+
             <base-input
               addon-left-icon="ni ni-calendar-grid-58"
               style="margin-right: 0.5rem"
@@ -24,10 +48,6 @@
               >
               </flat-picker>
             </base-input>
-
-            <p style="margin: auto">
-              <strong style="margin-right: 0.5rem">Hasta</strong>
-            </p>
 
             <base-input
               addon-left-icon="ni ni-calendar-grid-58"
@@ -73,6 +93,61 @@
                   ><i class="ni ni-single-copy-04"></i
                 ></span>
               </base-button>
+
+              <download-excel
+                v-if="mListDatosPenalidades.length > 0 ? true : false"
+                class="btn btn-icon btn-fab btn-success btn-sm"
+                outline
+                :header="oheaderExcelRSalidasSemanales"
+                title="Exportar a Excel"
+                :data="mListDatosPenalidades"
+                :fields="json_fields_excelRPenalidadesSemanales"
+                :worksheet="WorksheetExcelRSalidasSemanales"
+                :name="FileNameExcelRSalidasSemanales"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="ni ni-collection"></i
+                ></span>
+              </download-excel>
+
+            </div>
+          </div>
+        </card>
+
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
+          footer-classes="pb-2"
+        >
+          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
+
+            <el-select
+              style="margin-right: 0.5rem"
+              collapse-tags
+              v-model="itemRutasRSalidasSemanales"
+              multiple
+              placeholder="Rutas"
+            >
+              <el-option
+                v-for="item in mListaRutasSalidasSemanales"
+                :key="item.LetrRuta"
+                :label="item.DescRuta"
+                :value="item.LetrRuta"
+              >
+              </el-option>
+            </el-select>
+
+
+
+
+
+          </div>
+
+          <div
+            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
+          >
+            <div class="buttonCenterEndDerecha">
             </div>
           </div>
         </card>
@@ -91,21 +166,14 @@
               :data="mListDatosPenalidades"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
-              height="calc(100vh - 9.5rem)"
+              height="calc(100vh - 12.8rem)"
             >
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
               </el-table-column>
 
               <el-table-column
                 prop="HoraSaliProgSali_m"
-                label="F. Inicio"
-                width="170"
-              >
-              </el-table-column>
-
-              <el-table-column
-                prop="HoraLlegProgSali_m"
-                label="F. Final"
+                label="Fecha Salidas"
                 width="170"
               >
               </el-table-column>
@@ -118,25 +186,48 @@
               </el-table-column>
 
               <el-table-column
-                prop="FaltSali_dAdelanto"
-                label="F. Adelanto"
-                width="150"
+                prop="DescRutaSali_m"
+                label="Detalle Ruta"
+                width="250"
               >
               </el-table-column>
 
               <el-table-column
-                prop="FaltSali_dAtraso"
+                prop="atrasos"
                 label="F. Atraso"
                 width="150"
               >
               </el-table-column>
 
               <el-table-column
-                prop="EstadoFaltasSumatoria"
-                label="Estado"
-                width="325"
+                prop="atrasosTiempo"
+                label="T. Atraso"
+                width="150"
               >
               </el-table-column>
+
+
+              <el-table-column
+                prop="adelantos"
+                label="F. Adelanto"
+                width="150"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="adelantoTiempo"
+                label="T. Adelanto"
+                width="150"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="PenaCtrlSali_d"
+                label="T. Dinero"
+                width="150"
+              >
+              </el-table-column>
+
 
               <div slot="empty"></div>
             </el-table>
@@ -215,9 +306,89 @@ export default {
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
       loadingPenalidadesSemanales: false,
+      mListaUnidadesSemanales:[],
+      optionsUnidadesSemanales:[],
+      loadingTableUnidadesSemanales:false,
+      itemUnidadRSemanales:[],
+      mListaRutasSalidasSemanales:[],
+      itemRutasRSalidasSemanales:[],
+
+      json_fields_excelRPenalidadesSemanales: {
+        UNIDAD: "CodiVehiSali_m",
+        FECHA: "HoraSaliProgSali_m",
+        "TOTAL SALIDAS": "totalSalidas",
+        RUTA: "DescRutaSali_m",
+        "FALTA ATRASOS": "atrasos",
+        "TIEMPO ATRASOS": "atrasosTiempo",
+        "FALTA ADELANTOS": "adelantos",
+        "TIEMPO ADELANTO": "adelantoTiempo",
+        "TOTAL DINERO": "PenaCtrlSali_d",
+      },
+      WorksheetExcelRSalidasSemanales : "",
+      FileNameExcelRSalidasSemanales : "",
+      oheaderExcelRSalidasSemanales : ""
     };
   },
   methods: {
+
+    async readAllRutasSalidasSEmanales() {
+      this.mListaRutasSalidasSemanales = [];
+
+      var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
+        token: this.token,
+        tipo: 1,
+      });
+
+      if (datos.data.status_code == 200) {
+        this.mListaRutasSalidasSemanales.push(...datos.data.data);
+      }
+    },
+    getNombresRutasRDespachosGenerados() {
+      var mlist = [];
+      for (var j = 0; j < this.itemRutasRSalidasSemanales.length; j++) {
+        for (var i = 0; i < this.mListaRutasSalidasSemanales.length; i++) {
+          if (
+            this.itemRutasRSalidasSemanales[j] ==
+            this.mListaRutasSalidasSemanales[i].LetrRuta
+          ) {
+            mlist.push(this.mListaRutasSalidasSemanales[i].DescRuta);
+          }
+        }
+      }
+      return mlist;
+    },
+
+    remoteMethodUnidadesRecibosProduccion(query) {
+      if (query !== "") {
+        this.loadingTableUnidadesSemanales = true;
+        setTimeout(() => {
+          this.loadingTableUnidadesSemanales = false;
+          this.optionsUnidadesSemanales =
+            this.mListaUnidadesSemanales.filter((item) => {
+              return (
+                item.CodiVehi.toLowerCase().indexOf(query.toLowerCase()) > -1
+              );
+            });
+        }, 200);
+      } else {
+        this.optionsUnidadesSemanales = [];
+      }
+    },
+    async readAllUnidadesSalidasSemanales() {
+      var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
+        token: this.token,
+      });
+
+      console.log(datos.data);
+
+      if (datos.data.status_code == 200) {
+        for (var i = 0; i < datos.data.data.length; i++) {
+          var obj = datos.data.data[i];
+          obj.value = obj.CodiVehi;
+          this.mListaUnidadesSemanales.push(obj);
+        }
+      }
+    },
     initPrimerDiaSemanaActualSalidaBusquedaPanel() {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
@@ -236,11 +407,35 @@ export default {
       this.mListDatosPenalidades = [];
       this.loadingPenalidadesSemanales = true;
 
+      this.WorksheetExcelRSalidasSemanales = "RS_S_W_" + Date.now();
+      this.FileNameExcelRSalidasSemanales =
+        "RS_S_" + Date.now() + ".xls";
+
+        this.oheaderExcelRSalidasSemanales = [
+            "Reporte Despachos Semanales",
+            "Fechas : " +
+              this.fechaDia1SalidasPanelBusqueda +
+              " hasta " +
+              this.fechaDia2SalidasPanelBusqueda,
+            "Unidades : " +
+              (this.itemUnidadRSemanales.length <= 0
+                ? "TODAS LAS UNIDADES"
+                : this.itemUnidadRSemanales),
+            "Rutas : " +
+              (this.itemRutasRSalidasSemanales.length <= 0
+                ? "TODAS LAS RUTAS"
+                : this.getNombresRutasRDespachosGenerados(
+                    this.itemRutasRSalidasSemanales
+                  )),
+          ];  
+
       try {
         var obj = {
           token: this.token,
           fechaI: this.fechaDia1SalidasPanelBusqueda,
           fechaF: this.fechaDia2SalidasPanelBusqueda,
+          unidades: this.itemUnidadRSemanales.length <=0 ? '*' :  this.itemUnidadRSemanales,
+          rutas: this.itemRutasRSalidasSemanales.length <=0 ? '*' :  this.itemRutasRSalidasSemanales
         };
 
         console.log(obj);
@@ -300,14 +495,6 @@ export default {
           alignment: "center",
         },
         {
-          text: "F. FINAL",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
           text: "T. SALIDAS",
           fontSize: 8.5,
           bold: true,
@@ -316,7 +503,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "F. ADELANTO",
+          text: "RUTA",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -332,28 +519,60 @@ export default {
           alignment: "center",
         },
         {
-          text: "ESTADO",
+          text: "T. ATRASO",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
           color: "white",
           alignment: "center",
         },
+        {
+          text: "F. ADELANTO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "T. ADELANTO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },        {
+          text: "T. DINERO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        }
       ]);
 
       for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
         var obj = [
-          { text: this.mListDatosPenalidades[i].CodiVehiSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
-          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
-          { text: this.mListDatosPenalidades[i].HoraLlegProgSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
-          { text: this.mListDatosPenalidades[i].totalSalidas, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
-          { text: this.mListDatosPenalidades[i].FaltSali_dAdelanto, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
-          { text: this.mListDatosPenalidades[i].FaltSali_dAtraso, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red" },
+          { text: this.mListDatosPenalidades[i].CodiVehiSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
+          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
+          { text: this.mListDatosPenalidades[i].totalSalidas, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
+          { text: this.mListDatosPenalidades[i].DescRutaSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
+          { text: this.mListDatosPenalidades[i].atrasos, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
+          { text: this.mListDatosPenalidades[i].atrasosTiempo, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
          {
-            text: this.mListDatosPenalidades[i].EstadoFaltasSumatoria,
+            text: this.mListDatosPenalidades[i].adelantos,
             fontSize: 8.5,
-            color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "red",
-            alignment: "left",
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].adelantoTiempo,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].PenaCtrlSali_d,
+            fontSize: 8.5,
+            alignment: "center",
           },
         ];
         mList.push(obj);
@@ -361,6 +580,7 @@ export default {
 
       var docDefinition = {
         pageSize: "A4",
+        pageOrientation: 'landscape',
         pageMargins: [40, 80, 40, 60],
         header: {
           margin: 15,
@@ -414,17 +634,8 @@ export default {
           },
           {
             table: {
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 40, 100, 40, 90, 50, 60, 60, 35, 35, 90],
-              body: [[]],
-            },
-          },
-          {
-            table: {
-              headerRows: 0,
-              widths: [40, 60, 60, 45, 70, 50, 130],
+              widths: [40, 60, 60, 175, 70, 50, 72,72,70],
               body: mList,
             },
           },
@@ -435,6 +646,8 @@ export default {
     },
   },
   mounted() {
+    this.readAllRutasSalidasSEmanales()
+    this.readAllUnidadesSalidasSemanales()
     this.initPrimerDiaSemanaActualSalidaBusquedaPanel();
     //this.readApiPenalidades();
   },
@@ -492,7 +705,7 @@ export default {
 
 .card-bodyRPenalidadesSemanales {
   padding: 0rem !important;
-  height: calc(100vh - 9.5rem);
+  height: calc(100vh - 13rem);
   overflow: none;
 }
 

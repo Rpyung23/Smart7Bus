@@ -87,6 +87,32 @@
         </card>
 
         <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          footer-classes="pb-2"
+        >
+          <div class="cardTextoRPagosVehiculoProduccion">
+            <el-select
+              v-model="modelTiposEvento"
+              multiple
+              collapse-tags
+              style="margin-right: 0.5rem"
+              placeholder="Tipos de Eventos"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
+            >
+              <el-option
+                v-for="item in mListaTiposEventos"
+                :key="item.idTipoDispEvenList"
+                :label="item.DescDispEvenList"
+                :value="item.idTipoDispEvenList"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </card>
+
+        <card
           class="no-border-card"
           style="margin-bottom: 0rem"
           body-classes="card-bodyRVelocidades px-0 pb-1"
@@ -100,7 +126,7 @@
               row-key="id"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
-              height="calc(100vh - 9.5rem)"
+              height="calc(100vh - 13rem)"
             >
               <el-table-column label="Actions" width="120">
                 <template slot-scope="scope">
@@ -134,53 +160,49 @@
       size="xl"
       body-classes="p-1"
     >
-
-
-        <GmapMap
-          map-type-id="roadmap"
-          class="mapaEventosDispositivos"
-          :center="oCenter"
-          :zoom="oZoom"
-          :options="{
-            zoomControl: false,
-            scaleControl: false,
-            mapTypeControl: false,
-            streetViewControl: false,
-            rotateControl: false,
-            fullscreenControl: false,
-            disableDefaultUi: true,
-          }"
-        >
-          <GmapMarker
-            :position="{
-              lat: parseFloat(LatiDispEven),
-              lng: parseFloat(LongDispEven),
-            }"
-           :icon= '"img/monitoreo/corteEnergia.png"'
-            :clickable="false"
-            :draggable="false"
-            :optimized="true"
-          />
-
-          <GmapMarker
-        :position="{
-          lat: parseFloat(LatiDispEven),
-          lng: parseFloat(LongDispEven),
-        }"
-        icon="static/img/control/control.png"
-        :clickable="false"
-        :draggable="false"
-        :optimized="true"
+      <GmapMap
+        map-type-id="roadmap"
+        class="mapaEventosDispositivos"
+        :center="oCenter"
+        :zoom="oZoom"
         :options="{
-          label: {
-            text: (DescDispEvenList +' \n '+ HoraDispEvenTime),
-            color: 'red',
-            className: 'paddingLabelEventosDispositivos',
-          },
+          zoomControl: false,
+          scaleControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+          rotateControl: false,
+          fullscreenControl: false,
+          disableDefaultUi: true,
         }"
-      />
+      >
+        <GmapMarker v-for="(marker,index) in mListaHistorialEventosMapa" :key="index"
+          :position="{
+            lat: parseFloat(marker.LatiDispEven),
+            lng: parseFloat(marker.LongDispEven),
+          }"
+          :clickable="false"
+          :draggable="false"
+          :optimized="true"
+        />
 
-        </GmapMap>
+        <GmapMarker v-for="(marker,index) in mListaHistorialEventosMapa" :key="index"
+          :position="{
+            lat: parseFloat(marker.LatiDispEven),
+            lng: parseFloat(marker.LongDispEven),
+          }"
+          icon="static/img/control/control.png"
+          :clickable="false"
+          :draggable="false"
+          :optimized="true"
+          :options="{
+            label: {
+              text: marker.DescRutaSali_m + ' \n VUE: ' + marker.NumeVuelSali_m+ ' \n ('+ marker.HoraDispEven+')',
+              color: 'red',
+              className: 'paddingLabelEventosDispositivos',
+            },
+          }"
+        />
+      </GmapMap>
     </modal>
   </div>
 </template>
@@ -260,62 +282,73 @@ export default {
           minWidth: 110,
         },
         {
-          prop: "HoraDispEven",
-          label: "F.Hora Evento",
-          minWidth: 230,
+          prop: "NumeVuelSali_m",
+          label: "N° Vueltas",
+          minWidth: 140,
         },
         {
           prop: "DescRutaSali_m",
           label: "Ruta - Linea",
-          minWidth: 250,
+          minWidth: 200,
         },
         {
-          prop: "NumeVuelSali_m",
-          label: "N° Vuelta",
+          prop: "cantDispEventos",
+          label: "Cant Eventos",
           minWidth: 140,
-        },
-        {
-          prop: "DescFrec",
-          label: "Frecuencia",
-          minWidth: 250,
         },
         {
           prop: "DescDispEvenList",
           label: "Evento",
-          minWidth: 150,
-        },
-        {
-          prop: "LatiDispEven",
-          label: "Latitud",
-          minWidth: 140,
-        },
-        {
-          prop: "LongDispEven",
-          label: "Longitud",
-          minWidth: 140,
+          minWidth: 250,
         },
       ],
       mListaREventosDispositivos: [],
       modalUbicacionEventoDispositivo: false,
-      LatiDispEven:0,
-      LongDispEven:0,
+      LatiDispEven: 0,
+      LongDispEven: 0,
       oCenter: { lat: -1.249546, lng: -78.585376 },
       oZoom: 7,
-      DescDispEvenList:"",
-      HoraDispEvenTime:""
+      DescDispEvenList: "",
+      HoraDispEvenTime: "",
+      mListaTiposEventos: [],
+      modelTiposEvento: [],
+      mListaHistorialEventosMapa: [],
     };
   },
 
   methods: {
-    showMapaEventoDispositivo(item)
-    {
-      this.modalUbicacionEventoDispositivo = true
-      this.LatiDispEven = item.LatiDispEven
-      this.LongDispEven = item.LongDispEven
-      this.HoraDispEvenTime = item.HoraDispEvenTime
-      this.oZoom = 18
-      this.DescDispEvenList = item.DescDispEvenList
-      this.oCenter =  { lat: parseFloat(item.LatiDispEven), lng: parseFloat(item.LongDispEven)}
+    async showMapaEventoDispositivo(item) {
+      console.log(item);
+      this.modalUbicacionEventoDispositivo = true;
+
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/RDetalleDispositivosEventos",
+          {
+            token: this.token,
+            unidad: item.CodiVehiDispEven,
+            evento: item.idTipoEvenDispEven,
+            fechaI: item.fdechaIB,
+            fechaF: item.fdechaFB,
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          this.LatiDispEven = datos.data.datos[0].LatiDispEven;
+          this.LongDispEven = datos.data.datos[0].LongDispEven;
+          this.HoraDispEvenTime = datos.data.datos[0].HoraDispEvenTime;
+          this.oZoom = 18;
+          this.DescDispEvenList = datos.data.datos[0].DescDispEvenList;
+          this.oCenter = {
+            lat: parseFloat(datos.data.datos[0].LatiDispEven),
+            lng: parseFloat(datos.data.datos[0].LongDispEven),
+          };
+        }
+
+        this.mListaHistorialEventosMapa.push(...datos.data.datos);
+      } catch (error) {
+        console.log(error);
+      }
     },
     remoteMethodUnidadesSalidasPanelBusqueda(query) {
       if (query !== "") {
@@ -374,6 +407,8 @@ export default {
                 : "*",
             fechaI: this.fechaInicialSalidasPanelBusqueda,
             fechaF: this.fechaFinalSalidasPanelBusqueda,
+            tipos:
+              this.modelTiposEvento.length <= 0 ? "*" : this.modelTiposEvento,
           },
           {
             timeout: 600000,
@@ -441,14 +476,6 @@ export default {
             alignment: "center",
           },
           {
-            text: "F. Hora Evento",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
             text: "N° Vuelta",
             fontSize: 8.5,
             bold: true,
@@ -465,7 +492,7 @@ export default {
             alignment: "center",
           },
           {
-            text: "Frecuencia",
+            text: "Cant Eventos",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
@@ -474,22 +501,6 @@ export default {
           },
           {
             text: "Detalle Evento",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Latitud",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Longitud",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
@@ -509,11 +520,6 @@ export default {
             fontSize: 8.5,
           },
           {
-            text: this.mListaREventosDispositivos[i].HoraDispEven,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
             text: this.mListaREventosDispositivos[i].NumeVuelSali_m,
             fontSize: 8.5,
             alignment: "center",
@@ -524,22 +530,12 @@ export default {
             alignment: "center",
           },
           {
-            text: this.mListaREventosDispositivos[i].DescFrec,
+            text: this.mListaREventosDispositivos[i].cantDispEventos,
             fontSize: 8.5,
             alignment: "center",
           },
           {
             text: this.mListaREventosDispositivos[i].DescDispEvenList,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListaREventosDispositivos[i].LatiDispEven,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListaREventosDispositivos[i].LongDispEven,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -570,7 +566,6 @@ export default {
        * ***/
       var docDefinition = {
         pageSize: "A4",
-        pageOrientation: "landscape",
         pageMargins: [40, 80, 40, 60],
         header: {
           margin: 15,
@@ -627,7 +622,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 100, 40, 140, 125, 150, 50, 50],
+              widths: [30, 40, 140, 100, 150],
               body: resultadoString,
             },
           },
@@ -637,9 +632,36 @@ export default {
       pdfMake.createPdf(docDefinition).open({}, win);*/
       pdfMake.createPdf(docDefinition).download("RDECR_" + Date.now());
     },
+    async readEventosListaReporte() {
+      this.mListaTiposEventos = [];
+
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/readEventosListaReportes",
+          {
+            token: this.token,
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          this.mListaTiposEventos.push(...datos.data.datos);
+        } else {
+          Notification.info({
+            title: "Tipos Eventos Dispositivos",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({
+          title: "Tipos Eventos Dispositivos",
+          message: error.toString(),
+        });
+      }
+    },
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
+    this.readEventosListaReporte();
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllUnidadesSalidasPanelBusqueda();
   },
@@ -689,7 +711,7 @@ export default {
 
 .card-bodyRVelocidades {
   padding: 0rem !important;
-  height: calc(100vh - 9.5rem);
+  height: calc(100vh - 12.95rem);
   overflow: auto;
 }
 

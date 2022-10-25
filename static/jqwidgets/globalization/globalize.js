@@ -184,9 +184,9 @@ Globalize.cultures[ "default" ] = {
 			firstDay: 0,
 			days: {
 				// full day names
-				names: [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ],
+				names: [ "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" ],
 				// abbreviated day names
-				namesAbbr: [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ],
+				namesAbbr: [ "Dom", "Lun", "Mar", "Mir", "Jue", "Vie", "Sab" ],
 				// shortest day names
 				namesShort: [ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ]
 			},

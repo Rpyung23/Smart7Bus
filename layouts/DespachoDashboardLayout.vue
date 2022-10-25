@@ -39,6 +39,12 @@
             translate="no"
             :link="{ name: 'R. Salidas', path: './rSalidas' }"
           />
+
+          <sidebar-item
+            translate="no"
+            :link="{ name: 'R. Salidas Semanales', path: './rPenalidadesSemanales' }"
+          />
+
           <sidebar-item
             translate="no"
             v-if="

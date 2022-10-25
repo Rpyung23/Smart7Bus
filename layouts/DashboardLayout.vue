@@ -77,7 +77,7 @@
           <sidebar-item :link="{ name: 'Recorrido', path: '/rdistancia' }" translate="no"/>
           <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" translate="no"/>
           <sidebar-item :link="{ name: 'ANT', path: './rant' }" />
-          <sidebar-item :link="{ name: 'R. Cortes de Energia', path: './rCortesEnergia' }" translate="no"/>
+          <sidebar-item :link="{ name: 'R. Tipos Eventos', path: './rTiposEventos' }" translate="no"/>
           
           
         </sidebar-item>

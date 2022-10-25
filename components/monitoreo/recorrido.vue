@@ -82,7 +82,9 @@
               '\nPROG : ' +
               marker.HoraProgSali_d +
               ' MARC : ' +
-              marker.HoraMarcSali_d,
+              marker.HoraMarcSali_d +
+              ' VEL : ' +
+              marker.VeloHistEven,
             color: '#055eb1',
             className: 'paddingLabelControlMarc',
           },
