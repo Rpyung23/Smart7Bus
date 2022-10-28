@@ -47,6 +47,11 @@
 
           <sidebar-item
             translate="no"
+            :link="{ name: 'R. Cumplimiento de Salidas', path: './rCumplimientoSalidas' }"
+          />
+
+          <sidebar-item
+            translate="no"
             v-if="
               permisos != null &&
               permisos.despacho.reportes.despachoGenerados != null &&
