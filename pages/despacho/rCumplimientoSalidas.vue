@@ -227,15 +227,8 @@
 
 
               <el-table-column
-                prop="totalSalidasGeneradas"
-                label="T. Salidas Generadas"
-                width="230"
-              >
-              </el-table-column>
-
-              <el-table-column
-                prop="totalSalidasTerminadas"
-                label="T. Salidas Terminadas"
+                prop="PorcMarcacion"
+                label="%. Cumplimiento"
                 width="230"
               >
               </el-table-column>
@@ -343,8 +336,7 @@ export default {
         "FECHA SALIDAS INICIAL": "HoraSaliProgSali_mInicio",
         "FECHA SALIDAS FINAL": "HoraSaliProgSali_mFin",
         "TOTAL SALIDAS": "totalSalidas",
-        "TOTAL SALIDAS GENERADAS": "totalSalidasGeneradas",
-        "TOTAL SALIDAS TERMINADAS": "totalSalidasTerminadas",
+        "% CUMPLIMIENTO": "PorcMarcacion",
         "ESTADO": "estado",
       },
       WorksheetExcelRSalidasSemanales : "",
@@ -489,7 +481,7 @@ export default {
       this.loadingPenalidadesSemanales = false;
     },
     tableRowClassNameCumplimientoSalidas({ row, rowIndex }) {
-      if (row.estadoCode == 0) {
+      if (parseFloat(row.PorcMarcacion) < 100) {
         return "warning-row-CumplientoSalidas";
       } else {
         return "";
@@ -569,21 +561,13 @@ export default {
           alignment: "center",
         },
         {
-          text: "T. SALIDAS GENERADAS",
+          text: "% CUMPLIMIENTO",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
           color: "white",
           alignment: "center",
-        },
-        {
-          text: "T. SALIDAS TERMINADAS",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },        {
+        },       {
           text: "ESTADO",
           fontSize: 8.5,
           bold: true,
@@ -595,28 +579,22 @@ export default {
 
       for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
         var obj = [
-          { text: this.mListDatosPenalidades[i].CodiVehiSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].estadoCode == 0 ? "red" : "black" },
-          { text: this.mListDatosPenalidades[i].descripcionGrupo, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].estadoCode == 0 ? "red" : "black" },
-          { text: this.mListDatosPenalidades[i].DescRutaSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].estadoCode == 0 ? "red" : "black" },
-          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_mInicio, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].estadoCode == 0 ? "red" : "black" },
-          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_mFin, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].estadoCode == 0 ? "red" : "black" },
-          { text: this.mListDatosPenalidades[i].totalSalidas, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].estadoCode == 0 ? "red" : "black" },
+          { text: this.mListDatosPenalidades[i].CodiVehiSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].PorcMarcacion  < 100 ? "red" : "black" },
+          { text: this.mListDatosPenalidades[i].descripcionGrupo, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].PorcMarcacion  < 100 ? "red" : "black" },
+          { text: this.mListDatosPenalidades[i].DescRutaSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].PorcMarcacion  < 100 ? "red" : "black" },
+          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_mInicio, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].PorcMarcacion  < 100 ? "red" : "black" },
+          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_mFin, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].PorcMarcacion  < 100 ? "red" : "black" },
+          { text: this.mListDatosPenalidades[i].totalSalidas, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].PorcMarcacion  < 100 ? "red" : "black" },
          {
-            text: this.mListDatosPenalidades[i].totalSalidasGeneradas,
+            text: this.mListDatosPenalidades[i].PorcMarcacion,
             fontSize: 8.5,
             alignment: "center",
-            color: this.mListDatosPenalidades[i].estadoCode == 0 ? "red" : "black"
-          },
-          {
-            text: this.mListDatosPenalidades[i].totalSalidasTerminadas,
-            fontSize: 8.5,
-            color: this.mListDatosPenalidades[i].estadoCode == 0 ? "red" : "black",
-            alignment: "center",
+            color: this.mListDatosPenalidades[i].PorcMarcacion  < 100 ? "red" : "black"
           },
           {
             text: this.mListDatosPenalidades[i].estado,
             fontSize: 8.5,
-            color: this.mListDatosPenalidades[i].estadoCode == 0 ? "red" : "black",
+            color: this.mListDatosPenalidades[i].PorcMarcacion < 100 ? "red" : "black",
             alignment: "center",
           },
         ];
@@ -680,7 +658,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 70, 175,60, 70, 50, 72,72,70],
+              widths: [40, 70, 175,60, 70, 50, 72,70],
               body: mList,
             },
           },

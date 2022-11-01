@@ -78,6 +78,7 @@
           <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" translate="no"/>
           <sidebar-item :link="{ name: 'ANT', path: './rant' }" />
           <sidebar-item :link="{ name: 'R. Tipos Eventos', path: './rTiposEventos' }" translate="no"/>
+          <sidebar-item :link="{ name: 'R. Fuera de Ruta', path: './rFueraRuta' }" translate="no"/>
           
           
         </sidebar-item>

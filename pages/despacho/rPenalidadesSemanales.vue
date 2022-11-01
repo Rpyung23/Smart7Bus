@@ -122,6 +122,24 @@
         >
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
 
+            
+            <el-select
+              style="margin-right: 0.5rem"
+              collapse-tags
+              v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false"
+              v-model="itemGruposPenalidadesSemanales"
+              multiple
+              placeholder="Grupos"
+            >
+              <el-option
+                v-for="item in mListaGruposPenalidadesSemanales"
+                :key="item.id"
+                :label="item.descripcion"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+
             <el-select
               style="margin-right: 0.5rem"
               collapse-tags
@@ -305,6 +323,7 @@ export default {
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
+      
       loadingPenalidadesSemanales: false,
       mListaUnidadesSemanales:[],
       optionsUnidadesSemanales:[],
@@ -312,7 +331,8 @@ export default {
       itemUnidadRSemanales:[],
       mListaRutasSalidasSemanales:[],
       itemRutasRSalidasSemanales:[],
-
+      mListaGruposPenalidadesSemanales:[],
+      itemGruposPenalidadesSemanales:[],
       json_fields_excelRPenalidadesSemanales: {
         UNIDAD: "CodiVehiSali_m",
         FECHA: "HoraSaliProgSali_m",
@@ -644,8 +664,21 @@ export default {
       
       pdfMake.createPdf(docDefinition).download("RPS_" + Date.now());
     },
+    async readGruposActivosPenalidadesSemanales() {
+      this.mListaGruposPenalidadesSemanales = [];
+
+      var datos = await this.$axios.post(process.env.baseUrl + "/gruposActivos", {
+        token: this.token
+      });
+
+      if (datos.data.status_code == 200) {
+        this.mListaGruposPenalidadesSemanales.push(...datos.data.data);
+      }
+    },
   },
-  mounted() {
+  mounted() 
+  {
+    this.readGruposActivosPenalidadesSemanales()
     this.readAllRutasSalidasSEmanales()
     this.readAllUnidadesSalidasSemanales()
     this.initPrimerDiaSemanaActualSalidaBusquedaPanel();
