@@ -190,8 +190,15 @@
               </el-table-column>
 
               <el-table-column
-                prop="HoraSaliProgSali_m"
-                label="Fecha Salidas"
+                prop="HoraSaliProgSali_mI"
+                label="Fecha Inico"
+                width="170"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop="HoraSaliProgSali_mF"
+                label="Fecha Final"
                 width="170"
               >
               </el-table-column>
@@ -335,7 +342,8 @@ export default {
       itemGruposPenalidadesSemanales:[],
       json_fields_excelRPenalidadesSemanales: {
         UNIDAD: "CodiVehiSali_m",
-        FECHA: "HoraSaliProgSali_m",
+        "FECHA INICIAL": "HoraSaliProgSali_mI",
+        "FECHA FINAL": "HoraSaliProgSali_mF",
         "TOTAL SALIDAS": "totalSalidas",
         RUTA: "DescRutaSali_m",
         "FALTA ATRASOS": "atrasos",
@@ -515,6 +523,14 @@ export default {
           alignment: "center",
         },
         {
+          text: "F. FINAL",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
           text: "T. SALIDAS",
           fontSize: 8.5,
           bold: true,
@@ -574,7 +590,8 @@ export default {
       for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
         var obj = [
           { text: this.mListDatosPenalidades[i].CodiVehiSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
-          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
+          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_mI, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
+          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_mF, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
           { text: this.mListDatosPenalidades[i].totalSalidas, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
           { text: this.mListDatosPenalidades[i].DescRutaSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
           { text: this.mListDatosPenalidades[i].atrasos, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
@@ -655,7 +672,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 60, 60, 175, 70, 50, 72,72,70],
+              widths: [40, 60,60, 55, 170, 52, 48, 62,62,50],
               body: mList,
             },
           },

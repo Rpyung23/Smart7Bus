@@ -360,7 +360,7 @@ export default {
     initFechaActualProduccionPanelControl() {
       const today = new Date();
       const fecha = new Date(today);
-      fecha.setDate(fecha.getDate() - 1);
+      //fecha.setDate(fecha.getDate() - 1);
       var mes = fecha.getMonth() + 1;
       var day = fecha.getDate();
       var format =
