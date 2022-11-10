@@ -137,6 +137,16 @@
           @keydown="initRastreo()"
         />
       </div>
+      <div>
+        <input type="checkbox" id="Corte Ruta" value="CR" v-model="checkedMonitoreoEstado" @change="initRastreo()">
+        <label for="Corte Ruta">Corte Ruta</label>
+        <input type="checkbox" id="Fuera de Linea" value="FR" v-model="checkedMonitoreoEstado" @change="initRastreo()">
+        <label for="Fuera de Linea">Fuera de Linea</label>
+       </div>
+      <div>
+        <input type="checkbox" id="GPS" value="GPS" v-model="checkedMonitoreoEstado" @change="initRastreo()">
+        <label for="GPS">GPS</label>
+      </div>
       <div class="ListadoUnidades">
         <div
           class="itemMonitoreoUnidad"
@@ -728,8 +738,8 @@ export default {
       },
       mListRutaSubida:[],
       mListRutaBajada:[],
-
       anchoPanelMonitoreoClickMinMax: "width: 17rem",
+      checkedMonitoreoEstado:[]
     };
   },
   methods: {
@@ -743,7 +753,58 @@ export default {
     },
     procedimientoMonitoreo(datos) {
       if (datos.data.status_code == 200) {
-        if (this.unidadInput != '' && this.mListRutasMonitoreo.length == 0) {
+        if (this.checkedMonitoreoEstado == 'GPS') {
+          this.mListUnidades = []
+          if (this.mListUnidades.length == 0) {
+            for (var i = 0; i < datos.data.data.length; i++) {
+              if (datos.data.data[i].AlarAnteGPSDescMoni == 1) {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = true;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.oCenter = {
+                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
+                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
+                };
+                this.oZoom = 18;
+                this.banderaCenter = false;
+              } else {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = false;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+              }
+            }
+          } else {
+            this.updatemListaUnidades(datos.data.data);
+          }
+        }
+        else if (this.checkedMonitoreoEstado == 'FR') {
+          this.mListUnidades = []
+          if (this.mListUnidades.length == 0) {
+            for (var i = 0; i < datos.data.data.length; i++) {
+              if (datos.data.data[i].AlarAnteGPSDescMoni == 0 && datos.data.data[i].AlarFuerRutaMoni  == 1) {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = true;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.oCenter = {
+                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
+                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
+                };
+                this.oZoom = 18;
+                this.banderaCenter = false;
+              } else {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = false;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+              }
+            }
+          } else {
+            this.updatemListaUnidades(datos.data.data);
+          }
+          console.log("mListUnidades")
+          console.log(this.mListUnidades)
+        }
+        
+        else if (this.unidadInput != '' && this.mListRutasMonitoreo.length == 0) {
           this.banderaUnidad = true
           this.mListUnidades = []
           if (this.mListUnidades.length == 0) {
