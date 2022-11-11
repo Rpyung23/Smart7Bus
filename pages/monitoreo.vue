@@ -138,14 +138,16 @@
         />
       </div>
       <div>
-        <input type="checkbox" id="Corte Ruta" value="CR" v-model="checkedMonitoreoEstado" @change="initRastreo()">
-        <label for="Corte Ruta">Corte Ruta</label>
+        <input type="checkbox" id="Hoy" value="HOY" v-model="checkedMonitoreoEstado" @change="initRastreo()">
+        <label for="Hoy">Hoy</label>
         <input type="checkbox" id="Fuera de Linea" value="FR" v-model="checkedMonitoreoEstado" @change="initRastreo()">
         <label for="Fuera de Linea">Fuera de Linea</label>
        </div>
       <div>
         <input type="checkbox" id="GPS" value="GPS" v-model="checkedMonitoreoEstado" @change="initRastreo()">
         <label for="GPS">GPS</label>
+        <input type="checkbox" id="Corte Ruta" value="CR" v-model="checkedMonitoreoEstado" @change="initRastreo()">
+        <label for="Corte Ruta">Corte Ruta</label>
       </div>
       <div class="ListadoUnidades">
         <div
@@ -739,7 +741,8 @@ export default {
       mListRutaSubida:[],
       mListRutaBajada:[],
       anchoPanelMonitoreoClickMinMax: "width: 17rem",
-      checkedMonitoreoEstado:[]
+      checkedMonitoreoEstado:[],
+      fechaActual:''
     };
   },
   methods: {
@@ -781,7 +784,7 @@ export default {
           this.mListUnidades = []
           if (this.mListUnidades.length == 0) {
             for (var i = 0; i < datos.data.data.length; i++) {
-              if (datos.data.data[i].AlarAnteGPSDescMoni == 0 && datos.data.data[i].AlarFuerRutaMoni  == 1) {
+              if (datos.data.data[i].SINGPSDAY > 0) {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
                 this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
@@ -802,8 +805,33 @@ export default {
           }
           console.log("mListUnidades")
           console.log(this.mListUnidades)
-        }
-        
+        } 
+        else if (this.checkedMonitoreoEstado == 'HOY') {
+          this.mListUnidades = []
+          if (this.mListUnidades.length == 0) {
+            for (var i = 0; i < datos.data.data.length; i++) {
+              if (datos.data.data[i].UltiFechMoni.substring(0,10) ==  this.fechaActual.substring(0,10)) {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = true;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.oCenter = {
+                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
+                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
+                };
+                this.oZoom = 18;
+                this.banderaCenter = false;
+              } else {
+                this.mListUnidades[i] = datos.data.data[i];
+                this.mListUnidades[i].isvisible = false;
+                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+              }
+            }
+          } else {
+            this.updatemListaUnidades(datos.data.data);
+          }
+          console.log("mListUnidades")
+          console.log(this.mListUnidades)
+        }        
         else if (this.unidadInput != '' && this.mListRutasMonitoreo.length == 0) {
           this.banderaUnidad = true
           this.mListUnidades = []
@@ -1364,12 +1392,28 @@ export default {
         }
       }
     },
+    initFechaActualMonitoreo() {
+      var fecha = new Date();
+      var mes = fecha.getMonth() + 1;
+      var day = fecha.getDate();
+      var hora = fecha.getHours() < 10 ? '0' + fecha.getHours() : fecha.getHours()
+      var minutes = fecha.getMinutes() < 10 ? '0' + fecha.getMinutes() : fecha.getMinutes()
+      var format =
+        fecha.getFullYear() +
+        "-" +
+        (mes < 10 ? "0" + mes : mes) +
+        "-" +
+        (day < 10 ? "0" + day : day);
+      console.log(format)
+      this.fechaActual = format + " " + hora + ":" + minutes + ":00";
+    },
   },
   mounted() {
     this.initRutas();
     this.initControles();
     this.initRastreo();
     this.initIntervalMonitoreoGeneral();
+    this.initFechaActualMonitoreo();
   },
   destroyed() {
     clearInterval(this.initIntervalMonitoreoGeneral);
