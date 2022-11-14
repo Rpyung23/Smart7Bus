@@ -138,17 +138,22 @@
         />
       </div>
       <div>
-        <input type="checkbox" id="Hoy" value="HOY" v-model="checkedMonitoreoEstado" @change="initRastreo()">
-        <label for="Hoy">Hoy</label>
-        <input type="checkbox" id="Fuera de Linea" value="FR" v-model="checkedMonitoreoEstado" @change="initRastreo()">
-        <label for="Fuera de Linea">Fuera de Linea</label>
+        <el-select
+          v-model="checkedMonitoreoEstado"
+          multiple
+          collapse-tags
+          style="margin-bottom: 10px;"
+          @change="initRastreo()"
+          placeholder="Opciones Monitoreo">
+          <el-option
+              v-for="item in opcionesMonitoreo"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+          </el-option>
+        </el-select>
        </div>
-      <div>
-        <input type="checkbox" id="GPS" value="GPS" v-model="checkedMonitoreoEstado" @change="initRastreo()">
-        <label for="GPS">GPS</label>
-        <input type="checkbox" id="Corte Ruta" value="CR" v-model="checkedMonitoreoEstado" @change="initRastreo()">
-        <label for="Corte Ruta">Corte Ruta</label>
-      </div>
+       <div></div>
       <div class="ListadoUnidades">
         <div
           class="itemMonitoreoUnidad"
@@ -699,13 +704,15 @@
 
 <script>
 import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
-import { Radio, RadioButton } from "element-ui";
+import { Radio, RadioButton, Select,Option } from "element-ui";
 export default {
   layout: "DashboardLayout",
   components: {
     BaseCheckbox,
     [Radio.name]: Radio,
     [RadioButton.name]: RadioButton,
+    [Select.name]: Select,
+    [Option.name]: Option
   },
   data() {
     return {
@@ -742,7 +749,20 @@ export default {
       mListRutaBajada:[],
       anchoPanelMonitoreoClickMinMax: "width: 17rem",
       checkedMonitoreoEstado:[],
-      fechaActual:''
+      fechaActual:'',
+      opcionesMonitoreo: [{
+          value: 'HOY',
+          label: 'Hoy'
+        }, {
+          value: 'FR',
+          label: 'Fuera de Línea'
+        }, {
+          value: 'GPS',
+          label: 'GPS'
+        }, {
+          value: 'CR',
+          label: 'Corte Ruta'
+        }],
     };
   },
   methods: {
@@ -803,8 +823,6 @@ export default {
           } else {
             this.updatemListaUnidades(datos.data.data);
           }
-          console.log("mListUnidades")
-          console.log(this.mListUnidades)
         } 
         else if (this.checkedMonitoreoEstado == 'HOY') {
           this.mListUnidades = []
@@ -829,8 +847,6 @@ export default {
           } else {
             this.updatemListaUnidades(datos.data.data);
           }
-          console.log("mListUnidades")
-          console.log(this.mListUnidades)
         }        
         else if (this.unidadInput != '' && this.mListRutasMonitoreo.length == 0) {
           this.banderaUnidad = true
