@@ -47,6 +47,11 @@
 
           <sidebar-item
             translate="no"
+            :link="{ name: 'R. Salidas Semanales (Resumido)', path: './rPenalidadesSemanalesResumido' }"
+          />
+
+          <sidebar-item
+            translate="no"
             :link="{ name: 'R. Cumplimiento de Salidas', path: './rCumplimientoSalidas' }"
           />
 

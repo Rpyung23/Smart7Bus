@@ -142,7 +142,7 @@
           v-model="checkedMonitoreoEstado"
           multiple
           collapse-tags
-          style="margin-bottom: 10px;"
+          style="margin-bottom: 10px; width: 15.5rem;"
           @change="initRastreo()"
           placeholder="Opciones Monitoreo">
           <el-option

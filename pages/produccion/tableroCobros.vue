@@ -63,7 +63,7 @@
               v-if="multipleSelectionProduccionCobros.length > 0"
             >
               <span class="btn-inner--icon"><i class="ni ni-money-coins"></i></span>
-              <span class="btn-inner--text">GENERAR PAGO</span>
+              <span class="btn-inner--text">PAGAR</span>
             </base-button>
             </div>
 

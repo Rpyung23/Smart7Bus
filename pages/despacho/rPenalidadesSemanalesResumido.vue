@@ -194,68 +194,60 @@
 
               <el-table-column
                 prop="HoraSaliProgSali_mI"
-                label="Fecha Inico"
-                width="170"
+                label="1 Dia"
+                width="135"
               >
               </el-table-column>
 
               <el-table-column
                 prop="HoraSaliProgSali_mF"
-                label="Fecha Final"
-                width="170"
+                label="2 Dia"
+                width="135"
               >
               </el-table-column>
 
               <el-table-column
                 prop="totalSalidas"
-                label="Total Salidas"
-                width="150"
+                label="3 Dia"
+                width="135"
               >
               </el-table-column>
 
               <el-table-column
                 prop="DescRutaSali_m"
-                label="Detalle Ruta"
-                width="250"
+                label="4 Dia"
+                width="135"
               >
               </el-table-column>
 
               <el-table-column
                 prop="atrasos"
-                label="F. Atraso"
-                width="150"
+                label="5 Dia"
+                width="135"
               >
               </el-table-column>
 
               <el-table-column
                 prop="atrasosTiempo"
-                label="T. Atraso"
-                width="150"
+                label="6 Dia"
+                width="135"
               >
               </el-table-column>
 
 
               <el-table-column
                 prop="adelantos"
-                label="F. Adelanto"
-                width="150"
+                label="7 Dia"
+                width="135"
               >
               </el-table-column>
 
               <el-table-column
                 prop="adelantoTiempo"
-                label="T. Adelanto"
+                label="Total"
                 width="150"
               >
               </el-table-column>
-
-              <el-table-column
-                prop="PenaCtrlSali_d"
-                label="T. Dinero"
-                width="150"
-              >
-              </el-table-column>
-
 
               <div slot="empty"></div>
             </el-table>
