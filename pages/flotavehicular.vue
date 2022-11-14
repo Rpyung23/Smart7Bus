@@ -741,6 +741,8 @@ export default {
       placaVehiculo:'',
       numsimVehiculo:'',
       imeiVehiculo:'',
+      estadoVehiculo:'',
+      tipoDispVehi:'',
       descripcionGrupo:'',
       fondoGrupo:'',
       textoGrupo:'',
@@ -1589,6 +1591,8 @@ export default {
           _placavehi: this.placaVehiculo,
           _imeivehi:this.imeiVehiculo,
           _numsim: this.numsimVehiculo,
+          _estavehi:this.estadoVehiculo,
+          _tipodispvehi:this.tipoDispVehi,
           _oGrupo: {
             _grupoid: this.mSelectGrupo == '' ? 0 : this.mSelectGrupo
           },
@@ -2193,6 +2197,8 @@ export default {
       this.numsimVehiculo = row.NumeSIMVehi
       this.imeiVehiculo = row.EmaiVehi
       this.mSelectGrupo = row.grupo_id == 0 ? '' : row.grupo_id
+      this.estadoVehiculo = row.idEstaVehi
+      this.tipoDispVehi = row.idTipoDispVehi
       this.editedIndexUnidad = 1
       this.modalAgregarUnidadFlotaVehicular = true
     },
