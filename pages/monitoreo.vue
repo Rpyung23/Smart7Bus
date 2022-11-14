@@ -784,7 +784,7 @@ export default {
           this.mListUnidades = []
           if (this.mListUnidades.length == 0) {
             for (var i = 0; i < datos.data.data.length; i++) {
-              if (datos.data.data[i].SINGPSDAY > 0) {
+              if (datos.data.data[i].AlarAnteGPSDescMoni == 0 && datos.data.data[i].SINGPSDAY > 0 ) {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
                 this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
