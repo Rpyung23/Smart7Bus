@@ -989,7 +989,6 @@ export default {
             ruta:this.mListRutasMonitoreo[0]
           }
         );
-
         if (datos.data.status_code == 200) {
           for (var i = 0; i < datos.data.datos.polilineasRutaSubida.length; i++) {
             this.mListRutaSubida.push(datos.data.datos.polilineasRutaSubida[i])
