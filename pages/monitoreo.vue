@@ -784,12 +784,6 @@ export default {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
                 this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
-                this.oCenter = {
-                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
-                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
-                };
-                this.oZoom = 18;
-                this.banderaCenter = false;
               } else {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = false;
@@ -808,12 +802,6 @@ export default {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
                 this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
-                this.oCenter = {
-                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
-                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
-                };
-                this.oZoom = 18;
-                this.banderaCenter = false;
               } else {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = false;
@@ -857,12 +845,6 @@ export default {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
                 this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
-                this.oCenter = {
-                  lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
-                  lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
-                };
-                this.oZoom = 18;
-                this.banderaCenter = false;
               } else {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = false;
