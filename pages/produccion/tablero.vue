@@ -1715,7 +1715,8 @@ export default {
           || this.oEmpresa == 'tatahualpa' || this.oEmpresa == 'cazul'
           || this.oEmpresa == 'mazul'
           || this.oEmpresa == 'cotopaxi' || this.oEmpresa == 'cquisapincha' 
-          || this.oEmpresa == 'fbabahoy' || this.oEmpresa == 'citibus')
+          || this.oEmpresa == 'fbabahoy' || this.oEmpresa == 'citibus'
+          || this.oEmpresa == 'sritab')
     {
       //trabaja por vueltas
       this.isRecorridoPorVueltas = true
