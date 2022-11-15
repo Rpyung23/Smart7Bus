@@ -93,7 +93,6 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccion">
-
             <el-select
               style="margin-right: 0.5rem"
               collapse-tags
@@ -120,15 +119,13 @@
               :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
             >
               <el-option
-              v-for="item in mListaRutasSalidasSemanales"
+                v-for="item in mListaRutasSalidasSemanales"
                 :key="item.LetrRuta"
                 :label="item.DescRuta"
                 :value="item.LetrRuta"
               >
               </el-option>
             </el-select>
-
-
           </div>
         </card>
 
@@ -180,43 +177,98 @@
       size="xl"
       body-classes="p-1"
     >
-      <GmapMap
-        map-type-id="roadmap"
-        class="mapaEventosDispositivos"
-        :center="oCenter"
-        :zoom="oZoom"
-        :options="{
-          zoomControl: false,
-          scaleControl: false,
-          mapTypeControl: false,
-          streetViewControl: false,
-          rotateControl: false,
-          fullscreenControl: false,
-          disableDefaultUi: true,
-        }"
-      >
-        <GmapMarker v-for="(marker,index) in mListaHistorialEventosMapa" :key="index"
-          :position="{
-            lat: parseFloat(marker.LatiHistEven),
-            lng: parseFloat(marker.LongHistEven),
+      <div class="MapaFueraRutaModal">
+        <div class="switch_RutaActiveFueraRuta">
+          <el-switch
+            v-model="showMostarRuta_FueraRuta"
+            active-text=""
+            inactive-text="Mostrar Ruta"
+            @change="changeMostrarRuta_FueraRuta()"
+          >
+          </el-switch>
+        </div>
+
+        <GmapMap
+          map-type-id="roadmap"
+          class="mapaEventosDispositivos"
+          :center="oCenter"
+          :zoom="oZoom"
+          :options="{
+            zoomControl: false,
+            scaleControl: false,
+            mapTypeControl: false,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: false,
+            disableDefaultUi: true,
           }"
-          :icon="marker.icono"
-          @mouseover="showInfoWindowsRecorrido(marker, index)"
-          @mouseout="closeInfoWindowsRecorrido()"
-          :draggable="false"
-          :optimized="true"
-        />
+        >
+          <GmapPolyline
+            :path="mListRutaSubidaFueraRuta"
+            :options="{
+              strokeColor: '#A52714',
+              fillColor: '#A52714',
+              strokeOpacity: 0.6,
+              strokeWeight: 4,
+            }"
+          >
+          </GmapPolyline>
+          <GmapPolyline
+            :path="mListRutaBajadaFueraRuta"
+            :options="{
+              strokeColor: '#01579B',
+              fillColor: '#01579B',
+              strokeOpacity: 0.6,
+              strokeWeight: 4,
+            }"
+          >
+          </GmapPolyline>
 
-        <GmapInfoWindow
-        :options="infoOptions"
-        :position="infoWindowPos"
-        :opened="infoWinOpen"
-        @closeclick="infoWinOpen = false"
-      >
-        <div v-html="infoContent"></div>
-      </GmapInfoWindow>
 
-        <!--<GmapMarker v-for="(marker,index) in mListaHistorialEventosMapa" :key="index"
+          <GmapMarker
+        v-if="mListRutaBajadaFueraRuta.length > 0"
+        :position="{
+          lat: parseFloat(mListRutaBajadaFueraRuta[0].lat),
+          lng: parseFloat(mListRutaBajadaFueraRuta[0].lng),
+        }"
+        :optimized="true"
+        :icon= '"img/monitoreo/start_route.png"'
+      />
+      <GmapMarker
+        v-if="mListRutaSubidaFueraRuta.length > 0"
+        :position="{
+          lat: parseFloat(mListRutaSubidaFueraRuta[0].lat),
+          lng: parseFloat(mListRutaSubidaFueraRuta[0].lng),
+        }"
+        :optimized="true"
+        :icon= '"img/monitoreo/end_route.png"'
+      />
+
+
+          <GmapMarker
+            v-for="(marker, index) in mListaHistorialEventosMapa"
+            :key="index"
+            :position="{
+              lat: parseFloat(marker.LatiHistEven),
+              lng: parseFloat(marker.LongHistEven),
+            }"
+            :icon="marker.icono"
+            @mouseover="showInfoWindowsRecorrido(marker, index)"
+            @mouseout="closeInfoWindowsRecorrido()"
+            :draggable="false"
+            :optimized="true"
+          />
+
+          <GmapInfoWindow
+            :options="infoOptions"
+            :position="infoWindowPos"
+            :opened="infoWinOpen"
+            @closeclick="infoWinOpen = false"
+          >
+            <div v-html="infoContent"></div>
+          </GmapInfoWindow>
+
+          <!--<GmapMarker v-for="(marker,index) in mListaHistorialEventosMapa" :key="index"
           :position="{
             lat: parseFloat(marker.LatiHistEven),
             lng: parseFloat(marker.LongHistEven),
@@ -233,7 +285,8 @@
             },
           }"
         />-->
-      </GmapMap>
+        </GmapMap>
+      </div>
     </modal>
   </div>
 </template>
@@ -261,6 +314,7 @@ import {
   Popover,
   Button,
   Loading,
+  Switch,
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -294,6 +348,7 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Popover.name]: Popover,
     [Button.name]: Button,
+    [Switch.name]: Switch,
   },
   data() {
     return {
@@ -302,7 +357,7 @@ export default {
         lat: 0,
         lng: 0,
       },
-       infoOptions: {
+      infoOptions: {
         pixelOffset: {
           width: 0,
           height: -17,
@@ -317,11 +372,11 @@ export default {
       itemUnidadSalidasPanelBusqueda: [],
       token: this.$cookies.get("token"),
       fechaInicialSalidasPanelBusqueda: "",
-      mListaGruposPenalidadesSemanales:[],
-      itemGruposPenalidadesSemanales:[],
+      mListaGruposPenalidadesSemanales: [],
+      itemGruposPenalidadesSemanales: [],
       fechaFinalSalidasPanelBusqueda: "",
       optionsUnidadesSalidasPanelBusqueda: [],
-      mListaRutasSalidasSemanales:[],
+      mListaRutasSalidasSemanales: [],
       tableColumnsUnidadesFlotaVehicular: [
         {
           prop: "CodiVehiHistEven",
@@ -355,7 +410,7 @@ export default {
           minWidth: 250,
         },
       ],
-      mListaPosicionesFueraRuta:[],
+      mListaPosicionesFueraRuta: [],
       mListaREventosDispositivos: [],
       modalUbicacionEventoDispositivo: false,
       LatiDispEven: 0,
@@ -367,14 +422,20 @@ export default {
       mListaTiposEventos: [],
       modelTiposEvento: [],
       mListaHistorialEventosMapa: [],
-      
+      showMostarRuta_FueraRuta: false,
+      LetrRutaFueraRuta: "",
+      mListRutaSubidaFueraRuta: [],
+      mListRutaBajadaFueraRuta: [],
     };
   },
 
   methods: {
     async showMapaFueraRutas(item) {
+      this.showMostarRuta_FueraRuta = false
       this.modalUbicacionEventoDispositivo = true;
-      await this.readPosicionesFueraRuta(item)
+      console.log(item)
+      this.LetrRutaFueraRuta = item.LetraRutaSali_m;
+      await this.readPosicionesFueraRuta(item);
     },
     remoteMethodUnidadesSalidasPanelBusqueda(query) {
       if (query !== "") {
@@ -436,15 +497,16 @@ export default {
             rutas:
               this.modelTiposEvento.length <= 0 ? "*" : this.modelTiposEvento,
             grupos:
-              this.itemGruposPenalidadesSemanales.length <= 0 ? "*" : this.itemGruposPenalidadesSemanales,
+              this.itemGruposPenalidadesSemanales.length <= 0
+                ? "*"
+                : this.itemGruposPenalidadesSemanales,
           },
           {
             timeout: 600000,
           }
         );
 
-        if (datos.data.status_code == 200) 
-        {
+        if (datos.data.status_code == 200) {
           this.mListaREventosDispositivos.push(...datos.data.datos);
         } else {
           Notification.info({
@@ -461,9 +523,8 @@ export default {
       }
       this.loadingTableRVelocidadesBusquedaloading = false;
     },
-    async readPosicionesFueraRuta(item)
-    {
-      console.log(item)
+    async readPosicionesFueraRuta(item) {
+      console.log(item);
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/historialFueraRutaSalida",
@@ -472,35 +533,35 @@ export default {
             unidad: item.CodiVehiHistEven,
             fechaI: item.fechaIHE,
             fechaF: item.fechaFHE,
-            salida: item.idSali_mHistEven
+            salida: item.idSali_mHistEven,
           },
           {
             timeout: 600000,
           }
-        )
+        );
 
-
-        for(var i = 0;i<datos.data.datos.length;i++)
-        {
-          var obj = datos.data.datos[i]
-          if(i == 0){
-            this.oCenter =  { lat: parseFloat(obj.LatiHistEven), lng: parseFloat(obj.LongHistEven) }
-            this.oZoom = 17
+        for (var i = 0; i < datos.data.datos.length; i++) {
+          var obj = datos.data.datos[i];
+          if (i == 0) {
+            this.oCenter = {
+              lat: parseFloat(obj.LatiHistEven),
+              lng: parseFloat(obj.LongHistEven),
+            };
+            this.oZoom = 17;
           }
           obj.icono = {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-            fillColor:"red",
+            fillColor: "red",
             fillOpacity: 1,
             strokeWeight: 0,
             rotation: obj.RumbHistEven,
             scale: 3,
             anchor: new google.maps.Point(0, 0),
-          }
-          this.mListaHistorialEventosMapa.push(obj)
+          };
+          this.mListaHistorialEventosMapa.push(obj);
         }
-
       } catch (error) {
-        console.log(error.toString())
+        console.log(error.toString());
       }
     },
     async exportPdfRDispositivoEventos() {
@@ -706,7 +767,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 80,40, 120, 60, 120],
+              widths: [30, 80, 40, 120, 60, 120],
               body: resultadoString,
             },
           },
@@ -720,15 +781,13 @@ export default {
       this.mListaRutasSalidasSemanales = [];
 
       try {
-        var datos = await this.$axios.post(
-          process.env.baseUrl + "/rutes",
-          {
-            token: this.token,
-            tipo: 1,
-          }
-        );
+        var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
+          token: this.token,
+          tipo: 1,
+        });
 
         if (datos.data.status_code == 200) {
+          console.log(datos.data.data);
           this.mListaRutasSalidasSemanales.push(...datos.data.data);
         } else {
           Notification.info({
@@ -746,34 +805,27 @@ export default {
     async readGruposActivosPenalidadesSemanales() {
       this.mListaGruposPenalidadesSemanales = [];
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/gruposActivos", {
-        token: this.token
-      });
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/gruposActivos",
+        {
+          token: this.token,
+        }
+      );
 
       if (datos.data.status_code == 200) {
         this.mListaGruposPenalidadesSemanales.push(...datos.data.data);
       }
     },
-    async getInfoWindowContentRecorrido(unidad) 
-    {
+    async getInfoWindowContentRecorrido(unidad) {
       return `<div style="width:300px;padding:0.50rem">
-              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
-                unidad.FechHistEven
-              }<br>
-              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${
-                unidad.VeloHistEven
-              } <strong>KM/H</strong><br>
-              <strong class="strongLetrasInfoWindows">SATELITES : </strong> ${
-                unidad.SateHistEven
-              }<br>
-              <strong class="strongLetrasInfoWindows">RUTA : </strong> ${
-                unidad.DescRutaSali_m
-              }
+              <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${unidad.FechHistEven}<br>
+              <strong class="strongLetrasInfoWindows">VELOCIDAD : </strong> ${unidad.VeloHistEven} <strong>KM/H</strong><br>
+              <strong class="strongLetrasInfoWindows">SATELITES : </strong> ${unidad.SateHistEven}<br>
+              <strong class="strongLetrasInfoWindows">RUTA : </strong> ${unidad.DescRutaSali_m}
             </div>`;
     },
-    async closeInfoWindowsRecorrido()
-    {
-      this.infoWinOpen = false
+    async closeInfoWindowsRecorrido() {
+      this.infoWinOpen = false;
     },
     async showInfoWindowsRecorrido(unidad, idx) {
       this.infoWindowPos = {
@@ -792,10 +844,49 @@ export default {
         this.currentMidx = idx;
       }
     },
+    async changeMostrarRuta_FueraRuta() {
+      console.log("MOSTRANDO RUTA........")
+      try {
+        this.mListRutaBajadaFueraRuta = [];
+        this.mListRutaSubidaFueraRuta = [];
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/readRutasMongoAllByLetraRuta",
+          {
+            token: this.token,
+            ruta: this.LetrRutaFueraRuta,
+          }
+        );
+        if (datos.data.status_code == 200) {
+          for (
+            var i = 0;
+            i < datos.data.datos.polilineasRutaSubida.length;
+            i++
+          ) {
+            this.mListRutaSubidaFueraRuta.push(
+              datos.data.datos.polilineasRutaSubida[i]
+            );
+          }
+          for (
+            var j = 0;
+            j < datos.data.datos.polilineasRutaBajada.length;
+            j++
+          ) {
+            this.mListRutaBajadaFueraRuta.push(
+              datos.data.datos.polilineasRutaBajada[j]
+            );
+          }
+        }else{
+          console.log("NO POLILINEA")
+          console.log(datos.data.msm)
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
-    this.readGruposActivosPenalidadesSemanales()
+    this.readGruposActivosPenalidadesSemanales();
     this.readEventosListaReporte();
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllUnidadesSalidasPanelBusqueda();
@@ -803,6 +894,17 @@ export default {
 };
 </script>
 <style>
+.switch_RutaActiveFueraRuta {
+  position: absolute;
+  z-index: 100000000;
+  background-color: whitesmoke;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  right: 0;
+  margin-right: 00.5rem;
+  margin-top: 00.5rem;
+}
+
 .mapaEventosDispositivos {
   width: 100%;
   height: calc(80vh);

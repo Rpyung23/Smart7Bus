@@ -9,8 +9,6 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-
-            
             <el-select
               v-model="itemUnidadRSemanales"
               multiple
@@ -30,8 +28,6 @@
               >
               </el-option>
             </el-select>
-
-
 
             <base-input
               addon-left-icon="ni ni-calendar-grid-58"
@@ -109,7 +105,6 @@
                   ><i class="ni ni-collection"></i
                 ></span>
               </download-excel>
-
             </div>
           </div>
         </card>
@@ -121,8 +116,6 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-
-            
             <el-select
               style="margin-right: 0.5rem"
               collapse-tags
@@ -155,18 +148,12 @@
               >
               </el-option>
             </el-select>
-
-
-
-
-
           </div>
 
           <div
             class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
           >
-            <div class="buttonCenterEndDerecha">
-            </div>
+            <div class="buttonCenterEndDerecha"></div>
           </div>
         </card>
 
@@ -186,8 +173,18 @@
               header-row-class-name="thead-dark"
               height="calc(100vh - 12.8rem)"
             >
-
-
+              <el-table-column label="Acciones" width="140">
+                <template slot-scope="scope">
+                  <base-button
+                    size="sm"
+                    v-if="scope.row.atrasos > 0"
+                    title="TARJETA GRANDE(A4)"
+                    @click="showModalPenalidadesSemanales(scope.row)"
+                    type="danger"
+                    ><i class="ni ni-book-bookmark"></i
+                  ></base-button>
+                </template>
+              </el-table-column>
 
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
               </el-table-column>
@@ -220,11 +217,7 @@
               >
               </el-table-column>
 
-              <el-table-column
-                prop="atrasos"
-                label="F. Atraso"
-                width="150"
-              >
+              <el-table-column prop="atrasos" label="F. Atraso" width="150">
               </el-table-column>
 
               <el-table-column
@@ -234,12 +227,7 @@
               >
               </el-table-column>
 
-
-              <el-table-column
-                prop="adelantos"
-                label="F. Adelanto"
-                width="150"
-              >
+              <el-table-column prop="adelantos" label="F. Adelanto" width="150">
               </el-table-column>
 
               <el-table-column
@@ -256,13 +244,29 @@
               >
               </el-table-column>
 
-
               <div slot="empty"></div>
             </el-table>
           </div>
         </card>
       </div>
     </base-header>
+    <!--Form modal TICKET (A4) SALIDA-->
+    <modal
+      :show.sync="modalSalidasPenalidadesSemanales"
+      size="xl"
+      body-classes="p-1"
+    >
+      <card
+        type="secondary"
+        header-classes="bg-transparent pb-5"
+        class="border-0 mb-0"
+      >
+        <iframe
+          :src="baseURlPDFPenalidadesSemanales"
+          style="width: 100%; height: 33rem"
+        ></iframe>
+      </card>
+    </modal>
   </div>
 </template>
 <script>
@@ -329,20 +333,21 @@ export default {
     return {
       token: this.$cookies.get("token"),
       fechaDia1SalidasPanelBusqueda: "",
-      fechaDia2SalidasPanelBusqueda: "",
-      modalSalidasTarjetaPanelDespachoBusqueda: false,
+      modalSalidasPenalidadesSemanales: false,
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
-      
+      modalSalidasPenalidadesSemanales: false,
       loadingPenalidadesSemanales: false,
-      mListaUnidadesSemanales:[],
-      optionsUnidadesSemanales:[],
-      loadingTableUnidadesSemanales:false,
-      itemUnidadRSemanales:[],
-      mListaRutasSalidasSemanales:[],
-      itemRutasRSalidasSemanales:[],
-      mListaGruposPenalidadesSemanales:[],
-      itemGruposPenalidadesSemanales:[],
+      mListaUnidadesSemanales: [],
+      optionsUnidadesSemanales: [],
+      loadingTableUnidadesSemanales: false,
+      itemUnidadRSemanales: [],
+      mListaRutasSalidasSemanales: [],
+      itemRutasRSalidasSemanales: [],
+      mListaGruposPenalidadesSemanales: [],
+      itemGruposPenalidadesSemanales: [],
+      baseURlPDFPenalidadesSemanales: "",
+      fechaDia2SalidasPanelBusqueda: "",
       json_fields_excelRPenalidadesSemanales: {
         UNIDAD: "CodiVehiSali_m",
         "FECHA INICIAL": "HoraSaliProgSali_mI",
@@ -355,13 +360,272 @@ export default {
         "TIEMPO ADELANTO": "adelantoTiempo",
         "TOTAL DINERO": "PenaCtrlSali_d",
       },
-      WorksheetExcelRSalidasSemanales : "",
-      FileNameExcelRSalidasSemanales : "",
-      oheaderExcelRSalidasSemanales : ""
+      WorksheetExcelRSalidasSemanales: "",
+      FileNameExcelRSalidasSemanales: "",
+      oheaderExcelRSalidasSemanales: "",
     };
   },
   methods: {
+    showModalPenalidadesSemanales(row) {
+      console.log(row);
+      this.modalSalidasPenalidadesSemanales = true;
+      this.readDetallePenalidadesSemanales(row)
+    },
+    async readDetallePenalidadesSemanales(row) {
+      var datosList = [];
 
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/DetalleReadPenalidadesSemanales",
+        {
+          token: this.token,
+          fechaI: row.HoraSaliProgSali_mI,
+          fechaF: row.HoraSaliProgSali_mF,
+          unidad: row.CodiVehiSali_m,
+        }
+      );
+      console.log(datos.data)
+
+      if (datos.data.status_code == 200) {
+        datosList.push(...datos.data.datos);
+
+        var empresa = [
+          {
+            text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+            fontSize: 9,
+            alignment: "left",
+          },
+        ];
+        var unidad = [
+          {
+            text: "Unidad : " + row.CodiVehiSali_m,
+            fontSize: 9,
+            alignment: "left",
+          },
+        ];
+        var desde_hasta = [
+          {
+            text:
+              "Fecha Salida : " +
+              row.HoraSaliProgSali_mI +
+              " Hasta " +
+              row.HoraSaliProgSali_mF,
+            fontSize: 9,
+            alignment: "left",
+          },
+        ];
+
+        var resultadoString = [
+          [
+            {
+              text: "Unidad",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "N° Vuelta",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "Ruta (Linea)",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "Frecuencia",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "Control",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "H. Salida",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "H. Llegada",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "Falta",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "Falta Tiempo",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            }
+          ],
+        ];
+
+
+        for (var i = 0; i < datosList.length; i++) {
+          var arrys = [
+            {
+              text: datosList[i].CodiVehiSali_m,
+              fontSize: 8.5,
+              alignment: "left",
+            },
+            {
+              text: datosList[i].NumeVuelSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text:
+                datosList[i].DescRutaSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: datosList[i].DescFrec,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: datosList[i].DescCtrlSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text:
+              datosList[i].HoraProgSali_d,
+              fontSize: 8.5,
+              alignment: "center"
+            },
+            {
+              text:
+              datosList[i].HoraMarcSali_d,
+              fontSize: 8.5,
+              alignment: "center"
+            },
+            {
+              text:
+              datosList[i].FaltSali_d,
+              fontSize: 8.5,
+              alignment: "center"
+            },
+            {
+              text:
+              datosList[i].FaltSali_dTime,
+              fontSize: 8.5,
+              alignment: "center"
+            },
+          ];
+          resultadoString.push(arrys);
+        }
+
+        var docDefinition = {
+          pageSize: "A4",
+          pageOrientation: 'landscape',
+          pageMargins: [40, 80, 40, 60],
+          header: {
+            margin: 15,
+            columns: [
+              {
+                image: getBase64LogoReportes(this.$cookies.get("empresa")),
+                width: 100,
+                height: 50,
+                margin: [30, 0, 0, 0],
+              },
+              {
+                layout: "noBorders",
+                table: {
+                  widths: ["*"],
+                  body: [
+                    [
+                      {
+                        text: "REPORTE DETALLE PENALIDADES SEMANALES",
+                        alignment: "center",
+                        fontSize: 16,
+                        bold: true,
+                      },
+                    ],
+                    [
+                      {
+                        text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                        alignment: "center",
+                        fontSize: 8,
+                      },
+                    ],
+                    [
+                      {
+                        text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                        alignment: "center",
+                        fontSize: 8,
+                      },
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          content: [
+            {
+              layout: "noBorders",
+              table: {
+                headerRows: 0,
+                /*widths: ['*'],
+              body: [empresa]*/
+                widths: [450, 450, 450],
+                body: [
+                  empresa,
+                  unidad,
+                  desde_hasta
+                ],
+              },
+            },
+            {
+              table: {
+                headerRows: 0,
+                widths: [40, 40, 120, 120, 120, 90, 60,40, 60],
+                body: resultadoString,
+                //body: [[]],
+              },
+            }
+          ],
+        };
+
+        //pdfMake.createPdf(docDefinition).download("RSD_" + Date.now());
+        var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+        pdfDocGenerator.getDataUrl((dataUrl) => {
+          this.baseURlPDFPenalidadesSemanales = dataUrl;
+        });
+      }
+    },
     async readAllRutasSalidasSEmanales() {
       this.mListaRutasSalidasSemanales = [];
 
@@ -394,12 +658,13 @@ export default {
         this.loadingTableUnidadesSemanales = true;
         setTimeout(() => {
           this.loadingTableUnidadesSemanales = false;
-          this.optionsUnidadesSemanales =
-            this.mListaUnidadesSemanales.filter((item) => {
+          this.optionsUnidadesSemanales = this.mListaUnidadesSemanales.filter(
+            (item) => {
               return (
                 item.CodiVehi.toLowerCase().indexOf(query.toLowerCase()) > -1
               );
-            });
+            }
+          );
         }, 200);
       } else {
         this.optionsUnidadesSemanales = [];
@@ -439,34 +704,39 @@ export default {
       this.loadingPenalidadesSemanales = true;
 
       this.WorksheetExcelRSalidasSemanales = "RS_S_W_" + Date.now();
-      this.FileNameExcelRSalidasSemanales =
-        "RS_S_" + Date.now() + ".xls";
+      this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
 
-        this.oheaderExcelRSalidasSemanales = [
-            "Reporte Despachos Semanales",
-            "Fechas : " +
-              this.fechaDia1SalidasPanelBusqueda +
-              " hasta " +
-              this.fechaDia2SalidasPanelBusqueda,
-            "Unidades : " +
-              (this.itemUnidadRSemanales.length <= 0
-                ? "TODAS LAS UNIDADES"
-                : this.itemUnidadRSemanales),
-            "Rutas : " +
-              (this.itemRutasRSalidasSemanales.length <= 0
-                ? "TODAS LAS RUTAS"
-                : this.getNombresRutasRDespachosGenerados(
-                    this.itemRutasRSalidasSemanales
-                  )),
-          ];  
+      this.oheaderExcelRSalidasSemanales = [
+        "Reporte Despachos Semanales",
+        "Fechas : " +
+          this.fechaDia1SalidasPanelBusqueda +
+          " hasta " +
+          this.fechaDia2SalidasPanelBusqueda,
+        "Unidades : " +
+          (this.itemUnidadRSemanales.length <= 0
+            ? "TODAS LAS UNIDADES"
+            : this.itemUnidadRSemanales),
+        "Rutas : " +
+          (this.itemRutasRSalidasSemanales.length <= 0
+            ? "TODAS LAS RUTAS"
+            : this.getNombresRutasRDespachosGenerados(
+                this.itemRutasRSalidasSemanales
+              )),
+      ];
 
       try {
         var obj = {
           token: this.token,
           fechaI: this.fechaDia1SalidasPanelBusqueda,
           fechaF: this.fechaDia2SalidasPanelBusqueda,
-          unidades: this.itemUnidadRSemanales.length <=0 ? '*' :  this.itemUnidadRSemanales,
-          rutas: this.itemRutasRSalidasSemanales.length <=0 ? '*' :  this.itemRutasRSalidasSemanales
+          unidades:
+            this.itemUnidadRSemanales.length <= 0
+              ? "*"
+              : this.itemUnidadRSemanales,
+          rutas:
+            this.itemRutasRSalidasSemanales.length <= 0
+              ? "*"
+              : this.itemRutasRSalidasSemanales,
         };
 
         console.log(obj);
@@ -484,9 +754,7 @@ export default {
 
       this.loadingPenalidadesSemanales = false;
     },
-    exportPdfRPenalidadesSemanales() 
-    {
-
+    exportPdfRPenalidadesSemanales() {
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
@@ -580,26 +848,83 @@ export default {
           fillColor: "#039BC4",
           color: "white",
           alignment: "center",
-        },        {
+        },
+        {
           text: "T. DINERO",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
           color: "white",
           alignment: "center",
-        }
+        },
       ]);
 
       for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
         var obj = [
-          { text: this.mListDatosPenalidades[i].CodiVehiSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
-          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_mI, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
-          { text: this.mListDatosPenalidades[i].HoraSaliProgSali_mF, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
-          { text: this.mListDatosPenalidades[i].totalSalidas, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
-          { text: this.mListDatosPenalidades[i].DescRutaSali_m, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
-          { text: this.mListDatosPenalidades[i].atrasos, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
-          { text: this.mListDatosPenalidades[i].atrasosTiempo, fontSize: 8.5, alignment: "center",color: this.mListDatosPenalidades[i].EstadoFaltasSumatoria == '' ? "black" : "black" },
-         {
+          {
+            text: this.mListDatosPenalidades[i].CodiVehiSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mI,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mF,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].totalSalidas,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].DescRutaSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].atrasos,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].atrasosTiempo,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
             text: this.mListDatosPenalidades[i].adelantos,
             fontSize: 8.5,
             alignment: "center",
@@ -620,7 +945,7 @@ export default {
 
       var docDefinition = {
         pageSize: "A4",
-        pageOrientation: 'landscape',
+        pageOrientation: "landscape",
         pageMargins: [40, 80, 40, 60],
         header: {
           margin: 15,
@@ -675,32 +1000,34 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 60,60, 55, 170, 52, 48, 62,62,50],
+              widths: [40, 60, 60, 55, 170, 52, 48, 62, 62, 50],
               body: mList,
             },
           },
         ],
       };
-      
+
       pdfMake.createPdf(docDefinition).download("RPS_" + Date.now());
     },
     async readGruposActivosPenalidadesSemanales() {
       this.mListaGruposPenalidadesSemanales = [];
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/gruposActivos", {
-        token: this.token
-      });
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/gruposActivos",
+        {
+          token: this.token,
+        }
+      );
 
       if (datos.data.status_code == 200) {
         this.mListaGruposPenalidadesSemanales.push(...datos.data.data);
       }
     },
   },
-  mounted() 
-  {
-    this.readGruposActivosPenalidadesSemanales()
-    this.readAllRutasSalidasSEmanales()
-    this.readAllUnidadesSalidasSemanales()
+  mounted() {
+    this.readGruposActivosPenalidadesSemanales();
+    this.readAllRutasSalidasSEmanales();
+    this.readAllUnidadesSalidasSemanales();
     this.initPrimerDiaSemanaActualSalidaBusquedaPanel();
     //this.readApiPenalidades();
   },
