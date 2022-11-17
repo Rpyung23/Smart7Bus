@@ -29,44 +29,60 @@
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer" size="sm">
             <div class="buttonsAdicionalesRContadorVuelta">
-              <base-button icon type="primary" @click="readRDistancias()">
+              <base-button icon type="primary" size="sm" @click="readRDistancias()">
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
-            <!--<download-excel
-              class="btn btn-outline-success"
-              outline
+            <download-excel
+              class="btn btn-icon btn-fab btn-success btn-sm"
               :header="headerExcelRPagosVehiculoProduccion"
               :data="mListaRVelocidades"
-              :fields="json_fields_excelRPagosVehiculoProduccion"
-              :worksheet="WorksheetExcelRPagosVehiculoProduccion"
-              :name="FileNameExcelRPagosVehiculoProduccion"
+              :fields="json_fields_ExcelRPagosVehiculoResumidoProduccion"
+              :worksheet="WorksheetExcelRPagosVehiculoResumidoProduccion"
+              :name="FileNameExcelRPagosVehiculoResumidoProduccion"
+              title="EXPORTAR A EXCEL"
             >
               <span class="btn-inner--icon"
                 ><i class="ni ni-collection"></i
               ></span>
-              <span class="btn-inner--text"> Excel</span>
-            </download-excel>-->
-            <base-button outline type="danger">
+            </download-excel>
+            <!--<base-button type="danger" size="sm">
               <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
-              <span class="btn-inner--text"> Exportar PDF</span>
-            </base-button>
-
-            <base-button outline type="success" v-if="isVisibleRecorrido">
-              <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
-              <span class="btn-inner--text" @click="showRecorridoSalidasPanelBusqueda()">
-                Recorrido</span>
-            </base-button>
+            </base-button>-->
           </div>
           </div>
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRVelocidades px-0 pb-1"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          footer-classes="pb-2">
+          <div class="cardTextoRPagosVehiculoProduccion">
+
+            <el-select
+              v-model="mSelectRutaSalidaPanelBusqueda"
+              multiple
+              collapse-tags
+              placeholder="Lineas"
+            >
+              <el-option
+                v-for="item in mListLineasSalidasPanelBusqueda"
+                :key="item.LetrRuta"
+                :label="item.DescRuta"
+                :value="item.LetrRuta"
+              >
+              </el-option>
+            </el-select>
+
+          </div>
+        </card>
+
+        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRDistancias px-0 pb-1"
           footer-classes="pb-2">
           <div>
-            <el-table v-loading="loadingTableRVelocidadesBusquedaloading" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="mListaRVelocidades" row-key="id"
-              class="tablePanelControlProduccion" header-row-class-name="thead-dark"
-              height="calc(100vh - 9rem)" highlight-current-row>
+            <el-table v-loading="loadingTableRVelocidadesBusquedaloading" 
+              element-loading-text="Cargando Datos..."
+              :data="mListaRVelocidades" row-key="id"
+              class="tablePanelRDistancia" header-row-class-name="thead-dark"
+              height="calc(100vh - 13rem)" highlight-current-row>
 
               <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
               </el-table-column>
@@ -136,7 +152,6 @@ export default {
   data() {
     return {
       mListaUnidadesSalidasPanelBusqueda: [],
-      mListLineasSalidasPanelBusqueda: [],
       loadingTableRVelocidadesBusquedaloading: false,
       itemUnidadSalidasPanelBusqueda: [],
       token: this.$cookies.get("token"),
@@ -150,19 +165,9 @@ export default {
           minWidth: 110,
         },
         {
-          prop: "NumeVuelSali_m",
-          label: "N° Vuelta",
-          minWidth: 140,
-        },
-        {
           prop: "DescRutaSali_m",
           label: "Ruta",
-          minWidth: 200,
-        },
-        {
-          prop: "FechHistEven",
-          label: "Fecha",
-          minWidth: 130,
+          minWidth: 300,
         },
         {
           prop: "total_km",
@@ -186,10 +191,33 @@ export default {
           minWidth: 170,
         }
       ],
-      mListaRVelocidades: []
+      mListaRVelocidades: [],
+      mListLineasSalidasPanelBusqueda: [],
+      mSelectRutaSalidaPanelBusqueda: [],
+      loadingTableUnidadesSalidasPanelBusquedaloading:false,
+      WorksheetExcelRPagosVehiculoResumidoProduccion:"",
+      FileNameExcelRPagosVehiculoResumidoProduccion:"",
+      headerExcelRPagosVehiculoResumidoProduccion:[],
+      json_fields_ExcelRPagosVehiculoResumidoProduccion: {
+        "Unidad": "CodiVehiHistEven",
+        "Ruta": "DescRutaSali_m",
+        "KM Total": "total_km",
+        "KM Minimo": "min_km",
+        "KM Maximo": "max_km",
+        "KM Promedio": "prom_km"
+      },
     };
   },
   methods: {
+    async readAllLineasContadorSalidasPanelBusqueda() {
+      var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
+        token: this.token,
+        tipo: 3,
+      });
+      if (datos.data.status_code == 200) {
+        this.mListLineasSalidasPanelBusqueda.push(...datos.data.data);
+      }
+    },
     remoteMethodUnidadesSalidasPanelBusqueda(query) {
       if (query !== "") {
         this.loadingTableUnidadesSalidasPanelBusquedaloading = true;
@@ -234,13 +262,26 @@ export default {
       }
     },
     async readRDistancias() {
+      this.mListaRVelocidades = []
+      this.WorksheetExcelRPagosVehiculoResumidoProduccion = "RPV_W_RD_"+this.itemUnidadSalidasPanelBusqueda+"_"+Date.now()
+      this.FileNameExcelRPagosVehiculoResumidoProduccion = "RPV_RD_"+this.itemUnidadSalidasPanelBusqueda+"_"+Date.now()+".xls"
+
+      this.headerExcelRPagosVehiculoResumidoProduccion = [
+              "Reporte Kilometros Recorridos: "+(this.itemUnidadSalidasPanelBusqueda.length == 0  ? "TODAS LAS UNIDADES" : 
+              this.itemUnidadSalidasPanelBusqueda),
+              "Fechas : "+this.fechaInicialSalidasPanelBusqueda +" hasta "+this.fechaFinalSalidasPanelBusqueda
+            ]
+
+      
+      console.log(this.mSelectRutaSalidaPanelBusqueda)
       try {
         this.loadingTableRVelocidadesBusquedaloading = true
         var datos = await this.$axios.post(process.env.baseUrl + "/Rdistancias", {
           token: this.token,
           "unidades": this.itemUnidadSalidasPanelBusqueda.length > 0 ? this.itemUnidadSalidasPanelBusqueda : "*",
           fechaI: this.fechaInicialSalidasPanelBusqueda,
-          fechaF: this.fechaFinalSalidasPanelBusqueda
+          fechaF: this.fechaFinalSalidasPanelBusqueda,
+          rutas: this.mSelectRutaSalidaPanelBusqueda.length > 0 ? this.mSelectRutaSalidaPanelBusqueda : "*"
         }, {
           timeout: 600000,
         });
@@ -267,6 +308,7 @@ export default {
     //this.readHistorialSalidaPanelBusqueda();
     this.initFechaActualSalidaBusquedaPanel()
     this.readAllUnidadesSalidasPanelBusqueda()
+    this.readAllLineasContadorSalidasPanelBusqueda()
   },
 };
 </script>
@@ -309,11 +351,12 @@ export default {
   border-top: 0;
 }
 
-.card-bodyRVelocidades {
+.card-bodyRDistancias {
   padding: 0rem !important;
-  height: calc(100vh - 9rem);
+  height: calc(100vh - 12.9rem);
   overflow: auto;
 }
+
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
