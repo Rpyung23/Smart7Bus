@@ -36,7 +36,7 @@
         <sidebar-item translate="no" :link="{
           name: 'Mantenimiento',
           icon: 'ni ni-settings text-primary',
-          path: './produccion/tablero',
+          path: './mantenimiento/tMantenimiento',
               }">
         </sidebar-item>
 
