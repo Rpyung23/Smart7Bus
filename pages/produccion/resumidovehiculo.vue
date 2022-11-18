@@ -84,6 +84,7 @@
           <div>
             <el-table v-loading="loadingRPagosVehiculo" element-loading-text="Cargando Datos..."
               :data="tableDataResumidoVehiculos" row-key="id"
+              :default-sort = "{prop: 'DeudaTotal', order: 'asc'}"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               :row-class-name="tableRowClassNameRPagosVehiculoProduccion"
               height="calc(100vh - 12rem)" style="width: 100%">
@@ -106,7 +107,7 @@
               <el-table-column prop="DeudaTotal" sortable label="Total ($)" minWidth="150">
 
                 <template slot-scope="scope">
-                  <strong style="color:black">{{ scope.row.DeudaTotal }}</strong>
+                  <strong style="color:black">{{ Number(scope.row.DeudaTotal).toFixed(2) }}</strong>
                 </template>
 
 
@@ -457,6 +458,11 @@ export default {
               duration: 2500,
             });*/
             this.CalcularTotalesResumidoVehiculo(datos.data.datos)
+            for(var i = 0;i<datos.data.datos.length;i++)
+            {
+              datos.data.datos[i].DeudaTotal = parseFloat(datos.data.datos[i].DeudaTotal)
+            }
+
             this.tableDataResumidoVehiculos.push(...datos.data.datos);
             
             

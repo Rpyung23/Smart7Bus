@@ -32,21 +32,20 @@
               </el-option>
             </el-select>
 
-            <el-select
-              v-model="mSelectLineasValueTablero"
-              style="margin-right: 0.5rem"
-              multiple
-              collapse-tags
-              placeholder="Rutas"
-            >
-              <el-option
-                v-for="item in mListLineasTableroProduccion"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
+
+
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                :max="{ fechaInicialTableroProduccion }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaInicialTableroProduccion"
               >
-              </el-option>
-            </el-select>
+              </flat-picker>
+            </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
               <flat-picker
@@ -60,6 +59,7 @@
               >
               </flat-picker>
             </base-input>
+
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
@@ -90,6 +90,23 @@
                 :value="item.id">
               </el-option>
             </el-select>-->
+
+            <el-select
+              v-model="mSelectLineasValueTablero"
+              style="margin-right: 0.5rem"
+              multiple
+              collapse-tags
+              placeholder="Rutas"
+            >
+              <el-option
+                v-for="item in mListLineasTableroProduccion"
+                :key="item.LetrRuta"
+                :label="item.DescRuta"
+                :value="item.idRuta"
+              >
+              </el-option>
+            </el-select>
+
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
@@ -115,7 +132,7 @@
         <card
           class="no-border-card"
           style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoProduccionPCTablero px-0 pb-1"
+          body-classes="card-bodyRPagosVehiculoProduccionPCTableroTablero px-0 pb-1"
           footer-classes="pb-2"
         >
           <div>
@@ -127,7 +144,7 @@
               row-key="id"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
-              height="calc(100vh - 12rem)"
+              height="calc(100vh - 13rem)"
               style="width: 100%"
             >
               <el-table-column
@@ -205,6 +222,11 @@
 
               <el-table-column prop="Unidad" label="Unidad" minWidth="110">
               </el-table-column>
+              <el-table-column prop="FechaDeudaM" label="Fecha" minWidth="150">
+              </el-table-column>
+
+              
+
               <el-table-column
                 prop="DeudaTotal"
                 sortable
@@ -859,6 +881,7 @@ export default {
       mListaTrazadoAllTramsExVelocidad: [],
       token: this.$cookies.get("token"),
       fechaInicialTableroProduccion: "",
+      fechaFinalTableroProduccion: "",
       mPagadoRPagosVehiculo: "0.00",
       mJustificadoRPagosVehiculo: "0.00",
       loadingRTableroProduccion: false,
@@ -1074,6 +1097,7 @@ export default {
         (day < 10 ? "0" + day : day);
 
       this.fechaInicialTableroProduccion = format;
+      this.fechaFinalTableroProduccion = format
     },
     selectionChange(selectedRows) {
       var obj = selectedRows;
@@ -1182,6 +1206,7 @@ export default {
           {
             token: this.token,
             fecha: this.fechaInicialTableroProduccion,
+            fechaF: this.fechaFinalTableroProduccion,
             rutas:
               this.mSelectLineasValueTablero.length <= 0
                 ? "*"
@@ -1896,9 +1921,9 @@ export default {
   border-top: 0;
 }
 
-.card-bodyRPagosVehiculoProduccionPCTablero {
+.card-bodyRPagosVehiculoProduccionPCTableroTablero {
   padding: 0rem !important;
-  height: calc(100vh - 12rem);
+  height: calc(100vh - 13rem);
   overflow: auto;
 }
 
