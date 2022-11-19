@@ -55,7 +55,7 @@
                 @on-close="blur"
                 :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker"
-                v-model="fechaInicialTableroProduccion"
+                v-model="fechaFinalTableroProduccion"
               >
               </flat-picker>
             </base-input>
