@@ -1,147 +1,143 @@
 <template>
     <div class="content">
-    
-        <base-header>
-    
-            <div class="align-items-center py-3">
-    
-    
-    
-                <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyTTiposMantenimiento px-0 pb-1" footer-classes="pb-2">
-    
-                    <div class="row border-0">
-    
-                        <div class="col-12 text-right buttonNuevo">
-    
-                            <base-button @click="showModalAgregarTipoMantenimiento()" type="primary" icon size="sm">
-    
-                                <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Tipo</span>
-    
-                            </base-button>
-    
-                        </div>
-    
-                    </div>
-    
-                    <div>
-    
-                        <el-table v-loading="loadingTiposMantenimiento" element-loading-text="Cargando Datos..." :data="tableDataMantenimientoTiposMantenimiento" highlight-current-row height="calc(100vh - 9.1rem)" style="width: 100%" class="tablePanelTiposProduccion" header-row-class-name="thead-dark">
-    
-                            <el-table-column minWidth="70px" align="right" label="Actions">
-    
-                                <div slot-scope="{ row }" class="d-flex">
-    
-                                    <base-button class="edit" type="success" size="sm" icon @click="editTMantenimiento(row)">
-    
-                                        <i class="text-white ni ni-ruler-pencil"></i>
-    
-                                    </base-button>
-    
-                                    <base-button class="remove btn-link" :type="row.estado == 1 ? 'danger' : 'primary'" size="sm" icon @click="changeEstadoTMantenimiento(row)">
-    
-                                        <i :class="row.estado == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
-    
-                                    </base-button>
-    
-    
-    
-                                </div>
-    
-                            </el-table-column>
-    
-    
-    
-                            <el-table-column prop="mantenimiento" label="Mantenimiento" minWidth="80">
-    
-                            </el-table-column>
-    
-    
-    
-                            <el-table-column prop="texto" label="Texto" minWidth="110">
-    
-                            </el-table-column>
-    
-    
-    
-                            <el-table-column prop="detalle" label="Detalle" minWidth="110">
-    
-                            </el-table-column>
-    
-                            <el-table-column label="Estado" min-width="80px" prop="estado">
-    
-                                <template v-slot="{ row }">
-    
-                        <badge class="badge-dot mr-4" type="">
-    
-                          <i :class="`bg-${row.estado == 0 ? 'danger' : 'success'}`"></i>
-    
-                          <span class="status">{{
-    
-                              row.estado == 0 ? "Inactivo" : "Activo"
-    
-                          }}</span>
-    
-                        </badge>
-</template>
-                </el-table-column>
-                
-                <div slot="empty"></div>
-              </el-table>
-            </div>
-          </card>
-        </div>
-      </base-header>
 
-       <!--Form modal Agregar Admins-->
-    <modal :show.sync="modalAgregarTipoMantenimiento">
-      <validation-observer v-slot="{handleSubmit}" ref="formValidator">
-      <form class="needs-validation"
-            @submit.prevent="handleSubmit(firstFormSubmit)">
-        <div class="form-row">
-          <div class="col-md-12">
-            <base-input
-              name="Código"
-              placeholder="Código"
-              prepend-icon="ni ni-key-25"
-              rules="required"
-              v-model="idTipoMantenimiento">
-            </base-input>
-          </div>
-          <div class="col-md-12">
-            <br>
-            <base-input
-              prepend-icon="ni ni-single-copy-04"
-              name="Texto"
-              placeholder="Texto"
-              rules="required"
-              v-model="texto">
-            </base-input>
-          </div>
-        </div>
-        <br>
-        <div class="form-row">  
-          <div class="col-md-12">
-            <base-input
-              name="Detalle"
-              placeholder="Detalle"
-              prepend-icon="ni ni-single-copy-04"
-              rules="required"
-              v-model="detalle">
-            </base-input>
-          </div> 
-        </div>
-        <br>
-        <div class="text-right">
-          <base-button type="danger" @click="showModalAgregarTipoMantenimiento()">Cancelar</base-button>
-          <base-button type="primary" v-if="editedIndexTMantenimiento == -1" @click="sendRegisterTMantenimiento()" native-type="submit">Agregar</base-button>
-          <base-button type="primary" v-else @click="sendUpdateTMantenimiento()" native-type="submit">Actualizar</base-button>
-        </div>
-      </form>
-    </validation-observer>     
-    </modal>
+        <base-header>
+
+            <div class="align-items-center py-3">
+
+
+
+                <card class="no-border-card" style="margin-bottom: 0rem"
+                    body-classes="card-bodyTTiposMantenimiento px-0 pb-1" footer-classes="pb-2">
+
+                    <div class="row border-0">
+
+                        <div class="col-12 text-right buttonNuevo">
+
+                            <base-button @click="showModalAgregarTipoMantenimiento()" type="primary" icon size="sm">
+
+                                <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Tipo</span>
+
+                            </base-button>
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <el-table v-loading="loadingTiposMantenimiento" element-loading-text="Cargando Datos..."
+                            :data="tableDataMantenimientoTiposMantenimiento" highlight-current-row
+                            height="calc(100vh - 9.1rem)" style="width: 100%" class="tablePanelTiposProduccion"
+                            header-row-class-name="thead-dark">
+
+                            <el-table-column minWidth="70px" align="right" label="Actions">
+
+                                <div slot-scope="{ row }" class="d-flex">
+
+                                    <base-button class="edit" type="success" size="sm" icon
+                                        @click="editTMantenimiento(row)">
+
+                                        <i class="text-white ni ni-ruler-pencil"></i>
+
+                                    </base-button>
+
+                                    <base-button class="remove btn-link" :type="row.estado == 1 ? 'danger' : 'primary'"
+                                        size="sm" icon @click="changeEstadoTMantenimiento(row)">
+
+                                        <i
+                                            :class="row.estado == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
+
+                                    </base-button>
+
+
+
+                                </div>
+
+                            </el-table-column>
+
+
+
+                            <el-table-column prop="mantenimiento" label="Mantenimiento" minWidth="80">
+
+                            </el-table-column>
+
+
+
+                            <el-table-column prop="texto" label="Texto" minWidth="110">
+
+                            </el-table-column>
+
+
+
+                            <el-table-column prop="detalle" label="Detalle" minWidth="110">
+
+                            </el-table-column>
+
+                            <el-table-column label="Estado" min-width="80px" prop="estado">
+
+                                <template v-slot="{ row }">
+
+                                    <badge class="badge-dot mr-4" type="">
+
+                                        <i :class="`bg-${row.estado == 0 ? 'danger' : 'success'}`"></i>
+
+                                        <span class="status">{{
+                                        
+                                                row.estado == 0 ? "Inactivo" : "Activo"
+                                        
+                                        }}</span>
+
+                                    </badge>
+                                </template>
+                            </el-table-column>
+
+                            <div slot="empty"></div>
+                        </el-table>
+                    </div>
+                </card>
+            </div>
+        </base-header>
+
+        <!--Form modal Agregar Admins-->
+        <modal :show.sync="modalAgregarTipoMantenimiento">
+            <validation-observer v-slot="{ handleSubmit }" ref="formValidator">
+                <form class="needs-validation" @submit.prevent="handleSubmit(firstFormSubmit)">
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <base-input name="Código" placeholder="Código" prepend-icon="ni ni-key-25" rules="required"
+                                v-model="idTipoMantenimiento">
+                            </base-input>
+                        </div>
+                        <div class="col-md-12">
+                            <br>
+                            <base-input prepend-icon="ni ni-single-copy-04" name="Texto" placeholder="Texto"
+                                rules="required" v-model="texto">
+                            </base-input>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <base-input name="Detalle" placeholder="Detalle" prepend-icon="ni ni-single-copy-04"
+                                rules="required" v-model="detalle">
+                            </base-input>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="text-right">
+                        <base-button type="danger" @click="showModalAgregarTipoMantenimiento()">Cancelar</base-button>
+                        <base-button type="primary" v-if="editedIndexTMantenimiento == -1"
+                            @click="sendRegisterTMantenimiento()" native-type="submit">Agregar</base-button>
+                        <base-button type="primary" v-else @click="sendUpdateTMantenimiento()" native-type="submit">
+                            Actualizar</base-button>
+                    </div>
+                </form>
+            </validation-observer>
+        </modal>
 
     </div>
-  </template>
+</template>
 <script>
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
@@ -210,8 +206,8 @@ export default {
             try {
                 var datos = await this.$axios.post(
                     process.env.baseUrlPanel + "/readTiposMantenimiento", {
-                        token: this.token,
-                    }
+                    token: this.token,
+                }
                 );
 
                 if (datos.data.status_code == 200) {

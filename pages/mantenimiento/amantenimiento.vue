@@ -1,180 +1,192 @@
 <template>
     <div class="content">
-    
+
         <base-header>
-    
+
             <div class="align-items-center py-3">
-    
-    
-    
-                <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyTTiposMantenimiento px-0 pb-1" footer-classes="pb-2">
-    
+
+
+
+                <card class="no-border-card" style="margin-bottom: 0rem"
+                    body-classes="card-bodyTTiposMantenimiento px-0 pb-1" footer-classes="pb-2">
+
                     <div class="row border-0">
-    
+
                         <div class="col-12 text-right buttonNuevo">
-    
+
                             <base-button @click="showmodalAsignarTipoMantenimiento()" type="primary" icon size="sm">
-    
+
                                 <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Asignar Mantenimiento</span>
-    
+
                             </base-button>
-    
+
                         </div>
-    
+
                     </div>
-    
+
                     <div>
-    
-                        <el-table v-loading="loadingAsignacionesMantenimiento" element-loading-text="Cargando Datos..." :data="tableDataMantenimientoAsignacionesMantenimiento" highlight-current-row row-key="id" height="calc(100vh - 9.1rem)" style="width: 100%" class="tablePanelTiposProduccion"
-    
+
+                        <el-table v-loading="loadingAsignacionesMantenimiento" element-loading-text="Cargando Datos..."
+                            :data="tableDataMantenimientoAsignacionesMantenimiento" highlight-current-row row-key="id"
+                            height="calc(100vh - 9.1rem)" style="width: 100%" class="tablePanelTiposProduccion"
                             header-row-class-name="thead-dark">
-    
+
                             <el-table-column minWidth="70px" align="right" label="Actions">
-    
+
                                 <div slot-scope="{ row }" class="d-flex">
-    
-                                    <base-button class="edit" type="success" size="sm" icon @click="editAMantenimiento(row)">
-    
+
+                                    <base-button class="edit" type="success" size="sm" icon
+                                        @click="editAMantenimiento(row)">
+
                                         <i class="text-white ni ni-ruler-pencil"></i>
-    
+
                                     </base-button>
-    
-                                    <base-button class="remove btn-link" type="danger" size="sm" icon @click="deleteAMantenimiento(row)">
-    
-                              <i class="text-white ni ni-fat-remove"></i>
-    
-                            </base-button>
-    
-    
-    
+
+                                    <base-button class="remove btn-link" type="danger" size="sm" icon
+                                        @click="deleteAMantenimiento(row)">
+
+                                        <i class="text-white ni ni-fat-remove"></i>
+
+                                    </base-button>
+
+
+
                                 </div>
-    
+
                             </el-table-column>
-    
-    
-    
+
+
+
                             <el-table-column prop="unidad" label="Unidad" minWidth="80">
-    
+
                             </el-table-column>
-    
-    
-    
+
+
+
                             <el-table-column prop="idTipoMantenimiento" label="Cod. Mantenimiento" minWidth="130">
-    
+
                             </el-table-column>
-    
-    
-    
+
+
+
                             <el-table-column prop="detalleMantenimiento" label="Detalle" minWidth="100">
-    
+
                             </el-table-column>
-    
+
                             <el-table-column prop="fechaAsignacion" label="Fecha" minWidth="120">
-    
+
                             </el-table-column>
-    
+
                             <el-table-column prop="km_mantenimiento" label="KM-Mantenimiento" minWidth="130">
-    
+
                             </el-table-column>
-    
+
                             <el-table-column prop="tiempo_mantenimiento" label="Tiempo-Mantenimiento" minWidth="150">
-    
+
                             </el-table-column>
-    
-    
-    
+
+
+
                             <div slot="empty"></div>
-    
+
                         </el-table>
-    
+
                     </div>
-    
+
                 </card>
-    
+
             </div>
-    
+
         </base-header>
-    
-    
-    
+
+
+
         <!--Form modal Agregar Admins-->
-    
+
         <modal :show.sync="modalAsignarTipoMantenimiento">
-    
-            <validation-observer v-slot="{handleSubmit}" ref="formValidator">
-    
+
+            <validation-observer v-slot="{ handleSubmit }" ref="formValidator">
+
                 <form class="needs-validation" @submit.prevent="handleSubmit(firstFormSubmit)">
-    
+
                     <div class="form-row">
-    
+
                         <div class="col-md-6">
-    
-                            <el-select v-model="mSelectUnidad" filterable remote reserve-keyword style="width:100%" placeholder="Ingrese unidad" :remote-method="remoteMethodUnidades" :loading="loading">
-    
-                                <el-option v-for="item in optionsUnidades" :key="item.CodiVehi" :label="item.CodiVehi" :value="item.CodiVehi">
-    
+
+                            <el-select v-model="mSelectUnidad" filterable remote reserve-keyword style="width:100%"
+                                placeholder="Ingrese unidad" :remote-method="remoteMethodUnidades" :loading="loading">
+
+                                <el-option v-for="item in optionsUnidades" :key="item.CodiVehi" :label="item.CodiVehi"
+                                    :value="item.CodiVehi">
+
                                 </el-option>
-    
+
                             </el-select>
-    
+
                         </div>
-    
+
                         <div class="col-md-6">
-    
-                            <el-select v-model="mSelectTipoMantenimiento" style="width:100%" placeholder="Tipo Mantenimiento">
-    
-                                <el-option v-for="item in mListaTiposMantenimiento" :key="item.mantenimiento" :label="item.detalle" :value="item.mantenimiento">
-    
+
+                            <el-select v-model="mSelectTipoMantenimiento" style="width:100%"
+                                placeholder="Tipo Mantenimiento">
+
+                                <el-option v-for="item in mListaTiposMantenimiento" :key="item.mantenimiento"
+                                    :label="item.detalle" :value="item.mantenimiento">
+
                                 </el-option>
-    
+
                             </el-select>
-    
+
                         </div>
-    
+
                     </div>
-    
+
                     <br>
-    
+
                     <div class="form-row">
-    
+
                         <div class="col-md-6">
-    
-                            <base-input name="KM Mantenimiento" type="number" step="any" placeholder="KM Mantenimiento" prepend-icon="ni ni-compass-04" v-model="kmMantenimiento">
-                              <template slot="append">KM</template>
+
+                            <base-input name="KM Mantenimiento" type="number" step="any" placeholder="KM Mantenimiento"
+                                prepend-icon="ni ni-compass-04" v-model="kmMantenimiento">
+                                <template slot="append">KM</template>
                             </base-input>
-    
+
                         </div>
-    
+
                         <div class="col-md-6">
-    
-                            <base-input name="Tiempo Mantenimiento" type="number" placeholder="Tiempo Mantenimiento" prepend-icon="ni ni-watch-time" v-model="tiempoMantenimiento">
-                              <template slot="append">días</template>
+
+                            <base-input name="Tiempo Mantenimiento" type="number" placeholder="Tiempo Mantenimiento"
+                                prepend-icon="ni ni-watch-time" v-model="tiempoMantenimiento">
+                                <template slot="append">días</template>
                             </base-input>
-    
+
                         </div>
-    
+
                     </div>
-    
+
                     <br>
-    
+
                     <div class="text-right">
-    
+
                         <base-button type="danger" @click="showmodalAsignarTipoMantenimiento()">Cancelar</base-button>
-    
-                        <base-button type="primary" v-if="editedIndexAMantenimiento == -1" @click="asignarTipoMantenimientoUnidad()" native-type="submit">Agregar</base-button>
-    
-                        <base-button type="primary" v-else @click="sendUpdateAMantenimiento()" native-type="submit">Actualizar</base-button>
-    
+
+                        <base-button type="primary" v-if="editedIndexAMantenimiento == -1"
+                            @click="asignarTipoMantenimientoUnidad()" native-type="submit">Agregar</base-button>
+
+                        <base-button type="primary" v-else @click="sendUpdateAMantenimiento()" native-type="submit">
+                            Actualizar</base-button>
+
                     </div>
-    
+
                 </form>
-    
+
             </validation-observer>
-    
+
         </modal>
-    
-    
-    
+
+
+
     </div>
 </template>
 <script>
@@ -241,7 +253,7 @@ export default {
             loading: false,
             optionsUnidades: [],
             mListaTiposMantenimiento: [],
-            idConMan:'',
+            idConMan: '',
             permisos: null
         };
     },
@@ -252,8 +264,8 @@ export default {
             try {
                 var datos = await this.$axios.post(
                     process.env.baseUrlPanel + "/readAsignacionMantenimiento", {
-                        token: this.token,
-                    }
+                    token: this.token,
+                }
                 );
 
                 if (datos.data.status_code == 200) {
@@ -297,7 +309,7 @@ export default {
             this.modalAsignarTipoMantenimiento = false
         },
         editAMantenimiento(row) {
-          console.log(row)
+            console.log(row)
             this.idConMan = row.idConMan
             this.mSelectUnidad = row.unidad
             this.mSelectTipoMantenimiento = row.idTipoMantenimiento
@@ -307,10 +319,10 @@ export default {
             this.modalAsignarTipoMantenimiento = true
         },
         async updateAMantenimiento() {
-          try {
+            try {
                 var objBody = {
                     token: this.token,
-                    id:this.idConMan,
+                    id: this.idConMan,
                     unidad: this.mSelectUnidad,
                     idTipoMantenimiento: this.mSelectTipoMantenimiento,
                     kmMantenimiento: this.kmMantenimiento,
@@ -426,8 +438,8 @@ export default {
             this.mListaTiposMantenimiento = [];
             var datos = await this.$axios.post(
                 process.env.baseUrlPanel + "/readTiposMantenimiento", {
-                    token: this.token,
-                }
+                token: this.token,
+            }
             );
             if (datos.data.status_code == 200) {
                 this.mListaTiposMantenimiento.push(...datos.data.datos);
