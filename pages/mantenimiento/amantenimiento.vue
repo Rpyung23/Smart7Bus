@@ -27,7 +27,7 @@
                     <div>
 
                         <el-table v-loading="loadingAsignacionesMantenimiento" element-loading-text="Cargando Datos..."
-                            :data="tableDataMantenimientoAsignacionesMantenimiento" highlight-current-row row-key="id"
+                            :data="tableDataMantenimientoAsignacionesMantenimiento"
                             height="calc(100vh - 9.1rem)" style="width: 100%" class="tablePanelTiposProduccion"
                             header-row-class-name="thead-dark">
 

@@ -27,7 +27,7 @@
                     <div>
 
                         <el-table v-loading="loadingTiposMantenimiento" element-loading-text="Cargando Datos..."
-                            :data="tableDataMantenimientoTiposMantenimiento" highlight-current-row
+                            :data="tableDataMantenimientoTiposMantenimiento"
                             height="calc(100vh - 9.1rem)" style="width: 100%" class="tablePanelTiposProduccion"
                             header-row-class-name="thead-dark">
 
