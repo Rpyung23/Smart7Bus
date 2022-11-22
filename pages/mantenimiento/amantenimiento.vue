@@ -369,8 +369,8 @@ export default {
                     }
                 }
                 Swal.fire({
-                    title: 'Eliminar Mantenimiento',
-                    text: row.detalleMantenimiento,
+                    title: 'Eliminar Asignacion de Mantenimiento',
+                    text: 'Unidad ' + row.unidad + ' - ' + row.detalleMantenimiento,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
