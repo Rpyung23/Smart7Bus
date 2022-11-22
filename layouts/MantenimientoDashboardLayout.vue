@@ -8,7 +8,7 @@
             :link="{
               name: 'Tablero',
               icon: 'ni ni-collection text-default',
-              path: './mantenimiento',
+              path: './tablero',
             }"
           >
           </sidebar-item>

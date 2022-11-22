@@ -1,95 +1,150 @@
 <template>
     <div class="content">
-
+    
         <base-header>
-
-            <div class="align-items-center py-3">
-
-
-
-                <card class="no-border-card" style="margin-bottom: 0rem"
-                    body-classes="card-bodyTTiposMantenimiento px-0 pb-1" footer-classes="pb-2">
-
-                    <div class="row border-0">
-
-                        <div class="col-12 text-right buttonNuevo">
-
-                            <base-button @click="showModalAgregarTipoMantenimiento()" type="primary" icon size="sm">
-
-                                <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Tipo</span>
-
-                            </base-button>
-
+    
+            <div class="row align-items-center">
+    
+                <div class="col" style="margin-top:1rem;">
+    
+                    <card class="carTableroMantenimiento no-border-card" body-classes="px-0 pb-1 cardBodyTableroMantenimiento" footer-classes="pb-2">
+    
+                        <div class="row border-0">
+    
+                            <div class="col-12 text-right buttonNuevo">
+    
+                                <base-button @click="showModalAgregarUnidadFlotavehicular()" type="primary" icon size="sm">
+    
+                                    <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Mantenimiento</span>
+    
+                                </base-button>
+    
+                            </div>
+    
+    
+    
                         </div>
-
-                    </div>
-
-                    <div>
-
-                        <el-table v-loading="loadingTiposMantenimiento" element-loading-text="Cargando Datos..."
-                            :data="tableDataMantenimientoTiposMantenimiento"
-                            height="calc(100vh - 9.1rem)" class="tablePanelTiposProduccion"
-                            header-row-class-name="thead-dark">
-
-                            <el-table-column minWidth="60px" align="right" label="Actions">
-
-                                <div slot-scope="{ row }" class="d-flex">
-
-                                    <base-button class="edit" type="success" size="sm" icon
-                                        @click="editTMantenimiento(row)">
-
-                                        <i class="text-white ni ni-ruler-pencil"></i>
-
-                                    </base-button>
-
-                                    <base-button class="remove btn-link" :type="row.estado == 1 ? 'danger' : 'primary'"
-                                        size="sm" icon @click="changeEstadoTMantenimiento(row)">
-
-                                        <i
-                                            :class="row.estado == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
-
-                                    </base-button>
-
-
-
-                                </div>
-
-                            </el-table-column>
-
-
-
-                            <el-table-column prop="mantenimiento" label="Mantenimiento" minWidth="80px">
-
-                            </el-table-column>
-
-
-
-                            <el-table-column prop="texto" label="Texto" minWidth="110px">
-
-                            </el-table-column>
-
-
-
-                            <el-table-column prop="detalle" label="Detalle" minWidth="110px">
-
-                            </el-table-column>
-
-                            <el-table-column label="Estado" min-width="80px" prop="estado">
-
-                                <template v-slot="{ row }">
-
-                                    <badge class="badge-dot mr-4" type="">
-
-                                        <i :class="`bg-${row.estado == 0 ? 'danger' : 'success'}`"></i>
-
-                                        <span class="status">{{
-                                        
-                                                row.estado == 0 ? "Inactivo" : "Activo"
-                                        
-                                        }}</span>
-
-                                    </badge>
-                                </template>
+    
+                        <div>
+    
+    
+    
+                            <el-table v-loading="loadingTableroMantenimiento" element-loading-text="Cargando Datos..." :data="tableDataMantenimientoTablero" height="calc(100vh - 9.3rem)" class="tablePanelTiposProduccion" header-row-class-name="thead-dark">
+    
+    
+    
+                                <el-table-column min-width="120px" align="right" label="Actions">
+    
+    
+    
+                                    <div slot-scope="{ row }" class="d-flex">
+    
+    
+    
+                                        <base-button class="edit" type="success" size="sm" icon @click="editTMantenimiento(row)">
+    
+    
+    
+                                            <i class="text-white ni ni-ruler-pencil"></i>
+    
+    
+    
+                                        </base-button>
+    
+    
+    
+                                        <base-button class="remove btn-link" :type="row.estado == 1 ? 'danger' : 'primary'" size="sm" icon @click="changeEstadoTMantenimiento(row)">
+    
+    
+    
+                                            <i :class="row.estado == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
+    
+                                        </base-button>
+    
+                                    </div>
+    
+                                </el-table-column>
+    
+    
+    
+                                <el-table-column prop="unidad" label="Unidad" min-width="110px">
+    
+                                </el-table-column>
+    
+    
+    
+                                <el-table-column prop="fecha_creacion" label="Fecha creacion" min-width="180px">
+    
+                                </el-table-column>
+    
+    
+    
+    
+    
+                                <el-table-column prop="fecha_asignacion" label="Fecha asignacion" min-width="180px">
+    
+                                </el-table-column>
+    
+    
+    
+                                <el-table-column prop="idTipoMantenimiento" label="T. Mantenimiento" min-width="180px">
+    
+                                </el-table-column>
+    
+    
+    
+                                <el-table-column prop="detalleMantenimiento" label="Detalle" min-width="190px">
+    
+                                </el-table-column>
+    
+    
+    
+                                <el-table-column prop="observacion" label="Observacion" min-width="180px">
+    
+                                </el-table-column>
+    
+    
+    
+                                <el-table-column prop="notaAnulacion" label="N. Anulacion" min-width="180px">
+    
+                                </el-table-column>
+    
+    
+    
+                                <el-table-column prop="usuarioAnulacion" label="U. Anulacion" min-width="190px">
+    
+                                </el-table-column>    
+    
+                                <el-table-column label="Estado" min-width="130px" prop="estado">
+    
+    
+    
+                                    <template v-slot="{ row }">
+    
+    
+    
+                                        <badge class="badge-dot mr-4" type="">
+    
+    
+    
+                                            <i :class="`bg-${row.estado == 4  ? 'danger' : 'success'}`"></i>
+    
+    
+    
+                                            <span class="status">{{
+    
+                                            
+    
+                                                    row.estado == 1 ? "Creado" : row.estado == 2 ? "Asignado" : row.estado == 3 ? "Completado" : "Anulado" 
+    
+                                            
+    
+                                            }}</span>
+    
+    
+    
+                                        </badge>
+</template>
                             </el-table-column>
 
                             <div slot="empty"></div>
@@ -97,6 +152,7 @@
                     </div>
                 </card>
             </div>
+        </div>
         </base-header>
 
         <!--Form modal Agregar Admins-->
@@ -188,8 +244,8 @@ export default {
     },
     data() {
         return {
-            tableDataMantenimientoTiposMantenimiento: [],
-            loadingTiposMantenimiento: false,
+            tableDataMantenimientoTablero: [],
+            loadingTableroMantenimiento: false,
             idTipoMantenimiento: '',
             texto: '',
             detalle: '',
@@ -201,21 +257,21 @@ export default {
     },
     methods: {
         async readTiposMantenimiento() {
-            this.tableDataMantenimientoTiposMantenimiento = [];
-            this.loadingTiposMantenimiento = true;
+            this.tableDataMantenimientoTablero = [];
+            this.loadingTableroMantenimiento = true;
             try {
                 var datos = await this.$axios.post(
-                    process.env.baseUrlPanel + "/readTiposMantenimiento", {
-                    token: this.token,
-                }
+                    process.env.baseUrlPanel + "/readMantenimientos", {
+                        token: this.token,
+                    }
                 );
 
                 if (datos.data.status_code == 200) {
-                    this.tableDataMantenimientoTiposMantenimiento.push(...datos.data.datos);
+                    this.tableDataMantenimientoTablero.push(...datos.data.datos);
                 } else if (datos.data.status_code == 300) {
                     Notification.info({
                         title: "Mantenimiento",
-                        message: "No existen tipos mantenimiento registrados",
+                        message: "No existen mantenimiento registrados",
                     });
                 } else {
                     Notification.error({
@@ -226,7 +282,7 @@ export default {
             } catch (error) {
                 Notification.error({ title: "Error Catch", msm: error.toString() });
             }
-            this.loadingTiposMantenimiento = false;
+            this.loadingTableroMantenimiento = false;
         },
         async registerTMantenimiento() {
             try {
@@ -432,11 +488,20 @@ export default {
     border-top: 0;
 }
 
-.card-bodyTTiposMantenimiento {
-    padding: 0rem !important;
-    height: calc(100vh - 5.8rem);
-    overflow: auto;
+.cardTableroMantenimiento {
+  height: calc(100vh - 11rem) !important;
+  overflow: auto;
 }
+
+
+.cardBodyTableroMantenimiento {
+  padding: 0%;
+}
+
+.cardTableroMantenimiento::-webkit-scrollbar {
+  display: none;
+}
+
 
 .card-bodyTopOpcionesTiposMantenimientos {
     padding-top: 0.25rem !important;
