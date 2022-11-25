@@ -13,9 +13,9 @@
     
                             <div class="col-12 text-right buttonNuevo">
     
-                                <base-button @click="showModalAgregarUnidadFlotavehicular()" type="primary" icon size="sm">
+                                <base-button @click="showmodalAsignarTipoMantenimiento()" type="primary" icon size="sm">
     
-                                    <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Mantenimiento</span>
+                                    <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Asignar Mantenimiento</span>
     
                                 </base-button>
     
@@ -27,12 +27,8 @@
     
                         <div>
 
-                        <el-table v-loading="loadingAsignacionesMantenimiento" element-loading-text="Cargando Datos..."
-                            :data="tableDataMantenimientoAsignacionesMantenimiento"
-                            height="calc(100vh - 9.3rem)" class="tablePanelTiposProduccion"
-                            header-row-class-name="thead-dark">
-
-                            <el-table-column minWidth="80" align="right" label="Actions">
+                            <el-table v-loading="loadingAsignacionesMantenimiento" element-loading-text="Cargando Datos..." :data="tableDataMantenimientoAsignacionesMantenimiento" height="calc(100vh - 9.3rem)" class="tablePanelTiposProduccion" header-row-class-name="thead-dark">
+                            <el-table-column min-width="100px" align="right" label="Actions">
 
                                 <div slot-scope="{ row }" class="d-flex">
 
@@ -58,31 +54,31 @@
 
 
 
-                            <el-table-column prop="unidad" label="Unidad" minWidth="80">
+                            <el-table-column prop="unidad" label="Unidad" min-width="100px">
 
                             </el-table-column>
 
 
 
-                            <el-table-column prop="idTipoMantenimiento" label="Cod. Mantenimiento" minWidth="140">
+                            <el-table-column prop="idTipoMantenimiento" label="Cod. Mant" min-width="120px">
 
                             </el-table-column>
 
 
 
-                            <el-table-column prop="detalleMantenimiento" label="Detalle" minWidth="100">
+                            <el-table-column prop="detalleMantenimiento" label="Detalle" min-width="200px">
 
                             </el-table-column>
 
-                            <el-table-column prop="fechaAsignacion" label="Fecha" minWidth="120">
+                            <el-table-column prop="fechaAsignacion" label="Fecha" min-width="150px">
 
                             </el-table-column>
 
-                            <el-table-column prop="km_mantenimiento" label="KM-Mantenimiento" minWidth="130">
+                            <el-table-column prop="km_mantenimiento" label="KM-Mant" min-width="140px">
 
                             </el-table-column>
 
-                            <el-table-column prop="tiempo_mantenimiento" label="Tiempo-Mantenimiento" minWidth="150">
+                            <el-table-column prop="tiempo_mantenimiento" label="Tiempo-Mant" min-width="160px">
 
                             </el-table-column>
 
@@ -521,7 +517,7 @@ export default {
 }
 
 .cardATipoMantenimiento{
-  height: calc(100vh - 11rem) !important;
+  height: calc(100vh -11rem) !important;
   overflow: auto;
 }
 
