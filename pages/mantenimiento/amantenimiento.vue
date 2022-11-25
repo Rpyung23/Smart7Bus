@@ -1,37 +1,38 @@
 <template>
     <div class="content">
-
+    
         <base-header>
-
-            <div class="align-items-center py-3">
-
-
-
-                <card class="no-border-card" style="margin-bottom: 0rem"
-                    body-classes="card-bodyTTiposMantenimiento px-0 pb-1" footer-classes="pb-2">
-
-                    <div class="row border-0">
-
-                        <div class="col-12 text-right buttonNuevo">
-
-                            <base-button @click="showmodalAsignarTipoMantenimiento()" type="primary" icon size="sm">
-
-                                <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Asignar Mantenimiento</span>
-
-                            </base-button>
-
+    
+            <div class="row align-items-center">
+    
+                <div class="col" style="margin-top:1rem;">
+    
+                    <card class="carATipoMantenimiento no-border-card" body-classes="px-0 pb-1 cardBodyATipoMantenimiento" footer-classes="pb-2">
+    
+                        <div class="row border-0">
+    
+                            <div class="col-12 text-right buttonNuevo">
+    
+                                <base-button @click="showModalAgregarUnidadFlotavehicular()" type="primary" icon size="sm">
+    
+                                    <span class="btn-inner--icon"><i class="ni ni-fat-add"></i>Agregar Mantenimiento</span>
+    
+                                </base-button>
+    
+                            </div>
+    
+    
+    
                         </div>
-
-                    </div>
-
-                    <div>
+    
+                        <div>
 
                         <el-table v-loading="loadingAsignacionesMantenimiento" element-loading-text="Cargando Datos..."
                             :data="tableDataMantenimientoAsignacionesMantenimiento"
-                            height="calc(100vh - 9.1rem)" style="width: 100%" class="tablePanelTiposProduccion"
+                            height="calc(100vh - 9.3rem)" class="tablePanelTiposProduccion"
                             header-row-class-name="thead-dark">
 
-                            <el-table-column minWidth="80px" align="right" label="Actions">
+                            <el-table-column minWidth="80" align="right" label="Actions">
 
                                 <div slot-scope="{ row }" class="d-flex">
 
@@ -96,7 +97,7 @@
                 </card>
 
             </div>
-
+            </div>
         </base-header>
 
 
@@ -519,11 +520,20 @@ export default {
     border-top: 0;
 }
 
-.card-bodyTTiposMantenimiento {
-    padding: 0rem !important;
-    height: calc(100vh - 5.8rem);
-    overflow: auto;
+.cardATipoMantenimiento{
+  height: calc(100vh - 11rem) !important;
+  overflow: auto;
 }
+
+
+.cardBodyATipoMantenimiento {
+  padding: 0%;
+}
+
+.cardATipoMantenimiento::-webkit-scrollbar {
+  display: none;
+}
+
 
 .card-bodyTopOpcionesTiposMantenimientos {
     padding-top: 0.25rem !important;
