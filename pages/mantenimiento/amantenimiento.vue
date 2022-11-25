@@ -31,7 +31,7 @@
                             height="calc(100vh - 9.1rem)" style="width: 100%" class="tablePanelTiposProduccion"
                             header-row-class-name="thead-dark">
 
-                            <el-table-column minWidth="70px" align="right" label="Actions">
+                            <el-table-column minWidth="80px" align="right" label="Actions">
 
                                 <div slot-scope="{ row }" class="d-flex">
 
@@ -63,7 +63,7 @@
 
 
 
-                            <el-table-column prop="idTipoMantenimiento" label="Cod. Mantenimiento" minWidth="130">
+                            <el-table-column prop="idTipoMantenimiento" label="Cod. Mantenimiento" minWidth="140">
 
                             </el-table-column>
 
