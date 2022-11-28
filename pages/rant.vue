@@ -23,7 +23,7 @@
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
             <div class="buttonsAdicionalesRContadorVuelta">
-              <base-button icon type="primary" @click="readReporteAnt()" size="sm">
+              <base-button icon title="BUSCAR" type="primary" @click="readReporteAnt()" size="sm">
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
             <!--<download-excel
@@ -40,9 +40,8 @@
               ></span>
               <span class="btn-inner--text"> Excel</span>
             </download-excel>-->
-              <base-button outline type="danger">
+              <base-button type="danger" @click="exportPdfRANT()" v-if="mListaRAnt.length > 0" title="EXPORTAR A PDF" size="sm">
                 <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
-                <span class="btn-inner--text"> Exportar PDF</span>
               </base-button>
             </div>
           </div>
@@ -52,7 +51,7 @@
           footer-classes="pb-2">
           <div>
             <el-table v-loading="loadingTableRVelocidadesBusquedaloading" element-loading-text="Cargando Datos..."
-              element-loading-spinner="el-icon-loading" :data="mListaRAnt" row-key="id"
+              :data="mListaRAnt" row-key="id"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               height="calc(100vh - 9rem)" highlight-current-row>
 
@@ -96,6 +95,12 @@ import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPag
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
+import { getBase64LogoReportes } from "../util/logoReport";
+import  pdfMake from 'pdfmake/build/pdfmake.js';
+import pdfFonts from 'pdfmake/build/vfs_fonts.js';
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
 
 export default {
   mixins: [clientPaginationMixin],
@@ -156,7 +161,7 @@ export default {
         {
           prop: "DescRuta",
           label: "Ruta",
-          minWidth: 170
+          minWidth: 270
         },
         {
           prop: "grupo",
@@ -224,6 +229,237 @@ export default {
           });
       }
       this.loadingTableRVelocidadesBusquedaloading = false
+    },
+    exportPdfRANT()
+    {
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var unidad = [
+        {
+          text:
+            "Unidad : TODAS LAS UNIDADES",
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var ruta = [
+        {
+          text:
+            "Ruta : TODAS LAS RUTAS",
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var desde_hasta = [
+        {
+          text:
+            "Fecha Salida : " + this.fechaInicialRAnt +" Hasta " + this.fechaFinalRAnt,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+
+      var resultadoString = [
+        [
+          {
+            text: "Unidad",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Placa",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Propietario / Chofer",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. Salida",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. Llegada",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Ruta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Grupo",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },          {
+            text: "Vuelta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Falta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }
+        ],
+      ]
+
+
+      for (var i = 0; i < this.mListaRAnt.length; i++) 
+      {
+        var arrys = [
+          {
+            text: this.mListaRAnt[i].CodiVehi,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRAnt[i].PlacVehi,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRAnt[i].AliaObse,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRAnt[i].HoraSaliProgSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRAnt[i].HoraLlegProgSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRAnt[i].DescRuta,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRAnt[i].grupo,
+            fontSize: 8.5,
+            alignment: "center",
+          },          {
+            text: this.mListaRAnt[i].NumeVuelSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRAnt[i].SumaMinuPosiSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          }
+        ]
+        resultadoString.push(arrys);
+      }
+
+      var docDefinition = {
+        pageSize: "A4",
+        pageOrientation: 'landscape',
+        pageMargins: [30, 80, 40, 30],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE ANT",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              /*widths: ['*'],
+              body: [empresa]*/
+              widths: [450, 450, 450, 450, 450, 450],
+              body: [empresa, unidad, ruta, desde_hasta],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40, 50, 140, 60, 60, 140,90,40,40],
+              body: resultadoString,
+              //body: [[]],
+            },
+          }
+        ],
+      };
+
+      pdfMake.createPdf(docDefinition).download("RANT" + Date.now());
     }
   },
   mounted() {
