@@ -155,43 +155,42 @@
               :data="mListDatosPenalidades"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
-              height="calc(100vh - 12.8rem)"
+              height="calc(100vh - 13.2rem)"
             >
-              <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
+            <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
               </el-table-column>
 
               <el-table-column
                 prop="HoraSaliProgSali_mI"
-                label="1 Dia"
+                :label=this.dia1
                 width="135"
               >
               </el-table-column>
 
               <el-table-column
                 prop="HoraSaliProgSali_mF"
-                label="2 Dia"
+                :label=this.dia2
                 width="135"
               >
               </el-table-column>
 
-              <el-table-column prop="totalSalidas" label="3 Dia" width="135">
+              <el-table-column prop="totalSalidas" :label=this.dia3 width="135">
               </el-table-column>
 
-              <el-table-column prop="DescRutaSali_m" label="4 Dia" width="135">
+              <el-table-column prop="DescRutaSali_m" :label=this.dia4 width="135">
               </el-table-column>
 
-              <el-table-column prop="atrasos" label="5 Dia" width="135">
+              <el-table-column prop="atrasos" :label=this.dia5 width="135">
               </el-table-column>
 
-              <el-table-column prop="atrasosTiempo" label="6 Dia" width="135">
+              <el-table-column prop="atrasosTiempo" :label=this.dia6 width="135">
               </el-table-column>
 
-              <el-table-column prop="adelantos" label="7 Dia" width="135">
+              <el-table-column prop="adelantos" :label=this.dia7 width="135">
               </el-table-column>
 
               <el-table-column prop="adelantoTiempo" label="Total" width="150">
               </el-table-column>
-
               <div slot="empty"></div>
             </el-table>
           </div>
@@ -269,7 +268,13 @@ export default {
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
-
+      dia1:'',
+      dia2:'',
+      dia3:'',
+      dia4:'',
+      dia5:'',
+      dia6:'',
+      dia7:'',
       loadingPenalidadesSemanales: false,
       mListaUnidadesSemanales: [],
       optionsUnidadesSemanales: [],
@@ -298,6 +303,26 @@ export default {
   },
   methods: {
     updateCalendarFechas() {
+      this.mListDatosPenalidades = []
+
+      var opciones = {month:"short",day:"numeric"}
+
+      var d1 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",1))
+      var d2 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",2))
+      var d3 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",3))
+      var d4 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",4))
+      var d5 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",5))
+      var d6 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6))
+      var d7 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",7))
+      
+      this.dia1 = d1.toLocaleDateString('es-ES', opciones)
+      this.dia2 = d2.toLocaleDateString('es-ES', opciones)
+      this.dia3 = d3.toLocaleDateString('es-ES', opciones)
+      this.dia4 = d4.toLocaleDateString('es-ES', opciones)
+      this.dia5 = d5.toLocaleDateString('es-ES', opciones)
+      this.dia6 = d6.toLocaleDateString('es-ES', opciones)
+      this.dia7 = d7.toLocaleDateString('es-ES', opciones) 
+     
       console.log(this.fechaDia1SalidasPanelBusqueda)
       console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",1))
       console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",2))
@@ -305,7 +330,7 @@ export default {
       console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",4))
       console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",5))
       console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6))
-      
+      this.fechaDia2SalidasPanelBusqueda = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6)
     },
     sumarDias(fechas,dia) {
       var fecha = new Date(fechas)
@@ -724,6 +749,7 @@ export default {
     this.readAllRutasSalidasSEmanales();
     this.readAllUnidadesSalidasSemanales();
     this.initPrimerDiaSemanaActualSalidaBusquedaPanel();
+    this.updateCalendarFechas()
     //this.readApiPenalidades();
   },
 };
@@ -780,7 +806,7 @@ export default {
 
 .card-bodyRPenalidadesSemanales {
   padding: 0rem !important;
-  height: calc(100vh - 13rem);
+  height: calc(100vh - 13.2rem);
   overflow: none;
 }
 
