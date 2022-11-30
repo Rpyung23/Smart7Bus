@@ -157,39 +157,39 @@
               header-row-class-name="thead-dark"
               height="calc(100vh - 13.2rem)"
             >
-            <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
+            <el-table-column prop="CodiVehi" label="Unidad" width="150">
               </el-table-column>
 
               <el-table-column
-                prop="HoraSaliProgSali_mI"
+                prop="Dia1"
                 :label=this.dia1
                 width="135"
               >
               </el-table-column>
 
               <el-table-column
-                prop="HoraSaliProgSali_mF"
+                prop="Dia2"
                 :label=this.dia2
                 width="135"
               >
               </el-table-column>
 
-              <el-table-column prop="totalSalidas" :label=this.dia3 width="135">
+              <el-table-column prop="Dia3" :label=this.dia3 width="135">
               </el-table-column>
 
-              <el-table-column prop="DescRutaSali_m" :label=this.dia4 width="135">
+              <el-table-column prop="Dia4" :label=this.dia4 width="135">
               </el-table-column>
 
-              <el-table-column prop="atrasos" :label=this.dia5 width="135">
+              <el-table-column prop="Dia5" :label=this.dia5 width="135">
               </el-table-column>
 
-              <el-table-column prop="atrasosTiempo" :label=this.dia6 width="135">
+              <el-table-column prop="Dia6" :label=this.dia6 width="135">
               </el-table-column>
 
-              <el-table-column prop="adelantos" :label=this.dia7 width="135">
+              <el-table-column prop="Dia7" :label=this.dia7 width="135">
               </el-table-column>
 
-              <el-table-column prop="adelantoTiempo" label="Total" width="150">
+              <el-table-column prop="Total" label="Total" width="150">
               </el-table-column>
               <div slot="empty"></div>
             </el-table>
@@ -268,6 +268,12 @@ export default {
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
+      fecha1:'',
+      fecha2:'',
+      fecha3:'',
+      fecha4:'',
+      fecha5:'',
+      fecha6:'',
       dia1:'',
       dia2:'',
       dia3:'',
@@ -314,6 +320,15 @@ export default {
       var d5 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",5))
       var d6 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6))
       var d7 = new Date(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",7))
+
+      this.fecha1 = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",1)
+      this.fecha2 = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",2)
+      this.fecha3 = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",3)
+      this.fecha4 = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",4)
+      this.fecha5 = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",5)
+      this.fecha6 = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6)
+      
+      alert(this.fecha1)
       
       this.dia1 = d1.toLocaleDateString('es-ES', opciones)
       this.dia2 = d2.toLocaleDateString('es-ES', opciones)
@@ -447,8 +462,13 @@ export default {
       try {
         var obj = {
           token: this.token,
-          fechaI: this.fechaDia1SalidasPanelBusqueda,
-          fechaF: this.fechaDia2SalidasPanelBusqueda,
+          fecha1: this.fechaDia1SalidasPanelBusqueda,
+          fecha2: this.fecha1,
+          fecha3: this.fecha2,
+          fecha4: this.fecha3,
+          fecha5: this.fecha4,
+          fecha6: this.fecha5,
+          fecha2: this.fecha6,
           unidades:
             this.itemUnidadRSemanales.length <= 0
               ? "*"
@@ -462,7 +482,7 @@ export default {
         console.log(obj);
 
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/readPenalidadesSemanales",
+          process.env.baseUrl + "/readPenalidadesSemanalesResumido",
           obj
         );
 
