@@ -291,16 +291,15 @@ export default {
       mListaGruposPenalidadesSemanales: [],
       itemGruposPenalidadesSemanales: [],
       json_fields_excelRPenalidadesSemanales: {
-        UNIDAD: "CodiVehiSali_m",
-        "FECHA INICIAL": "HoraSaliProgSali_mI",
-        "FECHA FINAL": "HoraSaliProgSali_mF",
-        "TOTAL SALIDAS": "totalSalidas",
-        RUTA: "DescRutaSali_m",
-        "FALTA ATRASOS": "atrasos",
-        "TIEMPO ATRASOS": "atrasosTiempo",
-        "FALTA ADELANTOS": "adelantos",
-        "TIEMPO ADELANTO": "adelantoTiempo",
-        "TOTAL DINERO": "PenaCtrlSali_d",
+        UNIDAD: "CodiVehi",
+        fechaDia1SalidasPanelBusqueda: "Dia1",
+        fecha1: "Dia2",
+        fecha2: "Dia3",
+        fecha3: "Dia4",
+        fecha4: "Dia5",
+        fecha5: "Dia6",
+        fecha6: "Dia7",
+        "TOTAL DINERO": "Total",
       },
       WorksheetExcelRSalidasSemanales: "",
       FileNameExcelRSalidasSemanales: "",
@@ -327,8 +326,6 @@ export default {
       this.fecha4 = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",4)
       this.fecha5 = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",5)
       this.fecha6 = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6)
-      
-      alert(this.fecha1)
       
       this.dia1 = d1.toLocaleDateString('es-ES', opciones)
       this.dia2 = d2.toLocaleDateString('es-ES', opciones)
@@ -526,7 +523,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "F. INICIO",
+          text: this.fechaDia1SalidasPanelBusqueda,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -534,7 +531,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "F. FINAL",
+          text: this.fecha1,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -542,7 +539,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "T. SALIDAS",
+          text: this.fecha2,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -550,7 +547,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "RUTA",
+          text: this.fecha3,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -558,7 +555,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "F. ATRASO",
+          text: this.fecha4,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -566,7 +563,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "T. ATRASO",
+          text: this.fecha5,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -574,15 +571,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "F. ADELANTO",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "T. ADELANTO",
+          text: this.fecha6,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -602,80 +591,56 @@ export default {
       for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
         var obj = [
           {
-            text: this.mListDatosPenalidades[i].CodiVehiSali_m,
+            text: this.mListDatosPenalidades[i].CodiVehi,
             fontSize: 8.5,
             alignment: "center",
-            color:
-              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
-                ? "black"
-                : "black",
+            color:"black"
           },
           {
-            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mI,
+            text: this.mListDatosPenalidades[i].Dia1,
             fontSize: 8.5,
             alignment: "center",
-            color:
-              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
-                ? "black"
-                : "black",
+            color:"black"
           },
           {
-            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mF,
+            text: this.mListDatosPenalidades[i].Dia2,
             fontSize: 8.5,
             alignment: "center",
-            color:
-              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
-                ? "black"
-                : "black",
+            color:"black"
           },
           {
-            text: this.mListDatosPenalidades[i].totalSalidas,
+            text: this.mListDatosPenalidades[i].Dia3,
             fontSize: 8.5,
             alignment: "center",
-            color:
-              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
-                ? "black"
-                : "black",
+            color:"black",
           },
+          
           {
-            text: this.mListDatosPenalidades[i].DescRutaSali_m,
+            text: this.mListDatosPenalidades[i].Dia4,
             fontSize: 8.5,
             alignment: "center",
-            color:
-              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
-                ? "black"
-                : "black",
+            color:"black",
           },
           {
-            text: this.mListDatosPenalidades[i].atrasos,
+            text: this.mListDatosPenalidades[i].Dia5,
             fontSize: 8.5,
             alignment: "center",
-            color:
-              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
-                ? "black"
-                : "black",
+            color:"black",
           },
           {
-            text: this.mListDatosPenalidades[i].atrasosTiempo,
+            text: this.mListDatosPenalidades[i].Dia6,
             fontSize: 8.5,
             alignment: "center",
-            color:
-              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
-                ? "black"
-                : "black",
+            color:"black",
           },
           {
-            text: this.mListDatosPenalidades[i].adelantos,
+            text: this.mListDatosPenalidades[i].Dia7,
             fontSize: 8.5,
             alignment: "center",
+            color:"black",
           },
           {
-            text: this.mListDatosPenalidades[i].adelantoTiempo,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].PenaCtrlSali_d,
+            text: this.mListDatosPenalidades[i].Total,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -703,7 +668,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE PENALIDADES SEMANALES",
+                      text: "REPORTE PENALIDADES SEMANALES RESUMIDO",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
@@ -740,7 +705,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 60, 60, 55, 170, 52, 48, 62, 62, 50],
+              widths: [60, 80, 80, 75, 75, 72, 68, 82, 82, 70],
               body: mList,
             },
           },
