@@ -2,61 +2,96 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardTextoRPagosVehiculoProduccion">
-
-
-
-            <el-select v-model="itemUnidadProduccionRPagoVehiculorecibo" multiple filterable remote
-              placeholder="Unidades" prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
+            <el-select
+              v-model="itemUnidadProduccionRPagoVehiculorecibo"
+              multiple
+              filterable
+              remote
+              placeholder="Unidades"
+              prefix-icon="ni ni-bus-front-12"
+              style="margin-right: 0.5rem"
               :remote-method="remoteMethodUnidadesRecibosProduccion"
-              :loading="loadingTableUnidadesRecibosVehiculoProduccion">
-              <el-option v-for="item in optionsUnidadesProduccionPagosVehiculo" :key="item.CodiVehi"
-                :label="item.CodiVehi" :value="item.CodiVehi">
+              :loading="loadingTableUnidadesRecibosVehiculoProduccion"
+            >
+              <el-option
+                v-for="item in optionsUnidadesProduccionPagosVehiculo"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
               </el-option>
             </el-select>
 
-
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaInicialRPagosVehiculoProduccionRecibo">
+            <base-input
+              addon-left-icon="ni ni-calendar-grid-58"
+              style="margin-right: 0.5rem"
+            >
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaInicialRPagosVehiculoProduccionRecibo"
+              >
               </flat-picker>
             </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaFinalRPagosVehiculoProduccionRecibo">
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaFinalRPagosVehiculoProduccionRecibo"
+              >
               </flat-picker>
             </base-input>
 
             <!-- DOWNLOAD EXCEL-->
-
-
-
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-
-
             <div class="buttonCenterEndDerecha">
+              <base-button
+                title="BUSCAR"
+                icon
+                size="sm"
+                type="primary"
+                @click="readAllRPagosVehiculoProduccionRecibos()"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="el-icon-search"></i
+                ></span>
+              </base-button>
 
-              <base-button title="BUSCAR" icon size="sm" type="primary" @click="readAllRPagosVehiculoProduccionRecibos()">
-              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-            </base-button>
-
-            <download-excel title="EXCEL" v-if="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? true : false" 
-              class="btn btn-icon btn-fab btn-success btn-sm" :header="RecibosheaderExcelRPagosVehiculoProduccion"
-              :data="tableDataRPagosVEhiculoProduccionRecibo" 
-              :fields="json_fields_excelRecibosPagosVehiculoProduccion"
-              :worksheet="RecibosWorksheetExcelRPagosVehiculoProduccion"
-              :name="RecibosFileNameExcelRPagosVehiculoProduccion">
-              <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-            </download-excel>
-
+              <download-excel
+                title="EXCEL"
+                v-if="
+                  tableDataRPagosVEhiculoProduccionRecibo.length > 0
+                    ? true
+                    : false
+                "
+                class="btn btn-icon btn-fab btn-success btn-sm"
+                :header="RecibosheaderExcelRPagosVehiculoProduccion"
+                :data="tableDataRPagosVEhiculoProduccionRecibo"
+                :fields="json_fields_excelRecibosPagosVehiculoProduccion"
+                :worksheet="RecibosWorksheetExcelRPagosVehiculoProduccion"
+                :name="RecibosFileNameExcelRPagosVehiculoProduccion"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="ni ni-collection"></i
+                ></span>
+              </download-excel>
             </div>
-            
 
             <!--<base-button outline type="success">
               <span class="btn-inner--icon"
@@ -67,9 +102,12 @@
           </div>
         </card>
 
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
             <!--<el-radio v-model="radioEstadoRPagosVehiculoRecibo" label="*"
               >TODOS</el-radio
@@ -81,44 +119,88 @@
               >ANULADOS</el-radio
             >-->
 
-            <el-select style="margin-right: 0.5rem;" collapse-tags v-model="itemCobradoresProduccionRPagoVehiculorecibo" multiple
-              placeholder="Operador">
-              <el-option v-for="item in mListaCobradoresPagosVehiculoProduccionRecibo" :key="item.CodiUsua"
-                :label="item.NombApellUsua" :value="item.CodiUsua">
+            <el-select
+              style="margin-right: 0.5rem"
+              collapse-tags
+              v-model="itemCobradoresProduccionRPagoVehiculorecibo"
+              multiple
+              placeholder="Operador"
+            >
+              <el-option
+                v-for="item in mListaCobradoresPagosVehiculoProduccionRecibo"
+                :key="item.CodiUsua"
+                :label="item.NombApellUsua"
+                :value="item.CodiUsua"
+              >
               </el-option>
             </el-select>
 
+            <el-switch
+              v-model="tipoBusquedaReciboPagosVehiculo"
+              active-text="F. pago"
+              inactive-text="F. creación"
+            >
+            </el-switch>
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: green; margin-right: 0.5rem">Dinero Recaudado : {{ mPagadoRPagosVehiculoRecibo }}
-              $</strong>
+            <strong style="color: green; margin-right: 0.5rem"
+              >Dinero Recaudado : {{ mPagadoRPagosVehiculoRecibo }} $</strong
+            >
             <!--<strong style="color: red; margin-right: 0.5rem"
               >Dinero Anulado : {{ mAnuladoRPagosVehiculoRecibo }} $</strong
             >-->
           </div>
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
+        <card
+          class="no-border-card"
+          style="margin-bottom: 0rem"
+          body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1"
+          footer-classes="pb-2"
+        >
           <div>
-            <el-table v-loading="loadingRPagosVehiculoRecibo" element-loading-text="Cargando Datos..."
-              :data="tableDataRPagosVEhiculoProduccionRecibo" row-key="id"
-              height="calc(100vh - 13.1rem)" style="width: 100%"
-              :default-sort="{ prop: 'estado', order: 'descending' }" class="tablePanelControlProduccion"
-              header-row-class-name="thead-dark" :row-class-name="tableRowClassNameRPagosVehiculoProduccionRecibo">
-              <el-table-column prop="numero_cobro" label="N° Recibo" minWidth="100">
+            <el-table
+              v-loading="loadingRPagosVehiculoRecibo"
+              element-loading-text="Cargando Datos..."
+              :data="tableDataRPagosVEhiculoProduccionRecibo"
+              row-key="id"
+              height="calc(100vh - 13.1rem)"
+              style="width: 100%"
+              :default-sort="{ prop: 'estado', order: 'descending' }"
+              class="tablePanelControlProduccion"
+              header-row-class-name="thead-dark"
+              :row-class-name="tableRowClassNameRPagosVehiculoProduccionRecibo"
+            >
+              <el-table-column
+                prop="numero_cobro"
+                label="N° Recibo"
+                minWidth="100"
+              >
               </el-table-column>
 
-              <el-table-column prop="fecha_cobro" label="Fecha de Cobro" minWidth="170">
+              <el-table-column
+                prop="fecha_cobro"
+                label="Fecha de Cobro"
+                minWidth="170"
+              >
               </el-table-column>
 
               <el-table-column prop="Unidad" label="Unidad" minWidth="100">
               </el-table-column>
-              <el-table-column prop="NombApellUsua" label="Atención" minWidth="200">
+              <el-table-column
+                prop="NombApellUsua"
+                label="Atención"
+                minWidth="200"
+              >
               </el-table-column>
 
-              <el-table-column prop="DeudaTotal" sortable label="Total ($)" minWidth="100">
+              <el-table-column
+                prop="DeudaTotal"
+                sortable
+                label="Total ($)"
+                minWidth="100"
+              >
               </el-table-column>
 
               <!--<el-table-column
@@ -134,12 +216,16 @@
 
               <el-table-column label="Acciones" width="140">
                 <template slot-scope="scope">
-                  <el-button type="primary" @click="
-                    readAllDetalleReciboPagosVehiculoProduccion(
-                      scope.$index,
-                      scope.row
-                    )
-                  " size="small">
+                  <el-button
+                    type="primary"
+                    @click="
+                      readAllDetalleReciboPagosVehiculoProduccion(
+                        scope.$index,
+                        scope.row
+                      )
+                    "
+                    size="small"
+                  >
                     Ver Detalle
                   </el-button>
                 </template>
@@ -154,12 +240,17 @@
 
     <!--Form modal-->
     <modal :show.sync="modalsReciboProduccion" size="sm" body-classes="p-0">
-      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
-        <iframe :src="baseURlPDFPanelDetalleRecibo" style="width: 100%; height: 33rem"></iframe>
+      <card
+        type="secondary"
+        header-classes="bg-transparent pb-5"
+        class="border-0 mb-0"
+      >
+        <iframe
+          :src="baseURlPDFPanelDetalleRecibo"
+          style="width: 100%; height: 33rem"
+        ></iframe>
       </card>
     </modal>
-
-
   </div>
 </template>
 <script>
@@ -176,6 +267,7 @@ import {
   Radio,
   Notification,
   Button,
+  Switch,
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -204,6 +296,7 @@ export default {
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
     [Button.name]: Button,
+    [Switch.name]: Switch,
   },
   data() {
     return {
@@ -221,6 +314,7 @@ export default {
       mPagadoRPagosVehiculoRecibo: "0.00",
       mAnuladoRPagosVehiculoRecibo: "0.00",
       modalsReciboProduccion: false,
+      tipoBusquedaReciboPagosVehiculo: false,
       tableDataDetalleReciboPAgoVehiculoProduccion: [],
       itemModalIdReciboPagoVehiculoProduccion: "",
       itemModalUnidadReciboPagoVehiculoProduccion: "",
@@ -229,14 +323,14 @@ export default {
       optionsCobradoresProduccionPagosVehiculo: [],
       loadingTableUnidadesRecibosVehiculoProduccion: false,
       loadingTableCobradoresRecibosVehiculoProduccion: false,
-      baseURlPDFPanelDetalleRecibo: '',
+      baseURlPDFPanelDetalleRecibo: "",
       RecibosWorksheetExcelRPagosVehiculoProduccion: "",
       RecibosFileNameExcelRPagosVehiculoProduccion: "",
       json_fields_excelRecibosPagosVehiculoProduccion: {
-        "UNIDAD": "Unidad",
+        UNIDAD: "Unidad",
         "DEUDA PAGADA": "DeudaTotal",
         "FECHA DE COBRO": "fecha_cobro",
-        "ATENCIÓN": "NombApellUsua"
+        ATENCIÓN: "NombApellUsua",
       },
     };
   },
@@ -285,7 +379,6 @@ export default {
         token: this.token,
       });
 
-
       if (datos.data.status_code == 200) {
         for (var i = 0; i < datos.data.data.length; i++) {
           var obj = datos.data.data[i];
@@ -295,23 +388,29 @@ export default {
       }
     },
     async readAllCobradoresPagosVehiculoProduccionRecibo() {
-      this.mListaCobradoresPagosVehiculoProduccionRecibo = []
+      this.mListaCobradoresPagosVehiculoProduccionRecibo = [];
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/readallCobradores", {
-        token: this.token,
-      });
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/readallCobradores",
+        {
+          token: this.token,
+        }
+      );
 
       if (datos.data.status_code == 200) {
-        this.mListaCobradoresPagosVehiculoProduccionRecibo.push(...datos.data.data)
+        this.mListaCobradoresPagosVehiculoProduccionRecibo.push(
+          ...datos.data.data
+        );
       }
     },
     async readAllRPagosVehiculoProduccionRecibos() {
+      this.RecibosWorksheetExcelRPagosVehiculoProduccion =
+        "RRPV_W_" + Date.now();
+      this.RecibosFileNameExcelRPagosVehiculoProduccion =
+        "RRPV_" + Date.now() + ".xls";
 
-      this.RecibosWorksheetExcelRPagosVehiculoProduccion = "RRPV_W_" + Date.now()
-      this.RecibosFileNameExcelRPagosVehiculoProduccion = "RRPV_" + Date.now() + ".xls"
-
-      this.mPagadoRPagosVehiculoRecibo = "0.00"
-      this.mAnuladoRPagosVehiculoRecibo = "0.00"
+      this.mPagadoRPagosVehiculoRecibo = "0.00";
+      this.mAnuladoRPagosVehiculoRecibo = "0.00";
 
       if (this.loadingRPagosVehiculoRecibo) {
         Notification.warning({
@@ -325,10 +424,18 @@ export default {
           this.tableDataRPagosVEhiculoProduccionRecibo = [];
           var body = {
             token: this.token,
-            unidades: this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemUnidadProduccionRPagoVehiculorecibo,
+            unidades:
+              this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0
+                ? "*"
+                : this.itemUnidadProduccionRPagoVehiculorecibo,
             fechaI: this.fechaInicialRPagosVehiculoProduccionRecibo,
             fechaF: this.fechaFinalRPagosVehiculoProduccionRecibo,
-            operadores: this.itemCobradoresProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemCobradoresProduccionRPagoVehiculorecibo
+            operadores:
+              this.itemCobradoresProduccionRPagoVehiculorecibo.length <= 0
+                ? "*"
+                : this.itemCobradoresProduccionRPagoVehiculorecibo,
+            isFecha: this.tipoBusquedaReciboPagosVehiculo ? 1 : 0
+
           };
           //console.log(body);
           var datos = await this.$axios.post(
@@ -344,22 +451,30 @@ export default {
               ...datos.data.datos
             );
             for (var i = 0; i < datos.data.datos.length; i++) {
-              pagado = pagado + parseFloat(datos.data.datos[i].DeudaTotal)
+              pagado = pagado + parseFloat(datos.data.datos[i].DeudaTotal);
             }
 
-            this.mPagadoRPagosVehiculoRecibo = Number(pagado).toFixed(2)
-            this.mAnuladoRPagosVehiculoRecibo = Number(anulado).toFixed(2)
+            this.mPagadoRPagosVehiculoRecibo = Number(pagado).toFixed(2);
+            this.mAnuladoRPagosVehiculoRecibo = Number(anulado).toFixed(2);
 
             this.loadingRPagosVehiculoRecibo = false;
 
             this.RecibosheaderExcelRPagosVehiculoProduccion = [
-              "Reporte Pagos : " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" :
-                this.itemUnidadProduccionRPagoVehiculorecibo),
-              "Fechas : " + this.fechaInicialRPagosVehiculoProduccionRecibo + " hasta " + this.fechaFinalRPagosVehiculoProduccionRecibo,
-              "Operador : " + (this.itemCobradoresProduccionRPagoVehiculorecibo.length <= 0 ? "TODOS LOS OPERADORES" : this.itemCobradoresProduccionRPagoVehiculorecibo.NombApellUsua),
+              "Reporte Pagos : " +
+                (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0
+                  ? "TODAS LAS UNIDADES"
+                  : this.itemUnidadProduccionRPagoVehiculorecibo),
+              "Fechas : " +
+                this.fechaInicialRPagosVehiculoProduccionRecibo +
+                " hasta " +
+                this.fechaFinalRPagosVehiculoProduccionRecibo,
+              "Operador : " +
+                (this.itemCobradoresProduccionRPagoVehiculorecibo.length <= 0
+                  ? "TODOS LOS OPERADORES"
+                  : this.itemCobradoresProduccionRPagoVehiculorecibo
+                      .NombApellUsua),
               "Total : " + this.mPagadoRPagosVehiculoRecibo,
-            ]
-
+            ];
           } else if (datos.data.status_code == 300) {
             this.loadingRPagosVehiculoRecibo = false;
             Notification.info({
@@ -386,7 +501,7 @@ export default {
     },
     async readAllDetalleReciboPagosVehiculoProduccion(index, item) {
       this.modalsReciboProduccion = true;
-      this.baseURlPDFPanelDetalleRecibo = ""
+      this.baseURlPDFPanelDetalleRecibo = "";
 
       try {
         var datos = await this.$axios.post(
@@ -394,13 +509,14 @@ export default {
           {
             token: this.token,
             recibo: item.numero_cobro,
-            nameEmpresa: this.$cookies.get('nameEmpresa'),
+            nameEmpresa: this.$cookies.get("nameEmpresa"),
             unidad: item.Unidad,
             fechaPago: item.fecha_cobro,
           }
         );
 
-        this.baseURlPDFPanelDetalleRecibo = "data:application/pdf;base64," + datos.data.datos
+        this.baseURlPDFPanelDetalleRecibo =
+          "data:application/pdf;base64," + datos.data.datos;
       } catch (error) {
         Notification.error({
           title: "ERROR CATCH Reporte Pagos Vehiculo",
@@ -411,7 +527,7 @@ export default {
     },
   },
   mounted() {
-    this.readAllCobradoresPagosVehiculoProduccionRecibo()
+    this.readAllCobradoresPagosVehiculoProduccionRecibo();
     this.readAllUnidadesPagosVehiculoProduccionRecibo();
     this.initFechaActualProduccionRPAgosVehiculoRecibo();
   },

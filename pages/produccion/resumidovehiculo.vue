@@ -67,6 +67,14 @@
               </el-option>
             </el-select>-->
 
+            <el-switch
+              v-model="isOrderResumidoVehiculo"
+              active-text="Ascendente"
+              inactive-text="Descendente"
+              style="margin-right: 0.5rem"
+            >
+            </el-switch>
+
             <el-radio v-model="radioEstadoRPagosVehiculo" label="*">TODOS</el-radio>
             <el-radio v-model="radioEstadoRPagosVehiculo" label="2">PAGADOS</el-radio>
             <el-radio v-model="radioEstadoRPagosVehiculo" label="1">PENDIENTES</el-radio>
@@ -84,7 +92,6 @@
           <div>
             <el-table v-loading="loadingRPagosVehiculo" element-loading-text="Cargando Datos..."
               :data="tableDataResumidoVehiculos" row-key="id"
-              :default-sort = "{prop: 'DeudaTotal', order: 'asc'}"
               class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               :row-class-name="tableRowClassNameRPagosVehiculoProduccion"
               height="calc(100vh - 12rem)" style="width: 100%">
@@ -104,7 +111,7 @@
               <!--<el-table-column prop="Fecha" label="F. Creación" minWidth="140">
               </el-table-column>-->
 
-              <el-table-column prop="DeudaTotal" sortable label="Total ($)" minWidth="150">
+              <el-table-column prop="DeudaTotal" label="Total ($)" minWidth="150">
 
                 <template slot-scope="scope">
                   <strong style="color:black">{{ Number(scope.row.DeudaTotal).toFixed(2) }}</strong>
@@ -120,12 +127,24 @@
               <el-table-column prop="AtrasoJTiempo" label="Atrasos Just" minWidth="150">
               </el-table-column>
 
+              <el-table-column prop="AtrasoTiempo" label="Atrasos Total" minWidth="170">
+                <template slot-scope="scope">
+                  <strong style="color:black">{{ scope.row.AtrasoTiempo }}</strong>
+                </template>
+              </el-table-column>
+
               <el-table-column prop="AtrasoPenalidad" label="Atrasos ($)" minWidth="140">
               </el-table-column>
 
               <el-table-column prop="AdelantoFTiempo" label="Adelantos Falta" minWidth="170">
               </el-table-column>
               <el-table-column prop="AdelantoJTiempo" label="Adelantos Just" minWidth="160">
+              </el-table-column>
+
+              <el-table-column prop="AdelantoTiempo" label="Adelanto Total" minWidth="170">
+                <template slot-scope="scope">
+                  <strong style="color:black">{{ scope.row.AdelantoTiempo }}</strong>
+                </template>
               </el-table-column>
 
               <el-table-column prop="AdelantoPenalidad" label="Adelantos ($)" minWidth="150">
@@ -249,6 +268,7 @@ import {
   RadioButton,
   Radio,
   Notification,
+  Switch
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -276,6 +296,7 @@ export default {
     [TableColumn.name]: TableColumn,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
+    [Switch.name]:Switch
   },
   data() {
     return {
@@ -301,15 +322,18 @@ export default {
       isModalDetalleResumidoVehiculo: false,
       loadingDetalleResumidoVehiculos: false,
       titleModalResumidoVehiculos:'',
+      isOrderResumidoVehiculo:false,
       json_fields_excelRPagosVehiculoProduccion: {
         "Unidad": "Unidad",
         "Fecha Creación": "Fecha",
         "Fecha Pago": "fecha_cobro",
         "Atrasos Falta": "AtrasoFTiempo",
         "Atrasos Justificados": "AtrasoJTiempo",
+        "Atrasos Total": "AtrasoTiempo",
         "Atrasos ($)": "AtrasoPenalidad",
         "Adelantos Falta": "AdelantoFTiempo",
         "Adelantos Justificados": "AdelantoJTiempo",
+        "Adelantos Total": "AdelantoTiempo",
         "Adelantos ($)": "AdelantoPenalidad",
         "Rubros Falta": "RubroFalta",
         "Rubros Justificados": "RubroJustificacion",
@@ -443,7 +467,8 @@ export default {
             unidades: this.itemUnidadProduccionResumidoVehiculos.length <= 0 ? "*" : this.itemUnidadProduccionResumidoVehiculos,
             fechaI: this.fechaInicialRPagosVehiculoProduccion,
             fechaF: this.fechaFinalRPagosVehiculoProduccion,
-            tipo: this.radioEstadoRPagosVehiculo
+            tipo: this.radioEstadoRPagosVehiculo,
+            isOrder : (this.isOrderResumidoVehiculo ? 1 : 0)
           };
           //console.log(body);
           var datos = await this.$axios.post(
