@@ -9,26 +9,6 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select
-              v-model="itemUnidadRSemanales"
-              multiple
-              filterable
-              remote
-              placeholder="Unidades"
-              prefix-icon="ni ni-bus-front-12"
-              style="margin-right: 0.5rem"
-              :remote-method="remoteMethodUnidadesRecibosProduccion"
-              :loading="loadingTableUnidadesSemanales"
-            >
-              <el-option
-                v-for="item in optionsUnidadesSemanales"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
-              </el-option>
-            </el-select>
-
             <base-input
               addon-left-icon="ni ni-calendar-grid-58"
               style="margin-right: 0.5rem"
@@ -93,54 +73,7 @@
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
-          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
-              v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false"
-              v-model="itemGruposPenalidadesSemanales"
-              multiple
-              placeholder="Grupos"
-            >
-              <el-option
-                v-for="item in mListaGruposPenalidadesSemanales"
-                :key="item.id"
-                :label="item.descripcion"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-
-            <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
-              v-model="itemRutasRSalidasSemanales"
-              multiple
-              placeholder="Rutas"
-            >
-              <el-option
-                v-for="item in mListaRutasSalidasSemanales"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
-              </el-option>
-            </el-select>
-          </div>
-
-          <div
-            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          >
-            <div class="buttonCenterEndDerecha"></div>
-          </div>
-        </card>
-
+        
         <card
           class="no-border-card"
           style="margin-bottom: 0rem"
@@ -155,7 +88,7 @@
               :data="mListDatosPenalidades"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
-              height="calc(100vh - 13.2rem)"
+              height="calc(100vh - 9.5rem)"
             >
             <el-table-column prop="CodiVehi" label="Unidad" width="150">
               </el-table-column>
@@ -290,17 +223,7 @@ export default {
       itemRutasRSalidasSemanales: [],
       mListaGruposPenalidadesSemanales: [],
       itemGruposPenalidadesSemanales: [],
-      json_fields_excelRPenalidadesSemanales: {
-        UNIDAD: "CodiVehi",
-        fechaDia1SalidasPanelBusqueda: "Dia1",
-        fecha1: "Dia2",
-        fecha2: "Dia3",
-        fecha3: "Dia4",
-        fecha4: "Dia5",
-        fecha5: "Dia6",
-        fecha6: "Dia7",
-        "TOTAL DINERO": "Total",
-      },
+      json_fields_excelRPenalidadesSemanales: {},
       WorksheetExcelRSalidasSemanales: "",
       FileNameExcelRSalidasSemanales: "",
       oheaderExcelRSalidasSemanales: "",
@@ -334,14 +257,22 @@ export default {
       this.dia5 = d5.toLocaleDateString('es-ES', opciones)
       this.dia6 = d6.toLocaleDateString('es-ES', opciones)
       this.dia7 = d7.toLocaleDateString('es-ES', opciones) 
-     
-      console.log(this.fechaDia1SalidasPanelBusqueda)
-      console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",1))
-      console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",2))
-      console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",3))
-      console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",4))
-      console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",5))
-      console.log(this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6))
+
+      this.json_fields_excelRPenalidadesSemanales = {}
+
+      var total = "TOTAL DINERO"
+      var unidad = "UNIDAD"
+
+      this.json_fields_excelRPenalidadesSemanales[unidad] = "CodiVehi";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia1] = "Dia1";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia2] = "Dia2";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia3] = "Dia3";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia4] = "Dia4";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia5] = "Dia5";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia6] = "Dia6";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia7] = "Dia7";  
+      this.json_fields_excelRPenalidadesSemanales[total] = "Total";  
+      
       this.fechaDia2SalidasPanelBusqueda = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6)
     },
     sumarDias(fechas,dia) {
@@ -439,21 +370,11 @@ export default {
       this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
 
       this.oheaderExcelRSalidasSemanales = [
-        "Reporte Despachos Semanales",
+        "Reporte Despachos Semanales RESUMIDO",
         "Fechas : " +
           this.fechaDia1SalidasPanelBusqueda +
           " hasta " +
-          this.fechaDia2SalidasPanelBusqueda,
-        "Unidades : " +
-          (this.itemUnidadRSemanales.length <= 0
-            ? "TODAS LAS UNIDADES"
-            : this.itemUnidadRSemanales),
-        "Rutas : " +
-          (this.itemRutasRSalidasSemanales.length <= 0
-            ? "TODAS LAS RUTAS"
-            : this.getNombresRutasRDespachosGenerados(
-                this.itemRutasRSalidasSemanales
-              )),
+          this.fechaDia2SalidasPanelBusqueda
       ];
 
       try {
@@ -523,7 +444,7 @@ export default {
           alignment: "center",
         },
         {
-          text: this.fechaDia1SalidasPanelBusqueda,
+          text: this.dia1,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -531,7 +452,7 @@ export default {
           alignment: "center",
         },
         {
-          text: this.fecha1,
+          text: this.dia2,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -539,7 +460,7 @@ export default {
           alignment: "center",
         },
         {
-          text: this.fecha2,
+          text: this.dia3,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -547,7 +468,7 @@ export default {
           alignment: "center",
         },
         {
-          text: this.fecha3,
+          text: this.dia4,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -555,7 +476,7 @@ export default {
           alignment: "center",
         },
         {
-          text: this.fecha4,
+          text: this.dia5,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -563,7 +484,7 @@ export default {
           alignment: "center",
         },
         {
-          text: this.fecha5,
+          text: this.dia6,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -571,7 +492,7 @@ export default {
           alignment: "center",
         },
         {
-          text: this.fecha6,
+          text: this.dia7,
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -579,7 +500,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "T. DINERO",
+          text: "TOTAL DINERO",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -791,7 +712,7 @@ export default {
 
 .card-bodyRPenalidadesSemanales {
   padding: 0rem !important;
-  height: calc(100vh - 13.2rem);
+  height: calc(100vh - 9.5rem);
   overflow: none;
 }
 
