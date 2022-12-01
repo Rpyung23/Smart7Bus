@@ -45,7 +45,7 @@
               <base-button
                 type="danger"
                 size="sm"
-                v-if="mListDatosPenalidades.length > 0 ? true : false"
+                v-if="mListDatosPenalidadesResumido.length > 0 ? true : false"
                 @click="exportPdfRPenalidadesSemanales()"
                 title="Exportar PDF"
               >
@@ -55,15 +55,15 @@
               </base-button>
 
               <download-excel
-                v-if="mListDatosPenalidades.length > 0 ? true : false"
+                v-if="mListDatosPenalidadesResumido.length > 0 ? true : false"
                 class="btn btn-icon btn-fab btn-success btn-sm"
                 outline
-                :header="oheaderExcelRSalidasSemanales"
+                :header="oheaderExcelRSalidasSemanalesResumido"
                 title="Exportar a Excel"
-                :data="mListDatosPenalidades"
-                :fields="json_fields_excelRPenalidadesSemanales"
-                :worksheet="WorksheetExcelRSalidasSemanales"
-                :name="FileNameExcelRSalidasSemanales"
+                :data="mListDatosPenalidadesResumido"
+                :fields="json_fields_excelRPenalidadesSemanalesResumido"
+                :worksheet="WorksheetExcelRSalidasSemanalesResumido"
+                :name="FileNameExcelRSalidasSemanalesResumido"
               >
                 <span class="btn-inner--icon"
                   ><i class="ni ni-collection"></i
@@ -84,8 +84,8 @@
             <el-table
               element-loading-text="Cargando Datos..."
               row-key="id"
-              v-loading="loadingPenalidadesSemanales"
-              :data="mListDatosPenalidades"
+              v-loading="loadingPenalidadesSemanalesResumido"
+              :data="mListDatosPenalidadesResumido"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
               height="calc(100vh - 9.5rem)"
@@ -200,7 +200,7 @@ export default {
       fechaDia2SalidasPanelBusqueda: "",
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       tableColumnPenalidades: [],
-      mListDatosPenalidades: [],
+      mListDatosPenalidadesResumido: [],
       fecha1:'',
       fecha2:'',
       fecha3:'',
@@ -214,7 +214,7 @@ export default {
       dia5:'',
       dia6:'',
       dia7:'',
-      loadingPenalidadesSemanales: false,
+      loadingPenalidadesSemanalesResumido: false,
       mListaUnidadesSemanales: [],
       optionsUnidadesSemanales: [],
       loadingTableUnidadesSemanales: false,
@@ -223,15 +223,15 @@ export default {
       itemRutasRSalidasSemanales: [],
       mListaGruposPenalidadesSemanales: [],
       itemGruposPenalidadesSemanales: [],
-      json_fields_excelRPenalidadesSemanales: {},
-      WorksheetExcelRSalidasSemanales: "",
-      FileNameExcelRSalidasSemanales: "",
-      oheaderExcelRSalidasSemanales: "",
+      json_fields_excelRPenalidadesSemanalesResumido: {},
+      WorksheetExcelRSalidasSemanalesResumido: "",
+      FileNameExcelRSalidasSemanalesResumido: "",
+      oheaderExcelRSalidasSemanalesResumido: "",
     };
   },
   methods: {
     updateCalendarFechas() {
-      this.mListDatosPenalidades = []
+      this.mListDatosPenalidadesResumido = []
 
       var opciones = {month:"short",day:"numeric"}
 
@@ -258,20 +258,20 @@ export default {
       this.dia6 = d6.toLocaleDateString('es-ES', opciones)
       this.dia7 = d7.toLocaleDateString('es-ES', opciones) 
 
-      this.json_fields_excelRPenalidadesSemanales = {}
+      this.json_fields_excelRPenalidadesSemanalesResumido = {}
 
       var total = "TOTAL DINERO"
       var unidad = "UNIDAD"
 
-      this.json_fields_excelRPenalidadesSemanales[unidad] = "CodiVehi";  
-      this.json_fields_excelRPenalidadesSemanales[this.dia1] = "Dia1";  
-      this.json_fields_excelRPenalidadesSemanales[this.dia2] = "Dia2";  
-      this.json_fields_excelRPenalidadesSemanales[this.dia3] = "Dia3";  
-      this.json_fields_excelRPenalidadesSemanales[this.dia4] = "Dia4";  
-      this.json_fields_excelRPenalidadesSemanales[this.dia5] = "Dia5";  
-      this.json_fields_excelRPenalidadesSemanales[this.dia6] = "Dia6";  
-      this.json_fields_excelRPenalidadesSemanales[this.dia7] = "Dia7";  
-      this.json_fields_excelRPenalidadesSemanales[total] = "Total";  
+      this.json_fields_excelRPenalidadesSemanalesResumido[unidad] = "CodiVehi";  
+      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia1] = "Dia1";  
+      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia2] = "Dia2";  
+      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia3] = "Dia3";  
+      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia4] = "Dia4";  
+      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia5] = "Dia5";  
+      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia6] = "Dia6";  
+      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia7] = "Dia7";  
+      this.json_fields_excelRPenalidadesSemanalesResumido[total] = "Total";  
       
       this.fechaDia2SalidasPanelBusqueda = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6)
     },
@@ -363,13 +363,13 @@ export default {
       this.fechaDia1SalidasPanelBusqueda = format;
     },
     async readApiPenalidades() {
-      this.mListDatosPenalidades = [];
-      this.loadingPenalidadesSemanales = true;
+      this.mListDatosPenalidadesResumido = [];
+      this.loadingPenalidadesSemanalesResumido = true;
 
-      this.WorksheetExcelRSalidasSemanales = "RS_S_W_" + Date.now();
-      this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
+      this.WorksheetExcelRSalidasSemanalesResumido = "RS_S_W_" + Date.now();
+      this.FileNameExcelRSalidasSemanalesResumido = "RS_S_" + Date.now() + ".xls";
 
-      this.oheaderExcelRSalidasSemanales = [
+      this.oheaderExcelRSalidasSemanalesResumido = [
         "Reporte Despachos Semanales RESUMIDO",
         "Fechas : " +
           this.fechaDia1SalidasPanelBusqueda +
@@ -405,12 +405,12 @@ export default {
         );
 
         console.log(datos.data);
-        this.mListDatosPenalidades.push(...datos.data.datos);
+        this.mListDatosPenalidadesResumido.push(...datos.data.datos);
       } catch (error) {
         console.log(error);
       }
 
-      this.loadingPenalidadesSemanales = false;
+      this.loadingPenalidadesSemanalesResumido = false;
     },
     exportPdfRPenalidadesSemanales() {
       var empresa = [
@@ -509,59 +509,59 @@ export default {
         },
       ]);
 
-      for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
+      for (var i = 0; i < this.mListDatosPenalidadesResumido.length; i++) {
         var obj = [
           {
-            text: this.mListDatosPenalidades[i].CodiVehi,
+            text: this.mListDatosPenalidadesResumido[i].CodiVehi,
             fontSize: 8.5,
             alignment: "center",
             color:"black"
           },
           {
-            text: this.mListDatosPenalidades[i].Dia1,
+            text: this.mListDatosPenalidadesResumido[i].Dia1,
             fontSize: 8.5,
             alignment: "center",
             color:"black"
           },
           {
-            text: this.mListDatosPenalidades[i].Dia2,
+            text: this.mListDatosPenalidadesResumido[i].Dia2,
             fontSize: 8.5,
             alignment: "center",
             color:"black"
           },
           {
-            text: this.mListDatosPenalidades[i].Dia3,
+            text: this.mListDatosPenalidadesResumido[i].Dia3,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           
           {
-            text: this.mListDatosPenalidades[i].Dia4,
+            text: this.mListDatosPenalidadesResumido[i].Dia4,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           {
-            text: this.mListDatosPenalidades[i].Dia5,
+            text: this.mListDatosPenalidadesResumido[i].Dia5,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           {
-            text: this.mListDatosPenalidades[i].Dia6,
+            text: this.mListDatosPenalidadesResumido[i].Dia6,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           {
-            text: this.mListDatosPenalidades[i].Dia7,
+            text: this.mListDatosPenalidadesResumido[i].Dia7,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           {
-            text: this.mListDatosPenalidades[i].Total,
+            text: this.mListDatosPenalidadesResumido[i].Total,
             fontSize: 8.5,
             alignment: "center",
           },
