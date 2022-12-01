@@ -9,6 +9,26 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
+            <el-select
+              v-model="itemUnidadRSemanales"
+              multiple
+              filterable
+              remote
+              placeholder="Unidades"
+              prefix-icon="ni ni-bus-front-12"
+              style="margin-right: 0.5rem"
+              :remote-method="remoteMethodUnidadesRecibosProduccion"
+              :loading="loadingTableUnidadesSemanales"
+            >
+              <el-option
+                v-for="item in optionsUnidadesSemanales"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
+              </el-option>
+            </el-select>
+
             <base-input
               addon-left-icon="ni ni-calendar-grid-58"
               style="margin-right: 0.5rem"
@@ -45,7 +65,7 @@
               <base-button
                 type="danger"
                 size="sm"
-                v-if="mListDatosPenalidadesResumido.length > 0 ? true : false"
+                v-if="mListDatosPenalidades.length > 0 ? true : false"
                 @click="exportPdfRPenalidadesSemanales()"
                 title="Exportar PDF"
               >
@@ -55,15 +75,15 @@
               </base-button>
 
               <download-excel
-                v-if="mListDatosPenalidadesResumido.length > 0 ? true : false"
+                v-if="mListDatosPenalidades.length > 0 ? true : false"
                 class="btn btn-icon btn-fab btn-success btn-sm"
                 outline
-                :header="oheaderExcelRSalidasSemanalesResumido"
+                :header="oheaderExcelRSalidasSemanales"
                 title="Exportar a Excel"
-                :data="mListDatosPenalidadesResumido"
-                :fields="json_fields_excelRPenalidadesSemanalesResumido"
-                :worksheet="WorksheetExcelRSalidasSemanalesResumido"
-                :name="FileNameExcelRSalidasSemanalesResumido"
+                :data="mListDatosPenalidades"
+                :fields="json_fields_excelRPenalidadesSemanales"
+                :worksheet="WorksheetExcelRSalidasSemanales"
+                :name="FileNameExcelRSalidasSemanales"
               >
                 <span class="btn-inner--icon"
                   ><i class="ni ni-collection"></i
@@ -73,7 +93,54 @@
           </div>
         </card>
 
-        
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
+          footer-classes="pb-2"
+        >
+          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
+            <el-select
+              style="margin-right: 0.5rem"
+              collapse-tags
+              v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false"
+              v-model="itemGruposPenalidadesSemanales"
+              multiple
+              placeholder="Grupos"
+            >
+              <el-option
+                v-for="item in mListaGruposPenalidadesSemanales"
+                :key="item.id"
+                :label="item.descripcion"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+
+            <el-select
+              style="margin-right: 0.5rem"
+              collapse-tags
+              v-model="itemRutasRSalidasSemanales"
+              multiple
+              placeholder="Rutas"
+            >
+              <el-option
+                v-for="item in mListaRutasSalidasSemanales"
+                :key="item.LetrRuta"
+                :label="item.DescRuta"
+                :value="item.LetrRuta"
+              >
+              </el-option>
+            </el-select>
+          </div>
+
+          <div
+            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
+          >
+            <div class="buttonCenterEndDerecha"></div>
+          </div>
+        </card>
+
         <card
           class="no-border-card"
           style="margin-bottom: 0rem"
@@ -84,11 +151,11 @@
             <el-table
               element-loading-text="Cargando Datos..."
               row-key="id"
-              v-loading="loadingPenalidadesSemanalesResumido"
-              :data="mListDatosPenalidadesResumido"
+              v-loading="loadingPenalidadesSemanales"
+              :data="mListDatosPenalidades"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
-              height="calc(100vh - 9.5rem)"
+              height="calc(100vh - 13.2rem)"
             >
             <el-table-column prop="CodiVehi" label="Unidad" width="150">
               </el-table-column>
@@ -200,7 +267,7 @@ export default {
       fechaDia2SalidasPanelBusqueda: "",
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       tableColumnPenalidades: [],
-      mListDatosPenalidadesResumido: [],
+      mListDatosPenalidades: [],
       fecha1:'',
       fecha2:'',
       fecha3:'',
@@ -214,7 +281,7 @@ export default {
       dia5:'',
       dia6:'',
       dia7:'',
-      loadingPenalidadesSemanalesResumido: false,
+      loadingPenalidadesSemanales: false,
       mListaUnidadesSemanales: [],
       optionsUnidadesSemanales: [],
       loadingTableUnidadesSemanales: false,
@@ -223,15 +290,15 @@ export default {
       itemRutasRSalidasSemanales: [],
       mListaGruposPenalidadesSemanales: [],
       itemGruposPenalidadesSemanales: [],
-      json_fields_excelRPenalidadesSemanalesResumido: {},
-      WorksheetExcelRSalidasSemanalesResumido: "",
-      FileNameExcelRSalidasSemanalesResumido: "",
-      oheaderExcelRSalidasSemanalesResumido: "",
+      json_fields_excelRPenalidadesSemanales: {},
+      WorksheetExcelRSalidasSemanales: "",
+      FileNameExcelRSalidasSemanales: "",
+      oheaderExcelRSalidasSemanales: "",
     };
   },
   methods: {
     updateCalendarFechas() {
-      this.mListDatosPenalidadesResumido = []
+      this.mListDatosPenalidades = []
 
       var opciones = {month:"short",day:"numeric"}
 
@@ -258,21 +325,21 @@ export default {
       this.dia6 = d6.toLocaleDateString('es-ES', opciones)
       this.dia7 = d7.toLocaleDateString('es-ES', opciones) 
 
-      this.json_fields_excelRPenalidadesSemanalesResumido = {}
+      this.json_fields_excelRPenalidadesSemanales = {}
 
-      var total = "TOTAL DINERO"
+      var total = "TOTAL PENALIDADES"
       var unidad = "UNIDAD"
 
-      this.json_fields_excelRPenalidadesSemanalesResumido[unidad] = "CodiVehi";  
-      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia1] = "Dia1";  
-      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia2] = "Dia2";  
-      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia3] = "Dia3";  
-      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia4] = "Dia4";  
-      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia5] = "Dia5";  
-      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia6] = "Dia6";  
-      this.json_fields_excelRPenalidadesSemanalesResumido[this.dia7] = "Dia7";  
-      this.json_fields_excelRPenalidadesSemanalesResumido[total] = "Total";  
-      
+      this.json_fields_excelRPenalidadesSemanales[unidad] = "CodiVehi";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia1] = "Dia1";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia2] = "Dia2";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia3] = "Dia3";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia4] = "Dia4";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia5] = "Dia5";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia6] = "Dia6";  
+      this.json_fields_excelRPenalidadesSemanales[this.dia7] = "Dia7";  
+      this.json_fields_excelRPenalidadesSemanales[total] = "Total";  
+     
       this.fechaDia2SalidasPanelBusqueda = this.sumarDias(this.fechaDia1SalidasPanelBusqueda+" 05:00:00",6)
     },
     sumarDias(fechas,dia) {
@@ -363,18 +430,28 @@ export default {
       this.fechaDia1SalidasPanelBusqueda = format;
     },
     async readApiPenalidades() {
-      this.mListDatosPenalidadesResumido = [];
-      this.loadingPenalidadesSemanalesResumido = true;
+      this.mListDatosPenalidades = [];
+      this.loadingPenalidadesSemanales = true;
 
-      this.WorksheetExcelRSalidasSemanalesResumido = "RS_S_W_" + Date.now();
-      this.FileNameExcelRSalidasSemanalesResumido = "RS_S_" + Date.now() + ".xls";
+      this.WorksheetExcelRSalidasSemanales = "RS_S_W_" + Date.now();
+      this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
 
-      this.oheaderExcelRSalidasSemanalesResumido = [
-        "Reporte Despachos Semanales RESUMIDO",
+      this.oheaderExcelRSalidasSemanales = [
+        "Reporte Despachos Semanales Resumido",
         "Fechas : " +
           this.fechaDia1SalidasPanelBusqueda +
           " hasta " +
-          this.fechaDia2SalidasPanelBusqueda
+          this.fechaDia2SalidasPanelBusqueda,
+        "Unidades : " +
+          (this.itemUnidadRSemanales.length <= 0
+            ? "TODAS LAS UNIDADES"
+            : this.itemUnidadRSemanales),
+        "Rutas : " +
+          (this.itemRutasRSalidasSemanales.length <= 0
+            ? "TODAS LAS RUTAS"
+            : this.getNombresRutasRDespachosGenerados(
+                this.itemRutasRSalidasSemanales
+              )),
       ];
 
       try {
@@ -386,7 +463,7 @@ export default {
           fecha4: this.fecha3,
           fecha5: this.fecha4,
           fecha6: this.fecha5,
-          fecha2: this.fecha6,
+          fecha7: this.fecha6,
           unidades:
             this.itemUnidadRSemanales.length <= 0
               ? "*"
@@ -405,12 +482,12 @@ export default {
         );
 
         console.log(datos.data);
-        this.mListDatosPenalidadesResumido.push(...datos.data.datos);
+        this.mListDatosPenalidades.push(...datos.data.datos);
       } catch (error) {
         console.log(error);
       }
 
-      this.loadingPenalidadesSemanalesResumido = false;
+      this.loadingPenalidadesSemanales = false;
     },
     exportPdfRPenalidadesSemanales() {
       var empresa = [
@@ -500,7 +577,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "TOTAL DINERO",
+          text: "TOTAL PENALIDADES",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -509,59 +586,59 @@ export default {
         },
       ]);
 
-      for (var i = 0; i < this.mListDatosPenalidadesResumido.length; i++) {
+      for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
         var obj = [
           {
-            text: this.mListDatosPenalidadesResumido[i].CodiVehi,
+            text: this.mListDatosPenalidades[i].CodiVehi,
             fontSize: 8.5,
             alignment: "center",
             color:"black"
           },
           {
-            text: this.mListDatosPenalidadesResumido[i].Dia1,
+            text: this.mListDatosPenalidades[i].Dia1,
             fontSize: 8.5,
             alignment: "center",
             color:"black"
           },
           {
-            text: this.mListDatosPenalidadesResumido[i].Dia2,
+            text: this.mListDatosPenalidades[i].Dia2,
             fontSize: 8.5,
             alignment: "center",
             color:"black"
           },
           {
-            text: this.mListDatosPenalidadesResumido[i].Dia3,
+            text: this.mListDatosPenalidades[i].Dia3,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           
           {
-            text: this.mListDatosPenalidadesResumido[i].Dia4,
+            text: this.mListDatosPenalidades[i].Dia4,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           {
-            text: this.mListDatosPenalidadesResumido[i].Dia5,
+            text: this.mListDatosPenalidades[i].Dia5,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           {
-            text: this.mListDatosPenalidadesResumido[i].Dia6,
+            text: this.mListDatosPenalidades[i].Dia6,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           {
-            text: this.mListDatosPenalidadesResumido[i].Dia7,
+            text: this.mListDatosPenalidades[i].Dia7,
             fontSize: 8.5,
             alignment: "center",
             color:"black",
           },
           {
-            text: this.mListDatosPenalidadesResumido[i].Total,
+            text: this.mListDatosPenalidades[i].Total,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -712,7 +789,7 @@ export default {
 
 .card-bodyRPenalidadesSemanales {
   padding: 0rem !important;
-  height: calc(100vh - 9.5rem);
+  height: calc(100vh - 13.2rem);
   overflow: none;
 }
 
