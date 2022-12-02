@@ -510,6 +510,31 @@ export default {
         },
       ];
 
+      var unidades = [
+        {
+          text:
+          "Unidades : " +
+          (this.itemUnidadRSemanales.length <= 0
+            ? "TODAS LAS UNIDADES"
+            : this.itemUnidadRSemanales),
+          fontSize: 11,
+          alignment: "left",
+        },
+      ];
+      var rutas = [
+        {
+          text:
+          "Rutas : " +
+          (this.itemRutasRSalidasSemanales.length <= 0
+            ? "TODAS LAS RUTAS"
+            : this.getNombresRutasRDespachosGenerados(
+                this.itemRutasRSalidasSemanales
+              )),
+          fontSize: 11,
+          alignment: "left",
+        },
+      ];
+
       var mList = [];
       mList.push([
         {
@@ -696,8 +721,8 @@ export default {
             layout: "noBorders",
             table: {
               headerRows: 0,
-              widths: [450, 450],
-              body: [empresa, desde_hasta],
+              widths: [450, 450,450, 450],
+              body: [empresa, desde_hasta,unidades,rutas],
             },
           },
           {
