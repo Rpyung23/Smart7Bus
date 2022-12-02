@@ -224,7 +224,7 @@
                           : row.EstaSali_m == 2
                           ? "EN RUTA"
                           : row.EstaSali_m == 3 &&
-                            parseFloat(row.PenaCtrlSali_d) > 0
+                            row.atrasoFaltasTime != '00:00:00'
                           ? "FINALIZADO CON PENALIDAD"
                           : "FINALIZADA SIN PENALIDAD"
                       }}</strong></span
@@ -658,7 +658,7 @@ export default {
         return "diferido-row-panelControlProduccion";
       } else if (row.EstaSali_m <= 1) {
         return "finalizado-row-panelControlProduccion";
-      } else if (row.EstaSali_m == 3 && parseFloat(row.PenaCtrlSali_d) > 0) {
+      } else if (row.EstaSali_m == 3 && row.atrasoFaltasTime != '00:00:00') {
         return "success-row-panelControlProduccion";
       } else {
         return "";
@@ -828,8 +828,8 @@ export default {
               : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
               ? "EN RUTA"
               : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
-                parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d) >
-                  0
+                this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime !=
+                  '00:00:00'
               ? "FINALIZADO CON PENALIDAD"
               : "FINALIZADA SIN PENALIDAD";
           var arrys = [
@@ -1067,8 +1067,7 @@ export default {
               : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
               ? "EN RUTA"
               : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
-                parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d) >
-                  0
+                this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime != '00:00:00'
               ? "FINALIZADO CON PENALIDAD"
               : "FINALIZADA SIN PENALIDAD";
           var arrys = [
