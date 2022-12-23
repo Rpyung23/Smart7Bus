@@ -139,7 +139,14 @@
             </el-select>
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccion"></div>
+          <div class="cardTextoRPagosVehiculoProduccion">
+            <el-switch
+              v-model="oSwitchOrdenarDespachoGenerados"
+              active-text="ORDENAR POR FECHA"
+              inactive-text="ORDENAR POR FECHA - UNIDAD"
+            >
+            </el-switch>
+          </div>
         </card>
 
         <card
@@ -299,6 +306,7 @@ export default {
       token: this.$cookies.get("token"),
       fechaInicialRDespachosGenerados: "",
       fechaFinalRDespachosGenerados: "",
+      oSwitchOrdenarDespachoGenerados:true,
       loadingTableUnidadesRecibosVehiculoProduccion: false,
       tableDataDetalleReciboPAgoVehiculoProduccion: [],
       optionsUnidadesProduccionPagosVehiculo: [],
@@ -426,6 +434,7 @@ export default {
                 : this.itemRutasRDespachosGenerados,
             fechaI: this.fechaInicialRDespachosGenerados,
             fechaF: this.fechaFinalRDespachosGenerados,
+            orden:this.oSwitchOrdenarDespachoGenerados  ? 1 : 0 
           }
         );
         if (datos.data.status_code == 200) {

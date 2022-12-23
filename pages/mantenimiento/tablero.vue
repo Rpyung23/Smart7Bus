@@ -33,32 +33,23 @@
     
     
     
-                                <el-table-column min-width="120px" align="right" label="Actions">
+                                <el-table-column min-width="180" align="right" label="Actions">
     
     
     
                                     <div slot-scope="{ row }" class="d-flex">
-    
-    
-    
-                                        <base-button class="edit" type="success" size="sm" icon @click="editTMantenimiento(row)">
-    
-    
-    
+        
+                                        <base-button class="remove btn-link" type="success" size="sm" icon @click="editTMantenimiento(row)">
                                             <i class="text-white ni ni-ruler-pencil"></i>
-    
-    
-    
                                         </base-button>
-    
-    
+
     
                                         <base-button class="remove btn-link" :type="row.estado == 1 ? 'danger' : 'primary'" size="sm" icon @click="changeEstadoTMantenimiento(row)">
-    
-    
-    
                                             <i :class="row.estado == 1 ? 'text-white ni ni-fat-remove' : 'text-white ni ni-check-bold'"></i>
-    
+                                        </base-button>
+
+                                        <base-button title="ENVIAR NOTIFICACION" class="remove btn-link" type='default' size="sm" icon @click="changeEstadoTMantenimiento(row)">
+                                            <i class= 'text-white ni ni-send'></i>
                                         </base-button>
     
                                     </div>
