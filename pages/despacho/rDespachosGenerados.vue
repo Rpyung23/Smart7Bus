@@ -436,7 +436,7 @@ export default {
             fechaI: this.fechaInicialRDespachosGenerados,
             fechaF: this.fechaFinalRDespachosGenerados,
             orden:this.oSwitchOrdenarDespachoGenerados  ? 1 : 0 
-          },{timeout:240000}
+          },{timeout:840000}
         );
         if (datos.data.status_code == 200) {
           for (var i = 0; i < datos.data.datos.length; i++) {
