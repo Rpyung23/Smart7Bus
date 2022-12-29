@@ -161,6 +161,7 @@
               height="calc(100vh - 13rem)"
               style="width: 100%"
               v-loading="loadingDespachosGenerados"
+              empty-text='NO EXISTEN DATOS DISPONIBLES'
               element-loading-text="Cargando Despachos..."
               element-loading-background="rgba(0, 0, 0, 0.8)"
             >
@@ -435,7 +436,7 @@ export default {
             fechaI: this.fechaInicialRDespachosGenerados,
             fechaF: this.fechaFinalRDespachosGenerados,
             orden:this.oSwitchOrdenarDespachoGenerados  ? 1 : 0 
-          }
+          },{timeout:240000}
         );
         if (datos.data.status_code == 200) {
           for (var i = 0; i < datos.data.datos.length; i++) {
