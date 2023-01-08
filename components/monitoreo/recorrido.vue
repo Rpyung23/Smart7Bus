@@ -292,11 +292,15 @@ export default {
       }
     },
     handleCurrentChangeControlMarc(item) {
-      this.oZoom = 17;
+      try {
+        this.oZoom = 17;
       this.oCenter = {
         lat: parseFloat(item.Lati1Ctrl),
         lng: parseFloat(item.Long1Ctrl),
       };
+      } catch (error) {
+        console.log(error)
+      }
     },
     async getInfoWindowContentRecorrido(unidad) 
     {

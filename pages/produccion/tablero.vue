@@ -40,7 +40,7 @@
                 :max="{ fechaInicialTableroProduccion }"
                 @on-open="focus"
                 @on-close="blur"
-                :config="{ allowInput: true }"
+                :config="config_flatpicker"
                 class="form-controlPersonal datepicker"
                 v-model="fechaInicialTableroProduccion"
               >
@@ -53,7 +53,7 @@
                 :max="{ fechaInicialTableroProduccion }"
                 @on-open="focus"
                 @on-close="blur"
-                :config="{ allowInput: true }"
+                :config="config_flatpicker"
                 class="form-controlPersonal datepicker"
                 v-model="fechaFinalTableroProduccion"
               >
@@ -166,7 +166,7 @@
                     @click="
                       showVisibleModalRecorridoTableroProduccion(scope.row)
                     "
-                    title="Recorrido Salida"
+                    title="Recorrido Salida VUELTA"
                     type="success"
                     ><i class="ni ni-world"></i>
                   </base-button>
@@ -817,6 +817,7 @@
 import recorrido from "../../components/monitoreo/recorrido.vue";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import {Spanish} from 'flatpickr/dist/l10n/es.js';
 import JqxGrid from "jqwidgets-scripts/jqwidgets-vue/vue_jqxgrid.vue";
 import JqxSlider from "jqwidgets-scripts/jqwidgets-vue/vue_jqxslider.vue";
 import JqxDateTimeInput from "jqwidgets-scripts/jqwidgets-vue/vue_jqxdatetimeinput.vue";
@@ -873,6 +874,7 @@ export default {
   },
   data() {
     return {
+      config_flatpicker:{ allowInput: true,locale: Spanish },
       tableDataPanelControlProduccion: [],
       selectedRows: [],
       mListPosicionesHistorialSalidasPanelBusqueda: [],
@@ -1741,7 +1743,7 @@ export default {
           || this.oEmpresa == 'mazul'
           || this.oEmpresa == 'cotopaxi' || this.oEmpresa == 'cquisapincha' 
           || this.oEmpresa == 'fbabahoy' || this.oEmpresa == 'citibus'
-          || this.oEmpresa == 'sritab')
+          || this.oEmpresa == 'sritab' || this.oEmpresa == 'ufluminense')
     {
       //trabaja por vueltas
       this.isRecorridoPorVueltas = true
