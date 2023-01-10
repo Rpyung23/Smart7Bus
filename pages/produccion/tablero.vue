@@ -1743,7 +1743,8 @@ export default {
           || this.oEmpresa == 'mazul'
           || this.oEmpresa == 'cotopaxi' || this.oEmpresa == 'cquisapincha' 
           || this.oEmpresa == 'fbabahoy' || this.oEmpresa == 'citibus'
-          || this.oEmpresa == 'sritab' || this.oEmpresa == 'ufluminense')
+          || this.oEmpresa == 'sritab' || this.oEmpresa == 'ufluminense' 
+          || this.oEmpresa == 'otavalo-lag')
     {
       //trabaja por vueltas
       this.isRecorridoPorVueltas = true
