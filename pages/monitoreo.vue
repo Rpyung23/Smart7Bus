@@ -60,6 +60,25 @@
         :paths="control.calculator.coordinates"
       />
 
+      <!--GEOCIUDAD-->
+
+      
+      <GmapPolygon
+        :options="{
+          strokeColor: '#172b4d',
+          fillColor: '#172b4d80',
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        }"
+        :strokeOpacity="0.5"
+        :strokeWeight="1"
+        :paths="mListGeociudad"
+      />
+
+
+      
+
+      <!-- FIN GEOCIUDAD-->
       <GmapMarker
         v-for="(control, index) in mListControlesMonitoreoAux"
         :key="control.DescCtrl + index"
@@ -723,6 +742,7 @@ export default {
       mListRutasMonitoreo: [],
       mListControlesMonitoreo: [],
       mListControlesMonitoreoAux: [],
+      mListGeociudad:[],
       banderaCenter: true,
       banderaUnidad : false,
       mListUnidades: [],
@@ -1315,6 +1335,27 @@ export default {
         }
       }
     },
+    async initGeociudad(){
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/geoCiudad",
+          {
+            token: this.token,
+          }
+        );
+
+        if (datos.data.status_code == 200) 
+        {
+          for(var i = 0;i < datos.data.datos.length ;i++)
+          {
+            this.mListGeociudad.push({lat:parseFloat(datos.data.datos[i].latitud),
+              lng:parseFloat(datos.data.datos[i].longitud)});
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     prueba() {
       alert();
     },
@@ -1406,6 +1447,7 @@ export default {
     },
   },
   mounted() {
+    this.initGeociudad()
     this.initRutas();
     this.initControles();
     this.initRastreo();
