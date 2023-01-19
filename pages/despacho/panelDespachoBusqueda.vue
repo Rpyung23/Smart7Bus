@@ -665,6 +665,7 @@ export default {
       }
     },
     showRecorridoSalidasPanelBusqueda(item) {
+      console.log(item)
       this.modalSalidasPanelDespachoBusqueda = true;
       this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(item);
     },

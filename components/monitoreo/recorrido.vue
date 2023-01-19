@@ -197,14 +197,19 @@ export default {
         await this.readControlRuta(item);
         await this.readControlesMarcRuta(item);
 
-        var datos = await this.$axios.post(
-          process.env.baseUrl + "/historialUnidadSalida",
-          {
+        var body = {
             token: this.token,
             unidad: item.CodiVehiSali_m,
             salida: item.idSali_m,
             fechaI: item.HoraSaliProgSali_mF,
+            fechaF : item.HoraLlegProgSali_mF
           }
+
+        console.log("*-************************************************");
+        console.log(body)
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/historialUnidadSalida",
+          body
         );
 
 

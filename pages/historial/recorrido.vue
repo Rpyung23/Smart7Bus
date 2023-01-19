@@ -459,6 +459,8 @@ export default {
             this.mListUnidadesRecorrido[i] = datos.data.data[i];
             this.mListUnidadesRecorrido[i].value = datos.data.data[i].CodiVehi;
           }
+        }else{
+          console.log("SIN UNIDADES HISTORIAL : "+datos.data.status_code)
         }
       } catch (error) {
         this.showToast("error", error.toString());

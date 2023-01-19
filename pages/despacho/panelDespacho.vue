@@ -384,6 +384,7 @@ export default {
 
       this.selectedRowSalida = event.args.row
       this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(this.selectedRowSalida.idSali_m)
+      this.selectedRowSalida.HoraLlegProgSali_mF = this.getHoraLlegProgSali_mF(this.selectedRowSalida.idSali_m)
       this.selectedRowSalida.idSali_m = this.selectedRowSalida.idSali_m
       this.selectRowId = this.selectedRowSalida.idSali_m
       this.selectRowEstado = this.selectedRowSalida.EstaSali_m
@@ -398,6 +399,14 @@ export default {
       }
       return '1998-06-06 11:00:00'
     },
+    getHoraLlegProgSali_mF(id_salida) {
+      for (var i = 0; i < this.mListDespachosPanel.length; i++) {
+        if (this.mListDespachosPanel[i].idSali_m == id_salida) {
+          return this.mListDespachosPanel[i].HoraLlegProgSali_mF
+        }
+      }
+      return '1998-06-06 11:00:00'
+    },
     showReporteLlegadaSAlida() {
       this.modalSalidasTarjetaPanelDespacho = true
       console.log(this.selectedRowSalida)
@@ -407,6 +416,9 @@ export default {
     },
     showRecorridoSalidaPanelDespacho()
     {
+      console.log("******************************************************")
+      console.log(this.selectedRowSalida)
+      console.log("******************************************************")
       this.modalRecorridoPanelDespachoControl = true
       this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(this.selectedRowSalida)
     },
