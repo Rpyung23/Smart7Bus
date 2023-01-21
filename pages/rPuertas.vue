@@ -730,7 +730,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE CORTES DE ENERGIA EN RUTA",
+                      text: "REPORTE APERTURA DE PUERTAS EN RUTA",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
