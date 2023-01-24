@@ -1387,6 +1387,7 @@ export default {
     },
     async readDetalleTableroProduccionAnotaciones(item) {
      // this.$refs.myGridDespachoPanelOtros.clearselection();
+     this.isVisibleTableroAnotaciones = false
       this.mListOtros = [];
       try {
         var datos = await this.$axios.post(
@@ -1405,9 +1406,9 @@ export default {
         this.mListOtros = [];
       }
 
-      if(this.mListOtros.length == 0)
+      if(this.mListOtros.length > 0)
       {
-        this.isVisibleTableroAnotaciones = false
+        this.isVisibleTableroAnotaciones = true
       }
     },
     sendJustify() {
