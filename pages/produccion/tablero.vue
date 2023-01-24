@@ -1404,6 +1404,11 @@ export default {
         console.log(error)
         this.mListOtros = [];
       }
+
+      if(this.mListOtros.length == 0)
+      {
+        this.isVisibleTableroAnotaciones = false
+      }
     },
     sendJustify() {
       if (this.validarJustificacion()) {
