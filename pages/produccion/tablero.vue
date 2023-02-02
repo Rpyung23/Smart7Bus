@@ -1750,7 +1750,7 @@ export default {
           || this.oEmpresa == 'cotopaxi' || this.oEmpresa == 'cquisapincha' 
           || this.oEmpresa == 'fbabahoy' || this.oEmpresa == 'citibus'
           || this.oEmpresa == 'sritab' || this.oEmpresa == 'ufluminense' 
-          || this.oEmpresa == 'otavalo-lag')
+          || this.oEmpresa == 'otavalo-lag' || this.oEmpresa == 'msaenz')
     {
       //trabaja por vueltas
       this.isRecorridoPorVueltas = true
