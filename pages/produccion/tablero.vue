@@ -1106,6 +1106,7 @@ export default {
       this.objSeleccionado = obj;
       console.log("objSeleccionado");
       console.log(this.objSeleccionado);
+      console.log("/////////////////////////////")
       if (obj != null && obj != undefined) {
         if (parseInt(obj.Tipo) <= 2) {
           this.oMotivoString = obj.Motivo;
@@ -1168,6 +1169,12 @@ export default {
           } else {
             this.oPriceFalta = obj.RubroFalta;
             var dinero = this.oPriceFalta.split(".");
+            
+            console.log("-------------------------------------------")
+            console.log(dinero[0])
+            console.log(dinero[1])
+            console.log("-------------------------------------------")
+
             if (dinero[0].length == 1) {
               this.oDolaresPena = 0 + dinero[0];
             } else if (this.oDolaresPena > dinero[0]) {
@@ -1175,11 +1182,14 @@ export default {
             } else {
               this.oDolaresPena = dinero[0];
             }
+
             if (dinero[1].length == 1) {
               this.oCentavosPena = 0 + dinero[1];
-            } else if (this.oCentavosPena > dinero[1]) {
+            } else {
               this.oCentavosPena = dinero[1];
             }
+
+            
           }
           if (this.oPriceFalta > 0) {
             this.oTiempoFalta = "00:00:00";
@@ -1191,8 +1201,15 @@ export default {
             this.oBanderaMinutos = 1;
             this.oBanderaSegundos = 1;
           }
+          console.log("//////////////////")
+          console.log(this.oCentavosPena)
+
           this.oBanderaDolares = this.oDolaresPena == "00" ? 1 : 0;
-          this.oBanderaCentavos = 0;
+          if(parseFloat(dinero[1]) == 0){
+            this.oBanderaCentavos = 1;
+          }else{
+            this.oBanderaCentavos = 0
+          }
         }
       }
     },
