@@ -77,7 +77,7 @@
                   mListSalidasFrecuenciasControles.length > 0 ? true : false
                 "
                 :header="oHeaderRSalidasFrecuenciasControles"
-                :data="mListSalidasFrecuenciasControles"
+                :data="mListSalidasFrecuenciasControlesExcel"
                 :fields="oJSONFieldsRSalidasFrecuenciasControles"
                 :worksheet="oWorkSheetRSalidasFrecuenciasControles"
                 :name="oFileNameRSalidasFrecuenciasControles"
@@ -147,10 +147,11 @@
                 prop="PenaCtrlSali_d"
               >
                 <template slot-scope="scope">
-                  <strong style="color: black;">{{ scope.row.PenaCtrlSali_d }}</strong>
+                  <strong style="color: black">{{
+                    scope.row.PenaCtrlSali_d
+                  }}</strong>
                 </template>
               </el-table-column>
-
 
               <div slot="empty"></div>
             </el-table>
@@ -303,6 +304,7 @@ export default {
         },
       ],
       mListSalidasFrecuenciasControles: [],
+      mListSalidasFrecuenciasControlesExcel: [],
       oHeaderRSalidasFrecuenciasControles: [],
       oWorkSheetRSalidasFrecuenciasControles: "",
       oFileNameRSalidasFrecuenciasControles: "",
@@ -399,6 +401,7 @@ export default {
     async readReporteSalidasControles() {
       this.loadingTableRSalidasFrecuenciasControles = true;
       this.mListSalidasFrecuenciasControles = [];
+      var oListSalidasFrecuenciasControlesExcelAux = []
       this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now();
       this.oFileNameRSalidasFrecuenciasControles =
         "RSFC_" + Date.now() + ".xls";
@@ -422,7 +425,112 @@ export default {
         );
 
         if (datos.data.status_code == 200) {
+          console.log(datos.data.datos);
+
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
+
+          this.mListSalidasFrecuenciasControlesExcel.push(...datos.data.datos);
+
+          var faltaAtrasos = 0;
+          var faltaAdelantos = 0;
+          var faltaAtrasosAtrasos = 0;
+
+          for (
+            var i = 0;
+            i < this.mListSalidasFrecuenciasControlesExcel.length;
+            i++
+          ) {
+
+            oListSalidasFrecuenciasControlesExcelAux.push(this.mListSalidasFrecuenciasControlesExcel[i])
+            if (i < this.mListSalidasFrecuenciasControlesExcel.length - 1) {
+
+              console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m +" == "+
+                this.mListSalidasFrecuenciasControlesExcel[i + 1].idSali_m)
+              if (
+                this.mListSalidasFrecuenciasControlesExcel[i].idSali_m ==
+                this.mListSalidasFrecuenciasControlesExcel[i + 1].idSali_m
+              ) {
+                faltaAtrasos =
+                  faltaAtrasos +
+                  this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+                faltaAdelantos =
+                  faltaAdelantos +
+                  this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+                
+              } else {
+
+                faltaAtrasos =
+                  faltaAtrasos +
+                  this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+                faltaAdelantos =
+                  faltaAdelantos +
+                  this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+                faltaAtrasosAtrasos =
+                  faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
+                  console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
+
+
+
+
+                oListSalidasFrecuenciasControlesExcelAux.push({
+                  DescRuta:"TOTAL MINUTOS ATRASOS",
+                  DescFrec:faltaAtrasos
+                })
+                oListSalidasFrecuenciasControlesExcelAux.push({
+                  DescRuta:"TOTAL MINUTOS ADELANTOS",
+                  DescFrec:faltaAdelantos
+                })
+                
+                oListSalidasFrecuenciasControlesExcelAux.push({
+                  DescRuta:"TOTAL MINUTOS",
+                  DescFrec:faltaAtrasosAtrasos
+                })
+
+                oListSalidasFrecuenciasControlesExcelAux.push({
+                  DescRuta:"",
+                  DescFrec:""
+                })
+
+                faltaAtrasos = 0
+                faltaAdelantos = 0
+                faltaAtrasosAtrasos = 0  
+
+              
+                }
+            }else{
+              faltaAtrasos =
+                  faltaAtrasos +
+                  this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+                faltaAdelantos =
+                  faltaAdelantos +
+                  this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+                faltaAtrasosAtrasos =
+                  faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
+                  console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
+
+
+                  oListSalidasFrecuenciasControlesExcelAux.push({
+                  DescRuta:"TOTAL MINUTOS ATRASOS",
+                  DescFrec:faltaAtrasos
+                })
+                oListSalidasFrecuenciasControlesExcelAux.push({
+                  DescRuta:"TOTAL MINUTOS ADELANTOS",
+                  DescFrec:faltaAdelantos
+                })
+                
+                oListSalidasFrecuenciasControlesExcelAux.push({
+                  DescRuta:"TOTAL MINUTOS",
+                  DescFrec:faltaAtrasosAtrasos
+                })
+                oListSalidasFrecuenciasControlesExcelAux.push({
+                  DescRuta:"",
+                  DescFrec:""
+                })
+            }
+          }
+
+          this.mListSalidasFrecuenciasControlesExcel = []
+          this.mListSalidasFrecuenciasControlesExcel.push(...oListSalidasFrecuenciasControlesExcelAux)
 
           this.oHeaderRSalidasFrecuenciasControles = [
             "REPORTE DE CUMPLIMIENTO DE SALIDAS, RUTAS Y FRECUENCIAS ",
