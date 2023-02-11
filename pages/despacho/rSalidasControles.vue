@@ -402,6 +402,7 @@ export default {
       this.loadingTableRSalidasFrecuenciasControles = true;
       this.mListSalidasFrecuenciasControles = [];
       var oListSalidasFrecuenciasControlesExcelAux = []
+      this.mListSalidasFrecuenciasControlesExcel = []
       this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now();
       this.oFileNameRSalidasFrecuenciasControles =
         "RSFC_" + Date.now() + ".xls";
@@ -425,7 +426,7 @@ export default {
         );
 
         if (datos.data.status_code == 200) {
-          console.log(datos.data.datos);
+          //console.log(datos.data.datos);
 
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
 
@@ -442,10 +443,12 @@ export default {
           ) {
 
             oListSalidasFrecuenciasControlesExcelAux.push(this.mListSalidasFrecuenciasControlesExcel[i])
+
             if (i < this.mListSalidasFrecuenciasControlesExcel.length - 1) {
 
               console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m +" == "+
                 this.mListSalidasFrecuenciasControlesExcel[i + 1].idSali_m)
+
               if (
                 this.mListSalidasFrecuenciasControlesExcel[i].idSali_m ==
                 this.mListSalidasFrecuenciasControlesExcel[i + 1].idSali_m
@@ -467,11 +470,11 @@ export default {
                   this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
                 faltaAtrasosAtrasos =
                   faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
-                  console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
+                  //console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
 
 
 
-
+                console.log("IMPRIMIENTO TOTALES")  
                 oListSalidasFrecuenciasControlesExcelAux.push({
                   DescRuta:"TOTAL MINUTOS ATRASOS",
                   DescFrec:faltaAtrasos
@@ -506,10 +509,10 @@ export default {
                   this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
                 faltaAtrasosAtrasos =
                   faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
-                  console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
+                  //console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
 
 
-                  oListSalidasFrecuenciasControlesExcelAux.push({
+                oListSalidasFrecuenciasControlesExcelAux.push({
                   DescRuta:"TOTAL MINUTOS ATRASOS",
                   DescFrec:faltaAtrasos
                 })
