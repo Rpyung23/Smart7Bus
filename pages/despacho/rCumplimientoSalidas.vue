@@ -148,6 +148,13 @@
               >
               </el-option>
             </el-select>
+
+            <el-switch
+              v-model="isVueltaCheck"
+              inactive-text="DIARIO"
+              active-text="SALIDA"
+            >
+            </el-switch>
           </div>
 
           <div
@@ -177,21 +184,42 @@
               <el-table-column
                 prop="CodiVehiSali_m"
                 label="Acciones"
-                width="150"
+                width="190"
               >
                 <template slot-scope="scope">
                   <base-button
                     size="sm"
-                    v-if="scope.row.PorcMarcacion != '100.00'"
                     title="TARJETA PEQUEÑA"
-                    type="danger"
-                    @click="showPdfModalDetalleCumpliento(scope.row)"
+                    @click="showTarjetaSalidasCumplimiento(scope.row)"
+                    type="primary"
                     ><i class="ni ni-single-copy-04"></i
+                  ></base-button>
+                  <base-button
+                    size="sm"
+                    title="TARJETA GRANDE(A4)"
+                    @click="showTarjetaSalidasCumplimientoA4(scope.row)"
+                    type="danger"
+                    ><i class="ni ni-book-bookmark"></i
+                  ></base-button>
+
+                  <base-button
+                    size="sm"
+                    title="Recorrido"
+                    @click="showRecorridoSalidasPanelBusqueda(scope.row)"
+                    type="success"
+                    ><i class="ni ni-world"></i
                   ></base-button>
                 </template>
               </el-table-column>
 
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
+              </el-table-column>
+
+              <el-table-column
+                prop="NumeVuelSali_m"
+                label="N° Vuelta"
+                width="180"
+              >
               </el-table-column>
 
               <el-table-column
@@ -209,23 +237,16 @@
               </el-table-column>
 
               <el-table-column
-                prop="HoraSaliProgSali_mInicio"
+                prop="HoraSaliProgSali_mF"
                 label="F. Salidas Inicial"
                 width="190"
               >
               </el-table-column>
 
               <el-table-column
-                prop="HoraSaliProgSali_mFin"
+                prop="HoraLlegProgSali_mF"
                 label="F. Salidas Final"
                 width="190"
-              >
-              </el-table-column>
-
-              <el-table-column
-                prop="totalSalidas"
-                label="Total Salidas"
-                width="150"
               >
               </el-table-column>
 
@@ -246,7 +267,7 @@
       </div>
     </base-header>
 
-    <!--Form modal TICKET (A4) SALIDA-->
+    <!--Form modal TICKET (A4) SALIDA
     <modal
       :show.sync="modalSalidasCumplimoentoSalidas"
       size="xl"
@@ -256,6 +277,32 @@
         :src="baseUrlPdfCumplimentoSalidas"
         style="width: 100%; height: 33rem"
       ></iframe>
+    </modal>-->
+
+    <!--Form modal TICKET SALIDA-->
+    <modal
+      :show.sync="modalSalidasTarjetaCumplientoSalida"
+      size="sm"
+      body-classes="p-0"
+    >
+      <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta>
+    </modal>
+
+    <!--Form modal TICKET (A4) SALIDA-->
+    <modal
+      :show.sync="modalSalidasTarjetaCumplientoSalidaA4"
+      size="xl"
+      body-classes="p-1"
+    >
+      <ComponenteTarjetaA4 ref="ComponenteTarjetaA4"></ComponenteTarjetaA4>
+    </modal>
+
+    <modal
+      :show.sync="modalSalidasRecorridoCumplimiento"
+      size="xl"
+      body-classes="p-1"
+    >
+      <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
     </modal>
   </div>
 </template>
@@ -279,12 +326,15 @@ import {
   Popover,
   Button,
   Loading,
+  Switch,
 } from "element-ui";
 import { getBase64LogoReportes } from "../../util/logoReport";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
+import recorrido from "../../components/monitoreo/recorrido.vue";
+import tarjetaA4 from "../../components/tarjetas/tarjetaA4.vue";
+import tarjeta from "../../components/tarjetas/tarjeta.vue";
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
@@ -316,13 +366,19 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Popover.name]: Popover,
     [Button.name]: Button,
+    [Switch.name]: Switch,
+    ComponenteRecorrido: recorrido,
+    ComponenteTarjeta: tarjeta,
+    ComponenteTarjetaA4: tarjetaA4,
   },
   data() {
     return {
+      modalSalidasRecorridoCumplimiento: false,
       token: this.$cookies.get("token"),
+      isVueltaCheck: true,
       fechaDia1CumplimientoSalidas: "",
       fechaDia2CumplimientoSalidas: "",
-      modalSalidasTarjetaPanelDespachoBusqueda: false,
+      modalSalidasTarjetaCumplientoSalida: false,
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
       loadingPenalidadesSemanales: false,
@@ -335,30 +391,52 @@ export default {
       itemRutasCumplimientoSalidas: [],
       itemGruposCumplimientoSalidas: [],
       modalSalidasCumplimoentoSalidas: false,
-      baseUrlPdfCumplimentoSalidas:"",
+      baseUrlPdfCumplimentoSalidas: "",
 
       json_fields_excelRPenalidadesSemanales: {
         UNIDAD: "CodiVehiSali_m",
         GRUPO: "descripcionGrupo",
         RUTA: "DescRutaSali_m",
-        "FECHA SALIDAS INICIAL": "HoraSaliProgSali_mInicio",
-        "FECHA SALIDAS FINAL": "HoraSaliProgSali_mFin",
-        "TOTAL SALIDAS": "totalSalidas",
+        "FECHA SALIDAS INICIAL": "HoraSaliProgSali_mF",
+        "FECHA SALIDAS FINAL": "HoraLlegProgSali_mF",
+        "N° VUELTA": "NumeVuelSali_m",
         "% CUMPLIMIENTO": "PorcMarcacion",
         ESTADO: "estado",
       },
       WorksheetExcelRSalidasSemanales: "",
       FileNameExcelRSalidasSemanales: "",
       oheaderExcelRSalidasSemanales: "",
+      modalSalidasTarjetaCumplientoSalidaA4:false,
+      modalSalidasTarjetaCumplientoSalida:false
     };
   },
   methods: {
+    showRecorridoSalidasPanelBusqueda(item) {
+      console.log(item);
+      this.modalSalidasRecorridoCumplimiento = true;
+      this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(item);
+    },
+
+    showTarjetaSalidasCumplimiento(salida) {
+      this.modalSalidasTarjetaCumplientoSalida = true;
+      this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida);
+    },
+    showTarjetaSalidasCumplimientoA4(salida) {
+      console.log(salida);
+      this.modalSalidasTarjetaCumplientoSalidaA4 = true;
+      this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusqueda(salida);
+    },
+
     showPdfModalDetalleCumpliento(row) {
-      console.log(row)
+      console.log(row);
 
       this.modalSalidasCumplimoentoSalidas = true;
-      this.readDetalleCumplientoSalidas(row.CodiVehiSali_m,row.DescRutaSali_m,
-           row.HoraSaliProgSali_mInicio,row.HoraSaliProgSali_mFin)
+      this.readDetalleCumplientoSalidas(
+        row.CodiVehiSali_m,
+        row.DescRutaSali_m,
+        row.HoraSaliProgSali_mInicio,
+        row.HoraSaliProgSali_mFin
+      );
     },
     async readAllRutasSalidasSEmanales() {
       this.mListaRutasSalidasSemanales = [];
@@ -489,6 +567,7 @@ export default {
             this.itemGruposCumplimientoSalidas.length <= 0
               ? "*"
               : this.itemGruposCumplimientoSalidas,
+          isVuelta: this.isVueltaCheck,
         };
 
         console.log(obj);
@@ -577,7 +656,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "T. SALIDAS",
+          text: "N° VUELTA",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -632,7 +711,7 @@ export default {
                 : "black",
           },
           {
-            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mInicio,
+            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mF,
             fontSize: 8.5,
             alignment: "center",
             color:
@@ -641,7 +720,7 @@ export default {
                 : "black",
           },
           {
-            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mFin,
+            text: this.mListDatosPenalidades[i].HoraLlegProgSali_mF,
             fontSize: 8.5,
             alignment: "center",
             color:
@@ -650,7 +729,7 @@ export default {
                 : "black",
           },
           {
-            text: this.mListDatosPenalidades[i].totalSalidas,
+            text: this.mListDatosPenalidades[i].NumeVuelSali_m,
             fontSize: 8.5,
             alignment: "center",
             color:
@@ -746,210 +825,201 @@ export default {
 
       pdfMake.createPdf(docDefinition).download("RPS_" + Date.now());
     },
-    async readDetalleCumplientoSalidas(unidads,ruta,fechaI,fechaF) 
-    {
+    async readDetalleCumplientoSalidas(unidads, ruta, fechaI, fechaF) {
       try {
-        this.baseUrlPdfCumplimentoSalidas = ""
-      var datos = []
-      var obj = {
+        this.baseUrlPdfCumplimentoSalidas = "";
+        var datos = [];
+        var obj = {
           token: this.token,
-          fechaI:fechaI,
-          fechaF:fechaF,
-          unidad:unidads
-        }
+          fechaI: fechaI,
+          fechaF: fechaF,
+          unidad: unidads,
+        };
 
+        var responde = await this.$axios.post(
+          process.env.baseUrl + "/DetalleReadCumplimientoSalidas",
+          obj
+        );
 
-      var responde = await this.$axios.post(
-        process.env.baseUrl + "/DetalleReadCumplimientoSalidas",
-        obj
-      );
+        datos.push(...responde.data.datos);
+        console.log(datos);
 
-      
-      datos.push(...responde.data.datos)
-      console.log(datos)
-
-      var empresa = [
-        {
-          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
-          fontSize: 9,
-          alignment: "left",
-        },
-      ];
-      var unidad = [
-        {
-          text:
-            "Unidad : " +unidad,
-          fontSize: 9,
-          alignment: "left",
-        },
-      ];
-      var ruta = [
-        {
-          text:
-            "Ruta : " + ruta,
-          fontSize: 9,
-          alignment: "left",
-        },
-      ];
-      var desde_hasta = [
-        {
-          text:
-            "Fecha Salida : " + fechaI +" Hasta " + fechaF,
-          fontSize: 9,
-          alignment: "left",
-        },
-      ];
-
-
-      var resultadoString = [
-        [
+        var empresa = [
           {
-            text: "N° Vuelta",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Linea (Ruta)",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Frecuencia",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Control",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "H. Programación",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          }
-        ],
-      ]
-
-
-      for (var i = 0; i < datos.length; i++) 
-      {
-        var arrys = [
-          {
-            text: datos[i].NumeVuelSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos[i].DescRutaSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos[i].DescFrec,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos[i].DescCtrl,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos[i].HoraProgSali_d,
-            fontSize: 8.5,
-            alignment: "center",
+            text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+            fontSize: 9,
+            alignment: "left",
           },
         ];
-        resultadoString.push(arrys);
-      }
+        var unidad = [
+          {
+            text: "Unidad : " + unidad,
+            fontSize: 9,
+            alignment: "left",
+          },
+        ];
+        var ruta = [
+          {
+            text: "Ruta : " + ruta,
+            fontSize: 9,
+            alignment: "left",
+          },
+        ];
+        var desde_hasta = [
+          {
+            text: "Fecha Salida : " + fechaI + " Hasta " + fechaF,
+            fontSize: 9,
+            alignment: "left",
+          },
+        ];
 
-      var docDefinition = {
-        pageSize: "A4",
-        pageMargins: [40, 80, 40, 60],
-        header: {
-          margin: 15,
-          columns: [
+        var resultadoString = [
+          [
             {
-              image: getBase64LogoReportes(this.$cookies.get("empresa")),
-              width: 100,
-              height: 50,
-              margin: [30, 0, 0, 0],
+              text: "N° Vuelta",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
             },
+            {
+              text: "Linea (Ruta)",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "Frecuencia",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "Control",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "H. Programación",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+          ],
+        ];
+
+        for (var i = 0; i < datos.length; i++) {
+          var arrys = [
+            {
+              text: datos[i].NumeVuelSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: datos[i].DescRutaSali_m,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: datos[i].DescFrec,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: datos[i].DescCtrl,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text: datos[i].HoraProgSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+          ];
+          resultadoString.push(arrys);
+        }
+
+        var docDefinition = {
+          pageSize: "A4",
+          pageMargins: [40, 80, 40, 60],
+          header: {
+            margin: 15,
+            columns: [
+              {
+                image: getBase64LogoReportes(this.$cookies.get("empresa")),
+                width: 100,
+                height: 50,
+                margin: [30, 0, 0, 0],
+              },
+              {
+                layout: "noBorders",
+                table: {
+                  widths: ["*"],
+                  body: [
+                    [
+                      {
+                        text: "REPORTE DETALLER CUMPLIENTO DE SALIDAS",
+                        alignment: "center",
+                        fontSize: 16,
+                        bold: true,
+                      },
+                    ],
+                    [
+                      {
+                        text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                        alignment: "center",
+                        fontSize: 8,
+                      },
+                    ],
+                    [
+                      {
+                        text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                        alignment: "center",
+                        fontSize: 8,
+                      },
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+          content: [
             {
               layout: "noBorders",
               table: {
-                widths: ["*"],
-                body: [
-                  [
-                    {
-                      text: "REPORTE DETALLER CUMPLIENTO DE SALIDAS",
-                      alignment: "center",
-                      fontSize: 16,
-                      bold: true,
-                    },
-                  ],
-                  [
-                    {
-                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
-                      alignment: "center",
-                      fontSize: 8,
-                    },
-                  ],
-                  [
-                    {
-                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
-                      alignment: "center",
-                      fontSize: 8,
-                    },
-                  ],
-                ],
+                headerRows: 0,
+                widths: [450, 450, 450, 450],
+                body: [empresa, unidad, ruta, desde_hasta],
+              },
+            },
+            {
+              table: {
+                headerRows: 0,
+                widths: [40, 130, 120, 120, 70],
+                body: resultadoString,
+                //body: [[]],
               },
             },
           ],
-        },
-        content: [
-          {
-            layout: "noBorders",
-            table: {
-              headerRows: 0,
-              widths: [450, 450, 450, 450],
-              body: [empresa, unidad, ruta, desde_hasta],
-            },
-          },
-          {
-            table: {
-              headerRows: 0,
-              widths: [40, 130, 120, 120, 70],
-              body: resultadoString,
-              //body: [[]],
-            },
-          }
-        ],
-      };
+        };
 
-      //pdfMake.createPdf(docDefinition).download("RSD_" + Date.now());
-      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
-      pdfDocGenerator.getDataUrl((dataUrl) => {
-        this.baseUrlPdfCumplimentoSalidas = dataUrl;
-      })
+        //pdfMake.createPdf(docDefinition).download("RSD_" + Date.now());
+        var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+        pdfDocGenerator.getDataUrl((dataUrl) => {
+          this.baseUrlPdfCumplimentoSalidas = dataUrl;
+        });
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
   },
