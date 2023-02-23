@@ -32,9 +32,10 @@
               </el-option>
             </el-select>
 
-
-
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+            <base-input
+              addon-left-icon="ni ni-calendar-grid-58"
+              style="margin-right: 0.5rem"
+            >
               <flat-picker
                 slot-scope="{ focus, blur }"
                 :max="{ fechaInicialTableroProduccion }"
@@ -59,7 +60,6 @@
               >
               </flat-picker>
             </base-input>
-
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
@@ -106,7 +106,6 @@
               >
               </el-option>
             </el-select>
-
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
@@ -136,7 +135,6 @@
           footer-classes="pb-2"
         >
           <div>
-
             <el-table
               v-loading="loadingRTableroProduccion"
               element-loading-text="Cargando Datos..."
@@ -147,10 +145,7 @@
               height="calc(100vh - 13rem)"
               style="width: 100%"
             >
-              <el-table-column
-                label="Acciones"
-                :minWidth="'220'"
-              >
+              <el-table-column label="Acciones" :minWidth="'220'">
                 <template slot-scope="scope">
                   <base-button
                     size="sm"
@@ -175,16 +170,15 @@
                     slot="refPopoverCodigoSalidas"
                     v-if="isRecorridoPorVueltas"
                     title=""
-                    style="z-index: 100 !important;"
+                    style="z-index: 100 !important"
                     @show="oClickDropdownSalidasCodigo(scope.row)"
                     placement="right"
                     trigger="click"
                   >
-
-
-                  
-
-                  <div v-if="loadingCodigoSalidasFrecuenciasControles" class="circleProgressMini"></div>
+                    <div
+                      v-if="loadingCodigoSalidasFrecuenciasControles"
+                      class="circleProgressMini"
+                    ></div>
 
                     <a
                       class="dropdown-item"
@@ -224,8 +218,6 @@
               </el-table-column>
               <el-table-column prop="FechaDeudaM" label="Fecha" minWidth="150">
               </el-table-column>
-
-              
 
               <el-table-column
                 prop="DeudaTotal"
@@ -409,8 +401,8 @@
               ></base-button>
             </div>
           </div>
-         <!-- Tabla de Anotaciones-->
-         <!--<JqxGrid
+          <!-- Tabla de Anotaciones-->
+          <!--<JqxGrid
             v-if="isVisibleTableroAnotaciones"
             ref="myGridDespachoPanelOtros"
             :height="'150px'"
@@ -422,286 +414,215 @@
           </JqxGrid>-->
 
           <el-table
-              :data="mListOtros"
-              row-key="id"
-              class="tablePanelControlRubrosProduccion"
-              header-row-class-name="thead-dark"
-              height="10rem"
-              style="width:100%;"
-              v-if="isVisibleTableroAnotaciones"
-            >
-              <el-table-column prop="fecha_creacion" label="Hora" minWidth="200">
-              </el-table-column>
-             
-              <el-table-column
-                prop="descripcion"
-                label="Rubro"
-                minWidth="150"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="anotaciones"
-                label="Nota"
-                minWidth="700"
-              >
-              </el-table-column>
-              <div slot="empty">
-                <span>No existe datos</span>
-              </div>
-            </el-table>
-
-          <br
+            :data="mListOtros"
+            row-key="id"
+            class="tablePanelControlRubrosProduccion"
+            header-row-class-name="thead-dark"
+            height="10rem"
+            style="width: 100%"
             v-if="isVisibleTableroAnotaciones"
-          />
-          
-          <!--<JqxGrid
-            ref="myGridDespachoPanel"
-            :height="(isVisibleTableroAnotaciones ? '225px' : '350px')"
-            @rowselect="myGridOnRowSelect($event)"
-            :columns="columnsInfo"
-            :source="dataAdapter"
-            :enabletooltips="true"
-            :width="getWidth"
           >
-          </JqxGrid>-->
+            <el-table-column prop="fecha_creacion" label="Hora" minWidth="200">
+            </el-table-column>
+
+            <el-table-column prop="descripcion" label="Rubro" minWidth="150">
+            </el-table-column>
+            <el-table-column prop="anotaciones" label="Nota" minWidth="700">
+            </el-table-column>
+            <div slot="empty">
+              <span>No existe datos</span>
+            </div>
+          </el-table>
+
+          <br v-if="isVisibleTableroAnotaciones" />
 
           <el-table
-              :data="mList"
-              highlight-current-row
-              v-loading="loadingTableroJustificacion"
-              element-loading-text="Cargando Datos..."
-              ref="singleTable"
-              row-key="id"
-              @current-change="selectionChange"
-              :row-class-name="tableRowClassNameJustificado"
-              class="tablePanelControlRubrosProduccion"
-              :style="isVisibleTableroAnotaciones != true ? 'display:none;' : ''"
-              height="14rem"
-              style="width:100%;"
+            :data="mList"
+            highlight-current-row
+            v-loading="loadingTableroJustificacion"
+            element-loading-text="Cargando Datos..."
+            ref="singleTable"
+            row-key="id"
+            @current-change="selectionChange"
+            :row-class-name="tableRowClassNameJustificado"
+            class="tablePanelControlRubrosProduccion"
+            :style="isVisibleTableroAnotaciones != true ? 'display:none;' : ''"
+            height="14rem"
+            style="width: 100%"
+          >
+            <el-table-column prop="Numero" label="Número" minWidth="100">
+            </el-table-column>
+
+            <el-table-column
+              prop="DescripcionControl"
+              label="Control"
+              minWidth="200"
             >
-        
-              <el-table-column prop="Numero" label="Número" minWidth="100">
-              </el-table-column>
-             
-              <el-table-column
-                prop="DescripcionControl"
-                label="Control"
-                minWidth="200"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="NumeVuelSali_m"
-                label="Vuelta"
-                minWidth="100"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Programado"
-                label="Prog"
-                minWidth="90"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Marcado"
-                label="Marc"
-                minWidth="90"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AtrasoFTiempo"
-                label="Atraso Tiempo"
-                minWidth="110"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AdelantoFTiempo"
-                label="Adelanto Tiempo"
-                minWidth="125"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AtrasoJTiempo"
-                label="Atraso Jus."
-                minWidth="150"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AdelantoJTiempo"
-                label="Adelanto Jus."
-                minWidth="150"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="RubroFalta"
-                label="Rubros"
-                minWidth="60"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="RubroJustificacion"
-                label="Rubros Jus."
-                minWidth="100"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="VelocidadFalta"
-                label="Velo"
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="VelocidadJustificacion"
-                label="Velo Jus."
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="TarjetaTrabajo"
-                label="Tarjeta"
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="NombApellUsua"
-                label="Usuario Justificador"
-                minWidth="250"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Motivo"
-                label="Motivo"
-                minWidth="250"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Notas"
-                label="Notas"
-                minWidth="260"
-              >
-              </el-table-column>
-              <div slot="empty">
-                <span>No existe datos</span>
-              </div>
-            </el-table>
+            </el-table-column>
+            <el-table-column
+              prop="NumeVuelSali_m"
+              label="Vuelta"
+              minWidth="100"
+            >
+            </el-table-column>
+            <el-table-column prop="Programado" label="Prog" minWidth="90">
+            </el-table-column>
+            <el-table-column prop="Marcado" label="Marc" minWidth="90">
+            </el-table-column>
+            <el-table-column
+              prop="AtrasoFTiempo"
+              label="Atraso Tiempo"
+              minWidth="110"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="AdelantoFTiempo"
+              label="Adelanto Tiempo"
+              minWidth="125"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="AtrasoJTiempo"
+              label="Atraso Jus."
+              minWidth="150"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="AdelantoJTiempo"
+              label="Adelanto Jus."
+              minWidth="150"
+            >
+            </el-table-column>
+            <el-table-column prop="RubroFalta" label="Rubros" minWidth="60">
+            </el-table-column>
+            <el-table-column
+              prop="RubroJustificacion"
+              label="Rubros Jus."
+              minWidth="100"
+            >
+            </el-table-column>
+            <el-table-column prop="VelocidadFalta" label="Velo" minWidth="70">
+            </el-table-column>
+            <el-table-column
+              prop="VelocidadJustificacion"
+              label="Velo Jus."
+              minWidth="70"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="TarjetaTrabajo"
+              label="Tarjeta"
+              minWidth="70"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="NombApellUsua"
+              label="Usuario Justificador"
+              minWidth="250"
+            >
+            </el-table-column>
+            <el-table-column prop="Motivo" label="Motivo" minWidth="250">
+            </el-table-column>
+            <el-table-column prop="Notas" label="Notas" minWidth="260">
+            </el-table-column>
+            <div slot="empty">
+              <span>No existe datos</span>
+            </div>
+          </el-table>
 
           <el-table
-              :data="mList"
-              highlight-current-row
-              ref="singleTable"
-              v-loading="loadingTableroJustificacion"
-              element-loading-text="Cargando Datos..."
-              row-key="id"
-              @current-change="selectionChange"
-              :row-class-name="tableRowClassNameJustificado"
-              class="tablePanelControlRubrosProduccion"
-              :style="isVisibleTableroAnotaciones == true ? 'display:none;' : ''"
-              height="25rem"
-              style="width:100%;"
+            :data="mList"
+            highlight-current-row
+            ref="singleTable"
+            v-loading="loadingTableroJustificacion"
+            element-loading-text="Cargando Datos..."
+            row-key="id"
+            @current-change="selectionChange"
+            :row-class-name="tableRowClassNameJustificado"
+            class="tablePanelControlRubrosProduccion"
+            :style="isVisibleTableroAnotaciones == true ? 'display:none;' : ''"
+            height="25rem"
+            style="width: 100%"
+          >
+            <el-table-column prop="Numero" label="Número" minWidth="100">
+            </el-table-column>
+
+            <el-table-column
+              prop="DescripcionControl"
+              label="Control"
+              minWidth="200"
             >
-        
-              <el-table-column prop="Numero" label="Número" minWidth="100">
-              </el-table-column>
-             
-              <el-table-column
-                prop="DescripcionControl"
-                label="Control"
-                minWidth="200"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="NumeVuelSali_m"
-                label="Vuelta"
-                minWidth="100"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Programado"
-                label="Prog"
-                minWidth="90"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Marcado"
-                label="Marc"
-                minWidth="90"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AtrasoFTiempo"
-                label="Atraso Tiempo"
-                minWidth="110"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AdelantoFTiempo"
-                label="Adelanto Tiempo"
-                minWidth="125"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AtrasoJTiempo"
-                label="Atraso Jus."
-                minWidth="150"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="AdelantoJTiempo"
-                label="Adelanto Jus."
-                minWidth="150"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="RubroFalta"
-                label="Rubros"
-                minWidth="60"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="RubroJustificacion"
-                label="Rubros Jus."
-                minWidth="100"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="VelocidadFalta"
-                label="Velo"
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="VelocidadJustificacion"
-                label="Velo Jus."
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="TarjetaTrabajo"
-                label="Tarjeta"
-                minWidth="70"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="NombApellUsua"
-                label="Usuario Justificador"
-                minWidth="250"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Motivo"
-                label="Motivo"
-                minWidth="250"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="Notas"
-                label="Notas"
-                minWidth="260"
-              >
-              </el-table-column>
-              <div slot="empty">
-                <span>No existe datos</span>
-              </div>
-            </el-table>
+            </el-table-column>
+            <el-table-column
+              prop="NumeVuelSali_m"
+              label="Vuelta"
+              minWidth="100"
+            >
+            </el-table-column>
+            <el-table-column prop="Programado" label="Prog" minWidth="90">
+            </el-table-column>
+            <el-table-column prop="Marcado" label="Marc" minWidth="90">
+            </el-table-column>
+            <el-table-column
+              prop="AtrasoFTiempo"
+              label="Atraso Tiempo"
+              minWidth="110"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="AdelantoFTiempo"
+              label="Adelanto Tiempo"
+              minWidth="125"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="AtrasoJTiempo"
+              label="Atraso Jus."
+              minWidth="150"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="AdelantoJTiempo"
+              label="Adelanto Jus."
+              minWidth="150"
+            >
+            </el-table-column>
+            <el-table-column prop="RubroFalta" label="Rubros" minWidth="60">
+            </el-table-column>
+            <el-table-column
+              prop="RubroJustificacion"
+              label="Rubros Jus."
+              minWidth="100"
+            >
+            </el-table-column>
+            <el-table-column prop="VelocidadFalta" label="Velo" minWidth="70">
+            </el-table-column>
+            <el-table-column
+              prop="VelocidadJustificacion"
+              label="Velo Jus."
+              minWidth="70"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="TarjetaTrabajo"
+              label="Tarjeta"
+              minWidth="70"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="NombApellUsua"
+              label="Usuario Justificador"
+              minWidth="250"
+            >
+            </el-table-column>
+            <el-table-column prop="Motivo" label="Motivo" minWidth="250">
+            </el-table-column>
+            <el-table-column prop="Notas" label="Notas" minWidth="260">
+            </el-table-column>
+            <div slot="empty">
+              <span>No existe datos</span>
+            </div>
+          </el-table>
 
           <!--<template slot="footer">
             <base-button type="primary">Guardar Cambios</base-button>
@@ -726,7 +647,11 @@
         </modal>
 
         <!--Classic modal EX VELOCIDAD-->
-        <modal :show.sync="isExVelocidadTableroProduccion" size="xl" body-classes="p-1">
+        <modal
+          :show.sync="isExVelocidadTableroProduccion"
+          size="xl"
+          body-classes="p-1"
+        >
           <template slot="header" style="background-color: #2dce89"> </template>
 
           <GmapMap
@@ -817,7 +742,7 @@
 import recorrido from "../../components/monitoreo/recorrido.vue";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-import {Spanish} from 'flatpickr/dist/l10n/es.js';
+import { Spanish } from "flatpickr/dist/l10n/es.js";
 import JqxGrid from "jqwidgets-scripts/jqwidgets-vue/vue_jqxgrid.vue";
 import JqxSlider from "jqwidgets-scripts/jqwidgets-vue/vue_jqxslider.vue";
 import JqxDateTimeInput from "jqwidgets-scripts/jqwidgets-vue/vue_jqxdatetimeinput.vue";
@@ -874,7 +799,7 @@ export default {
   },
   data() {
     return {
-      config_flatpicker:{ allowInput: true,locale: Spanish },
+      config_flatpicker: { allowInput: true, locale: Spanish },
       tableDataPanelControlProduccion: [],
       selectedRows: [],
       mListPosicionesHistorialSalidasPanelBusqueda: [],
@@ -901,7 +826,7 @@ export default {
       dataAdapter: new jqx.dataAdapter([]),
       dataAdapterOtros: new jqx.dataAdapter([]),
       getWidth: "100%",
-      loadingTableroJustificacion:false,
+      loadingTableroJustificacion: false,
 
       valida: 0,
       columnsInfo: [
@@ -1052,11 +977,11 @@ export default {
       mListControlesSalidaPanelBusquedaDespacho: [],
       oEmpresa: null,
       mListCodigoSalidasProduccion: [],
-      loadingCodigoSalidasFrecuenciasControles:false,
-      isVisibleTableroAnotaciones : true,
-      isRecorridoPorVueltas:true,
-      mListOtros:[],
-      mList:[]
+      loadingCodigoSalidasFrecuenciasControles: false,
+      isVisibleTableroAnotaciones: true,
+      isRecorridoPorVueltas: true,
+      mListOtros: [],
+      mList: [],
     };
   },
   methods: {
@@ -1099,14 +1024,14 @@ export default {
         (day < 10 ? "0" + day : day);
 
       this.fechaInicialTableroProduccion = format;
-      this.fechaFinalTableroProduccion = format
+      this.fechaFinalTableroProduccion = format;
     },
     selectionChange(selectedRows) {
       var obj = selectedRows;
       this.objSeleccionado = obj;
       console.log("objSeleccionado");
       console.log(this.objSeleccionado);
-      console.log("/////////////////////////////")
+      console.log("/////////////////////////////");
       if (obj != null && obj != undefined) {
         if (parseInt(obj.Tipo) <= 2) {
           this.oMotivoString = obj.Motivo;
@@ -1169,11 +1094,11 @@ export default {
           } else {
             this.oPriceFalta = obj.RubroFalta;
             var dinero = this.oPriceFalta.split(".");
-            
-            console.log("-------------------------------------------")
-            console.log(dinero[0])
-            console.log(dinero[1])
-            console.log("-------------------------------------------")
+
+            console.log("-------------------------------------------");
+            console.log(dinero[0]);
+            console.log(dinero[1]);
+            console.log("-------------------------------------------");
 
             if (dinero[0].length == 1) {
               this.oDolaresPena = 0 + dinero[0];
@@ -1188,8 +1113,6 @@ export default {
             } else {
               this.oCentavosPena = dinero[1];
             }
-
-            
           }
           if (this.oPriceFalta > 0) {
             this.oTiempoFalta = "00:00:00";
@@ -1201,14 +1124,14 @@ export default {
             this.oBanderaMinutos = 1;
             this.oBanderaSegundos = 1;
           }
-          console.log("//////////////////")
-          console.log(this.oCentavosPena)
+          console.log("//////////////////");
+          console.log(this.oCentavosPena);
 
           this.oBanderaDolares = this.oDolaresPena == "00" ? 1 : 0;
-          if(parseFloat(dinero[1]) == 0){
+          if (parseFloat(dinero[1]) == 0) {
             this.oBanderaCentavos = 1;
-          }else{
-            this.oBanderaCentavos = 0
+          } else {
+            this.oBanderaCentavos = 0;
           }
         }
       }
@@ -1240,8 +1163,8 @@ export default {
         //console.log(datos.data)
 
         if (datos.data.status_code == 200) {
-          this.CalcularTotales(datos.data.datos)
-          this.tableDataPanelControlProduccion.push(...datos.data.datos)
+          this.CalcularTotales(datos.data.datos);
+          this.tableDataPanelControlProduccion.push(...datos.data.datos);
         } else {
           this.$notify({
             message: datos.data.msm,
@@ -1352,7 +1275,7 @@ export default {
     },
     async readDetalleTableroProduccion(item) {
       this.mList = [];
-      this.loadingTableroJustificacion = true
+      this.loadingTableroJustificacion = true;
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/ProduccionDetallePanelControl",
@@ -1372,7 +1295,7 @@ export default {
         this.mList = [];
       }
 
-      this.loadingTableroJustificacion = false
+      this.loadingTableroJustificacion = false;
 
       //this.$refs.myGridDespachoPanel.clearselection();
       /*var obj = {
@@ -1400,11 +1323,10 @@ export default {
           { name: "Numero", type: "string" },
         ],
       };*/
-
     },
     async readDetalleTableroProduccionAnotaciones(item) {
-     // this.$refs.myGridDespachoPanelOtros.clearselection();
-     this.isVisibleTableroAnotaciones = false
+      // this.$refs.myGridDespachoPanelOtros.clearselection();
+      this.isVisibleTableroAnotaciones = false;
       this.mListOtros = [];
       try {
         var datos = await this.$axios.post(
@@ -1415,17 +1337,15 @@ export default {
             fecha: this.fechaInicialTableroProduccion,
           }
         );
-        
 
         this.mListOtros.push(...datos.data.datos);
       } catch (error) {
-        console.log(error)
+        console.log(error);
         this.mListOtros = [];
       }
 
-      if(this.mListOtros.length > 0)
-      {
-        this.isVisibleTableroAnotaciones = true
+      if (this.mListOtros.length > 0) {
+        this.isVisibleTableroAnotaciones = true;
       }
     },
     sendJustify() {
@@ -1664,16 +1584,15 @@ export default {
       }
       return this.valida;
     },
-    tableRowClassNameJustificado({row}) {
+    tableRowClassNameJustificado({ row }) {
       if (row.NombApellUsua != null) {
         return "estadoJustificado";
-      }else{
-        return ""
+      } else {
+        return "";
       }
     },
-    async oClickDropdownSalidasCodigo(item) 
-    {
-      this.loadingCodigoSalidasFrecuenciasControles = true
+    async oClickDropdownSalidasCodigo(item) {
+      this.loadingCodigoSalidasFrecuenciasControles = true;
       this.mListCodigoSalidasProduccion = [];
       try {
         var datos = await this.$axios.post(
@@ -1692,25 +1611,28 @@ export default {
       } catch (error) {
         console.log(error);
       }
-      this.loadingCodigoSalidasFrecuenciasControles = false
+      this.loadingCodigoSalidasFrecuenciasControles = false;
     },
 
     async readHISTORIALTrazadoAllTramosTableroProduccion(item) {
-      this.oCenterTableroExVelocidad = { lat: -1.249546, lng: -78.585376 }
-      this.oZoomTableroExVelocidad = 7
-      this.oHistorialExVelocidad = []
+      this.oCenterTableroExVelocidad = { lat: -1.249546, lng: -78.585376 };
+      this.oZoomTableroExVelocidad = 7;
+      this.oHistorialExVelocidad = [];
       try {
         var obj = {
           token: this.token,
           codigoDM: item.Codigo,
-          unidad: item.Unidad
-        }
-        console.log(obj)
-        var datos = await this.$axios.post(process.env.baseUrl + "/readTrazadoHistorialExVelocidad", obj)
+          unidad: item.Unidad,
+        };
+        console.log(obj);
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/readTrazadoHistorialExVelocidad",
+          obj
+        );
         if (datos.data.status_code == 200) {
-          var mList = []
+          var mList = [];
           for (var i = 0; i < datos.data.datos.length; i++) {
-            var obj = datos.data.datos[i]
+            var obj = datos.data.datos[i];
             obj.icono = {
               path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
               fillColor: "red",
@@ -1719,64 +1641,73 @@ export default {
               rotation: obj.RumbHistEven,
               scale: 3,
               anchor: new google.maps.Point(0, 0),
-            }
-            mList.push(obj)
+            };
+            mList.push(obj);
           }
           if (mList.length > 0) {
             this.oCenterTableroExVelocidad = {
               lat: parseFloat(mList[0].LatHistTrama),
-              lng: parseFloat(mList[0].LongHistTrama)
-            }
-            this.oZoomTableroExVelocidad = 16
+              lng: parseFloat(mList[0].LongHistTrama),
+            };
+            this.oZoomTableroExVelocidad = 16;
           }
-          this.oHistorialExVelocidad.push(...mList)
+          this.oHistorialExVelocidad.push(...mList);
         } else {
         }
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     },
 
     async readTrazadoAllTramosTableroProduccion() {
-      this.mListaTrazadoAllTramsExVelocidad = []
+      this.mListaTrazadoAllTramsExVelocidad = [];
       try {
-        var datos = await this.$axios.post(process.env.baseUrl + "/readAllTrazadoTramosExVelocidad", {
-          token: this.token
-        })
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/readAllTrazadoTramosExVelocidad",
+          {
+            token: this.token,
+          }
+        );
         if (datos.data.status_code == 200) {
-          this.mListaTrazadoAllTramsExVelocidad = datos.data.datos
+          this.mListaTrazadoAllTramsExVelocidad = datos.data.datos;
         }
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     },
   },
   mounted() {
     this.oEmpresa = this.$cookies.get("empresa");
-    if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel')
-    {
+    if (this.oEmpresa == "28septiembre" || this.oEmpresa == "smiguel") {
       //trabaja por vueltas
-      this.isVisibleTableroAnotaciones = true
-    }else{
-      this.isVisibleTableroAnotaciones = false
+      this.isVisibleTableroAnotaciones = true;
+    } else {
+      this.isVisibleTableroAnotaciones = false;
     }
 
-    if(this.oEmpresa == '28septiembre' || this.oEmpresa == 'smiguel' 
-          || this.oEmpresa == 'tatahualpa' || this.oEmpresa == 'cazul'
-          || this.oEmpresa == 'mazul'
-          || this.oEmpresa == 'cotopaxi' || this.oEmpresa == 'cquisapincha' 
-          || this.oEmpresa == 'fbabahoy' || this.oEmpresa == 'citibus'
-          || this.oEmpresa == 'sritab' || this.oEmpresa == 'ufluminense' 
-          || this.oEmpresa == 'otavalo-lag' || this.oEmpresa == 'msaenz')
-    {
+    if (
+      this.oEmpresa == "28septiembre" ||
+      this.oEmpresa == "smiguel" ||
+      this.oEmpresa == "tatahualpa" ||
+      this.oEmpresa == "cazul" ||
+      this.oEmpresa == "mazul" ||
+      this.oEmpresa == "cotopaxi" ||
+      this.oEmpresa == "cquisapincha" ||
+      this.oEmpresa == "fbabahoy" ||
+      this.oEmpresa == "citibus" ||
+      this.oEmpresa == "sritab" ||
+      this.oEmpresa == "ufluminense" ||
+      this.oEmpresa == "otavalo-lag" ||
+      this.oEmpresa == "msaenz"
+    ) {
       //trabaja por vueltas
-      this.isRecorridoPorVueltas = true
-    }else{
-      this.isRecorridoPorVueltas = false
+      this.isRecorridoPorVueltas = true;
+    } else {
+      this.isRecorridoPorVueltas = false;
     }
 
-    this.readTrazadoAllTramosTableroProduccion()
-    this.readTrazadoAllTramosTableroProduccion()
+    this.readTrazadoAllTramosTableroProduccion();
+    this.readTrazadoAllTramosTableroProduccion();
     this.readUnidadesTableroProduccion();
     this.readLineasTableroProduccion();
     this.readRubrosTableroProduccion();
@@ -1786,7 +1717,7 @@ export default {
 };
 </script>
 <style>
-.el-popover{
+.el-popover {
   z-index: 100 !important;
 }
 .buttonCircleModalClose {
@@ -1953,8 +1884,8 @@ export default {
   overflow: auto;
 }
 
-.el-table__body tr.current-row> td{
-  background-color: rgb(220, 220, 220)! important;
+.el-table__body tr.current-row > td {
+  background-color: rgb(220, 220, 220) !important;
   color: #000;
 }
 
@@ -1965,5 +1896,4 @@ export default {
 .el-table .estadoJustificado {
   background: rgba(140, 248, 126, 0.384) !important;
 }
-
 </style>

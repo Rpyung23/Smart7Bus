@@ -164,6 +164,16 @@
               >
               </el-table-column>
 
+
+              <el-table-column
+      prop="tot"
+      label="TOTAL ($)"
+      width="230">
+      <template slot-scope="scope">
+        <strong style="font-size: 1rem;color:black;">{{scope.row.tot}}</strong>
+      </template>
+    </el-table-column>
+
               <div slot="empty"></div>
             </el-table>
           </div>
@@ -648,6 +658,13 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
+          },          {
+            text: "TOTAL ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
           },
         ],
       ];
@@ -684,6 +701,11 @@ export default {
           {
             text: this.mListaREventosDispositivos[i].DescEvent,
             fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaREventosDispositivos[i].tot,
+            fontSize: 9,
             alignment: "center",
           },
         ];
@@ -769,7 +791,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 80, 40, 120, 60, 120],
+              widths: [30, 80, 40, 90, 60, 90,60],
               body: resultadoString,
             },
           },
