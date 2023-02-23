@@ -21,11 +21,13 @@
               </flat-picker>
             </base-input>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker" v-model="fechaFinalRPagosVehiculoProduccion">
               </flat-picker>
             </base-input>
+
+            <el-checkbox v-model="isOrderUnidad" style="margin-bottom: 0 !important;">ORDENAR UNIDAD</el-checkbox>
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
@@ -268,7 +270,8 @@ import {
   RadioButton,
   Radio,
   Notification,
-  Switch
+  Switch,
+  Checkbox
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -296,7 +299,8 @@ export default {
     [TableColumn.name]: TableColumn,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
-    [Switch.name]:Switch
+    [Switch.name]:Switch,
+    [Checkbox.name]:Checkbox
   },
   data() {
     return {
@@ -313,6 +317,7 @@ export default {
       fechaFinalRPagosVehiculoProduccion: "",
       loadingRPagosVehiculo: false,
       mTotalRPagosVehiculo: "0.00",
+      isOrderUnidad:true,
       mPagadoRPagosVehiculo: "0.00",
       mPendienteRPagosVehiculo: "0.00",
       WorksheetExcelRPagosVehiculoProduccion: "",
@@ -468,7 +473,8 @@ export default {
             fechaI: this.fechaInicialRPagosVehiculoProduccion,
             fechaF: this.fechaFinalRPagosVehiculoProduccion,
             tipo: this.radioEstadoRPagosVehiculo,
-            isOrder : (this.isOrderResumidoVehiculo ? 1 : 0)
+            isOrder : (this.isOrderResumidoVehiculo ? 1 : 0),
+            isOrderUnidad: this.isOrderUnidad ? 1 : 0
           };
           //console.log(body);
           var datos = await this.$axios.post(
