@@ -2,54 +2,105 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectMinutosTarjetasResumido"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardTextoRPagosVehiculoProduccion">
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaInicialReporteMinutosTarjetas">
+            <el-select
+              v-model="itemUnidadPanelProduccion"
+              multiple
+              filterable
+              style="margin-right: 0.5rem"
+              remote
+              placeholder="Ingrese unidad"
+              :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
+              :loading="loadingTableUnidadesPanelProduccoionLoading"
+            >
+              <el-option
+                v-for="item in optionsUnidadesPanelProduccion"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
+              </el-option>
+            </el-select>
+
+            <base-input
+              addon-left-icon="ni ni-calendar-grid-58"
+              style="margin-right: 0.5rem"
+            >
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="config_flatpicker"
+                class="form-controlPersonal datepicker"
+                v-model="fechaInicialReporteMinutosTarjetas"
+              >
               </flat-picker>
             </base-input>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaFinalReporteMinutosTarjetas">
+            <base-input style="margin-right: 0.5rem" addon-left-icon="ni ni-calendar-grid-58">
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="config_flatpicker"
+                class="form-controlPersonal datepicker"
+                v-model="fechaFinalReporteMinutosTarjetas"
+              >
               </flat-picker>
             </base-input>
 
+            <el-switch
+              v-model="tipoOrdenamiento"
+              active-text="O. Unidad"
+              inactive-text="O. Ruta"
+            >
+            </el-switch>
 
           </div>
 
           <div class="cardSelectMinutosTarjetasResumido">
             <div class="buttonsAdicionalesRMinutosTarjeta">
-              <base-button icon type="primary" @click="createPDFMinutosTarjetas()" size="sm">
-              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-            </base-button>
+              <base-button
+                icon
+                type="primary"
+                @click="createPDFMinutosTarjetas()"
+                size="sm"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="el-icon-search"></i
+                ></span>
+              </base-button>
             </div>
-            
           </div>
         </card>
 
-
-        <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="cardMinutosTarjetasResumido card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
+        <card
+          class="no-border-card"
+          style="margin-bottom: 0rem"
+          body-classes="cardMinutosTarjetasResumido card-bodyRPagosVehiculoProduccionPC px-0 pb-1"
+          footer-classes="pb-2"
+        >
           <div>
-            <iframe :src="baseURlPDFPanelProduccionMinutosTarjetas" style="width: 100%; height: 39rem"></iframe>
+            <iframe
+              :src="baseURlPDFPanelProduccionMinutosTarjetas"
+              style="width: 100%; height: 39rem"
+            ></iframe>
           </div>
         </card>
-
-
       </div>
     </base-header>
   </div>
 </template>
 <script>
-
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-import { PDFDocument, StandardFonts, rgb, PageSizes } from 'pdf-lib'
+import { PDFDocument, StandardFonts, rgb, PageSizes } from "pdf-lib";
 import {
   Table,
   TableColumn,
@@ -60,14 +111,15 @@ import {
   RadioButton,
   Radio,
   Notification,
-  Button
+  Button,
+  Switch
 } from "element-ui";
-
+import { Spanish } from "flatpickr/dist/l10n/es.js";
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
-import swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.css';
+import swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.css";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 
@@ -90,20 +142,24 @@ export default {
     [Autocomplete.name]: Autocomplete,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
+    [Switch.name]:Switch
   },
   data() {
     return {
+      tipoOrdenamiento:false,
+      config_flatpicker: { allowInput: true, locale: Spanish },
       token: this.$cookies.get("token"),
       fechaInicialReporteMinutosTarjetas: "",
       fechaFinalReporteMinutosTarjetas: "",
       mListaUnidadesPanelProduccion: [],
       optionsUnidadesPanelProduccion: [],
       itemUnidadPanelProduccion: [],
-      baseURlPDFPanelProduccionMinutosTarjetas: ""
+      baseURlPDFPanelProduccionMinutosTarjetas: "",
+      loadingTableUnidadesPanelProduccoionLoading: false,
+      optionsUnidadesPanelProduccion: [],
     };
   },
   methods: {
-
     remoteMethodUnidadesPanelProduccionJustificacion(query) {
       if (query !== "") {
         this.loadingTableUnidadesPanelProduccoionLoading = true;
@@ -133,20 +189,19 @@ export default {
         (day < 10 ? "0" + day : day);
 
       this.fechaInicialReporteMinutosTarjetas = format;
-      this.fechaFinalReporteMinutosTarjetas = format
+      this.fechaFinalReporteMinutosTarjetas = format;
     },
     selectionChange(selectedRows) {
       this.selectedRows = selectedRows;
     },
     async readUnidadesTableroProduccion() {
-      this.mListaUnidadesPanelProduccion = []
+      this.mListaUnidadesPanelProduccion = [];
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
-          token: this.token
-        })
+          token: this.token,
+        });
 
         if (datos.data.status_code == 200) {
-
           for (var i = 0; i < datos.data.data.length; i++) {
             var obj = datos.data.data[i];
             obj.value = obj.CodiVehi;
@@ -154,11 +209,10 @@ export default {
           }
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
     async createPDFMinutosTarjetas() {
-
       swal.fire({
         title: "Generando Reporte ...",
         width: 600,
@@ -173,26 +227,35 @@ export default {
                     rgba(0, 0, 0, 0.5)
                     left top
                     no-repeat
-                  `
+                  `,
       });
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionMinutosTarjetaResumido", {
-        token: this.token,
-        fechaI: this.fechaInicialReporteMinutosTarjetas,
-        fechaF: this.fechaFinalReporteMinutosTarjetas,
-        nameEmpresa: this.$cookies.get('nameEmpresa')
-      })
+      try {
+        var datos = await this.$axios.post(
+        process.env.baseUrl + "/ProduccionMinutosTarjetaResumido",
+        {
+          token: this.token,
+          fechaI: this.fechaInicialReporteMinutosTarjetas,
+          fechaF: this.fechaFinalReporteMinutosTarjetas,
+          nameEmpresa: this.$cookies.get("nameEmpresa"),
+          ordenamiento:this.tipoOrdenamiento,
+          unidades:this.itemUnidadPanelProduccion.length == 0 ? "*" : this.itemUnidadPanelProduccion
+        }
+      );
 
       //console.log(datos.data)
 
       if (datos.data.status_code == 200) {
-        console.log(datos.data.datos)
-        this.baseURlPDFPanelProduccionMinutosTarjetas = "data:application/pdf;base64," + datos.data.datos
+        console.log(datos.data.datos);
+        this.baseURlPDFPanelProduccionMinutosTarjetas =
+          "data:application/pdf;base64," + datos.data.datos;
       } else {
-
       }
-      
-      swal.close()
+      } catch (error) {
+        
+      }
+
+      swal.close();
 
       /*var pdfDoc = await PDFDocument.create()
       var timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
@@ -238,15 +301,16 @@ export default {
 
 
       this.baseURlPDFPanelProduccionMinutosTarjetas = await pdfDoc.saveAsBase64({ dataUri: true });*/
-    }
-  }, mounted() {
-    //this.readUnidadesTableroProduccion()
-    this.initFechaActualProduccionMinutosTarjetas()
-  }
+    },
+  },
+  mounted() {
+    this.readUnidadesTableroProduccion()
+    this.initFechaActualProduccionMinutosTarjetas();
+  },
 };
 </script>
 <style>
-.cardMinutosTarjetasResumido::-webkit-scrollbar{
+.cardMinutosTarjetasResumido::-webkit-scrollbar {
   display: none;
 }
 .form-group {
@@ -272,8 +336,6 @@ export default {
   transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-
-
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
@@ -284,7 +346,6 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-
 
 .no-border-card .card-footer {
   border-top: 0;
