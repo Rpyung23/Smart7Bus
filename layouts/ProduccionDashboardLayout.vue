@@ -45,7 +45,16 @@
             name: 'Reportes',
             icon: 'ni ni-book-bookmark text-blank',
           }"
+          
         >
+
+        
+
+        <sidebar-item
+          translate="no"
+            :link="{ name: 'Valores Acumuladas', path: './rdeudasacumuladas' }"
+          />
+
           <sidebar-item
           translate="no"
             :link="{ name: 'Minutos y Tarjetas', path: pathRminutostarjeta }"

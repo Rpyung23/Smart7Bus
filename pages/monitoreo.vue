@@ -64,6 +64,7 @@
 
       
       <GmapPolygon
+      v-if="checkedGeoCercaCiudad"
         :options="{
           strokeColor: '#172b4d',
           fillColor: '#172b4d80',
@@ -377,6 +378,11 @@
 
     <div id="PanelConfigMapaMonitoreo" class="container_otrosPaneles">
       <div class="RadioTiposMapaMonitoreo">
+
+        <el-checkbox v-model="checkedGeoCercaCiudad" border>Mostrar GeoCerca</el-checkbox>
+
+
+
         <el-radio v-model="radioMapaMonitoreo" label="roadmap" border
           >Mapa Vial</el-radio
         >
@@ -723,7 +729,7 @@
 
 <script>
 import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
-import { Radio, RadioButton, Select,Option } from "element-ui";
+import { Radio, RadioButton, Select,Option,Checkbox } from "element-ui";
 export default {
   layout: "DashboardLayout",
   components: {
@@ -731,7 +737,8 @@ export default {
     [Radio.name]: Radio,
     [RadioButton.name]: RadioButton,
     [Select.name]: Select,
-    [Option.name]: Option
+    [Option.name]: Option,
+    [Checkbox.name]:Checkbox
   },
   data() {
     return {
@@ -748,6 +755,7 @@ export default {
       mListUnidades: [],
       mListRutas: [],
       unidadInputRuta:'',
+      checkedGeoCercaCiudad:true,
       infoContent: "",
       infoWindowPos: {
         lat: 0,
@@ -1008,6 +1016,7 @@ export default {
           }
         );
         if (datos.data.status_code == 200) {
+          console.log("TRAZANDO RUTA..........")
           for (var i = 0; i < datos.data.datos.polilineasRutaSubida.length; i++) {
             this.mListRutaSubida.push(datos.data.datos.polilineasRutaSubida[i])
           }
