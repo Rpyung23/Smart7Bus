@@ -135,7 +135,7 @@
               >
               </el-table-column>
 
-              <el-table-column prop="RubroFalta" label="Rubros F ($)" minWidth="150">
+              <!--<el-table-column prop="RubroFalta" label="Rubros F ($)" minWidth="150">
               </el-table-column>
               <el-table-column
                 prop="RubroJustificacion"
@@ -163,7 +163,7 @@
                 label="Total ($)"
                 minWidth="170"
               >
-              </el-table-column>
+              </el-table-column>-->
 
 
               <el-table-column
@@ -273,11 +273,11 @@ export default {
       json_fields_excelRecibosPagosVehiculoProduccion: {
         Unidad: "Unidad",
         "Fecha": "Fecha",
-        "RUBRO FALTA ($)": "RubroFalta",
+        /*"RUBRO FALTA ($)": "RubroFalta",
         "RUBRO JUSTIFICADO ($)": "RubroJustificacion",
         "RUBROS ($)": "RubroPenalidad",
         "TARJETA DIARIA": "TarjetaDiaria",
-        "TOTAL ($)": "DeudaTotal",
+        "TOTAL ($)": "DeudaTotal",*/
         "TOTAL SIN TARJETA ($)": "DeudaTotalSinTarjeta"
       },
     };
