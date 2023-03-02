@@ -26,6 +26,9 @@
             </el-date-picker>
 
 
+            <el-checkbox style="margin-bottom: 0 !important;" v-model="checkedPEN">PENDIENTE</el-checkbox>
+            <el-checkbox style="margin-bottom: 0 !important;" v-model="checkedPAG">PAGADOS</el-checkbox>
+
           </div>
 
           <div class="cardSelecMinutosTarjetas">
@@ -83,7 +86,8 @@ import {
   RadioButton,
   Radio,
   Notification,
-  Button
+  Button,
+  Checkbox
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -113,6 +117,7 @@ export default {
     [Autocomplete.name]: Autocomplete,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
+    [Checkbox.name]:Checkbox
   },
   data() {
     return {
@@ -123,7 +128,9 @@ export default {
       optionsUnidadesPanelProduccion: [],
       itemUnidadPanelProduccion: [],
       baseURlPDFPanelProduccionMinutosTarjetas: "",
-      loadingTableUnidadesPanelProduccoionLoading: false
+      loadingTableUnidadesPanelProduccoionLoading: false,
+      checkedPEN:false,
+      checkedPAG:false
     };
   },
   methods: {
@@ -205,7 +212,8 @@ export default {
         fechaI: getFecha_dd_mm_yyyy(this.fechaInicialReporteMinutosTarjetas),
         fechaF: getFecha_dd_mm_yyyy(this.fechaFinalReporteMinutosTarjetas),
         unidades: this.itemUnidadPanelProduccion.length > 0 ? this.itemUnidadPanelProduccion : '*',
-        nameEmpresa: this.$cookies.get('nameEmpresa')
+        nameEmpresa: this.$cookies.get('nameEmpresa'),
+        tipo: (this.checkedPEN && this.checkedPAG) ? 3 : (!this.checkedPEN && !this.checkedPAG) ? 3 : (this.checkedPAG) ? 1 : (this.checkedPEN) ? 0 : 0
       })
 
       if (datos.data.status_code == 200) {
