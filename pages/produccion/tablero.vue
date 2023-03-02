@@ -1039,8 +1039,9 @@ export default {
           this.oDolaresPena = "00";
           this.oCentavosPena = "00";
           this.oUsuarioJustificador = obj.NombApellUsua;
+          
           this.oTiempoFalta =
-            obj.AtrasoFTiempo == "00:00:00"
+            obj.AtrasoFTiempo == "00:00:00" || obj.AtrasoFTiempo == "" 
               ? obj.AdelantoFTiempo
               : obj.AtrasoFTiempo;
 
@@ -1055,6 +1056,9 @@ export default {
           this.oBanderaSegundos = 0;
           this.oBanderaDolares = 1;
           this.oBanderaCentavos = 1;
+
+          
+
         } else {
           this.oUsuarioJustificador = obj.NombApellUsua;
           this.oMotivoString = obj.Motivo;
@@ -1359,13 +1363,14 @@ export default {
     },
     async registerJustificacionProduccion() {
       var dinero =
-        this.objSeleccionado.Tipo == 3 || this.objSeleccionado.Tipo == 4
+        this.objSeleccionado.Tipo == 3 || this.objSeleccionado.Tipo == 4 || this.objSeleccionado.Tipo == 5
           ? this.oDolaresPena + "." + this.oCentavosPena
           : "0.00";
       var tiempo =
         this.objSeleccionado.Tipo == 1 || this.objSeleccionado.Tipo == 2
           ? this.oHora + ":" + this.oMinutos + ":" + this.oSegundos
           : "00:00:00";
+
 
       var objBody = {
         token: this.token,
