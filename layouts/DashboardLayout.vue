@@ -74,9 +74,11 @@
           name: 'Reportes',
           icon: 'ni ni-ungroup text-orange',
         }">
+
           <sidebar-item :link="{ name: 'Recorrido', path: '/rdistancia' }" translate="no"/>
           <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" translate="no"/>
           <sidebar-item :link="{ name: 'ANT', path: './rant' }" />
+          <sidebar-item :link="{ name: 'R. Gasolineras', path: './rGasolinera' }" translate="no"/>
           <sidebar-item :link="{ name: 'R. Puertas', path: './rPuertas' }" translate="no"/>
           <sidebar-item :link="{ name: 'R. Tipos Eventos', path: './rTiposEventos' }" translate="no"/>
           <sidebar-item :link="{ name: 'R. Fuera de Ruta', path: './rFueraRuta' }" translate="no"/>
