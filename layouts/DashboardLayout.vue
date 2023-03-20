@@ -25,7 +25,7 @@
         }">
         </sidebar-item>
 
-        <sidebar-item
+        <!--<sidebar-item
           translate="no"
           :link="{
             name: 'Rol Programado',
@@ -33,7 +33,7 @@
             path: './despacho_automatico/CalendarioDespachoAutomatico',
           }"
         >
-        </sidebar-item>
+        </sidebar-item>-->
 
         <sidebar-item translate="no" v-if="permisos != null && permisos.editor_rutas != null && permisos.editor_rutas.active != null && permisos.editor_rutas.active" :link="{
           name: 'Editor de Rutas',
@@ -86,7 +86,7 @@
         }">
 
           <sidebar-item :link="{ name: 'Recorrido', path: '/rdistancia' }" translate="no"/>
-          <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" translate="no"/>
+          <!--<sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" translate="no"/>-->
           <sidebar-item :link="{ name: 'ANT', path: './rant' }" />
           <sidebar-item :link="{ name: 'R. Gasolineras', path: './rGasolinera' }" translate="no"/>
           <sidebar-item :link="{ name: 'R. Puertas', path: './rPuertas' }" translate="no"/>
