@@ -276,6 +276,11 @@ export default {
           body
         );
         this.mListControlesSalidaPanelBusquedaDespacho.push(...datos.data.data);
+        
+        console.log("------------------------------------------")
+        console.log(datos.data.data)
+        console.log("------------------------------------------")
+
       } catch (error) {
         console.log(error);
       }
@@ -290,6 +295,8 @@ export default {
           salida: item.idSali_m,
         }
       );
+
+      console.log(datos.data.datos)
 
       this.mListControlesMarcSalidaRecorrido.push(...datos.data.datos);
       } catch (error) {

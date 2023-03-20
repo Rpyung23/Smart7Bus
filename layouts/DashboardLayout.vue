@@ -25,6 +25,16 @@
         }">
         </sidebar-item>
 
+        <sidebar-item
+          translate="no"
+          :link="{
+            name: 'Rol Programado',
+            icon: 'ni ni-archive-2 text-danger',
+            path: './despacho_automatico/CalendarioDespachoAutomatico',
+          }"
+        >
+        </sidebar-item>
+
         <sidebar-item translate="no" v-if="permisos != null && permisos.editor_rutas != null && permisos.editor_rutas.active != null && permisos.editor_rutas.active" :link="{
           name: 'Editor de Rutas',
           icon: 'ni ni-vector text-danger',

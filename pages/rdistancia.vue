@@ -34,7 +34,8 @@
               </base-button>
             <download-excel
               class="btn btn-icon btn-fab btn-success btn-sm"
-              :header="headerExcelRPagosVehiculoProduccion"
+              v-if="mListaRVelocidades.length > 0"
+              :header="headerExcelRPagosVehiculoResumidoProduccion"
               :data="mListaRVelocidades"
               :fields="json_fields_ExcelRPagosVehiculoResumidoProduccion"
               :worksheet="WorksheetExcelRPagosVehiculoResumidoProduccion"
@@ -52,7 +53,7 @@
           </div>
         </card>
 
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <!--<card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
           footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
@@ -73,7 +74,7 @@
             </el-select>
 
           </div>
-        </card>
+        </card>-->
 
         <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRDistancias px-0 pb-1"
           footer-classes="pb-2">
@@ -82,7 +83,7 @@
               element-loading-text="Cargando Datos..."
               :data="mListaRVelocidades" row-key="id"
               class="tablePanelRDistancia" header-row-class-name="thead-dark"
-              height="calc(100vh - 13rem)" highlight-current-row>
+              height="calc(100vh - 10rem)" highlight-current-row>
 
               <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
               </el-table-column>
@@ -162,33 +163,33 @@ export default {
         {
           prop: "CodiVehiHistEven",
           label: "Unidad",
-          minWidth: 110,
+          sortable: true,
+          minWidth: 140,
+        },
+        {
+          prop: "FechHistEven",
+          label: "Fecha",
+          minWidth: 160,
         },
         {
           prop: "DescRutaSali_m",
           label: "Ruta",
-          minWidth: 300,
+          minWidth: 250,
         },
         {
-          prop: "total_km",
-          label: "KM Total",
-          minWidth: 200,
-          sortable: true,
+          prop: "odometroTrabajado",
+          label: "KM TRABAJADO.",
+          minWidth: 240,
+          
         },
         {
-          prop: "min_km",
-          label: "KM Min.",
+          prop: "odometroMuerto",
+          label: "KM MUERTO.",
           minWidth: 160,
-        },
-        {
-          prop: "max_km",
-          label: "KM Max.",
-          minWidth: 150,
-        },
-        {
-          prop: "prom_km",
-          label: "KM Pro.",
-          minWidth: 170,
+        },{
+          prop: "odometroTotal",
+          label: "KM TOTAL.",
+          minWidth: 160,
         }
       ],
       mListaRVelocidades: [],
@@ -200,11 +201,11 @@ export default {
       headerExcelRPagosVehiculoResumidoProduccion:[],
       json_fields_ExcelRPagosVehiculoResumidoProduccion: {
         "Unidad": "CodiVehiHistEven",
+        "Fecha": "FechHistEven",
         "Ruta": "DescRutaSali_m",
-        "KM Total": "total_km",
-        "KM Minimo": "min_km",
-        "KM Maximo": "max_km",
-        "KM Promedio": "prom_km"
+        "KM TRABAJADOS": "odometroTrabajado",
+        "KM MUERTOS": "odometroMuerto",
+        "KM TOTALES": "odometroTotal"
       },
     };
   },
@@ -353,7 +354,7 @@ export default {
 
 .card-bodyRDistancias {
   padding: 0rem !important;
-  height: calc(100vh - 12.9rem);
+  height: calc(100vh - 9.5rem);
   overflow: auto;
 }
 

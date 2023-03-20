@@ -8,7 +8,7 @@ import VeeValidate from 'vee-validate';
 import SideBar from '~/components/argon-core/SidebarPlugin';
 import Vue from 'vue';
 // element ui language configuration
-import lang from 'element-ui/lib/locale/lang/en';
+import lang from 'element-ui/lib/locale/lang/es';
 import locale from 'element-ui/lib/locale';
 import './globalDirectives'
 import './globalComponents'

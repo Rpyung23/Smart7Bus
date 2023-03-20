@@ -14,13 +14,18 @@ import Card from '~/components/argon-core/Cards/Card.vue';
 import Modal from '~/components/argon-core/Modal.vue';
 import RouteBreadcrumb from '~/components/argon-core/Breadcrumb/RouteBreadcrumb';
 import StatsCard from '~/components/argon-core/Cards/StatsCard.vue';
-import { Input, Tooltip, Popover } from 'element-ui';
+import { Input, Tooltip, Popover,Calendar } from 'element-ui';
+
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 import Vue from 'vue';
+
+import lang from 'element-ui/lib/locale/lang/es'
+import locale from 'element-ui/lib/locale'
+
+locale.use(lang)
 /**
  * You can register global components here and use them as a plugin in your main Vue instance
  */
-
 Vue.component(Badge.name, Badge);
 Vue.component(BaseAlert.name, BaseAlert);
 Vue.component(BaseButton.name, BaseButton);
@@ -38,6 +43,7 @@ Vue.component(Modal.name, Modal);
 Vue.component(StatsCard.name, StatsCard);
 Vue.component(RouteBreadcrumb.name, RouteBreadcrumb);
 Vue.component(Input.name, Input);
+Vue.component(Calendar.name,Calendar)
 Vue.component('validation-provider', ValidationProvider)
 Vue.component('validation-observer', ValidationObserver)
 Vue.use(Tooltip);
