@@ -77,6 +77,11 @@ module.exports = {
      */
     axios: {
         // See https://github.com/nuxt-community/axios-module#options
+        headers: {
+            common: {
+              'Content-Type': 'application/json'
+            }
+          }
     },
 
     /*

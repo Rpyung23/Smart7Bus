@@ -293,8 +293,7 @@ export default {
         process.env.baseUrl + "/readAllAlertasDispotivos",
         {
           token: this.$cookies.get("token"),
-        }
-      );
+        } );
 
       this.mListaAlertasDispositivosNotificaciones = [];
 
