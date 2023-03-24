@@ -627,7 +627,7 @@ export default {
           } else if (datos.data.status_code == 300) {
             Notification.info({
               title: "Panel Salidas",
-              message: "ANo existen datos disponibles.",
+              message: "No existen datos disponibles.",
             });
           } else {
             Notification.error({

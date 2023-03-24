@@ -76,6 +76,45 @@ export function getformatFechatoTime(fecha) {
 }
 
 
+export function getformatFechaDateTime(fecha) 
+{
+
+    var fecha_ = new Date(fecha)
+
+
+    var dia = fecha_.getDate();
+
+    var mes = fecha_.getMonth();
+
+    mes = mes + 1;
+
+    if (dia < 10) {
+        dia = "0" + dia;
+    }
+    if (mes < 10) {
+        mes = "0" + mes;
+    }
+
+
+
+    var hora = fecha_.getHours();
+
+    var minutos = fecha_.getMinutes();
+
+
+
+
+    if (hora < 10) {
+        hora = "0" + hora;
+    }
+    if (minutos < 10) {
+        minutos = "0" + minutos;
+    }
+
+    return (fecha_.getFullYear() + "-" + mes + "-" + dia+" "+hora + ":" + minutos + ":00")
+}
+
+
 export function getFecha_dd_mm_yyyy(fecha) {
 
 
@@ -158,7 +197,6 @@ export function getFechatoDDMM(fecha) {
 
     return dia +" "+mes
 }
-
 
 export function convertSecondtoTimeString(seconds) {
     if (seconds == 0) {
