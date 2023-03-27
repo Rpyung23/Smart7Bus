@@ -7,7 +7,7 @@
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
           footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-select style="margin-right: 0.5rem" v-model="unidadSelectRhrrecorrido" multiple filterable remote
+            <el-select style="margin-right: 0.5rem" v-model="itemUnidadSelectRhrrecorrido" multiple filterable remote
               reserve-keyword placeholder="Ingrese una unidad" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
               :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
               <el-option v-for="item in   optionsUnidadesSalidasPanelBusqueda" :key="item.CodiVehi" :label="item.CodiVehi"
@@ -38,9 +38,9 @@
 
 
         </card>
-        <card id="cardContenedorPdf" class="no-border-card col"
-          style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem);">
-          <embed id="idIframe" src="about:blank" type="application/pdf" width="100%" height="100%" />
+
+        <card class="no-border-card" style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem);">
+          <embed id="iframeContainerRHRecorrido" src="about:blank" type="application/pdf" width="100%" height="100%" />
         </card>
 
       </div>
@@ -53,10 +53,13 @@
 import {
   Select,
   Option,
-  DatePicker
+  DatePicker,
+  Table,
+  TableColumn,
 } from "element-ui";
 import { getFecha_dd_mm_yyyy, getformatFechatoTime, getformatFechaDateTime } from '../util/fechas'
 import { getBase64LogoReportes } from "../util/logoReport";
+import { convertSecondtoTimeString } from "../util/fechas";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -73,7 +76,8 @@ export default {
     return {
       token: this.$cookies.get("token"),
       options: [],
-      unidadSelectRhrrecorrido: [],
+      itemUnidadSelectRhrrecorrido: [],
+      [Table.name]: Table,
       listaUnidadesRhrrecorridoPanelBusqueda: [],
       mListaUnidadesRhrrecorrido: [],
       loadingTableUnidadesSalidasPanelBusquedaloading: false,
@@ -84,13 +88,17 @@ export default {
   methods: {
 
     async readAllVehiculos() {
-      var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
-        token: this.token,
-        tipo: 3,
-      });
-      if (datos.data.status_code == 200) {
-        this.listaUnidadesRhrrecorridoPanelBusqueda.push(...datos.data.data);
-        //return console.log(datos.data.data);
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
+          token: this.token,
+          tipo: 3,
+        });
+        if (datos.data.status_code == 200) {
+          this.listaUnidadesRhrrecorridoPanelBusqueda.push(...datos.data.data);
+          //console.log(datos.data.data);
+        }
+      } catch (error) {
+        console.log(error)
       }
     },
 
@@ -98,13 +106,13 @@ export default {
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/Rhrrecorrido", {
           token: this.token,
-          unidades: this.unidadSelectRhrrecorrido.length > 0 ? this.unidadSelectRhrrecorrido : "*",
+          unidades: this.itemUnidadSelectRhrrecorrido.length > 0 ? this.itemUnidadSelectRhrrecorrido : "*",
           fechaI: getformatFechaDateTime(this.datePickerRhrrecorrido[0].toString()),
           fechaF: getformatFechaDateTime(this.datePickerRhrrecorrido[1].toString()),
         })
-
-
+        console.log("aca status >>>>>>", datos.data.status_code)
         if (datos.data.status_code == 200) {
+
           this.$notify({
             title: 'RECORRIDO',
             message: datos.data.msm,
@@ -113,6 +121,7 @@ export default {
 
           this.mListaUnidadesRhrrecorrido.push(...datos.data.datos);
           this.generatePdf()
+
         } else if (datos.data.status_code == 300) {
           this.$notify({
             title: 'ERROR API REST',
@@ -136,7 +145,6 @@ export default {
       }
     },
 
-
     remoteMethodUnidadesSalidasPanelBusqueda(query) {
       if (query !== "") {
         this.loadingTableUnidadesSalidasPanelBusquedaloading = true;
@@ -154,10 +162,226 @@ export default {
       }
     },
 
+
     generatePdf() {
-      var docDefiinition = {
-        pageSize: "A4",
-        pageMargins: [40, 80, 40, 60],
+
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var unidad = [
+        {
+          text:
+            "Unidad : " + (this.itemUnidadSelectRhrrecorrido.length == 0 ? "TODAS LAS UNIDADES" : this.itemUnidadSelectRhrrecorrido.toString()),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var desde_hasta = [
+        {
+          text:
+            "Fecha Salida : " + this.datePickerRhrrecorrido[0] + " Hasta " + this.datePickerRhrrecorrido[1],
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var resultadoString = [
+        [
+          {
+            text: "Unidad",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Fecha Evento",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Des. Ruta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Des. Frec",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Num. Vuelta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Cod. Control",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }, {
+            text: "H. Salida",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. Marcada",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Adelanto",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }, {
+            text: "Atraso",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Latitud",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Longitud",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Rumbo",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Velocidad",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }
+        ],
+      ];
+
+      for (var i = 0; i < this.mListaUnidadesRhrrecorrido.length; i++) {
+        var arrys = [
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].CodiVehiHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].FechHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].DescRutaSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].DescFrec,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].NumeVuelSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].CodiCtrlSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+          }, {
+            text: (getformatFechaDateTime(this.mListaUnidadesRhrrecorrido[i].HoraProgSali_d)),
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: (this.mListaUnidadesRhrrecorrido[i].HoraMarcSali_d),
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].atraso,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].adelanto,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].LatiHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].LongHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].RumbHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].VeloHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+        ]
+        resultadoString.push(arrys);
+      }
+
+      var docDefinition = {
+        pageSize: 'A4',
+        pageOrientation: 'landscape',
+        pageMargins: [30, 80, 40, 30],
         header: {
           margin: 15,
           columns: [
@@ -174,7 +398,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE H Recorrido",
+                      text: "REPORTE HISTORIAL RECORRIDO",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
@@ -199,17 +423,35 @@ export default {
             },
           ],
         },
-        content: [{
-          text: 'Mi primer pdf',
-        }
-        ]
-      }
-      this.pdfObject = pdfMake.createPdf(docDefiinition);
-      this.pdfObject.getDataUrl((dataUrl) => {
-        const iframe = document.querySelector('#idIframe');
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450, 450, 450],
+              body: [empresa, unidad, desde_hasta],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40, 50, 60, 60, 40, 40, 50, 50, 40, 40, 40, 50, 40, 40],
+              body: resultadoString,
+            },
+          }
+
+        ],
+      };
+
+      const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        let iframe = document.getElementById('iframeContainerRHRecorrido');
         iframe.src = dataUrl;
+        targetElement.appendChild(iframe);
       });
+
     }
+
   },
   mounted() {
     this.readAllVehiculos();

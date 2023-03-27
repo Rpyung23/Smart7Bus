@@ -444,7 +444,7 @@ export default {
               headerRows: 0,
               /*widths: ['*'],
               body: [empresa]*/
-              widths: [450, 450, 450, 450, 450, 450],
+              widths: [450, 450, 450, 450],
               body: [empresa, unidad, ruta, desde_hasta],
             },
           },
