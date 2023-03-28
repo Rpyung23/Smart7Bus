@@ -402,14 +402,14 @@ export default {
           minWidth: 150,
         },
         {
-          prop: "DescEvent",
-          label: "Evento",
-          minWidth: 170,
+          prop: "HoraDispEven",
+          label: "F. Evento",
+          minWidth: 185,
         },
         {
-          prop: "totalEvento",
-          label: "Cant Eventos",
-          minWidth: 155,
+          prop: "RangoPermitido",
+          label: "F. Tolerancia",
+          minWidth: 185,
         },
         {
           prop: "DescRutaSali_m",
@@ -644,7 +644,7 @@ export default {
             alignment: "center",
           },
           {
-            text: "Cant Eventos",
+            text: "F. Evento",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
@@ -652,7 +652,7 @@ export default {
             alignment: "center",
           },
           {
-            text: "Detalle Evento",
+            text: "F. Tolerancia",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
@@ -694,12 +694,12 @@ export default {
             alignment: "center",
           },
           {
-            text: this.mListaREventosDispositivos[i].totalEvento,
+            text: this.mListaREventosDispositivos[i].HoraDispEven,
             fontSize: 8.5,
             alignment: "center",
           },
           {
-            text: this.mListaREventosDispositivos[i].DescEvent,
+            text: this.mListaREventosDispositivos[i].RangoPermitido,
             fontSize: 8.5,
             alignment: "center",
           },

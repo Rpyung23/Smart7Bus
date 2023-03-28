@@ -744,6 +744,7 @@ export default {
       await this.readDetalleTableroProduccion(item);
     },
     async showVisibleModalRecorridoTableroProduccion(item) {
+      console.log("---------------------------")
       console.log(item);
       this.isRecorridoTableroProduccion =
         this.isRecorridoTableroProduccion == true ? false : true;
