@@ -72,11 +72,11 @@ export default {
       for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
         var arrys = [
           {
-            text: this.mListSalidasTarjeta[i].DescCtrlSali_d.substring(0, 9),
+            text: this.mListSalidasTarjeta[i].DescCtrlSali_d.substring(0, 7),
             fontSize: 8.5,
           },
           {
-            text: this.mListSalidasTarjeta[i].HoraProgSali_d.substring(0, 5),
+            text: this.mListSalidasTarjeta[i].HoraProgSali_d,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -200,7 +200,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [55, 23, 33, 19, 17],
+              widths: [45, 33, 33, 19, 17],
 
               body: resultadoString,
             },
