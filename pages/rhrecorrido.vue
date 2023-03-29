@@ -17,11 +17,18 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer" size="sm">
+
             <div class="buttonsAdicionalesRContadorVuelta">
               <base-button icon type="primary" size="sm" @click="readRhrrecorrido">
-                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+                <span class="btn-inner--icon"><i class="el-icon-search" title="Exportar PDF"></i></span>
               </base-button>
 
+              <download-excel v-if="mListaUnidadesRhrrecorrido.length > 0"
+                class="btn btn-icon btn-fab btn-success btn-sm" outline :header="oheaderExcelRhrrecorrido"
+                title="Exportar a Excel" :data="mListaUnidadesRhrrecorrido" :fields="json_fields_excelRhrrecorrido"
+                :worksheet="WorksheetExcelRhrrecorrido" :name="FileNameExcelRhrrecorrido">
+                <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
+              </download-excel>
 
             </div>
           </div>
@@ -55,21 +62,25 @@ import {
   Option,
   DatePicker,
   Table,
-  TableColumn,
 } from "element-ui";
-import { getFecha_dd_mm_yyyy, getformatFechatoTime, getformatFechaDateTime } from '../util/fechas'
+import { getFecha_dd_mm_yyyy, getformatFechaDateTime } from '../util/fechas'
 import { getBase64LogoReportes } from "../util/logoReport";
-import { convertSecondtoTimeString } from "../util/fechas";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import Vue from "vue";
+import JsonExcel from "vue-json-excel";
+Vue.component("downloadExcel", JsonExcel);
+import swal from "sweetalert2";
+
 
 export default {
   layout: "DashboardLayout",
   components: {
     [Select.name]: Select,
     [Option.name]: Option,
-    [DatePicker.name]: DatePicker
+    [DatePicker.name]: DatePicker,
+    JsonExcel,
 
   },
   data() {
@@ -83,6 +94,26 @@ export default {
       loadingTableUnidadesSalidasPanelBusquedaloading: false,
       optionsUnidadesSalidasPanelBusqueda: [],
       datePickerRhrrecorrido: [],
+
+      json_fields_excelRhrrecorrido: {
+        UNIDAD: "CodiVehiHistEven",
+        FECHA: "FechHistEven",
+        DesRuta: "DescRutaSali_m",
+        DesFrec: "DescFrec",
+        NunVueltas: "NumeVuelSali_m",
+        DesCtrl: "DesCtrSali_d",
+        HSalida: "HoraProgSali_d",
+        HMarcada: "HoraMarcSali_d",
+        Atraso: "atraso",
+        Adelanto: "adelanto",
+        Latitud: "LatiHistEven",
+        Longitud: "LongHistEven",
+        Rumbo: "RumbHistEven",
+        Velocidad: "Velocidad",
+      },
+      WorksheetExcelRhrrecorrido: "Hoja_1",
+      FileNameExcelRhrrecorrido: "ReporteHistoricoRecorrido",
+      oheaderExcelRhrrecorrido: "",
     };
   },
   methods: {
@@ -95,7 +126,6 @@ export default {
         });
         if (datos.data.status_code == 200) {
           this.listaUnidadesRhrrecorridoPanelBusqueda.push(...datos.data.data);
-          //console.log(datos.data.data);
         }
       } catch (error) {
         console.log(error)
@@ -103,6 +133,39 @@ export default {
     },
 
     async readRhrrecorrido() {
+      this.mListaUnidadesRhrrecorrido=  [],
+      
+      swal.fire({
+        title: "Generando Reporte ...",
+        width: 600,
+        padding: "3em",
+        background: "#fff",
+        showCancelButton: false,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        allowOutsideClick: false,
+        backdrop: `
+                    rgba(0, 0, 0, 0.5)
+                    left top
+                    no-repeat
+                  `
+      });
+
+
+      this.oheaderExcelRhrrecorrido = [
+        "REPORTE HISTORIAL DE RECORIDO",
+        "Fechas : " +
+        this.datePickerRhrrecorrido[0] +
+        " hasta " +
+        this.datePickerRhrrecorrido[1],
+        "Unidades : " +
+        (this.itemUnidadSelectRhrrecorrido.length <= 0
+          ? "TODAS LAS UNIDADES"
+          : this.itemUnidadSelectRhrrecorrido),
+      ];
+
+
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/Rhrrecorrido", {
           token: this.token,
@@ -110,7 +173,7 @@ export default {
           fechaI: getformatFechaDateTime(this.datePickerRhrrecorrido[0].toString()),
           fechaF: getformatFechaDateTime(this.datePickerRhrrecorrido[1].toString()),
         })
-        console.log("aca status >>>>>>", datos.data.status_code)
+
         if (datos.data.status_code == 200) {
 
           this.$notify({
@@ -118,31 +181,37 @@ export default {
             message: datos.data.msm,
             type: 'success'
           });
-
           this.mListaUnidadesRhrrecorrido.push(...datos.data.datos);
+          swal.close()
           this.generatePdf()
-
         } else if (datos.data.status_code == 300) {
           this.$notify({
             title: 'ERROR API REST',
             message: datos.data.msm,
             type: 'info'
           });
+          swal.close()
+          this.generatePdfDefault()
         } else {
           this.$notify({
             title: 'ERROR API REST',
             message: datos.data.msm,
             type: 'error'
           });
+          swal.close()
+          this.generatePdfDefault()
         }
       } catch (error) {
 
         this.$notify({
-          title: 'Error CATCH',
+          title: 'Error CATCH   Servidor Fuera de Servicio Temporalmente',
           message: error.toString(),
           type: 'error'
         });
+        swal.close()
+        this.generatePdfDefault()
       }
+      swal.close()
     },
 
     remoteMethodUnidadesSalidasPanelBusqueda(query) {
@@ -161,7 +230,6 @@ export default {
         this.optionsUnidadesSalidasPanelBusqueda = [];
       }
     },
-
 
     generatePdf() {
 
@@ -231,7 +299,7 @@ export default {
             alignment: "center",
           },
           {
-            text: "Cod. Control",
+            text: "Des. Control",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
@@ -331,11 +399,11 @@ export default {
             alignment: "center",
           },
           {
-            text: this.mListaUnidadesRhrrecorrido[i].CodiCtrlSali_d,
+            text: this.mListaUnidadesRhrrecorrido[i].DesCtrSali_d,
             fontSize: 8.5,
             alignment: "center",
           }, {
-            text: (getformatFechaDateTime(this.mListaUnidadesRhrrecorrido[i].HoraProgSali_d)),
+            text: (this.mListaUnidadesRhrrecorrido[i].HoraProgSali_d),
             fontSize: 8.5,
             alignment: "center",
           },
@@ -370,7 +438,7 @@ export default {
             alignment: "center",
           },
           {
-            text: this.mListaUnidadesRhrrecorrido[i].VeloHistEven,
+            text: this.mListaUnidadesRhrrecorrido[i].Velocidad,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -435,7 +503,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 50, 60, 60, 40, 40, 50, 50, 40, 40, 40, 50, 40, 40],
+              widths: [40, 50, 60, 60, 40, 50, 50, 50, 40, 40, 40, 50, 30, 40],
               body: resultadoString,
             },
           }
@@ -447,9 +515,297 @@ export default {
       pdfDocGenerator.getDataUrl((dataUrl) => {
         let iframe = document.getElementById('iframeContainerRHRecorrido');
         iframe.src = dataUrl;
-        targetElement.appendChild(iframe);
+        // targetElement.appendChild(iframe);
       });
 
+    },
+
+    generatePdfDefault() {
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var unidad = [
+        {
+          text:
+            "Unidad : " + (this.itemUnidadSelectRhrrecorrido.length == 0 ? "TODAS LAS UNIDADES" : this.itemUnidadSelectRhrrecorrido.toString()),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var desde_hasta = [
+        {
+          text:
+            "Fecha Salida : " + this.datePickerRhrrecorrido[0] + " Hasta " + this.datePickerRhrrecorrido[1],
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var resultadoString = [
+        [
+          {
+            text: "Unidad",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Fecha Evento",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Des. Ruta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Des. Frec",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Num. Vuelta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Des. Control",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }, {
+            text: "H. Salida",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. Marcada",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Adelanto",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }, {
+            text: "Atraso",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Latitud",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Longitud",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Rumbo",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Velocidad",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }
+        ],
+      ];
+
+      for (var i = 0; i < 1; i++) {
+        var arrys = [
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          }, {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+        ]
+        resultadoString.push(arrys);
+      }
+
+
+      var docDefinition = {
+        pageSize: 'A4',
+        pageOrientation: 'landscape',
+        pageMargins: [30, 80, 40, 30],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE HISTORIAL RECORRIDO",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450, 450, 450],
+              body: [empresa, unidad, desde_hasta],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40, 50, 60, 60, 40, 50, 50, 50, 40, 40, 40, 50, 30, 40],
+              body: resultadoString,
+            },
+          }
+
+        ],
+      };
+
+      const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        let iframe = document.getElementById('iframeContainerRHRecorrido');
+        iframe.src = dataUrl;
+        // targetElement.appendChild(iframe);
+      });
     }
 
   },
