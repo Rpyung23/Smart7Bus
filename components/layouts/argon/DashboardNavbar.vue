@@ -2,7 +2,7 @@
   <base-nav container-classes="container-fluid" class="navbar-top border-bottom navbar-expand"
     :class="{ 'bg-success navbar-dark': type === 'default' }">
     <div id="titleGestionInteligente" class="col barraTitle">
-      <span class="titleNavbar text-white mb-0 font-weight-bold">Gestión Inteligente de Transporte Urbano
+      <span class="titleNavbar text-white mb-0 font-weight-bold">{{nameEmpresa}}
       </span>
     </div>
     <!-- Navbar links -->
@@ -237,7 +237,8 @@ export default {
       hrefLogOut:"./",
       searchQuery: "",
       permisos: null,
-      oEspacio:false
+      oEspacio:false,
+      nameEmpresa:"Gestión Inteligente de Transporte Urbano"
     };
   },
   methods: {
@@ -324,6 +325,8 @@ export default {
     /*this.mueveReloj();*/
     this.nameUsuario = this.$cookies.get("namesUsuario")
     this.hrefLogOut = "./"+this.$cookies.get("empresa");
+
+    this.nameEmpresa = this.$cookies.get("nameEmpresa")
     /*setInterval(() => {
       this.mueveReloj();
     }, 1000);*/
