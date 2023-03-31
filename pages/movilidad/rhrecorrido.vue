@@ -2,69 +2,108 @@
   <div>
     <base-header>
       <div class="align-items-center py-3">
-
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-select style="margin-right: 0.5rem" v-model="itemUnidadSelectRhrrecorrido" multiple filterable remote
-              reserve-keyword placeholder="Ingrese una unidad" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
-              <el-option v-for="item in   optionsUnidadesSalidasPanelBusqueda" :key="item.CodiVehi" :label="item.CodiVehi"
-                :value="item.CodiVehi">
+            <el-select
+              style="margin-right: 0.5rem"
+              v-model="itemUnidadSelectRhrrecorrido"
+              multiple
+              filterable
+              remote
+              reserve-keyword
+              placeholder="Ingrese una unidad"
+              :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
+            >
+              <el-option
+                v-for="item in optionsUnidadesSalidasPanelBusqueda"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
               </el-option>
             </el-select>
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer" size="sm">
-
+          <div
+            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+            size="sm"
+          >
             <div class="buttonsAdicionalesRContadorVuelta">
-              <base-button icon type="primary" size="sm" @click="readRhrrecorrido">
-                <span class="btn-inner--icon"><i class="el-icon-search" title="Exportar PDF"></i></span>
+              <base-button
+                icon
+                type="primary"
+                size="sm"
+                @click="readRhrrecorrido"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="el-icon-search" title="Exportar PDF"></i
+                ></span>
               </base-button>
 
-              <download-excel v-if="mListaUnidadesRhrrecorrido.length > 0"
-                class="btn btn-icon btn-fab btn-success btn-sm" outline :header="oheaderExcelRhrrecorrido"
-                title="Exportar a Excel" :data="mListaUnidadesRhrrecorrido" :fields="json_fields_excelRhrrecorrido"
-                :worksheet="WorksheetExcelRhrrecorrido" :name="FileNameExcelRhrrecorrido">
-                <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
+              <download-excel
+                v-if="mListaUnidadesRhrrecorrido.length > 0"
+                class="btn btn-icon btn-fab btn-success btn-sm"
+                outline
+                :header="oheaderExcelRhrrecorrido"
+                title="Exportar a Excel"
+                :data="mListaUnidadesRhrrecorrido"
+                :fields="json_fields_excelRhrrecorrido"
+                :worksheet="WorksheetExcelRhrrecorrido"
+                :name="FileNameExcelRhrrecorrido"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="ni ni-collection"></i
+                ></span>
               </download-excel>
-
             </div>
           </div>
         </card>
 
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-date-picker v-model="datePickerRhrrecorrido" type="datetimerange" range-separator="Hasta"
-              format="yyyy-MM-dd HH:mm:ss" start-placeholder="Fecha Inicial" end-placeholder="Fecha Final">
+            <el-date-picker
+              v-model="datePickerRhrrecorrido"
+              type="datetimerange"
+              range-separator="Hasta"
+              format="yyyy-MM-dd HH:mm:ss"
+              start-placeholder="Fecha Inicial"
+              end-placeholder="Fecha Final"
+            >
             </el-date-picker>
           </div>
-
-
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem);">
-          <embed id="iframeContainerRHRecorrido" src="about:blank" type="application/pdf" width="100%" height="100%" />
+        <card
+          class="no-border-card"
+          style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)"
+        >
+          <embed
+            id="iframeContainerRHRecorrido"
+            :src="base64PDFRHRECORRIDO"
+            type="application/pdf"
+            width="100%"
+            height="100%"
+          />
         </card>
-
       </div>
     </base-header>
-
   </div>
 </template>
 <script>
-
-import {
-  Select,
-  Option,
-  DatePicker,
-  Table,
-} from "element-ui";
-import { getFecha_dd_mm_yyyy, getformatFechaDateTime } from '../util/fechas'
-import { getBase64LogoReportes } from "../util/logoReport";
+import { Select, Option, DatePicker, Table } from "element-ui";
+import { getFecha_dd_mm_yyyy, getformatFechaDateTime } from "../../util/fechas";
+import { getBase64LogoReportes } from "../../util/logoReport";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -72,23 +111,22 @@ import Vue from "vue";
 import JsonExcel from "vue-json-excel";
 Vue.component("downloadExcel", JsonExcel);
 import swal from "sweetalert2";
-
+import { timeout } from "q";
 
 export default {
-  layout: "DashboardLayout",
+  layout: "DashboardLayoutMovilidad",
   components: {
     [Select.name]: Select,
     [Option.name]: Option,
     [DatePicker.name]: DatePicker,
     JsonExcel,
-
   },
   data() {
     return {
       token: this.$cookies.get("token"),
       options: [],
+      base64PDFRHRECORRIDO: "",
       itemUnidadSelectRhrrecorrido: [],
-      [Table.name]: Table,
       listaUnidadesRhrrecorridoPanelBusqueda: [],
       mListaUnidadesRhrrecorrido: [],
       loadingTableUnidadesSalidasPanelBusquedaloading: false,
@@ -117,7 +155,6 @@ export default {
     };
   },
   methods: {
-
     async readAllVehiculos() {
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
@@ -128,90 +165,93 @@ export default {
           this.listaUnidadesRhrrecorridoPanelBusqueda.push(...datos.data.data);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
 
     async readRhrrecorrido() {
-      this.mListaUnidadesRhrrecorrido=  [],
-      
-      swal.fire({
-        title: "Generando Reporte ...",
-        width: 600,
-        padding: "3em",
-        background: "#fff",
-        showCancelButton: false,
-        showConfirmButton: false,
-        allowEscapeKey: false,
-        allowEnterKey: false,
-        allowOutsideClick: false,
-        backdrop: `
+    this.mListaUnidadesRhrrecorrido = []
+
+    let iframe = document.getElementById('iframeContainerRHRecorrido');
+    iframe.src = "";
+    
+    swal.fire({
+          title: "Generando Reporte ...",
+          width: 600,
+          padding: "3em",
+          background: "#fff",
+          showCancelButton: false,
+          showConfirmButton: false,
+          allowEscapeKey: false,
+          allowEnterKey: false,
+          allowOutsideClick: false,
+          backdrop: `
                     rgba(0, 0, 0, 0.5)
                     left top
                     no-repeat
-                  `
-      });
-
+                  `,
+        });
 
       this.oheaderExcelRhrrecorrido = [
         "REPORTE HISTORIAL DE RECORIDO",
         "Fechas : " +
-        this.datePickerRhrrecorrido[0] +
-        " hasta " +
-        this.datePickerRhrrecorrido[1],
+          this.datePickerRhrrecorrido[0] +
+          " hasta " +
+          this.datePickerRhrrecorrido[1],
         "Unidades : " +
-        (this.itemUnidadSelectRhrrecorrido.length <= 0
-          ? "TODAS LAS UNIDADES"
-          : this.itemUnidadSelectRhrrecorrido),
+          (this.itemUnidadSelectRhrrecorrido.length <= 0
+            ? "TODAS LAS UNIDADES"
+            : this.itemUnidadSelectRhrrecorrido),
       ];
 
-
       try {
-        var datos = await this.$axios.post(process.env.baseUrl + "/Rhrrecorrido", {
-          token: this.token,
-          unidades: this.itemUnidadSelectRhrrecorrido.length > 0 ? this.itemUnidadSelectRhrrecorrido : "*",
-          fechaI: getformatFechaDateTime(this.datePickerRhrrecorrido[0].toString()),
-          fechaF: getformatFechaDateTime(this.datePickerRhrrecorrido[1].toString()),
-        })
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/Rhrrecorrido",
+          {
+            token: this.token,
+            unidades:
+              this.itemUnidadSelectRhrrecorrido.length > 0
+                ? this.itemUnidadSelectRhrrecorrido
+                : "*",
+            fechaI: getformatFechaDateTime(
+              this.datePickerRhrrecorrido[0].toString()
+            ),
+            fechaF: getformatFechaDateTime(
+              this.datePickerRhrrecorrido[1].toString()
+            ),
+            timeout: 9000,
+          }
+        );
 
         if (datos.data.status_code == 200) {
-
-          this.$notify({
-            title: 'RECORRIDO',
-            message: datos.data.msm,
-            type: 'success'
-          });
           this.mListaUnidadesRhrrecorrido.push(...datos.data.datos);
-          swal.close()
-          this.generatePdf()
+          this.generatePdf();
         } else if (datos.data.status_code == 300) {
           this.$notify({
-            title: 'ERROR API REST',
+            title: "ERROR API REST",
             message: datos.data.msm,
-            type: 'info'
+            type: "info",
           });
-          swal.close()
-          this.generatePdfDefault()
+          this.generatePdfDefault();
         } else {
           this.$notify({
-            title: 'ERROR API REST',
+            title: "ERROR API REST",
             message: datos.data.msm,
-            type: 'error'
+            type: "error",
           });
-          swal.close()
-          this.generatePdfDefault()
+          swal.close();
+          this.generatePdfDefault();
         }
       } catch (error) {
-
         this.$notify({
-          title: 'Error CATCH   Servidor Fuera de Servicio Temporalmente',
+          title: "Error CATCH",
           message: error.toString(),
-          type: 'error'
+          type: "error",
         });
-        swal.close()
-        this.generatePdfDefault()
+        
+        this.generatePdfDefault();
       }
-      swal.close()
+      swal.close();
     },
 
     remoteMethodUnidadesSalidasPanelBusqueda(query) {
@@ -232,7 +272,6 @@ export default {
     },
 
     generatePdf() {
-
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
@@ -243,7 +282,10 @@ export default {
       var unidad = [
         {
           text:
-            "Unidad : " + (this.itemUnidadSelectRhrrecorrido.length == 0 ? "TODAS LAS UNIDADES" : this.itemUnidadSelectRhrrecorrido.toString()),
+            "Unidad : " +
+            (this.itemUnidadSelectRhrrecorrido.length == 0
+              ? "TODAS LAS UNIDADES"
+              : this.itemUnidadSelectRhrrecorrido.toString()),
           fontSize: 9,
           alignment: "left",
         },
@@ -251,7 +293,10 @@ export default {
       var desde_hasta = [
         {
           text:
-            "Fecha Salida : " + this.datePickerRhrrecorrido[0] + " Hasta " + this.datePickerRhrrecorrido[1],
+            "Fecha Salida : " +
+            this.datePickerRhrrecorrido[0] +
+            " Hasta " +
+            this.datePickerRhrrecorrido[1],
           fontSize: 9,
           alignment: "left",
         },
@@ -305,7 +350,8 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          }, {
+          },
+          {
             text: "H. Salida",
             fontSize: 8.5,
             bold: true,
@@ -328,7 +374,8 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          }, {
+          },
+          {
             text: "Atraso",
             fontSize: 8.5,
             bold: true,
@@ -367,7 +414,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          }
+          },
         ],
       ];
 
@@ -402,13 +449,14 @@ export default {
             text: this.mListaUnidadesRhrrecorrido[i].DesCtrSali_d,
             fontSize: 8.5,
             alignment: "center",
-          }, {
-            text: (this.mListaUnidadesRhrrecorrido[i].HoraProgSali_d),
+          },
+          {
+            text: this.mListaUnidadesRhrrecorrido[i].HoraProgSali_d,
             fontSize: 8.5,
             alignment: "center",
           },
           {
-            text: (this.mListaUnidadesRhrrecorrido[i].HoraMarcSali_d),
+            text: this.mListaUnidadesRhrrecorrido[i].HoraMarcSali_d,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -442,13 +490,13 @@ export default {
             fontSize: 8.5,
             alignment: "center",
           },
-        ]
+        ];
         resultadoString.push(arrys);
       }
 
       var docDefinition = {
-        pageSize: 'A4',
-        pageOrientation: 'landscape',
+        pageSize: "A4",
+        pageOrientation: "landscape",
         pageMargins: [30, 80, 40, 30],
         header: {
           margin: 15,
@@ -506,17 +554,29 @@ export default {
               widths: [40, 50, 60, 60, 40, 50, 50, 50, 40, 40, 40, 50, 30, 40],
               body: resultadoString,
             },
-          }
-
+          },
         ],
       };
 
-      const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-      pdfDocGenerator.getDataUrl((dataUrl) => {
+      
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition)
+      
+      pdfDocGenerator.getBlob((blob) => {
+
+        var pdfUrl = URL.createObjectURL(blob)
+        let iframe = document.getElementById('iframeContainerRHRecorrido');
+        iframe.src = pdfUrl;
+        
+      });
+      /*pdfDocGenerator.getDataUrl((dataUrl) => {
         let iframe = document.getElementById('iframeContainerRHRecorrido');
         iframe.src = dataUrl;
-        // targetElement.appendChild(iframe);
-      });
+        targetElement.appendChild(iframe);
+      });*/
+
+      /*pdfDocGenerator.getBase64((data) => {
+        this.base64PDFRHRECORRIDO = data;
+      });*/
 
     },
 
@@ -531,7 +591,10 @@ export default {
       var unidad = [
         {
           text:
-            "Unidad : " + (this.itemUnidadSelectRhrrecorrido.length == 0 ? "TODAS LAS UNIDADES" : this.itemUnidadSelectRhrrecorrido.toString()),
+            "Unidad : " +
+            (this.itemUnidadSelectRhrrecorrido.length == 0
+              ? "TODAS LAS UNIDADES"
+              : this.itemUnidadSelectRhrrecorrido.toString()),
           fontSize: 9,
           alignment: "left",
         },
@@ -539,7 +602,10 @@ export default {
       var desde_hasta = [
         {
           text:
-            "Fecha Salida : " + this.datePickerRhrrecorrido[0] + " Hasta " + this.datePickerRhrrecorrido[1],
+            "Fecha Salida : " +
+            this.datePickerRhrrecorrido[0] +
+            " Hasta " +
+            this.datePickerRhrrecorrido[1],
           fontSize: 9,
           alignment: "left",
         },
@@ -593,7 +659,8 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          }, {
+          },
+          {
             text: "H. Salida",
             fontSize: 8.5,
             bold: true,
@@ -616,7 +683,8 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          }, {
+          },
+          {
             text: "Atraso",
             fontSize: 8.5,
             bold: true,
@@ -655,7 +723,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          }
+          },
         ],
       ];
 
@@ -690,10 +758,6 @@ export default {
             text: "",
             fontSize: 8.5,
             alignment: "center",
-          }, {
-            text: "",
-            fontSize: 8.5,
-            alignment: "center",
           },
           {
             text: "",
@@ -730,14 +794,18 @@ export default {
             fontSize: 8.5,
             alignment: "center",
           },
-        ]
+          {
+            text: "",
+            fontSize: 8.5,
+            alignment: "center",
+          },
+        ];
         resultadoString.push(arrys);
       }
 
-
       var docDefinition = {
-        pageSize: 'A4',
-        pageOrientation: 'landscape',
+        pageSize: "A4",
+        pageOrientation: "landscape",
         pageMargins: [30, 80, 40, 30],
         header: {
           margin: 15,
@@ -795,23 +863,24 @@ export default {
               widths: [40, 50, 60, 60, 40, 50, 50, 50, 40, 40, 40, 50, 30, 40],
               body: resultadoString,
             },
-          }
-
+          },
         ],
       };
 
       const pdfDocGenerator = pdfMake.createPdf(docDefinition);
       pdfDocGenerator.getDataUrl((dataUrl) => {
-        let iframe = document.getElementById('iframeContainerRHRecorrido');
+        let iframe = document.getElementById("iframeContainerRHRecorrido");
         iframe.src = dataUrl;
         // targetElement.appendChild(iframe);
       });
-    }
-
+    },
   },
   mounted() {
     this.readAllVehiculos();
-    this.datePickerRhrrecorrido = [getFecha_dd_mm_yyyy(new Date()) + " 05:00:00", getFecha_dd_mm_yyyy(new Date()) + " 23:00:00"]
+    this.datePickerRhrrecorrido = [
+      getFecha_dd_mm_yyyy(new Date()) + " 05:00:00",
+      getFecha_dd_mm_yyyy(new Date()) + " 23:00:00",
+    ];
   },
 };
 </script>
@@ -863,7 +932,6 @@ export default {
   height: calc(100vh - 12.9rem);
   overflow: auto;
 }
-
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;

@@ -20,6 +20,16 @@
             path: './tablaOperacional',
           }"
         />
+
+        <sidebar-item
+          translate="no"
+          :link="{
+            name: 'H. Recorridos',
+            icon: 'ni ni-sound-wave text-warning',
+            path: './rhrecorrido',
+          }"
+        />
+
       </template>
     </side-bar>
     <div class="main-content">
