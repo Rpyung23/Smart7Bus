@@ -3,20 +3,29 @@
     <notifications></notifications>
     <side-bar>
       <template slot-scope="props" slot="links">
+        <sidebar-item
+          translate="no"
+          :link="{
+            name: 'Incadores de Calidad',
+            icon: 'ni ni-chart-pie-35 text-default',
+            path: './rIcanlidadMovilidad',
+          }"
+        />
 
-        <sidebar-item translate="no" v-if="permisos != null && permisos.movilidad.iCalidadBruto != null && permisos.movilidad.iCalidadBruto != null && permisos.movilidad.iCalidadBruto" 
-              :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidadMovilidad' }" />
-
-
-        <sidebar-item translate="no" v-if="permisos != null && permisos.movilidad.iCalidad != null && permisos.movilidad.iCalidad != null && permisos.movilidad.iCalidad" 
-              :link="{ name: 'Incadores de Calidad',icon: 'ni ni-chart-pie-35 text-default', path: './rIcanlidadMovilidad' }" />
-
-
+        <sidebar-item
+          translate="no"
+          :link="{
+            name: 'Tabla Operacional',
+            icon: 'ni ni-bullet-list-67 text-danger',
+            path: './tablaOperacional',
+          }"
+        />
       </template>
-
     </side-bar>
     <div class="main-content">
-      <dashboard-navbar :type="$route.name == 'alternative' ? 'light' : 'default'"></dashboard-navbar>
+      <dashboard-navbar
+        :type="$route.name == 'alternative' ? 'light' : 'default'"
+      ></dashboard-navbar>
 
       <div @click="$sidebar.displaySidebar(false)">
         <nuxt></nuxt>
@@ -55,8 +64,8 @@ export default {
   },
   data() {
     return {
-      permisos: null
-    }
+      permisos: null,
+    };
   },
   methods: {
     initScrollbar() {
@@ -68,16 +77,15 @@ export default {
       }
     },
     decodedPermisos() {
-      var decodeBase64 = window.atob(this.$cookies.get("token"))
-      console.log("PERMISOS")
-      this.permisos = this.$cookies.get("permisos")
-    }
+      var decodeBase64 = window.atob(this.$cookies.get("token"));
+      console.log("PERMISOS");
+      this.permisos = this.$cookies.get("permisos");
+    },
   },
   mounted() {
-    this.decodedPermisos()
-    this.initScrollbar()
+    this.decodedPermisos();
+    this.initScrollbar();
   },
 };
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>
