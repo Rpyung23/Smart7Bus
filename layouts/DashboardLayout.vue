@@ -84,8 +84,6 @@
           name: 'Reportes',
           icon: 'ni ni-ungroup text-orange',
         }">
-        
-          <sidebar-item :link="{ name: 'R. H.Recorrido', path: '/rhrecorrido' }" translate="no"/>
 
           <sidebar-item :link="{ name: 'R. Kilometros', path: '/rdistancia' }" translate="no"/>
           <!--<sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" translate="no"/>-->
