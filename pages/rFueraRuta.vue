@@ -83,6 +83,22 @@
                 ><i class="ni ni-cloud-download-95"></i
               ></span>
             </base-button>
+
+            <download-excel
+                v-if="mListaREventosDispositivos.length > 0"
+                class="btn btn-icon btn-fab btn-success btn-sm"
+                outline
+                :header="oheaderExcelRFueraRuta"
+                title="Exportar a Excel"
+                :data="mListaREventosDispositivos"
+                :fields="json_fields_excelRFueraRuta"
+                :worksheet="WorksheetExcelRFueraRuta"
+                :name="FileNameExcelRFueraRuta"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="ni ni-collection"></i
+                ></span>
+              </download-excel>
           </div>
         </card>
 
@@ -132,7 +148,7 @@
         <card
           class="no-border-card"
           style="margin-bottom: 0rem"
-          body-classes="card-bodyRVelocidades px-0 pb-1"
+          body-classes="card-bodyRFueraRuta px-0 pb-1"
           footer-classes="pb-2"
         >
           <div>
@@ -143,7 +159,7 @@
               row-key="id"
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
-              height="calc(100vh - 13rem)"
+              height="calc(100vh - 13.5rem)"
             >
               <el-table-column label="Actions" width="120">
                 <template slot-scope="scope">
@@ -384,6 +400,11 @@ export default {
           minWidth: 110,
         },
         {
+          prop: "FechHistEven",
+          label: "Fecha",
+          minWidth: 160,
+        },
+        {
           prop: "descripcionGrupo",
           label: "Grupo",
           minWidth: 170,
@@ -391,7 +412,7 @@ export default {
 
         {
           prop: "NumeVuelSali_m",
-          label: "N° Vueltas",
+          label: "N° Vuelta",
           minWidth: 140,
         },
         {
@@ -426,6 +447,18 @@ export default {
       LetrRutaFueraRuta: "",
       mListRutaSubidaFueraRuta: [],
       mListRutaBajadaFueraRuta: [],
+      json_fields_excelRFueraRuta: {
+        UNIDAD: "CodiVehiHistEven",
+        FECHA: "FechHistEven",
+        GRUPO: "descripcionGrupo",
+        NVuelta: "NumeVuelSali_m",
+        RutaLinea: "DescRutaSali_m",
+        CantEvent: "totalDesvios",
+        DetalleEvento: "DescEvent",
+      },
+      WorksheetExcelRhrrecorrido: "Hoja_1",
+      FileNameExcelRhrrecorrido: "ReporteHistoricoRecorrido",
+      oheaderExcelRFueraRuta: "",
     };
   },
 
@@ -483,6 +516,19 @@ export default {
     async readRDispositivoEventos() {
       this.mListaREventosDispositivos = [];
       this.loadingTableRVelocidadesBusquedaloading = true;
+
+      this.oheaderExcelRFueraRuta = [
+        "REPORTE FUERA DE RUTA",
+        "Fechas : " +
+          this.fechaInicialSalidasPanelBusqueda +
+          " hasta " +
+          this.fechaFinalSalidasPanelBusqueda,
+        "Unidades : " +
+          (this.itemUnidadSalidasPanelBusqueda.length <= 0
+            ? "TODAS LAS UNIDADES"
+            : this.itemUnidadSalidasPanelBusqueda),
+      ];
+
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/ReporteFueraRuta",
@@ -608,6 +654,14 @@ export default {
             alignment: "center",
           },
           {
+            text: "Fecha",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
             text: "Grupo",
             fontSize: 8.5,
             bold: true,
@@ -656,6 +710,11 @@ export default {
         var arrys = [
           {
             text: this.mListaREventosDispositivos[i].CodiVehiHistEven,
+            alignment: "center",
+            fontSize: 8.5,
+          },
+          {
+            text: this.mListaREventosDispositivos[i].FechHistEven,
             alignment: "center",
             fontSize: 8.5,
           },
@@ -767,7 +826,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 80, 40, 120, 60, 120],
+              widths: [30,60, 80, 40, 90, 60, 110],
               body: resultadoString,
             },
           },
@@ -946,9 +1005,9 @@ export default {
   border-top: 0;
 }
 
-.card-bodyRVelocidades {
+.card-bodyRFueraRuta {
   padding: 0rem !important;
-  height: calc(100vh - 12.95rem);
+  height: calc(100vh - 13.2rem);
   overflow: auto;
 }
 
