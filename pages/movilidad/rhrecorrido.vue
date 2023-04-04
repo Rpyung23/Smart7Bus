@@ -225,7 +225,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListaUnidadesRhrrecorrido.push(...datos.data.datos);
-          this.generatePdf();
+          this.generatePdf()
         } else if (datos.data.status_code == 300) {
           this.$notify({
             title: "ERROR API REST",
