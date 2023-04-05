@@ -2,182 +2,84 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-select
-              v-model="itemUnidadSalidasPanelBusqueda"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesSalidasPanelBusqueda"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadSalidasPanelBusqueda" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+              <el-option v-for="item in optionsUnidadesSalidasPanelBusqueda" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
-            <base-input
-              title="Buscar"
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialSalidasPanelBusqueda"
-              >
+            <base-input title="Buscar" addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaInicialSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
 
-            <base-input
-              title="Exportar a PDF"
-              addon-left-icon="ni ni-calendar-grid-58"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalSalidasPanelBusqueda"
-              >
+            <base-input title="Exportar a PDF" addon-left-icon="ni ni-calendar-grid-58">
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaFinalSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
           </div>
 
           <div class="buttonsAdicionalesRVelocidad">
-            <base-button
-              icon
-              type="primary"
-              size="sm"
-              @click="readRDispositivoEventos()"
-            >
-              <span class="btn-inner--icon"
-                ><i class="el-icon-search"></i
-              ></span>
+            <base-button icon type="primary" size="sm" @click="readRDispositivoEventos()">
+              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>
 
-            <base-button
-              size="sm"
-              title="EXPORTAR PDF"
-              v-if="mListaREventosDispositivos.length > 0 ? true : false"
-              type="danger"
-              @click="exportPdfRDispositivoEventos()"
-            >
-              <span class="btn-inner--icon"
-                ><i class="ni ni-cloud-download-95"></i
-              ></span>
+            <base-button size="sm" title="EXPORTAR PDF" v-if="mListaREventosDispositivos.length > 0 ? true : false"
+              type="danger" @click="exportPdfRDispositivoEventos()">
+              <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
             </base-button>
 
-            <download-excel
-                v-if="mListaREventosDispositivos.length > 0"
-                class="btn btn-icon btn-fab btn-success btn-sm"
-                outline
-                :header="oheaderExcelRFueraRuta"
-                title="Exportar a Excel"
-                :data="mListaREventosDispositivos"
-                :fields="json_fields_excelRFueraRuta"
-                :worksheet="WorksheetExcelRFueraRuta"
-                :name="FileNameExcelRFueraRuta"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="ni ni-collection"></i
-                ></span>
-              </download-excel>
+            <download-excel v-if="mListaREventosDispositivos.length > 0" class="btn btn-icon btn-fab btn-success btn-sm"
+              outline :header="oheaderExcelRFueraRuta" title="Exportar a Excel" :data="mListaREventosDispositivos"
+              :fields="json_fields_excelRFueraRuta" :worksheet="WorksheetExcelRFueraRuta" :name="FileNameExcelRFueraRuta">
+              <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
+            </download-excel>
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
-              v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false"
-              v-model="itemGruposPenalidadesSemanales"
-              multiple
-              placeholder="Grupos"
-            >
-              <el-option
-                v-for="item in mListaGruposPenalidadesSemanales"
-                :key="item.id"
-                :label="item.descripcion"
-                :value="item.id"
-              >
+            <el-select style="margin-right: 0.5rem" collapse-tags
+              v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false" v-model="itemGruposPenalidadesSemanales"
+              multiple placeholder="Grupos">
+              <el-option v-for="item in mListaGruposPenalidadesSemanales" :key="item.id" :label="item.descripcion"
+                :value="item.id">
               </el-option>
             </el-select>
 
-            <el-select
-              v-model="modelTiposEvento"
-              multiple
-              collapse-tags
-              style="margin-right: 0.5rem"
-              placeholder="Rutas"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-            >
-              <el-option
-                v-for="item in mListaRutasSalidasSemanales"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
+            <el-select v-model="modelTiposEvento" multiple collapse-tags style="margin-right: 0.5rem" placeholder="Rutas"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+              <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
               </el-option>
             </el-select>
           </div>
         </card>
 
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="card-bodyRFueraRuta px-0 pb-1"
-          footer-classes="pb-2"
-        >
+        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRFueraRuta px-0 pb-1"
+          footer-classes="pb-2">
           <div>
-            <el-table
-              v-loading="loadingTableRVelocidadesBusquedaloading"
-              element-loading-text="Cargando Datos..."
-              :data="mListaREventosDispositivos"
-              row-key="id"
-              class="tablePanelControlProduccion"
-              header-row-class-name="thead-dark"
-              height="calc(100vh - 13.5rem)"
-            >
+            <el-table v-loading="loadingTableRVelocidadesBusquedaloading" element-loading-text="Cargando Datos..."
+              :data="mListaREventosDispositivos" row-key="id" class="tablePanelControlProduccion"
+              header-row-class-name="thead-dark" height="calc(100vh - 13.5rem)">
               <el-table-column label="Actions" width="120">
                 <template slot-scope="scope">
-                  <base-button
-                    size="sm"
-                    title="UBICAR EVENTO EN MAPA"
-                    @click="showMapaFueraRutas(scope.row)"
-                    type="success"
-                    ><i class="ni ni-world"></i
-                  ></base-button>
+                  <base-button size="sm" title="UBICAR EVENTO EN MAPA" @click="showMapaFueraRutas(scope.row)"
+                    type="success"><i class="ni ni-world"></i></base-button>
                 </template>
               </el-table-column>
 
-              <el-table-column
-                v-for="column in tableColumnsUnidadesFlotaVehicular"
-                :key="column.label"
-                v-bind="column"
-              >
+              <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
               </el-table-column>
 
               <div slot="empty"></div>
@@ -188,99 +90,57 @@
     </base-header>
 
     <!--Form modal-->
-    <modal
-      :show.sync="modalUbicacionEventoDispositivo"
-      size="xl"
-      body-classes="p-1"
-    >
+    <modal :show.sync="modalUbicacionEventoDispositivo" size="xl" body-classes="p-1">
       <div class="MapaFueraRutaModal">
         <div class="switch_RutaActiveFueraRuta">
-          <el-switch
-            v-model="showMostarRuta_FueraRuta"
-            active-text=""
-            inactive-text="Mostrar Ruta"
-            @change="changeMostrarRuta_FueraRuta()"
-          >
+          <el-switch v-model="showMostarRuta_FueraRuta" active-text="" inactive-text="Mostrar Ruta"
+            @change="changeMostrarRuta_FueraRuta()">
           </el-switch>
         </div>
 
-        <GmapMap
-          map-type-id="roadmap"
-          class="mapaEventosDispositivos"
-          :center="oCenter"
-          :zoom="oZoom"
-          :options="{
-            zoomControl: false,
-            scaleControl: false,
-            mapTypeControl: false,
-            streetViewControl: false,
-            rotateControl: false,
-            fullscreenControl: false,
-            disableDefaultUi: true,
-          }"
-        >
-          <GmapPolyline
-            :path="mListRutaSubidaFueraRuta"
-            :options="{
-              strokeColor: '#A52714',
-              fillColor: '#A52714',
-              strokeOpacity: 0.6,
-              strokeWeight: 4,
-            }"
-          >
+        <GmapMap map-type-id="roadmap" class="mapaEventosDispositivos" :center="oCenter" :zoom="oZoom" :options="{
+          zoomControl: false,
+          scaleControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+          rotateControl: false,
+          fullscreenControl: false,
+          disableDefaultUi: true,
+        }">
+          <GmapPolyline :path="mListRutaSubidaFueraRuta" :options="{
+            strokeColor: '#A52714',
+            fillColor: '#A52714',
+            strokeOpacity: 0.6,
+            strokeWeight: 4,
+          }">
           </GmapPolyline>
-          <GmapPolyline
-            :path="mListRutaBajadaFueraRuta"
-            :options="{
-              strokeColor: '#01579B',
-              fillColor: '#01579B',
-              strokeOpacity: 0.6,
-              strokeWeight: 4,
-            }"
-          >
+          <GmapPolyline :path="mListRutaBajadaFueraRuta" :options="{
+            strokeColor: '#01579B',
+            fillColor: '#01579B',
+            strokeOpacity: 0.6,
+            strokeWeight: 4,
+          }">
           </GmapPolyline>
 
 
-          <GmapMarker
-        v-if="mListRutaBajadaFueraRuta.length > 0"
-        :position="{
-          lat: parseFloat(mListRutaBajadaFueraRuta[0].lat),
-          lng: parseFloat(mListRutaBajadaFueraRuta[0].lng),
-        }"
-        :optimized="true"
-        :icon= '"img/monitoreo/start_route.png"'
-      />
-      <GmapMarker
-        v-if="mListRutaSubidaFueraRuta.length > 0"
-        :position="{
-          lat: parseFloat(mListRutaSubidaFueraRuta[0].lat),
-          lng: parseFloat(mListRutaSubidaFueraRuta[0].lng),
-        }"
-        :optimized="true"
-        :icon= '"img/monitoreo/end_route.png"'
-      />
+          <GmapMarker v-if="mListRutaBajadaFueraRuta.length > 0" :position="{
+            lat: parseFloat(mListRutaBajadaFueraRuta[0].lat),
+            lng: parseFloat(mListRutaBajadaFueraRuta[0].lng),
+          }" :optimized="true" :icon='"img/monitoreo/start_route.png"' />
+          <GmapMarker v-if="mListRutaSubidaFueraRuta.length > 0" :position="{
+            lat: parseFloat(mListRutaSubidaFueraRuta[0].lat),
+            lng: parseFloat(mListRutaSubidaFueraRuta[0].lng),
+          }" :optimized="true" :icon='"img/monitoreo/end_route.png"' />
 
 
-          <GmapMarker
-            v-for="(marker, index) in mListaHistorialEventosMapa"
-            :key="index"
-            :position="{
-              lat: parseFloat(marker.LatiHistEven),
-              lng: parseFloat(marker.LongHistEven),
-            }"
-            :icon="marker.icono"
-            @mouseover="showInfoWindowsRecorrido(marker, index)"
-            @mouseout="closeInfoWindowsRecorrido()"
-            :draggable="false"
-            :optimized="true"
-          />
+          <GmapMarker v-for="(marker, index) in mListaHistorialEventosMapa" :key="index" :position="{
+            lat: parseFloat(marker.LatiHistEven),
+            lng: parseFloat(marker.LongHistEven),
+          }" :icon="marker.icono" @mouseover="showInfoWindowsRecorrido(marker, index)"
+            @mouseout="closeInfoWindowsRecorrido()" :draggable="false" :optimized="true" />
 
-          <GmapInfoWindow
-            :options="infoOptions"
-            :position="infoWindowPos"
-            :opened="infoWinOpen"
-            @closeclick="infoWinOpen = false"
-          >
+          <GmapInfoWindow :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen"
+            @closeclick="infoWinOpen = false">
             <div v-html="infoContent"></div>
           </GmapInfoWindow>
 
@@ -456,17 +316,16 @@ export default {
         CantEvent: "totalDesvios",
         DetalleEvento: "DescEvent",
       },
-      WorksheetExcelRhrrecorrido: "Hoja_1",
-      FileNameExcelRhrrecorrido: "ReporteHistoricoRecorrido",
+      WorksheetExcelRFueraRuta: "Hoja_1",
+      FileNameExcelRFueraRuta: "ReporteFueraRuta",
       oheaderExcelRFueraRuta: "",
     };
   },
 
   methods: {
     async showMapaFueraRutas(item) {
-      this.showMostarRuta_FueraRuta = false
+      this.showMostarRuta_FueraRuta = false;
       this.modalUbicacionEventoDispositivo = true;
-      console.log(item)
       this.LetrRutaFueraRuta = item.LetraRutaSali_m;
       await this.readPosicionesFueraRuta(item);
     },
@@ -520,13 +379,13 @@ export default {
       this.oheaderExcelRFueraRuta = [
         "REPORTE FUERA DE RUTA",
         "Fechas : " +
-          this.fechaInicialSalidasPanelBusqueda +
-          " hasta " +
-          this.fechaFinalSalidasPanelBusqueda,
+        this.fechaInicialSalidasPanelBusqueda +
+        " hasta " +
+        this.fechaFinalSalidasPanelBusqueda,
         "Unidades : " +
-          (this.itemUnidadSalidasPanelBusqueda.length <= 0
-            ? "TODAS LAS UNIDADES"
-            : this.itemUnidadSalidasPanelBusqueda),
+        (this.itemUnidadSalidasPanelBusqueda.length <= 0
+          ? "TODAS LAS UNIDADES"
+          : this.itemUnidadSalidasPanelBusqueda),
       ];
 
       try {
@@ -570,15 +429,14 @@ export default {
       this.loadingTableRVelocidadesBusquedaloading = false;
     },
     async readPosicionesFueraRuta(item) {
-      console.log(item);
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/historialFueraRutaSalida",
           {
             token: this.token,
             unidad: item.CodiVehiHistEven,
-            fechaI: item.fechaIHE,
-            fechaF: item.fechaFHE,
+            fechaI: item.FechHistEven,
+            fechaF: item.FechHistEven,
             salida: item.idSali_mHistEven,
           },
           {
@@ -787,7 +645,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE CORTES DE ENERGIA EN RUTA",
+                      text: "REPORTE FUERA DE RUTA",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
@@ -826,7 +684,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30,60, 80, 40, 90, 60, 110],
+              widths: [30, 60, 80, 40, 90, 60, 110],
               body: resultadoString,
             },
           },
@@ -925,16 +783,13 @@ export default {
               datos.data.datos.polilineasRutaSubida[i]
             );
           }
-          for (
-            var j = 0;
-            j < datos.data.datos.polilineasRutaBajada.length;
-            j++
+          for (var j = 0; j < datos.data.datos.polilineasRutaBajada.length; j++
           ) {
             this.mListRutaBajadaFueraRuta.push(
               datos.data.datos.polilineasRutaBajada[j]
             );
           }
-        }else{
+        } else {
           console.log("NO POLILINEA")
           console.log(datos.data.msm)
         }
@@ -968,6 +823,7 @@ export default {
   width: 100%;
   height: calc(80vh);
 }
+
 .form-group {
   margin-bottom: 0rem;
 }
@@ -1014,6 +870,7 @@ export default {
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
 }
+
 .buttonsAdicionalesRVelocidad {
   display: flex;
   justify-content: center;
