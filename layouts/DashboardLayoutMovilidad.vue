@@ -12,6 +12,9 @@
           }"
         />
 
+
+
+
         <sidebar-item
           translate="no"
           :link="{
@@ -20,6 +23,8 @@
             path: './tablaOperacional',
           }"
         />
+
+       
 
         <sidebar-item
           translate="no"

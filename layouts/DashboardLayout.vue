@@ -43,7 +43,7 @@
         </sidebar-item>
 
         
-        <sidebar-item translate="no" :link="{
+        <sidebar-item translate="no" v-if="permisos != null && permisos.Mantenimiento != null && permisos.Mantenimiento.active != null && permisos.Mantenimiento.active" :link="{
           name: 'Mantenimiento',
           icon: 'ni ni-settings text-primary',
           path: './mantenimiento/tablero',
@@ -73,12 +73,32 @@
         }">
         </sidebar-item>
 
-        <sidebar-item translate="no" v-if="permisos != null  && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active" :link="{
+        <sidebar-item translate="no" v-if="permisos != null  && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active && permisos.recaudo.reportes.active != null && permisos.recaudo.reportes.active" :link="{
           name: 'Recaudo',
           icon: 'ni ni-single-02 text-orange',
           path: './recaudo/rcontador',
         }">
         </sidebar-item>
+
+        <sidebar-item
+          translate="no"
+          v-if="permisos != null  && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active  && permisos.recaudo.isGadAmbatoM != null && permisos.recaudo.isGadAmbatoM" 
+          :link="{
+            name: 'Recaudo GAD (M)',
+            icon: 'ni ni-single-02 text-danger',
+            path: './rcontadorGadAmbatoMes',
+          }"
+        />
+
+        <sidebar-item
+          translate="no"
+          v-if="permisos != null  && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active  && permisos.recaudo.isGadAmbatoD != null && permisos.recaudo.isGadAmbatoD" 
+          :link="{
+            name: 'Recaudo GAD (D)',
+            icon: 'ni ni-single-02 text-danger',
+            path: './rcontadorGadAmbato',
+          }"
+        />
 
         <sidebar-item translate="no" v-if="permisos != null  && permisos.reportes != null && permisos.reportes.active != null && permisos.reportes.active" :link="{
           name: 'Reportes',
