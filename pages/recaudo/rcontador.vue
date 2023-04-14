@@ -157,6 +157,9 @@
               <el-table-column prop="unidad" label="Unidad" minWidth="110">
               </el-table-column>
 
+              <el-table-column prop="hora" label="Fecha" minWidth="180">
+              </el-table-column>
+
               <el-table-column
                 prop="DescRutaSali_m"
                 label="Ruta - Linea"
@@ -288,6 +291,7 @@ export default {
       oHeaderExcelConteoPasajeros: [],
       json_fields_excelRPagosVehiculoProduccion: {
         Unidad: "unidad",
+        Fecha: "hora",
         "Linea - Ruta": "DescRutaSali_m",
         "Subida 1": "subida1",
         "Subida 2": "subida2",
@@ -503,6 +507,14 @@ export default {
             alignment: "center",
           },
           {
+            text: "FECHA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
             text: "RUTA - LINEA",
             fontSize: 8.5,
             bold: true,
@@ -586,6 +598,11 @@ export default {
         var obj = [
           {
             text: this.tableDataRecaudoContadorPasajeros[i].unidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.tableDataRecaudoContadorPasajeros[i].hora,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -721,7 +738,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 130, 50, 50, 50, 80, 60, 45, 40, 60],
+              widths: [40, 65,130, 50, 50, 50, 80, 60, 45, 40, 60],
               body: resultadoString,
             },
           },
