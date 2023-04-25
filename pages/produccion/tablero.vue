@@ -1703,7 +1703,9 @@ export default {
       this.oEmpresa == "sritab" ||
       this.oEmpresa == "ufluminense" ||
       this.oEmpresa == "otavalo-lag" ||
-      this.oEmpresa == "msaenz"
+      this.oEmpresa == "tsagrario" ||
+      this.oEmpresa == "msaenz" || 
+      this.oEmpresa == "el-puma"
     ) {
       //trabaja por vueltas
       this.isRecorridoPorVueltas = true;
