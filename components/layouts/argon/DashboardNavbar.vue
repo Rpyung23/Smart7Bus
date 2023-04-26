@@ -326,7 +326,7 @@ export default {
     this.nameUsuario = this.$cookies.get("namesUsuario")
     this.hrefLogOut = "./"+this.$cookies.get("empresa");
 
-    this.nameEmpresa = this.$cookies.get("nameEmpresa")
+    this.nameEmpresa = this.$cookies.get("nameEmpresa").toUpperCase()
     /*setInterval(() => {
       this.mueveReloj();
     }, 1000);*/
