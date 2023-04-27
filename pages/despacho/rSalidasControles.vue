@@ -121,11 +121,21 @@
         <card
           class="no-border-card"
           style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1"
+          body-classes="card-bodyRSalidasControles px-0 pb-1"
           footer-classes="pb-2"
         >
+
+        <embed
+            :src="base64PDFSALIDACONTROLES"
+            type="application/pdf"
+            width="98.7%"
+            height="98.7%"
+          />
+
           <div>
-            <el-table
+
+            
+            <!--<el-table
               v-loading="loadingTableRSalidasFrecuenciasControles"
               element-loading-text="Cargando Datos..."
               :data="mListSalidasFrecuenciasControles"
@@ -154,7 +164,7 @@
               </el-table-column>
 
               <div slot="empty"></div>
-            </el-table>
+            </el-table>-->
           </div>
         </card>
       </div>
@@ -164,7 +174,9 @@
 <script>
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-
+import pdfMake from "pdfmake/build/pdfmake.js";
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import {
   Table,
   TableColumn,
@@ -189,7 +201,7 @@ import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPag
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
-
+import { getBase64LogoReportes } from "../../util/logoReport";
 export default {
   mixins: [clientPaginationMixin],
   layout: "DespachoDashboardLayout",
@@ -216,6 +228,7 @@ export default {
   },
   data() {
     return {
+      base64PDFSALIDACONTROLES:"",
       mListaUnidadesSalidasPanelBusqueda: [],
       mListLineasFecuenciasControles: [],
       loadingTableUnidadesSalidasPanelBusquedaloading: false,
@@ -398,7 +411,26 @@ export default {
       }
       return mlist;
     },
-    async readReporteSalidasControles() {
+    async readReporteSalidasControles() 
+    {
+
+      swal.fire({
+        title: "Generando Reporte ...",
+        width: 600,
+        padding: "3em",
+        background: "#fff",
+        showCancelButton: false,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        allowOutsideClick: false,
+        backdrop: `
+                    rgba(0, 0, 0, 0.5)
+                    left top
+                    no-repeat
+                  `
+      });
+
       this.loadingTableRSalidasFrecuenciasControles = true;
       this.mListSalidasFrecuenciasControles = [];
       var oListSalidasFrecuenciasControlesExcelAux = []
@@ -406,6 +438,8 @@ export default {
       this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now();
       this.oFileNameRSalidasFrecuenciasControles =
         "RSFC_" + Date.now() + ".xls";
+      
+      this.createPDFSalidasControles()
 
       try {
         var datos = await this.$axios.post(
@@ -429,9 +463,7 @@ export default {
           //console.log(datos.data.datos);
 
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
-
           this.mListSalidasFrecuenciasControlesExcel.push(...datos.data.datos);
-
           var faltaAtrasos = 0;
           var faltaAdelantos = 0;
           var faltaAtrasosAtrasos = 0;
@@ -446,8 +478,8 @@ export default {
 
             if (i < this.mListSalidasFrecuenciasControlesExcel.length - 1) {
 
-              console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m +" == "+
-                this.mListSalidasFrecuenciasControlesExcel[i + 1].idSali_m)
+              /*console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m +" == "+
+                this.mListSalidasFrecuenciasControlesExcel[i + 1].idSali_m)*/
 
               if (
                 this.mListSalidasFrecuenciasControlesExcel[i].idSali_m ==
@@ -474,7 +506,7 @@ export default {
 
 
 
-                console.log("IMPRIMIENTO TOTALES")  
+                //console.log("IMPRIMIENTO TOTALES")  
                 oListSalidasFrecuenciasControlesExcelAux.push({
                   DescRuta:"TOTAL MINUTOS ATRASOS",
                   DescFrec:faltaAtrasos
@@ -567,13 +599,284 @@ export default {
         });
       }
       this.loadingTableRSalidasFrecuenciasControles = false;
+      this.createPDFSalidasControles()
+      swal.close()
     },
+    createPDFSalidasControles(){
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+
+
+      var unidad = [
+        {
+          text:
+            "Unidad : " +
+            (this.itemUnidadSalidasPanelBusqueda.length == 0
+              ? "TODAS LAS UNIDADES"
+              : this.itemUnidadSalidasPanelBusqueda.toString()),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+
+      var desde_hasta = [
+        {
+          text:
+            "Fecha Salida : " + this.fechaInicialSalidasPanelBusqueda+" Hasta "+this.fechaFinalSalidasPanelBusqueda,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+
+      var resultadoString = [
+        [
+          {
+            text: "UNIDAD",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "N° VUELTA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. SALIDA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. LLEGADA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },{
+            text: "RUTA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },{
+            text: "FRECUENCIA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },{
+            text: "CONTROL",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },{
+            text: "H. PROG",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },{
+            text: "H. MARC",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },{
+            text: "T. ATRASO",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },{
+            text: "T. ADELANTO",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },{
+            text: "PEN ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }
+        ],
+      ]
+
+      for(var i=0;i<this.mListSalidasFrecuenciasControles.length;i++)
+      {
+
+        resultadoString.push([
+          {
+            text: this.mListSalidasFrecuenciasControles[i].CodiVehiSali_m,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },
+          {
+            text: this.mListSalidasFrecuenciasControles[i].NumeVuelSali_m,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },
+          {
+            text: this.mListSalidasFrecuenciasControles[i].HoraSaliProgSali_m,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },
+          {
+            text: this.mListSalidasFrecuenciasControles[i].HoraLlegProgSali_m,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },{
+            text: this.mListSalidasFrecuenciasControles[i].DescRuta,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },{
+            text: this.mListSalidasFrecuenciasControles[i].DescFrec,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },{
+            text:this.mListSalidasFrecuenciasControles[i].DescCtrl,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },{
+            text: this.mListSalidasFrecuenciasControles[i].HoraProgSali_d,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },{
+            text: this.mListSalidasFrecuenciasControles[i].HoraMarcSali_d,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },{
+            text: this.mListSalidasFrecuenciasControles[i].atrasoFaltasTime,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },{
+            text:this.mListSalidasFrecuenciasControles[i].adelantoFaltasTime,
+            fontSize: 8.5,
+
+            alignment: "center",
+          },{
+            text: this.mListSalidasFrecuenciasControles[i].PenaCtrlSali_d,
+            fontSize: 8.5,
+
+            alignment: "center",
+          }
+        ],)
+      }
+
+      var docDefinition = {
+        pageSize: "A4",
+        pageOrientation: "landscape",
+        pageMargins: [30, 80, 40, 30],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE HISTORIAL RECORRIDO",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450, 450, 450],
+              body: [empresa, unidad, desde_hasta],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40,50, 55, 55, 75, 80, 60, 60, 50,60,60,40],
+              body: resultadoString,
+            },
+          },
+        ],
+      };
+
+      const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+
+      pdfDocGenerator.getBlob((blob) => {
+        this.base64PDFSALIDACONTROLES = URL.createObjectURL(blob)
+        console.log(this.base64PDFSALIDACONTROLES)
+      });
+
+    }
   },
   mounted() {
+    
     this.initFechaActualSalidasControles();
     this.readAllUnidadesSalidasControles();
     this.readLineasRSalidasFrecuenciasControles();
     this.readReporteSalidasControles();
+    this.createPDFSalidasControles()
   },
 };
 </script>
@@ -642,10 +945,13 @@ export default {
   border-top: 0;
 }
 
-.card-bodyRPagosVehiculoProduccion {
+.card-bodyRSalidasControles{
   padding: 0rem !important;
   height: calc(100vh - 13.2rem);
   overflow: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda {
