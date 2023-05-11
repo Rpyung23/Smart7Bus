@@ -39,7 +39,7 @@
           />-->
         </sidebar-item>
 
-        <sidebar-item
+        <sidebar-item  
         translate="no"
           :link="{
             name: 'Reportes',
@@ -48,7 +48,6 @@
           
         >
 
-        
 
         <sidebar-item
           translate="no"
@@ -59,6 +58,13 @@
           translate="no"
             :link="{ name: 'Minutos y Tarjetas', path: pathRminutostarjeta }"
           />
+
+          <sidebar-item
+          translate="no"
+          v-if="rminutosjustificadosvuelta" 
+            :link="{ name: 'Minutos Justificados', path: './rMinutosJustificadosVuelta' }"
+          ></sidebar-item>
+
           <sidebar-item
           translate="no"
             :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }"
@@ -117,6 +123,7 @@ function initScrollbar(className) {
 
 import DashboardNavbar from "~/components/layouts/argon/DashboardNavbar.vue";
 import DashboardContent from "~/components/layouts/argon/Content.vue";
+import RMinutosJustificadosVuelta from "../pages/produccion/rMinutosJustificadosVuelta.vue";
 
 export default {
   components: {
@@ -132,7 +139,8 @@ export default {
       pathRecibopagosvehiculo: './recibopagosvehiculo',
       pathRminutostarjetaResumidoVueltas: './rminutostarjetaResumido',
       pathRminutostarjeta : './rminutostarjeta',
-      pathResumidoVehiculo : './resumidovehiculo'
+      pathResumidoVehiculo : './resumidovehiculo',
+      rminutosjustificadosvuelta: false
     }
   },
   methods: {
@@ -146,7 +154,16 @@ export default {
     },
   },
   mounted() {
+
     this.oPermisosWebProduccionPanelJSON = this.$cookies.get("WebProduccion")
+
+    var permisos = this.$cookies.get("permisos")
+
+    this.rminutosjustificadosvuelta = (permisos.produccion != null &&  
+                               permisos.produccion.reportes != null &&
+                               permisos.produccion.reportes.RMinutosJustificadosVuelta != null &&
+                               permisos.produccion.reportes.RMinutosJustificadosVuelta) ? true :  false
+
     this.pathTableroVueltas = (this.oPermisosWebProduccionPanelJSON != null &&  
                                this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
                                this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroVueltas' :  './tablero'
