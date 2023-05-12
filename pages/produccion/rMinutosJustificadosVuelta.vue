@@ -745,9 +745,7 @@ export default {
   width: 100%;
   height: calc(80vh);
 }
-.form-group {
-  margin-bottom: 0rem;
-}
+
 
 .form-controlPersonal {
   display: block;
