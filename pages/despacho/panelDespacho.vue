@@ -339,10 +339,13 @@
     <!--DESPACHAR modal-->
     <modal :show.sync="modalEnviarDespachoPanel">
 
+      <base-alert v-if="responseApiDespachoWeb != null && responseApiDespachoWeb.data.status_code == 200" type="default">
+        SALIDA <strong>{{responseApiDespachoWeb.data.msm}}</strong> GENERADA CON EXITO
+      </base-alert>
 
-
-
-
+      <base-alert v-if="responseApiDespachoWeb != null && responseApiDespachoWeb.data.status_code == 400" type="danger">
+        {{responseApiDespachoWeb.data.msm}}
+      </base-alert>
 
       <div class="row" style="margin-bottom: 1rem">
         <div class="col-md-12">
@@ -350,9 +353,9 @@
             v-model="radioTipoDespacho"
             style="display: flex; justify-content: center"
           >
-            <el-radio :label="3">Salida Normal.</el-radio>
-            <el-radio :label="9">Generar Tarjeta</el-radio>
-            <el-radio :label="6">Salida Diferida</el-radio>
+            <el-radio :label="1">Salida Normal.</el-radio>
+            <el-radio :label="3">Generar Tarjeta</el-radio>
+            <el-radio :label="2">Salida Diferida</el-radio>
           </el-radio-group>
         </div>
       </div>
@@ -368,12 +371,6 @@
           </el-date-picker>
         </div>
 
-        <div class="col-md-6">
-          <input type="number" disabled class="el-input__inner" value="13" />
-        </div>
-      </div>
-
-      <div class="row" style="margin-bottom: 0.3rem">
         <div class="col-md-6">
           <el-select
             v-model="itemUnidadSalidasPanelDespacho"
@@ -393,7 +390,10 @@
             </el-option>
           </el-select>
         </div>
-        <div class="col-md-6">
+      </div>
+
+      <div class="row" style="margin-bottom: 0.5rem">
+        <div class="col-md-12">
           <el-select
             v-model="mSelectRutaSalidaDespachar"
             @change="readFrecuenciasSalidasPanel()"
@@ -523,6 +523,7 @@ export default {
   },
   data() {
     return {
+      minutosSalidaDiferida : 0,
       columnsInfo: [],
       imagenBaseUrl: "",
       getWidth: "100%",
@@ -554,7 +555,7 @@ export default {
       selectedRowSalida: null,
       selectRowId: null,
       selectRowEstado: null,
-      radioTipoDespacho: 3,
+      radioTipoDespacho: 1,
       checkboxOrdenamientoDespacho: false,
       checkboxOSalidasAnuladasDespacho: false,
       modalDespachoSalidasAnuladas: false,
@@ -563,6 +564,7 @@ export default {
       modalRecorridoPanelDespachoControl: false,
       oCenterPanelDespachoControl: { lat: -1.249546, lng: -78.585376 },
       oZoomPanelDespachoControl: 7,
+      responseApiDespachoWeb:null
     };
   },
   methods: {
@@ -614,9 +616,24 @@ export default {
       );
     },
     showEnviarDespachoPanel() {
+      this.initFechaActualSalidaDespachoPanel()
+      this.responseApiDespachoWeb = null
+      this.itemUnidadSalidasPanelDespacho = null
+      this.mSelectRutaFrecuenciaPanelDespacho = null
       this.modalEnviarDespachoPanel
         ? (this.modalEnviarDespachoPanel = false)
         : (this.modalEnviarDespachoPanel = true);
+    },
+    getObjetoFrecuencia(idFreceucnia){
+      for(var i = 0;this.mListRutasFrecuencias.length;i++)
+      {
+        if(idFreceucnia == this.mListRutasFrecuencias[i].idFrec)
+        {
+          return this.mListRutasFrecuencias[i]
+        }
+      }
+
+      return null
     },
     showModalDespacho() {
       this.modalEnviarDespachoPanel
@@ -629,23 +646,24 @@ export default {
         : (this.modalDespachoRecalificarSalida = true);
     },
     showModalDespachoAnularSalida() {
-      this.modalDespachoAnularSalida
+
+      console.log(this.selectedRowSalida.idSali_m)
+      
+      this.AnularFinalizarDespacho(this.selectedRowSalida.idSali_m,4)
+
+      /*this.modalDespachoAnularSalida
         ? (this.modalDespachoAnularSalida = false)
-        : (this.modalDespachoAnularSalida = true);
+        : (this.modalDespachoAnularSalida = true);*/
     },
     showModalDespachoFinalizarSalida() {
-      this.modalDespachoFinalizarSalida
+      this.AnularFinalizarDespacho(this.selectedRowSalida.idSali_m,3)
+      /*this.modalDespachoFinalizarSalida
         ? (this.modalDespachoFinalizarSalida = false)
-        : (this.modalDespachoFinalizarSalida = true);
+        : (this.modalDespachoFinalizarSalida = true);*/
     },
     async readFrecuenciasSalidasPanel() {
       this.mListRutasFrecuencias = [];
       this.mSelectRutaFrecuenciaPanelDespacho = null;
-      console.log("ID RUTA SELECT DEPACHAR : ");
-      console.log(this.mSelectRutaSalidaDespachar);
-
-      console.log(" ****************************** ");
-      console.log(this.mSelectRutaSalidaDespachar);
       var datos = await this.$axios.post(
         process.env.baseUrl + "/frecuencias_rutas",
         {
@@ -653,6 +671,8 @@ export default {
           ruta: this.mSelectRutaSalidaDespachar,
         }
       );
+
+      console.log(datos.data)
       if (datos.data.status_code != 400) {
         this.mListRutasFrecuencias.push(...datos.data.data);
       }
@@ -1129,36 +1149,62 @@ export default {
         return false;
       }
     },
-    async EnviarDespachoUnidad() {
-      console.log(this.itemUnidadSalidasPanelDespacho)
+    async EnviarDespachoUnidad() 
+    {
+      try {
+
+        var objFrecuencia = this.getObjetoFrecuencia(this.mSelectRutaFrecuenciaPanelDespacho)
+        console.log(objFrecuencia)
+        this.responseApiDespachoWeb = null
+      console.log(this.radioTipoDespacho)
+      console.log(this.itemUnidadSalidasPanelDespacho);
       console.log("ENVIANDO DESPACHO ............");
       console.log(`UNIDAD : ${this.itemUnidadSalidasPanelDespacho.CodiVehi}`);
       console.log(`API : ${this.itemUnidadSalidasPanelDespacho.api_despacho}`);
       console.log(this.fechaActualSalidasPanelDespachoDespachador);
       console.log(`FRECUENCIA : ${this.mSelectRutaFrecuenciaPanelDespacho}`);
+      console.log(objFrecuencia)
       console.log(`RUTA ${this.mSelectRutaSalidaDespachar}`);
-
-      var response = await this.$axios.post(
+      
+      this.responseApiDespachoWeb = await this.$axios.post(
         process.env.baseUrl + "/generarDespacho",
         {
           token: this.token,
           unidad: this.itemUnidadSalidasPanelDespacho.CodiVehi,
           ruta: this.mSelectRutaSalidaDespachar,
-          frecuencia: this.mSelectRutaFrecuenciaPanelDespacho,
+          frecuencia: objFrecuencia.idFrec,
           fecha_hora: this.fechaActualSalidasPanelDespachoDespachador,
-          api_despacho: this.itemUnidadSalidasPanelDespacho.api_despacho,
+          salida_diferida: (this.radioTipoDespacho == 1 || this.radioTipoDespacho == 3) ? 0 : 1,
+          minutos_antes: this.radioTipoDespacho == 2 ? objFrecuencia.AutoDespachoDifeFrec : 0
         }
       );
 
-      console.log(response.data)
-
-      if(response.data.status_code = 200){
-        alert("OK LISTO")
-      }else{
-        alert("ERROR")
+      console.log(this.responseApiDespachoWeb.data);
+      } catch (error) {
+        console.log(error)
       }
+      this.createHeaderTable()
+    },
+    async AnularFinalizarDespacho(salida,estado) 
+    {
+      console.log(this.selectRowEstado)
+      try{
+        var response = await this.$axios.post(
+        process.env.baseUrl + "/anularFinalizarDespacho",
+        {
+          token: this.token,
+          /*api_despacho: this.itemUnidadSalidasPanelDespacho.api_despacho,*/
+          salida_id: salida,
+          estado: estado,
+        }
+      );
 
-
+      console.log(response.data);
+      }catch(e){
+        alert("ERROR TRYCATCH")
+        console.log(e)
+      }
+      this.createHeaderTable()
     },
   },
   mounted() {
