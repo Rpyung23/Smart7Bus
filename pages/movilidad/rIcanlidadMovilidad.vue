@@ -14,8 +14,8 @@
               " style="margin-right: 0.5rem" placeholder="Unidad" prefix-icon="ni ni-bus-front-12"
               :trigger-on-focus="false" @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"></el-autocomplete>-->
 
-            <el-select v-model="itemUnidadProduccionRPagoVehiculorecibo" multiple filterable remote
-              placeholder="Unidades" prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
+            <el-select v-model="itemUnidadProduccionRPagoVehiculorecibo" multiple filterable remote placeholder="Unidades"
+              prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
               :remote-method="remoteMethodUnidadesRecibosProduccion"
               :loading="loadingTableUnidadesRecibosVehiculoProduccion">
               <el-option v-for="item in optionsUnidadesProduccionPagosVehiculo" :key="item.CodiVehi"
@@ -50,16 +50,10 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readAllIndicadoresCalidad()" size="sm">
+            <base-button icon type="primary" @click="readAllIndicadoresCalidad" size="sm">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>
 
-            <!--<base-button outline type="success">
-              <span class="btn-inner--icon"
-                ><i class="ni ni-collection"></i
-              ></span>
-              <span class="btn-inner--text"> Exportar Excel</span>
-            </base-button>-->
           </div>
         </card>
 
@@ -92,11 +86,16 @@
         </card>
 
 
-        <card class="no-border-card" style="margin-bottom: 0rem"
+        <!--  <card class="no-border-card" style="margin-bottom: 0rem"
           body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
           <div>
             <iframe :src="oBase64IndicadoresCalidad" style="width: 100%; height: 35.5rem"></iframe>
           </div>
+        </card> -->
+
+        <card class="no-border-card" style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
+          <embed id="iframeContainerIndicadoresCalidad" :src="oBase64IndicadoresCalidad" type="application/pdf"
+            width="100%" height="100%" />
         </card>
 
       </div>
@@ -128,6 +127,11 @@ import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPag
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
+import { getBase64LogoReportes } from "../../util/logoReport";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import { color, text } from "d3";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
   mixins: [clientPaginationMixin],
@@ -152,7 +156,6 @@ export default {
   data() {
     return {
       mListaUnidadesPagosVehiculoProduccionRecibo: [],
-      mListaRutasIndicadoresCalidad: [],
       tableDataRPagosVEhiculoProduccionRecibo: [],
       itemUnidadProduccionRPagoVehiculorecibo: [],
       itemRutasIndicadoresCalidad: [],
@@ -167,7 +170,9 @@ export default {
       loadingTableUnidadesRecibosVehiculoProduccion: false,
       loadingTableCobradoresRecibosVehiculoProduccion: false,
       baseURlPDFPanelDetalleRecibo: '',
-      oBase64IndicadoresCalidad: ""
+      oBase64IndicadoresCalidad: "",
+      mListaRutasIndicadoresCalidad: [],
+
     }
   },
   methods: {
@@ -229,7 +234,10 @@ export default {
       }
     },
     async readAllIndicadoresCalidad() {
+      this.mListaRutasIndicadoresCalidad = []
 
+      let iframe = document.getElementById('iframeContainerIndicadoresCalidad');
+      iframe.src = "";
       swal.fire({
         title: "Generando Reporte ...",
         width: 600,
@@ -263,8 +271,6 @@ export default {
           }
         }
 
-
-
         var datos = await this.$axios.post(process.env.baseUrl + "/IndicadoresCalidad", {
           token: this.token,
           unidades: this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "*" : this.itemUnidadProduccionRPagoVehiculorecibo,
@@ -274,14 +280,16 @@ export default {
           rutasString: rutasString,
           nameEmpresa: this.$cookies.get("nameEmpresa"),
           usuarioName: this.$cookies.get("namesUsuario")
-        },{
+        }, {
           'Content-Type': 'application/json'
         })
 
-        //console.log(datos)
+        console.log('Datos .==================..', datos)
 
         if (datos.data.status_code == 200) {
-          this.oBase64IndicadoresCalidad = "data:application/pdf;base64," + datos.data.datos
+          //this.oBase64IndicadoresCalidad = "data:application/pdf;base64," + datos.data.datos
+          console.log('Agrego indicadores Calidad .........');
+          this.genratePdf(datos.data.datos);
         }
       } catch (error) {
         console.log(error)
@@ -295,6 +303,363 @@ export default {
       swal.close()
 
     },
+    genratePdf(datos) {
+      const componenteResultado = (acu, acuNo) => {
+        const porce = (100 * acu / (acu + acuNo));
+        return [[" ", "", { text: "Total viajes considerados", colSpan: 2, alignment: "right" }, {}, { text: acu + acuNo, alignment: "right", bold: true }],
+        ["", "", { text: "Número que no cumplen", colSpan: 2, alignment: "right" }, {}, { text: acuNo, alignment: "right", bold: true }],
+        ["", "", { text: "Número que cumplen ", colSpan: 2, alignment: "right" }, {}, { text: acu, alignment: "right", bold: true }],
+        ["", "", {}, " ", { text: "Total: " + porce.toFixed(2) + " %", style: 'textFond', bold: true, alignment: "center" }],
+        ["", "", {}, " ", { text: "CUMPLE", style: 'textFond', bold: true, alignment: 'center' }]];
+      }
+      const componenteHeader = (titulo) => {
+        var tipoInfomer =
+        {
+          text: titulo,
+          fontSize: 14,
+          alignment: 'center',
+          bold: true,
+          colSpan: 4,
+        };
+        var empresa =
+        {
+          text: this.$cookies.get("nameEmpresa"),
+          fontSize: 12,
+          alignment: 'center',
+          colSpan: 2,
+          bold: true,
+        };
+        var ruta =
+        {
+          text: [
+            { text: "RUTA : ", fontSize: 12, bold: true },
+            {
+              text: (this.itemRutasIndicadoresCalidad.length == 0
+                ? "TODAS LAS RUTAS"
+                : this.itemRutasIndicadoresCalidad.toString())
+            },
+          ], colSpan: 2,
+        };
+        var periodo =
+        {
+          text: [
+            { text: "PERIODO : ", fontSize: 12, bold: true, },
+            this.fechaInicialIndicadorCalidad,
+            " Hasta ",
+            this.fechaFinalIndicadorCalidad,
+
+          ], colSpan: 2,
+
+        };
+        var impresion =
+        {
+          text: [{ text: 'IMPRESION: ', fontSize: 12, bold: true }, this.fechaInicialIndicadorCalidad]
+          , colSpan: 2,
+        };
+        return {
+          headerRows: 0,
+          widths: ["*", "*", "*", "*"],
+          body: [[tipoInfomer, {}, {}, {}],
+          ["", empresa, {}, ""],
+          [periodo, {}, impresion, {}],
+          [ruta, {}, " ", " "]],
+          //body: [[ 'First', 'Second', 'Third', 'The last one' ]],
+        }
+      };
+      const componenteHeaderTable = (arrayTitulos) => {
+        return arrayTitulos.map((titulo) => ({
+          text: titulo,
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        }))
+      }
+
+      // tabla tvhp
+      var resultadoString = [];
+      var acuCumple = 0;
+      var acuNoCumple = 0;
+      for (var i = 0; i < datos.tvhp.length; i++) {
+        var arrys = [
+          {
+            text: datos.tvhp[i].Unidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhp[i].Fecha,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhp[i].Programado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhp[i].Ejecutado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhp[i].Indicador,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhp[i].Estado,
+            fontSize: 10,
+            alignment: "center",
+            style: [datos.tvhp[i].Estado === "Cumple" ? 'textGreen' : 'textRed']
+          },
+
+        ];
+        if (datos.tvhp[i].Estado === "Cumple") {
+          acuCumple = acuCumple + 1;
+        } else {
+          acuNoCumple = acuNoCumple + 1;
+        }
+
+
+        resultadoString.push(arrys);
+      }
+      // tabla tvhv
+      var resultadoStringtvhv = [];
+      var acuCumpletvhv = 0;
+      var acuNoCumpletvhv = 0;
+      for (var i = 0; i < datos.tvhv.length; i++) {
+        var arrys = [
+          {
+            text: datos.tvhv[i].Unidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhv[i].Fecha,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhv[i].Programado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhv[i].Ejecutado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhv[i].Indicador,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.tvhv[i].Estado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+
+        ];
+        if (datos.tvhv[i].Estado === "Cumple") {
+          acuCumpletvhv = acuCumpletvhv + 1;
+        } else {
+          acuNoCumpletvhv = acuNoCumpletvhv + 1;
+        }
+        resultadoStringtvhv.push(arrys);
+      }
+      // tabla ihp
+      var resultadoStringihp = [];
+      var acuCumpleihp = 0;
+      var acuNoCumpleihp = 0;
+      for (var i = 0; i < datos.cihp.length; i++) {
+        var arrys = [
+          {
+            text: datos.cihp[i].Unidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihp[i].Fecha,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihp[i].Programado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihp[i].Ejecutado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihp[i].Indicador,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihp[i].Estado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+
+        ];
+        if (datos.cihp[i].Estado === "Cumple") {
+          acuCumpleihp = acuCumpleihp + 1;
+        } else {
+          acuNoCumpleihp = acuNoCumpleihp + 1;
+        }
+        resultadoStringihp.push(arrys);
+      }
+
+      var docDefinition = {
+        pageSize: "A4",
+        pageOrientation: "portrait",
+        pageMargins: [30, 80, 40, 30],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE INDICADORES DE CALIDAD",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "USUARIO : Administrador",
+                      alignment: "center",
+                      fontSize: 8,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "TIEMPO DE VIAJE HORA PICO (TVHP)",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "TIEMPO DE VIAJE HORA PICO (TVHP)",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: componenteHeader("TIEMPO DE VIAJE HORA PICO (TVHP)"),
+          },
+          ,
+          {
+            table: {
+              headerRows: 0,
+              widths: [80, 80, 80, 80, 80, 80],
+              body: [...componenteHeaderTable(["Unidad","Fecha","Programado","Ejecutado","Indicador","Estado"]), ...resultadoString],
+            },
+
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumple, acuNoCumple),
+            }, margin: [0, 10, 0, 0]
+          },
+
+          { text: '', pageBreak: 'before' },
+          {
+            layout: "noBorders",
+            table: componenteHeader("TIEMPO DE VIAJE HORA VALLE Y COLATERAL (TVHV)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [80, 80, 80, 80, 80, 80],
+              body: [...componenteHeaderTable(["Unidad","Fecha","Programado","Ejecutado","Indicador","Estado"]), ...resultadoStringtvhv],
+            },
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumpletvhv, acuNoCumpletvhv),
+            }, margin: [0, 10, 0, 0]
+          },
+
+          { text: '', pageBreak: 'before' },
+          {
+            layout: "noBorders",
+            table: componenteHeader("CUMPLIMIENTO DE INTERVALO EN HORA PICO (IHP)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [80, 80, 80, 80, 80, 80, 80, 80],
+              body: [...componenteHeaderTable(["Unidad","Tarjeta","Salida","Llegada","Programado","Ejecutado","Indicador","Estado"]), ...resultadoStringihp],
+            },
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumpleihp, acuNoCumpleihp),
+            }, margin: [0, 10, 0, 0]
+          },
+        ], styles: { textRed: { color: '#ff0000', bold: true }, textGreen: { color: '#008000', bold: true }, textFond: { color: '#fafafa', fillColor: 'green' } }
+      };
+
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition)
+      pdfDocGenerator.getBlob((blob) => {
+        var pdfUrl = URL.createObjectURL(blob)
+        let iframe = document.getElementById('iframeContainerIndicadoresCalidad');
+        iframe.src = pdfUrl;
+      });
+
+    }
 
   },
   mounted() {
