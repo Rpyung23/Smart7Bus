@@ -128,9 +128,8 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getBase64LogoReportes } from "../../util/logoReport";
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import { color, text } from "d3";
+import *  as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
@@ -309,8 +308,8 @@ export default {
         return [[" ", "", { text: "Total viajes considerados", colSpan: 2, alignment: "right" }, {}, { text: acu + acuNo, alignment: "right", bold: true }],
         ["", "", { text: "Número que no cumplen", colSpan: 2, alignment: "right" }, {}, { text: acuNo, alignment: "right", bold: true }],
         ["", "", { text: "Número que cumplen ", colSpan: 2, alignment: "right" }, {}, { text: acu, alignment: "right", bold: true }],
-        ["", "", {}, " ", { text: "Total: " + porce.toFixed(2) + " %", style: 'textFond', bold: true, alignment: "center" }],
-        ["", "", {}, " ", { text: "CUMPLE", style: 'textFond', bold: true, alignment: 'center' }]];
+        ["", "", {}, " ", { text: "Total: " + porce.toFixed(2) + " %", style: [porce.toFixed(2) === 100 ? 'textFond' : 'textFondN'], bold: true, alignment: "center" }],
+        ["", "", {}, " ", { text: "CUMPLE", style: [porce.toFixed(2) === 100 ? 'textFond' : 'textFondN'], bold: true, alignment: 'center' }]];
       }
       const componenteHeader = (titulo) => {
         var tipoInfomer =
@@ -472,8 +471,10 @@ export default {
       }
       // tabla ihp
       var resultadoStringihp = [];
-      var acuCumpleihp = 0;
+      var acuCumpleihp = 1;
       var acuNoCumpleihp = 0;
+      var contEICIHP = 0
+      var contEI2CIHP = 1
       for (var i = 0; i < datos.cihp.length; i++) {
         var arrys = [
           {
@@ -482,7 +483,17 @@ export default {
             alignment: "center",
           },
           {
-            text: datos.cihp[i].Fecha,
+            text: datos.cihp[i].NumeroTarjeta,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihp[i].Salida,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihp[i].Llegada,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -491,28 +502,74 @@ export default {
             fontSize: 8.5,
             alignment: "center",
           },
-          {
-            text: datos.cihp[i].Ejecutado,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.cihp[i].Indicador,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.cihp[i].Estado,
-            fontSize: 8.5,
-            alignment: "center",
-          },
 
         ];
-        if (datos.cihp[i].Estado === "Cumple") {
-          acuCumpleihp = acuCumpleihp + 1;
-        } else {
-          acuNoCumpleihp = acuNoCumpleihp + 1;
+        if (i == 0) {
+          arrys.push({
+            text: "0",
+            fontSize: 8.5,
+            alignment: "center",
+          });
+          arrys.push({
+            text: "0",
+            fontSize: 8.5,
+            alignment: "center",
+          });
+          arrys.push({
+            text: "Cumple",
+            fontSize: 8.5,
+            alignment: "center",
+            bold: true,
+            style: ['textGreen']
+          });
+
         }
+        else {
+          var hora1 = datos.cihp[contEICIHP].Llegada.split(":")
+          var hora2 = datos.cihp[contEI2CIHP].Llegada.split(":")
+          var t1 = new Date()
+          var t2 = new Date()
+          t1.setHours(hora1[0], hora1[1], hora1[2]);
+          t2.setHours(hora2[0], hora2[1], hora2[2]);
+          var ejecutado = ((t2 - t1) / 60) / 1000;
+          var estado = '';
+          var indicador = 0;
+          if (contEICIHP < datos.cihp.length) {
+            contEICIHP = contEICIHP + 1
+          }
+          if (contEI2CIHP <= datos.cihp.length) {
+            contEI2CIHP = contEI2CIHP + 1
+          }
+          if ((ejecutado - datos.cihp[i].Programado) < 2) {
+            estado = 'Cumple'
+            acuCumpleihp = acuCumpleihp + 1;
+          } else {
+            estado = 'No Cumple'
+            acuNoCumpleihp = acuNoCumpleihp + 1;
+          }
+          indicador = ((ejecutado - datos.cihp[i].Programado) / datos.cihp[i].Programado) * 100;
+
+          arrys.push({
+            text: ejecutado.toFixed(0),
+            fontSize: 8.5,
+            alignment: "center",
+          });
+          arrys.push({
+            text: indicador.toFixed(2),
+            fontSize: 8.5,
+            alignment: "center",
+          });
+          arrys.push({
+            text: estado,
+            fontSize: 8.5,
+            alignment: "center",
+            bold: true,
+            style: [estado === "Cumple" ? 'textGreen' : 'textRed']
+          });
+
+
+        }
+
         resultadoStringihp.push(arrys);
       }
 
@@ -595,7 +652,7 @@ export default {
             table: {
               headerRows: 0,
               widths: [80, 80, 80, 80, 80, 80],
-              body: [...componenteHeaderTable(["Unidad","Fecha","Programado","Ejecutado","Indicador","Estado"]), ...resultadoString],
+              body: [componenteHeaderTable(["Unidad", "Fecha", "Programado", "Ejecutado", "Indicador", "Estado"]), ...resultadoString],
             },
 
           },
@@ -617,7 +674,7 @@ export default {
             table: {
               headerRows: 0,
               widths: [80, 80, 80, 80, 80, 80],
-              body: [...componenteHeaderTable(["Unidad","Fecha","Programado","Ejecutado","Indicador","Estado"]), ...resultadoStringtvhv],
+              body: [componenteHeaderTable(["Unidad", "Fecha", "Programado", "Ejecutado", "Indicador", "Estado"]), ...resultadoStringtvhv],
             },
           },
           {
@@ -637,8 +694,8 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [80, 80, 80, 80, 80, 80, 80, 80],
-              body: [...componenteHeaderTable(["Unidad","Tarjeta","Salida","Llegada","Programado","Ejecutado","Indicador","Estado"]), ...resultadoStringihp],
+              widths: [60, 60, 60, 60, 60, 60, 60, 60],
+              body: [componenteHeaderTable(["Unidad", "Tarjeta", "Salida", "Llegada", "Programado", "Ejecutado", "Indicador", "Estado"]), ...resultadoStringihp],
             },
           },
           {
@@ -649,7 +706,10 @@ export default {
               body: componenteResultado(acuCumpleihp, acuNoCumpleihp),
             }, margin: [0, 10, 0, 0]
           },
-        ], styles: { textRed: { color: '#ff0000', bold: true }, textGreen: { color: '#008000', bold: true }, textFond: { color: '#fafafa', fillColor: 'green' } }
+        ], styles: {
+          textRed: { color: '#ff0000', bold: true }, textGreen: { color: '#008000', bold: true }, textFond: { color: '#fafafa', fillColor: 'green' },
+          textFondN: { color: '#fafafa', fillColor: 'red' }
+        }
       };
 
       var pdfDocGenerator = pdfMake.createPdf(docDefinition)
