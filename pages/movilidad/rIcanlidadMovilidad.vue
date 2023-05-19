@@ -106,7 +106,7 @@
 <script>
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
+import { getFecha_dd_mm_yyyy, FechaStringToHour, getformatFechatoTime } from '../../util/fechas'
 
 import {
   Table,
@@ -308,8 +308,15 @@ export default {
         return [[" ", "", { text: "Total viajes considerados", colSpan: 2, alignment: "right" }, {}, { text: acu + acuNo, alignment: "right", bold: true }],
         ["", "", { text: "Número que no cumplen", colSpan: 2, alignment: "right" }, {}, { text: acuNo, alignment: "right", bold: true }],
         ["", "", { text: "Número que cumplen ", colSpan: 2, alignment: "right" }, {}, { text: acu, alignment: "right", bold: true }],
-        ["", "", {}, " ", { text: "Total: " + porce.toFixed(2) + " %", style: [porce.toFixed(2) === 100 ? 'textFond' : 'textFondN'], bold: true, alignment: "center" }],
-        ["", "", {}, " ", { text: "CUMPLE", style: [porce.toFixed(2) === 100 ? 'textFond' : 'textFondN'], bold: true, alignment: 'center' }]];
+        ["", "", {}, " ", { text: "Total: " + porce.toFixed(2) + " %", style: [porce.toFixed(2) >= 80 ? 'textFond' : 'textFondN'], bold: true, alignment: "center" }],
+        ["", "", {}, " ", { text: [porce.toFixed(2) >= 80 ? "CUMPLE" : "NO CUMPLE"], style: [porce.toFixed(2) >= 80 ? 'textFond' : 'textFondN'], bold: true, alignment: 'center' }]];
+      }
+      var fechaHora = new Date();
+      var horas = fechaHora.getHours();
+      var minutos = fechaHora.getMinutes();
+      var segundos = fechaHora.getSeconds();
+      function agregarCeros(valor) {
+        return valor < 10 ? '0' + valor : valor;
       }
       const componenteHeader = (titulo) => {
         var tipoInfomer =
@@ -343,16 +350,16 @@ export default {
         {
           text: [
             { text: "PERIODO : ", fontSize: 12, bold: true, },
-            this.fechaInicialIndicadorCalidad,
+            "Desde ", getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
             " Hasta ",
-            this.fechaFinalIndicadorCalidad,
+            getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
 
           ], colSpan: 2,
 
         };
         var impresion =
         {
-          text: [{ text: 'IMPRESION: ', fontSize: 12, bold: true }, this.fechaInicialIndicadorCalidad]
+          text: [{ text: 'IMPRESION: ', fontSize: 12, bold: true }, FechaStringToHour(this.fechaInicialIndicadorCalidad)+' '+agregarCeros(horas) + ':' + agregarCeros(minutos) + ':' + agregarCeros(segundos)]
           , colSpan: 2,
         };
         return {
@@ -522,7 +529,6 @@ export default {
             bold: true,
             style: ['textGreen']
           });
-
         }
         else {
           var hora1 = datos.cihp[contEICIHP].Llegada.split(":")
@@ -569,8 +575,418 @@ export default {
 
 
         }
-
         resultadoStringihp.push(arrys);
+      }
+      // tabla ihv
+      var resultadoStringihv = [];
+      var acuCumpleihv = 1;
+      var acuNoCumpleihv = 0;
+      var contEICIHV = 0
+      var contEI2CIHV = 1
+      for (var i = 0; i < datos.cihv.length; i++) {
+        var arrys = [
+          {
+            text: datos.cihv[i].Unidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihv[i].NumeroTarjeta,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihv[i].Salida,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihv[i].Llegada,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.cihv[i].Programado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+
+        ];
+        if (i == 0) {
+          arrys.push({
+            text: "0",
+            fontSize: 8.5,
+            alignment: "center",
+          });
+          arrys.push({
+            text: "0",
+            fontSize: 8.5,
+            alignment: "center",
+          });
+          arrys.push({
+            text: "Cumple",
+            fontSize: 8.5,
+            alignment: "center",
+            bold: true,
+            style: ['textGreen']
+          });
+        }
+        else {
+          var hora1 = datos.cihv[contEICIHV].Llegada.split(":")
+          var hora2 = datos.cihv[contEI2CIHV].Llegada.split(":")
+          var t1 = new Date()
+          var t2 = new Date()
+          t1.setHours(hora1[0], hora1[1], hora1[2]);
+          t2.setHours(hora2[0], hora2[1], hora2[2]);
+          var ejecutado = ((t2 - t1) / 60) / 1000;
+          var estado = '';
+          var indicador = 0;
+          if (contEICIHV < datos.cihv.length) {
+            contEICIHV = contEICIHV + 1
+          }
+          if (contEI2CIHV <= datos.cihv.length) {
+            contEI2CIHV = contEI2CIHV + 1
+          }
+          if ((ejecutado - datos.cihv[i].Programado) < 2) {
+            estado = 'Cumple'
+            acuCumpleihv = acuCumpleihv + 1;
+          } else {
+            estado = 'No Cumple'
+            acuNoCumpleihv = acuNoCumpleihv + 1;
+          }
+          indicador = ((ejecutado - datos.cihv[i].Programado) / datos.cihv[i].Programado) * 100;
+
+          arrys.push({
+            text: ejecutado.toFixed(0),
+            fontSize: 8.5,
+            alignment: "center",
+          });
+          arrys.push({
+            text: indicador.toFixed(2),
+            fontSize: 8.5,
+            alignment: "center",
+          });
+          arrys.push({
+            text: estado,
+            fontSize: 8.5,
+            alignment: "center",
+            bold: true,
+            style: [estado === "Cumple" ? 'textGreen' : 'textRed']
+          });
+
+
+        }
+        resultadoStringihv.push(arrys);
+
+      }
+      // tabla ivp
+      var resultadoStringivp = [];
+      var acuCumpleivp = 0;
+      var acuNoCumpleivp = 0;
+      for (var i = 0; i < datos.ivhp.length; i++) {
+        var arrys = [
+          {
+            text: datos.ivhp[i].Unidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhp[i].Fecha,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhp[i].Programado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhp[i].Promedio,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhp[i].Indicador,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhp[i].Estado,
+            fontSize: 10,
+            alignment: "center",
+            style: [datos.ivhp[i].Estado === "Cumple" ? 'textGreen' : 'textRed']
+          },
+
+        ];
+        if (datos.ivhp[i].Estado === "Cumple") {
+          acuCumpleivp = acuCumpleivp + 1;
+        } else {
+          acuNoCumpleivp = acuNoCumpleivp + 1;
+        }
+        resultadoStringivp.push(arrys);
+      }
+      // tabla ivv
+      var resultadoStringivv = [];
+      var acuCumpleivv = 0;
+      var acuNoCumpleivv = 0;
+      for (var i = 0; i < datos.ivhv.length; i++) {
+        var arrys = [
+          {
+            text: datos.ivhv[i].Unidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhv[i].Fecha,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhv[i].Programado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhv[i].Promedio,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhv[i].Indicador,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.ivhv[i].Estado,
+            fontSize: 10,
+            alignment: "center",
+            style: [datos.ivhv[i].Estado === "Cumple" ? 'textGreen' : 'textRed']
+          },
+
+        ];
+        if (datos.ivhv[i].Estado === "Cumple") {
+          acuCumpleivv = acuCumpleivv + 1;
+        } else {
+          acuNoCumpleivv = acuNoCumpleivv + 1;
+        }
+        resultadoStringivv.push(arrys);
+      }
+      // tabla tap
+      var resultadoStringtap = [];
+      var acuCumpletap = 0;
+      var acuNoCumpletap = 0;
+      for (var i = 0; i < datos.pphp.length; i++) {
+        var arrys = [
+          {
+            text: datos.pphp[i].Salidas,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.pphp[i].Fecha,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.pphp[i].Parada,
+            fontSize: 8.5,
+            alignment: "left",
+          },
+          {
+            text: datos.pphp[i].Tiempo,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.pphp[i].Indicador,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.pphp[i].Estado,
+            fontSize: 10,
+            alignment: "center",
+            style: [datos.pphp[i].Estado === "Cumple" ? 'textGreen' : 'textRed']
+          },
+
+        ];
+        if (datos.pphp[i].Estado === "Cumple") {
+          acuCumpletap = acuCumpletap + 1;
+        } else {
+          acuNoCumpletap = acuNoCumpletap + 1;
+        }
+        resultadoStringtap.push(arrys);
+      }
+      // tabla tav
+      var resultadoStringtav = [];
+      var acuCumpletav = 0;
+      var acuNoCumpletav = 0;
+      for (var i = 0; i < datos.pphv.length; i++) {
+        var arrys = [
+          {
+            text: datos.pphv[i].Salidas,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.pphv[i].Fecha,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.pphv[i].Parada,
+            fontSize: 8.5,
+            alignment: "left",
+          },
+          {
+            text: datos.pphv[i].Tiempo,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.pphv[i].Indicador,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.pphv[i].Estado,
+            fontSize: 10,
+            alignment: "center",
+            style: [datos.pphv[i].Estado === "Cumple" ? 'textGreen' : 'textRed']
+          },
+
+        ];
+        if (datos.pphv[i].Estado === "Cumple") {
+          acuCumpletav = acuCumpletav + 1;
+        } else {
+          acuNoCumpletav = acuNoCumpletav + 1;
+        }
+        resultadoStringtav.push(arrys);
+      }
+      // tabla hio
+      var resultadoStringhio = [];
+      var acuCumplehio = 0;
+      var acuNoCumplehio = 0;
+      for (var i = 0; i < datos.io.length; i++) {
+        var arrys = [
+          {
+            text: datos.io[i].Tipo,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.io[i].Fecha,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.io[i].Programado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.io[i].Ejecutado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.io[i].Estado,
+            fontSize: 10,
+            alignment: "center",
+            style: [datos.io[i].Estado === "Cumple" ? 'textGreen' : 'textRed']
+          },
+
+        ];
+        if (datos.io[i].Estado === "Cumple") {
+          acuCumplehio = acuCumplehio + 1;
+        } else {
+          acuNoCumplehio = acuNoCumplehio + 1;
+        }
+        resultadoStringhio.push(arrys);
+      }
+      // tabla hco
+      var resultadoStringhco = [];
+      var acuCumplehco = 0;
+      var acuNoCumplehco = 0;
+      for (var i = 0; i < datos.co.length; i++) {
+        var arrys = [
+          {
+            text: datos.co[i].Tipo,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.co[i].Fecha,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.co[i].Programado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.co[i].Ejecutado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.co[i].Estado,
+            fontSize: 10,
+            alignment: "center",
+            style: [datos.co[i].Estado === "Cumple" ? 'textGreen' : 'textRed']
+          },
+
+        ];
+        if (datos.co[i].Estado === "Cumple") {
+          acuCumplehco = acuCumplehco + 1;
+        } else {
+          acuNoCumplehco = acuNoCumplehco + 1;
+        }
+
+        resultadoStringhco.push(arrys);
+      }
+      // tabla ora
+      var resultadoStringora = [];
+      var acuCumpleora = 0;
+      var acuNoCumpleora = 0;
+      for (var i = 0; i < datos.oer.length; i++) {
+        var arrys = [
+          {
+            text: datos.oer[i].Unidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.oer[i].Incidencia,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.oer[i].Efectuada,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.oer[i].Indicador,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: datos.oer[i].Estado,
+            fontSize: 10,
+            alignment: "center",
+            style: [datos.oer[i].Estado === "Cumple" ? 'textGreen' : 'textRed']
+          },
+
+        ];
+        if (datos.oer[i].Estado === "Cumple") {
+          acuCumpleora = acuCumpleora + 1;
+        } else {
+          acuNoCumpleora = acuNoCumpleora + 1;
+        }
+
+        resultadoStringora.push(arrys);
       }
 
       var docDefinition = {
@@ -643,6 +1059,7 @@ export default {
           ],
         },
         content: [
+          //Tabla TVHP
           {
             layout: "noBorders",
             table: componenteHeader("TIEMPO DE VIAJE HORA PICO (TVHP)"),
@@ -664,8 +1081,8 @@ export default {
               body: componenteResultado(acuCumple, acuNoCumple),
             }, margin: [0, 10, 0, 0]
           },
-
           { text: '', pageBreak: 'before' },
+          //Tabla TVHV
           {
             layout: "noBorders",
             table: componenteHeader("TIEMPO DE VIAJE HORA VALLE Y COLATERAL (TVHV)"),
@@ -687,6 +1104,7 @@ export default {
           },
 
           { text: '', pageBreak: 'before' },
+          //Tabla IHP
           {
             layout: "noBorders",
             table: componenteHeader("CUMPLIMIENTO DE INTERVALO EN HORA PICO (IHP)"),
@@ -694,7 +1112,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [60, 60, 60, 60, 60, 60, 60, 60],
+              widths: [40, 60, 60, 60, 60, 60, 60, 60],
               body: [componenteHeaderTable(["Unidad", "Tarjeta", "Salida", "Llegada", "Programado", "Ejecutado", "Indicador", "Estado"]), ...resultadoStringihp],
             },
           },
@@ -704,6 +1122,181 @@ export default {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
               body: componenteResultado(acuCumpleihp, acuNoCumpleihp),
+            }, margin: [0, 10, 0, 0]
+          },
+          { text: '', pageBreak: 'before' },
+          //Tabla IHV
+          {
+            layout: "noBorders",
+            table: componenteHeader("CUMPLIMIENTO DE INTERVALO EN HORA VALLE (IHV)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40, 60, 60, 60, 60, 60, 60, 60],
+              body: [componenteHeaderTable(["Unidad", "Tarjeta", "Salida", "Llegada", "Programado", "Ejecutado", "Indicador", "Estado"]), ...resultadoStringihv],
+            },
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumpleihv, acuNoCumpleihv),
+            }, margin: [0, 10, 0, 0]
+          },
+          { text: '', pageBreak: 'before' },
+          //Tabla IVP
+          {
+            layout: "noBorders",
+            table: componenteHeader("Índice Velocidad planificada vs Operacional en hora pico (IVP)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [80, 80, 80, 80, 80, 80],
+              body: [componenteHeaderTable(["Unidad", "Fecha", "Programado", "Ejecutado", "Indicador", "Estado"]), ...resultadoStringivp],
+            },
+
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumpleivp, acuNoCumpleivp),
+            }, margin: [0, 10, 0, 0]
+          },
+          { text: '', pageBreak: 'before' },
+          //Tabla IVV
+          {
+            layout: "noBorders",
+            table: componenteHeader("Índice Velocidad planificada vs Operacional en hora valle y colateral (IVV)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [80, 80, 80, 80, 80, 80],
+              body: [componenteHeaderTable(["Unidad", "Fecha", "Programado", "Ejecutado", "Indicador", "Estado"]), ...resultadoStringivv],
+            },
+
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumpleivv, acuNoCumpleivv),
+            }, margin: [0, 10, 0, 0]
+          },
+          { text: '', pageBreak: 'before' },
+          //Tabla TAP
+          {
+            layout: "noBorders",
+            table: componenteHeader("Tiempo de permanencia del autobús en paradas en hora pico (TAP)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [50, 60, 210, 40, 60, 60],
+              body: [componenteHeaderTable(["Salidas", "Fecha", "Parada", "Tiempo", "Indicador", "Estado"]), ...resultadoStringtap],
+            },
+
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumpletap, acuNoCumpletap),
+            }, margin: [0, 10, 0, 0]
+          },
+          { text: '', pageBreak: 'before' },
+          //Tabla TAV
+          {
+            layout: "noBorders",
+            table: componenteHeader("Tiempo de permanencia del autobús en paradas en hora valle (TAV)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [50, 60, 210, 40, 60, 60],
+              body: [componenteHeaderTable(["Salidas", "Fecha", "Parada", "Tiempo", "Indicador", "Estado"]), ...resultadoStringtav],
+            },
+
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumpletav, acuNoCumpletav),
+            }, margin: [0, 10, 0, 0]
+          },
+          { text: '', pageBreak: 'before' },
+          //Tabla HIO
+          {
+            layout: "noBorders",
+            table: componenteHeader("Cumplimiento de horarios de inicio de operación (HIO)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [100, 100, 100, 90, 90],
+              body: [componenteHeaderTable(["Dia", "Fecha", "Programado", "Ejecutado", "Estado"]), ...resultadoStringhio],
+            },
+
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumplehio, acuNoCumplehio),
+            }, margin: [0, 10, 0, 0]
+          },
+          { text: '', pageBreak: 'before' },
+          //Tabla HIO
+          {
+            layout: "noBorders",
+            table: componenteHeader("Cumplimiento de horarios de cierre de operación (HCO)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [100, 100, 100, 90, 90],
+              body: [componenteHeaderTable(["Dia", "Fecha", "Programado", "Ejecutado", "Estado"]), ...resultadoStringhco],
+            },
+
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumplehco, acuNoCumplehco),
+            }, margin: [0, 10, 0, 0]
+          },
+          { text: '', pageBreak: 'before' },
+          //Tabla ORA
+          {
+            layout: "noBorders",
+            table: componenteHeader("Operación en ruta autorizada(desvío en ruta)(ORA)"),
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [95, 95, 95, 95, 95, 95],
+              body: [componenteHeaderTable(["Unidad", "Incidencia", "Efectuada", "Indicador", "Estado"]), ...resultadoStringora],
+            },
+
+          },
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: ["*", "*", "*", "*", "*"],
+              body: componenteResultado(acuCumpleora, acuNoCumpleora),
             }, margin: [0, 10, 0, 0]
           },
         ], styles: {
