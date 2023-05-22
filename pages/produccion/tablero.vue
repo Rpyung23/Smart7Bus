@@ -1705,6 +1705,7 @@ export default {
       this.oEmpresa == "otavalo-lag" ||
       this.oEmpresa == "tsagrario" ||
       this.oEmpresa == "msaenz" || 
+      this.oEmpresa == "upeninsular" || 
       this.oEmpresa == "el-puma"
     ) {
       //trabaja por vueltas
