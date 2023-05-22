@@ -76,7 +76,7 @@
           <base-button
             icon
             type="danger"
-            @click="showModalDespachoAnularSalida()"
+            @click="showModalAnularFinalizarDespacho(4)"
             v-show="
               this.selectRowId != null &&
               this.selectRowId != '' &&
@@ -92,7 +92,7 @@
           <base-button
             icon
             type="warning"
-            @click="showModalDespachoFinalizarSalida()"
+            @click="showModalAnularFinalizarDespacho(3)"
             v-show="
               this.selectRowId != null &&
               this.selectRowId != '' &&
@@ -172,7 +172,6 @@
             @cellendedit="cellEndEditEvent($event)"
             :columns="columnsInfo"
             :source="dataAdapter"
-            :editable="true"
             @rowselect="myGridOnRowSelect($event)"
             :selectionmode="'singlerow'"
             :enabletooltips="true"
@@ -338,13 +337,26 @@
 
     <!--DESPACHAR modal-->
     <modal :show.sync="modalEnviarDespachoPanel">
-
-      <base-alert v-if="responseApiDespachoWeb != null && responseApiDespachoWeb.data.status_code == 200" type="default">
-        SALIDA <strong>{{responseApiDespachoWeb.data.msm}}</strong> GENERADA CON EXITO
+      <base-alert
+        v-if="
+          responseApiDespachoWeb != null &&
+          responseApiDespachoWeb.data.status_code == 200
+        "
+        type="default"
+      >
+        SALIDA
+        <strong>{{ responseApiDespachoWeb.data.salida_id }}</strong> GENERADA
+        CON EXITO
       </base-alert>
 
-      <base-alert v-if="responseApiDespachoWeb != null && responseApiDespachoWeb.data.status_code == 400" type="danger">
-        {{responseApiDespachoWeb.data.msm}}
+      <base-alert
+        v-if="
+          responseApiDespachoWeb != null &&
+          responseApiDespachoWeb.data.status_code == 400
+        "
+        type="danger"
+      >
+        {{ responseApiDespachoWeb.data.msm }}
       </base-alert>
 
       <div class="row" style="margin-bottom: 1rem">
@@ -460,12 +472,48 @@
 
     <!--Form modal Despacho Anular Salida-->
     <modal :show.sync="modalDespachoAnularSalida" body-classes="p-0">
-      <h6 slot="header" class="modal-title">Anular Salida</h6>
+      <base-alert v-if="reponseAnularFinalizar != null && reponseAnularFinalizar.status_code != 200 " type="danger" class="container_body_modal_despacho">
+       {{reponseAnularFinalizar == null ? "ERROR INDEFINIDO" : reponseAnularFinalizar.msm}}
+  </base-alert>
+      <h6 slot="header" class="modal-title">
+        Anular Salida N° {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.idSali_m }}
+      </h6>
+      <div class="container_body_modal_despacho">
+        <strong>Unidad : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.CodiVehiSali_m }}
+        <strong>Ruta : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.DescRutaSali_m }}
+        <strong>Hora : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.HoraSaliProgSali_m }}
+      </div>
+      <template slot="footer">
+        <base-button
+          type="danger"
+          @click="consumirApiAnularFinalizarDespacho(4)"
+          >Anular Salida</base-button
+        >
+      </template>
     </modal>
 
     <!--Form modal Despacho Finalizar Salida-->
     <modal :show.sync="modalDespachoFinalizarSalida" body-classes="p-0">
-      <h6 slot="header" class="modal-title">Finalizar Salida</h6>
+
+      <base-alert v-if="reponseAnularFinalizar != null && reponseAnularFinalizar.status_code != 200 " type="danger" class="container_body_modal_despacho">
+       {{reponseAnularFinalizar == null ? "ERROR INDEFINIDO" : reponseAnularFinalizar.msm}}
+      </base-alert>
+
+      <h6 slot="header" class="modal-title">
+        Finalizar Salida N° {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.idSali_m }}
+      </h6>
+      <div class="container_body_modal_despacho">
+        <strong>Unidad : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.CodiVehiSali_m }}
+        <strong>Ruta : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.DescRutaSali_m }}
+        <strong>Hora : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.HoraSaliProgSali_m }}
+      </div>
+      <template slot="footer">
+        <base-button
+          type="warning"
+          @click="consumirApiAnularFinalizarDespacho(3)"
+          >Finalizar Salida</base-button
+        >
+      </template>
     </modal>
   </div>
 </template>
@@ -523,7 +571,8 @@ export default {
   },
   data() {
     return {
-      minutosSalidaDiferida : 0,
+      reponseAnularFinalizar:null,
+      minutosSalidaDiferida: 0,
       columnsInfo: [],
       imagenBaseUrl: "",
       getWidth: "100%",
@@ -564,11 +613,13 @@ export default {
       modalRecorridoPanelDespachoControl: false,
       oCenterPanelDespachoControl: { lat: -1.249546, lng: -78.585376 },
       oZoomPanelDespachoControl: 7,
-      responseApiDespachoWeb:null
+      responseApiDespachoWeb: null,
+      ArrowGridSelect: null,
     };
   },
   methods: {
     myGridOnRowSelect: function (event) {
+      this.ArrowGridSelect = event.args.rowindex;
       this.selectedRowSalida = event.args.row;
       this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(
         this.selectedRowSalida.idSali_m
@@ -616,24 +667,22 @@ export default {
       );
     },
     showEnviarDespachoPanel() {
-      this.initFechaActualSalidaDespachoPanel()
-      this.responseApiDespachoWeb = null
-      this.itemUnidadSalidasPanelDespacho = null
-      this.mSelectRutaFrecuenciaPanelDespacho = null
+      this.initFechaActualSalidaDespachoPanel();
+      this.responseApiDespachoWeb = null;
+      this.itemUnidadSalidasPanelDespacho = null;
+      this.mSelectRutaFrecuenciaPanelDespacho = null;
       this.modalEnviarDespachoPanel
         ? (this.modalEnviarDespachoPanel = false)
         : (this.modalEnviarDespachoPanel = true);
     },
-    getObjetoFrecuencia(idFreceucnia){
-      for(var i = 0;this.mListRutasFrecuencias.length;i++)
-      {
-        if(idFreceucnia == this.mListRutasFrecuencias[i].idFrec)
-        {
-          return this.mListRutasFrecuencias[i]
+    getObjetoFrecuencia(idFreceucnia) {
+      for (var i = 0; this.mListRutasFrecuencias.length; i++) {
+        if (idFreceucnia == this.mListRutasFrecuencias[i].idFrec) {
+          return this.mListRutasFrecuencias[i];
         }
       }
 
-      return null
+      return null;
     },
     showModalDespacho() {
       this.modalEnviarDespachoPanel
@@ -645,18 +694,8 @@ export default {
         ? (this.modalDespachoRecalificarSalida = false)
         : (this.modalDespachoRecalificarSalida = true);
     },
-    showModalDespachoAnularSalida() {
-
-      console.log(this.selectedRowSalida.idSali_m)
-      
-      this.AnularFinalizarDespacho(this.selectedRowSalida.idSali_m,4)
-
-      /*this.modalDespachoAnularSalida
-        ? (this.modalDespachoAnularSalida = false)
-        : (this.modalDespachoAnularSalida = true);*/
-    },
     showModalDespachoFinalizarSalida() {
-      this.AnularFinalizarDespacho(this.selectedRowSalida.idSali_m,3)
+      this.AnularFinalizarDespacho(this.selectedRowSalida, 3);
       /*this.modalDespachoFinalizarSalida
         ? (this.modalDespachoFinalizarSalida = false)
         : (this.modalDespachoFinalizarSalida = true);*/
@@ -672,7 +711,7 @@ export default {
         }
       );
 
-      console.log(datos.data)
+      console.log(datos.data);
       if (datos.data.status_code != 400) {
         this.mListRutasFrecuencias.push(...datos.data.data);
       }
@@ -742,6 +781,13 @@ export default {
       }
     },
     async createHeaderTable() {
+      //this.selectedRowSalida = null;
+
+      //this.$refs.myGridDespachoPanel.clearSelection();
+      if (this.ArrowGridSelect != null) {
+        this.$refs.myGridDespachoPanel.unselectrow(this.ArrowGridSelect);
+      }
+
       var oRuta = this.getRutaPorID(this.mSelectRutaSalidaPanelDespacho);
       this.readDespachoSalidasAnuladas();
 
@@ -1041,9 +1087,12 @@ export default {
     handleDelete(index, row) {},
     deleteRow(row) {},
     async readAllUnidadesSalidasPanelBusqueda() {
-      var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
-        token: this.token,
-      });
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/unidadesDespacho",
+        {
+          token: this.token,
+        }
+      );
       if (datos.data.status_code == 200) {
         for (var i = 0; i < datos.data.data.length; i++) {
           var obj = datos.data.data[i];
@@ -1149,62 +1198,104 @@ export default {
         return false;
       }
     },
-    async EnviarDespachoUnidad() 
-    {
+    async EnviarDespachoUnidad() {
       try {
+        var objFrecuencia = this.getObjetoFrecuencia(
+          this.mSelectRutaFrecuenciaPanelDespacho
+        );
+        console.log(objFrecuencia);
+        this.responseApiDespachoWeb = null;
+        console.log(this.radioTipoDespacho);
+        console.log(this.itemUnidadSalidasPanelDespacho);
+        console.log("ENVIANDO DESPACHO ............");
+        console.log(`UNIDAD : ${this.itemUnidadSalidasPanelDespacho.CodiVehi}`);
+        console.log(
+          `API : ${this.itemUnidadSalidasPanelDespacho.api_despacho}`
+        );
+        console.log(this.fechaActualSalidasPanelDespachoDespachador);
+        console.log(`FRECUENCIA : ${this.mSelectRutaFrecuenciaPanelDespacho}`);
+        console.log(objFrecuencia);
+        console.log(`RUTA ${this.mSelectRutaSalidaDespachar}`);
 
-        var objFrecuencia = this.getObjetoFrecuencia(this.mSelectRutaFrecuenciaPanelDespacho)
-        console.log(objFrecuencia)
-        this.responseApiDespachoWeb = null
-      console.log(this.radioTipoDespacho)
-      console.log(this.itemUnidadSalidasPanelDespacho);
-      console.log("ENVIANDO DESPACHO ............");
-      console.log(`UNIDAD : ${this.itemUnidadSalidasPanelDespacho.CodiVehi}`);
-      console.log(`API : ${this.itemUnidadSalidasPanelDespacho.api_despacho}`);
-      console.log(this.fechaActualSalidasPanelDespachoDespachador);
-      console.log(`FRECUENCIA : ${this.mSelectRutaFrecuenciaPanelDespacho}`);
-      console.log(objFrecuencia)
-      console.log(`RUTA ${this.mSelectRutaSalidaDespachar}`);
-      
-      this.responseApiDespachoWeb = await this.$axios.post(
-        process.env.baseUrl + "/generarDespacho",
-        {
-          token: this.token,
-          unidad: this.itemUnidadSalidasPanelDespacho.CodiVehi,
-          ruta: this.mSelectRutaSalidaDespachar,
-          frecuencia: objFrecuencia.idFrec,
-          fecha_hora: this.fechaActualSalidasPanelDespachoDespachador,
-          salida_diferida: (this.radioTipoDespacho == 1 || this.radioTipoDespacho == 3) ? 0 : 1,
-          minutos_antes: this.radioTipoDespacho == 2 ? objFrecuencia.AutoDespachoDifeFrec : 0
-        }
-      );
+        this.responseApiDespachoWeb = await this.$axios.post(
+          process.env.baseUrl + "/generarDespacho",
+          {
+            token: this.token,
+            unidad: this.itemUnidadSalidasPanelDespacho.CodiVehi,
+            empresa_codigo: this.itemUnidadSalidasPanelDespacho.CodiClie,
+            dispositivo_imei: this.itemUnidadSalidasPanelDespacho.CodiDispVehi,
+            channel_port: this.itemUnidadSalidasPanelDespacho.PuerCHNClie,
+            dispositivo_tipo:
+              this.itemUnidadSalidasPanelDespacho.idTipoDispVehi,
+            ruta: this.mSelectRutaSalidaDespachar,
+            frecuencia: objFrecuencia.idFrec,
+            fecha_hora: this.fechaActualSalidasPanelDespachoDespachador,
+            salida_diferida:
+              this.radioTipoDespacho == 1 || this.radioTipoDespacho == 3
+                ? 0
+                : 1,
+            minutos_antes:
+              this.radioTipoDespacho == 2
+                ? objFrecuencia.AutoDespachoDifeFrec
+                : 0,
+          }
+        );
 
-      console.log(this.responseApiDespachoWeb.data);
+        console.log(this.responseApiDespachoWeb.data);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-      this.createHeaderTable()
+      this.createHeaderTable();
     },
-    async AnularFinalizarDespacho(salida,estado) 
-    {
-      console.log(this.selectRowEstado)
-      try{
-        var response = await this.$axios.post(
-        process.env.baseUrl + "/anularFinalizarDespacho",
-        {
-          token: this.token,
-          /*api_despacho: this.itemUnidadSalidasPanelDespacho.api_despacho,*/
-          salida_id: salida,
-          estado: estado,
-        }
-      );
-
-      console.log(response.data);
-      }catch(e){
-        alert("ERROR TRYCATCH")
-        console.log(e)
+    async showModalAnularFinalizarDespacho(estado) {
+      //console.log(this.selectRowEstado)
+      this.reponseAnularFinalizar = null
+      if (estado == 3) {
+        this.modalDespachoFinalizarSalida = true;
+      } else if (estado == 4) {
+        this.modalDespachoAnularSalida = true;
       }
-      this.createHeaderTable()
+    },
+    async consumirApiAnularFinalizarDespacho(estado) 
+    {
+      
+      try {
+        var unidad = this.getObjUnidad(this.selectedRowSalida.CodiVehiSali_m);
+        console.log(this.getObjUnidad(this.selectedRowSalida.CodiVehiSali_m));
+
+        var response = await this.$axios.post(
+          process.env.baseUrl + "/anularFinalizarDespacho",
+          {
+            token: this.token,
+            salida_id: this.selectedRowSalida.idSali_m,
+            estado: estado,
+            empresa_codigo: unidad.CodiClie,
+            unidad: unidad.CodiVehi,
+            dispositivo_imei: unidad.CodiDispVehi,
+            dispositivo_tipo: unidad.idTipoDispVehi,
+            channel_port: unidad.PuerCHNClie,
+          }
+        );
+
+        console.log(response.data);
+        this.reponseAnularFinalizar = response.data
+        this.modalDespachoAnularSalida = false
+      } catch (e) {
+        alert("ERROR TRYCATCH");
+        console.log(e);
+      }
+      this.createHeaderTable();
+    },
+    getObjUnidad(unidad) {
+      var objUnidad = null;
+
+      for (var i = 0; i < this.mListaUnidadesSalidasPanelDespacho.length; i++) {
+        if (this.mListaUnidadesSalidasPanelDespacho[i].CodiVehi == unidad) {
+          return this.mListaUnidadesSalidasPanelDespacho[i];
+        }
+      }
+
+      return objUnidad;
     },
   },
   mounted() {
@@ -1225,6 +1316,10 @@ export default {
 </script>
 
 <style>
+.container_body_modal_despacho {
+  margin-right: 1.25rem;
+  margin-left: 1.25rem;
+}
 .buttonsAdicionalesDespacho {
   margin: auto;
   display: flex;
