@@ -3,7 +3,6 @@ const pkg = require('./package')
 
 module.exports = {
     ssr: false,
-    target: "static",
     
     router: {
         base: '/',
