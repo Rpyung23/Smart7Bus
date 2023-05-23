@@ -6,8 +6,16 @@ module.exports = {
     router: {
         base: '/',
         linkExactActiveClass: 'active',
-        middleware: ['redirect']
-    },
+        middleware: ['redirect'],
+        extendRoutes(routes, resolve) {
+          // Agrega aquí tus rutas personalizadas
+          routes.push({
+            name: 'empresa',
+            path: '/:empresa',
+            component: resolve(__dirname, 'pages/_empresa.vue')
+          })
+        }
+      },
     /*
      ** Headers of the page
      */
@@ -70,7 +78,7 @@ module.exports = {
         '@nuxtjs/axios',
         '@nuxtjs/pwa',
         '@nuxtjs/moment',
-        'cookie-universal-nuxt'
+        'cookie-universal-nuxt',
     ],
     /*
      ** Axios module configuration
