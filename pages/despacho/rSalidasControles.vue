@@ -817,7 +817,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE HISTORIAL RECORRIDO",
+                      text: "REPORTE DE CUMPLIMIENTO DE SALIDAS, RUTAS Y FRECUENCIAS",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
