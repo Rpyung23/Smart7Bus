@@ -67,6 +67,12 @@
 
           <sidebar-item
           translate="no"
+          v-if="rminutosjustificados" 
+            :link="{ name: 'Minutos Justificados', path: './rMinutosJustificados' }"
+          ></sidebar-item>
+
+          <sidebar-item
+          translate="no"
             :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }"
           />
           <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
@@ -140,7 +146,8 @@ export default {
       pathRminutostarjetaResumidoVueltas: './rminutostarjetaResumido',
       pathRminutostarjeta : './rminutostarjeta',
       pathResumidoVehiculo : './resumidovehiculo',
-      rminutosjustificadosvuelta: false
+      rminutosjustificadosvuelta: false,
+      rminutosjustificados:false
     }
   },
   methods: {
@@ -163,6 +170,11 @@ export default {
                                permisos.produccion.reportes != null &&
                                permisos.produccion.reportes.RMinutosJustificadosVuelta != null &&
                                permisos.produccion.reportes.RMinutosJustificadosVuelta) ? true :  false
+
+    this.rminutosjustificados  = (permisos.produccion != null &&  
+                               permisos.produccion.reportes != null &&
+                               permisos.produccion.reportes.RMinutosJustificados != null &&
+                               permisos.produccion.reportes.RMinutosJustificados) ? true :  false
 
     this.pathTableroVueltas = (this.oPermisosWebProduccionPanelJSON != null &&  
                                this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 

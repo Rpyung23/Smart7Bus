@@ -31,7 +31,7 @@
             <base-input
               title="Buscar"
               addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem;margin-bottom: 0rem !important;"
+              style="margin-right: 0.5rem"
             >
               <flat-picker
                 slot-scope="{ focus, blur }"
@@ -65,7 +65,7 @@
               icon
               type="primary"
               size="sm"
-              @click="readRMinutosJustificadosVuelta()"
+              @click="readRMinutosJustificados()"
             >
               <span class="btn-inner--icon"
                 ><i class="el-icon-search"></i
@@ -262,6 +262,10 @@ export default {
           label: "Grupo",
           minWidth: 140,
         },{
+          prop: "HoraSaliProgSali_m",
+          label: "Fecha",
+          minWidth: 165,
+        },{
           prop: "NumeVuelSali_m",
           label: "N° Vuelta",
           minWidth: 150,
@@ -269,16 +273,16 @@ export default {
         {
           prop: "DescRutaSali_m",
           label: "Ruta - Linea",
-          minWidth: 200,
+          minWidth: 215,
         },
         {
           prop: "DescFrec",
           label: "Frecuencia",
-          minWidth: 250,
+          minWidth: 265,
         },{
           prop: "DescCtrl",
           label: "Control",
-          minWidth: 250,
+          minWidth: 275,
         },{
           prop: "HoraProgSali_d",
           label: "H. Programación",
@@ -296,6 +300,14 @@ export default {
           prop: "AtrasoJTiempo",
           label: "Jus. Atrasos",
           minWidth: 140,
+        },{
+          prop: "AdelantoFTiempo",
+          label: "Fal. Adelanto",
+          minWidth: 155,
+        },{
+          prop: "AdelantoJTiempo",
+          label: "Jus. Adelanto",
+          minWidth: 155,
         },{
           prop: "FechaJustifica",
           label: "Fecha Just.",
@@ -324,6 +336,7 @@ export default {
       json_fields_excelRPagosVehiculoProduccion: {
         Unidad: "CodiVehiSali_m",
         "Grupo": "descripcion_grupo",
+        "Fecha": "HoraSaliProgSali_m",
         "N° Vuelta": "NumeVuelSali_m",
         "Ruta - Linea": "DescRutaSali_m",
         "Frecuencia": "DescFrec",
@@ -332,6 +345,8 @@ export default {
         "H. Marcación": "HoraMarcSali_d",
         "Atraso Falta": "AtrasoFTiempo",
         "Atraso Justificado": "AtrasoJTiempo",
+        "Adelanto Falta": "AdelantoFTiempo",
+        "Adelanto Justificado": "AdelantoJTiempo",
         'Fecha Justificación': "FechaJustifica",
         'Usuario': "NombApellUsua",
         Motivo: "Motivo",
@@ -383,7 +398,7 @@ export default {
         }
       }
     },
-    async readRMinutosJustificadosVuelta() {
+    async readRMinutosJustificados() {
       this.mListaRMinutoJustificadoVuelta = [];
       this.loadingTableRVelocidadesBusquedaloading = true;
 
@@ -417,7 +432,7 @@ export default {
 
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/MinutosJusttificadosVuelta",
+          process.env.baseUrl + "/MinutosJusttificados",
           {
             token: this.token,
             unidades:
@@ -747,6 +762,24 @@ export default {
 }
 
 
+.form-controlPersonal {
+  display: block;
+  width: 100%;
+  /* height: calc(1.5em + 1.25rem + 2px); */
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #8898aa;
+  background-color: #fff;
+  background-clip: padding-box;
+  outline: none;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  margin-bottom: 0rem;
+  box-shadow: 0 3px 2px rgba(233, 236, 239, 0.05);
+  transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
 
 .cardTextoRPagosVehiculoProduccion {
   display: flex;

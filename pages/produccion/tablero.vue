@@ -1692,6 +1692,7 @@ export default {
 
     if (
       this.oEmpresa == "28septiembre" ||
+      this.oEmpresa == 'itransincia' ||
       this.oEmpresa == "smiguel" ||
       this.oEmpresa == "tatahualpa" ||
       this.oEmpresa == "cazul" ||
