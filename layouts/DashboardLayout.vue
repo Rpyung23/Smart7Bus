@@ -14,7 +14,7 @@
         <sidebar-item translate="no" v-if="permisos != null && permisos.flota_vehicular != null && permisos.flota_vehicular.active != null && permisos.flota_vehicular.active" :link="{
           name: 'Flota Vehicular',
           icon: 'ni ni-bus-front-12 text-primary',
-          path: '/flotavehicular',
+          path: './flotavehicular',
         }">
         </sidebar-item>
 
@@ -105,7 +105,7 @@
           icon: 'ni ni-ungroup text-orange',
         }">
 
-          <sidebar-item :link="{ name: 'R. Kilometros', path: '/rdistancia' }" translate="no"/>
+          <sidebar-item :link="{ name: 'R. Kilometros', path: './rdistancia' }" translate="no"/>
           <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" translate="no"/>
           <sidebar-item :link="{ name: 'ANT', path: './rant' }" />
           <sidebar-item :link="{ name: 'R. Gasolineras', path: './rGasolinera' }" translate="no"/>

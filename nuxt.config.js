@@ -5,7 +5,7 @@ module.exports = {
     ssr: false,
     
     router: {
-        base: '/',
+        base: '',
         linkExactActiveClass: 'active',
         middleware: ['redirect']
     },
