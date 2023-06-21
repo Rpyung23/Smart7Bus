@@ -5,15 +5,8 @@ module.exports = {
     ssr: false,
     
     router: {
-        base: '',
-        redirects: [
-            {
-              from: '^(.*)/$',
-              to: '$1'
-            }
-          ],
+        base: '/',
         linkExactActiveClass: 'active',
-        trailingSlash:false,
         middleware: ['redirect']
     },
     /*

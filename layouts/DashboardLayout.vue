@@ -7,14 +7,14 @@
         <sidebar-item translate="no" v-if="permisos != null  && permisos.monitoreo != null && permisos.monitoreo.active != null && permisos.monitoreo.active" :link="{
           name: 'Monitoreo',
           icon: 'ni ni-world text-success',
-          path: './monitoreo',
+          path: '/monitoreo',
         }">
         </sidebar-item>
 
         <sidebar-item translate="no" v-if="permisos != null && permisos.flota_vehicular != null && permisos.flota_vehicular.active != null && permisos.flota_vehicular.active" :link="{
           name: 'Flota Vehicular',
           icon: 'ni ni-bus-front-12 text-primary',
-          path: './flotavehicular',
+          path: '/flotavehicular',
         }">
         </sidebar-item>
 
@@ -38,7 +38,7 @@
         <sidebar-item translate="no" v-if="permisos != null && permisos.editor_rutas != null && permisos.editor_rutas.active != null && permisos.editor_rutas.active" :link="{
           name: 'Editor de Rutas',
           icon: 'ni ni-vector text-danger',
-          path: './rutas/controles',
+          path: '/rutas/controles',
         }">
         </sidebar-item>
 
@@ -46,14 +46,14 @@
         <sidebar-item translate="no" v-if="permisos != null && permisos.Mantenimiento != null && permisos.Mantenimiento.active != null && permisos.Mantenimiento.active" :link="{
           name: 'Mantenimiento',
           icon: 'ni ni-settings text-primary',
-          path: './mantenimiento/tablero',
+          path: '/mantenimiento/tablero',
               }">
         </sidebar-item>
 
         <sidebar-item translate="no" v-if="permisos != null && permisos.cajaComun != null && permisos.cajaComun.active != null && permisos.cajaComun.active" :link="{
           name: 'Caja Común',
           icon: 'ni ni-lock-circle-open text-green',
-          path: './produccion/tablero',
+          path: '/produccion/tablero',
               }">
         </sidebar-item>
 
@@ -69,14 +69,14 @@
         <sidebar-item translate="no" v-if="permisos != null && permisos.liquidacion != null && permisos.liquidacion.active != null && permisos.liquidacion.active" :link="{
           name: 'Liquidación',
           icon: 'ni ni-money-coins text-green',
-          path: './produccion/tablero',
+          path: '/produccion/tablero',
         }">
         </sidebar-item>
 
         <sidebar-item translate="no" v-if="permisos != null  && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active && permisos.recaudo.reportes.active != null && permisos.recaudo.reportes.active" :link="{
           name: 'Recaudo',
           icon: 'ni ni-single-02 text-orange',
-          path: './recaudo/rcontador',
+          path: '/recaudo/rcontador',
         }">
         </sidebar-item>
 
@@ -86,7 +86,7 @@
           :link="{
             name: 'Recaudo GAD (M)',
             icon: 'ni ni-single-02 text-danger',
-            path: './rcontadorGadAmbatoMes',
+            path: '/rcontadorGadAmbatoMes',
           }"
         />
 
@@ -96,7 +96,7 @@
           :link="{
             name: 'Recaudo GAD (D)',
             icon: 'ni ni-single-02 text-danger',
-            path: './rcontadorGadAmbato',
+            path: '/rcontadorGadAmbato',
           }"
         />
 
@@ -105,13 +105,13 @@
           icon: 'ni ni-ungroup text-orange',
         }">
 
-          <sidebar-item :link="{ name: 'R. Kilometros', path: './rdistancia' }" translate="no"/>
-          <sidebar-item :link="{ name: 'Velocidades', path: './rvelocidades' }" translate="no"/>
+          <sidebar-item :link="{ name: 'R. Kilometros', path: '/rdistancia' }" translate="no"/>
+          <sidebar-item :link="{ name: 'Velocidades', path: '/rvelocidades' }" translate="no"/>
           <sidebar-item :link="{ name: 'ANT', path: './rant' }" />
-          <sidebar-item :link="{ name: 'R. Gasolineras', path: './rGasolinera' }" translate="no"/>
-          <sidebar-item :link="{ name: 'R. Puertas', path: './rPuertas' }" translate="no"/>
-          <sidebar-item :link="{ name: 'R. Tipos Eventos', path: './rTiposEventos' }" translate="no"/>
-          <sidebar-item :link="{ name: 'R. Fuera de Ruta', path: './rFueraRuta' }" translate="no"/>
+          <sidebar-item :link="{ name: 'R. Gasolineras', path: '/rGasolinera' }" translate="no"/>
+          <sidebar-item :link="{ name: 'R. Puertas', path: '/rPuertas' }" translate="no"/>
+          <sidebar-item :link="{ name: 'R. Tipos Eventos', path: '/rTiposEventos' }" translate="no"/>
+          <sidebar-item :link="{ name: 'R. Fuera de Ruta', path: '/rFueraRuta' }" translate="no"/>
           
           
         </sidebar-item>
@@ -120,13 +120,13 @@
         <sidebar-item translate="no" v-if="permisos != null && permisos.historial != null && permisos.historial.active != null && permisos.historial.active" :link="{
           name: 'Historial',
           icon: 'ni ni-pin-3 text-info',
-          path: './historial/recorrido',
+          path: '/historial/recorrido',
         }">
         </sidebar-item>
 
         
         <sidebar-item translate="no" v-if="permisos != null && permisos.movilidad != null && permisos.movilidad.active != null && permisos.movilidad.active" 
-              :link="{ name: 'Movilidad',icon: 'ni ni-building text-dark', path: './movilidad/rIcanlidadMovilidad' }" />
+              :link="{ name: 'Movilidad',icon: 'ni ni-building text-dark', path: '/movilidad/rIcanlidadMovilidad' }" />
 
 
       </template>
