@@ -1707,7 +1707,7 @@ export default {
       this.oEmpresa == "tsagrario" ||
       this.oEmpresa == "msaenz" || 
       this.oEmpresa == "upeninsular" || 
-      this.oEmpresa == "el-puma"
+      this.oEmpresa == "el-puma" || this.oEmpresa == "transmont"
     ) {
       //trabaja por vueltas
       this.isRecorridoPorVueltas = true;

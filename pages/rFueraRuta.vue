@@ -278,12 +278,7 @@ export default {
         {
           prop: "DescRutaSali_m",
           label: "Ruta - Linea",
-          minWidth: 200,
-        },
-        {
-          prop: "totalDesvios",
-          label: "Cant Eventos",
-          minWidth: 140,
+          minWidth: 280,
         },
         {
           prop: "DescEvent",
