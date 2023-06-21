@@ -7,6 +7,7 @@ module.exports = {
     router: {
         base: '',
         linkExactActiveClass: 'active',
+        trailingSlash:false,
         middleware: ['redirect']
     },
     /*
