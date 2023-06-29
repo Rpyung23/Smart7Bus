@@ -173,7 +173,7 @@ export default {
   data() {
     return {
       permisos: null,
-      pathProduccionTablero: './produccion/tablero'
+      pathProduccionTablero: '/produccion/tablero'
     }
   },
   methods: {
@@ -197,7 +197,7 @@ export default {
     this.pathProduccionTablero = (this.oPermisosWebProduccionPanelJSON != null &&  
                                this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
                                this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? 
-                               './produccion/tableroVueltas' :  './produccion/tablero'
+                               '/produccion/tableroVueltas' :  '/produccion/tablero'
 
     this.decodedPermisos()
     this.initScrollbar()

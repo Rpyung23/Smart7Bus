@@ -114,7 +114,7 @@ module.exports = {
         }
     },
     env: {
-        baseUrl:  'http://66.240.205.86:3001',
+        baseUrl: 'http://66.240.205.86:3001',
         baseUrlPanel: 'http://66.240.205.86:3001',
         mapaCredencial: process.env.mapaCredencial || 'AIzaSyCMR83z2AyaiNJTfUHKechVpGh_MjLQvHA'
     }

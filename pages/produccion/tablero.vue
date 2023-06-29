@@ -1690,30 +1690,10 @@ export default {
       this.isVisibleTableroAnotaciones = false;
     }
 
-    if (
-      this.oEmpresa == "28septiembre" ||
-      this.oEmpresa == 'itransincia' ||
-      this.oEmpresa == "smiguel" ||
-      this.oEmpresa == "tatahualpa" ||
-      this.oEmpresa == "cazul" ||
-      this.oEmpresa == "mazul" ||
-      this.oEmpresa == "cotopaxi" ||
-      this.oEmpresa == "cquisapincha" ||
-      this.oEmpresa == "fbabahoy" ||
-      this.oEmpresa == "citibus" ||
-      this.oEmpresa == "sritab" ||
-      this.oEmpresa == "ufluminense" ||
-      this.oEmpresa == "otavalo-lag" ||
-      this.oEmpresa == "tsagrario" ||
-      this.oEmpresa == "msaenz" || 
-      this.oEmpresa == "upeninsular" || 
-      this.oEmpresa == "el-puma" || this.oEmpresa == "transmont"
-    ) {
-      //trabaja por vueltas
-      this.isRecorridoPorVueltas = true;
-    } else {
-      this.isRecorridoPorVueltas = false;
-    }
+    if (this.oEmpresa == "uambatena")
+      {
+        this.isRecorridoPorVueltas = false;
+      }
 
     this.readTrazadoAllTramosTableroProduccion();
     this.readTrazadoAllTramosTableroProduccion();
