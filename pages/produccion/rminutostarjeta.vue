@@ -33,7 +33,7 @@
 
           <div class="cardSelecMinutosTarjetas">
             <div class="buttonsAdicionalesRMinutosTarjeta">
-              <base-button icon type="primary" size="sm" @click="createPDFMinutosTarjetas()">
+              <base-button icon type="primary" size="sm" @click="readMinutosTarjetas()">
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
             </div>
@@ -57,9 +57,8 @@
 
         <card class="no-border-card" style="margin-bottom: 0rem"
           body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
-          <div>
-            <iframe :src="baseURlPDFPanelProduccionMinutosTarjetas" style="width: 100%; height: 39rem"></iframe>
-          </div>
+          <embed id="iframeContainerrMinutosTarjetas" :src="oBase64IndicadoresCalidad" type="application/pdf" width="100%"
+            height="100%" />
         </card>
 
 
@@ -97,6 +96,11 @@ import swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
+import { getBase64LogoReportes } from "../../util/logoReport";
+import *  as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfFonts from "pdfmake/build/vfs_fonts";
+import { text } from "d3";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
   mixins: [clientPaginationMixin],
@@ -117,7 +121,7 @@ export default {
     [Autocomplete.name]: Autocomplete,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
-    [Checkbox.name]:Checkbox
+    [Checkbox.name]: Checkbox
   },
   data() {
     return {
@@ -129,8 +133,8 @@ export default {
       itemUnidadPanelProduccion: [],
       baseURlPDFPanelProduccionMinutosTarjetas: "",
       loadingTableUnidadesPanelProduccoionLoading: false,
-      checkedPEN:false,
-      checkedPAG:false
+      checkedPEN: false,
+      checkedPAG: false
     };
   },
   methods: {
@@ -188,7 +192,9 @@ export default {
         console.log(error)
       }
     },
-    async createPDFMinutosTarjetas() {
+    async readMinutosTarjetas() {
+      let iframe = document.getElementById('iframeContainerrMinutosTarjetas');
+      iframe.src = "";
 
       swal.fire({
         title: "Generando Reporte ...",
@@ -207,78 +213,218 @@ export default {
                   `
       });
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionMinutosTarjetas", {
-        token: this.token,
-        fechaI: getFecha_dd_mm_yyyy(this.fechaInicialReporteMinutosTarjetas),
-        fechaF: getFecha_dd_mm_yyyy(this.fechaFinalReporteMinutosTarjetas),
-        unidades: this.itemUnidadPanelProduccion.length > 0 ? this.itemUnidadPanelProduccion : '*',
-        nameEmpresa: this.$cookies.get('nameEmpresa'),
-        tipo: (this.checkedPEN && this.checkedPAG) ? 3 : (!this.checkedPEN && !this.checkedPAG) ? 3 : (this.checkedPAG) ? 1 : (this.checkedPEN) ? 0 : 0
-      })
+      this.oBase64IndicadoresCalidad = ""
 
-      if (datos.data.status_code == 200) {
-        console.log(datos.data.datos)
-        this.baseURlPDFPanelProduccionMinutosTarjetas = "data:application/pdf;base64," + datos.data.datos
-      } else {
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionMinutosTarjetas", {
+          token: this.token,
+          fechaI: getFecha_dd_mm_yyyy(this.fechaInicialReporteMinutosTarjetas),
+          fechaF: getFecha_dd_mm_yyyy(this.fechaFinalReporteMinutosTarjetas),
+          unidades: this.itemUnidadPanelProduccion.length > 0 ? this.itemUnidadPanelProduccion : '*',
+          nameEmpresa: this.$cookies.get('nameEmpresa'),
+          tipo: (this.checkedPEN && this.checkedPAG) ? 3 : (!this.checkedPEN && !this.checkedPAG) ? 3 : (this.checkedPAG) ? 1 : (this.checkedPEN) ? 0 : 0
+        }, {
+          'Content-Type': 'application/json'
+        })
 
-      }
-      
-      swal.close()
+        console.log('Datos .==================..', datos)
 
-      /*var pdfDoc = await PDFDocument.create()
-      var timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
-      var TimesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
-
-      var page = pdfDoc.addPage(PageSizes.A4)
-      
-      var { width, height } = page.getSize()
-      var fontSize = 10
-      var _x = 35
-
-      page.drawText("                                          "+this.$cookies.get("nameEmpresa").toUpperCase().substring(0, 28), {
-        x: _x,
-        y: height - 4 * fontSize,
-        size: 15,
-        font: TimesRomanBold,
-        color: rgb(0, 0, 0),
-      })
-
-      page.drawText("REPORTE DE MINUTOS Y TARJETAS", {
-        x: _x,
-        y: height - 5.5 * fontSize,
-        size: 13,
-        font: TimesRomanBold,
-        color: rgb(0, 0, 0)
-      })
-      
-      var descuento = 11.4
-
-      for(var i = 0;i<10;i++)
-      {
-        await this.createHeaderPDFMinutosTarjeta(page, _x, height, pdfDoc)
-        var descuentoAux = await this.createBodyPDFMinutosTarjeta(page, _x, height, pdfDoc,descuento)
-        descuento = descuentoAux
-        if(descuento >= 89.80){
-          page = pdfDoc.addPage(PageSizes.A4)
-          descuento = 11.4
+        if (datos.data.status_code == 200) {
+          console.log(datos.data.datos)
+          console.log('Agrego Reportes de Minutos Tarjetas  .........');
+          //this.baseURlPDFPanelProduccionMinutosTarjetas = "data:application/pdf;base64," + datos.data.datos
+          this.generatePdf(datos.data.datos)
         }
+      } catch (error) {
+        console.log(error)
+        Notification.error({
+          title: "ERROR",
+          message: error.toString(),
+          duration: 2500,
+        });
       }
 
-      console.log("HEIGTH A4 : "+descuentoAux)
+      swal.close()
+    },
+
+    generatePdf(datos) {
+      const componenteHeader = (uni, fechas, linea, sali) => {
+        var unidad =
+        {
+          text: [{ text: `UNIDAD N: ${uni}`, fontSize: 10 }]
+        };
+        var periodo =
+        {
+          text: [
+            { text: fechas, fontSize: 10 },
+
+          ], colSpan: 2,
+        };
+        var desRuta = {
+          text: [
+            { text: linea, fontSize: 10, }
+          ],
+        }
+        var salida = {
+          text: [
+            { text: `Salida # ${sali}`, fontSize: 10, }
+          ],
+        }
+        return {
+          layout: "noBorders",
+          table: {
+            headerRows: 0,
+            widths: ["*", "*", "*", "*", "*"],
+            body: [
+              [unidad, periodo, {}, desRuta, salida]
+            ]
+          }
+
+        }
+
+      }
+      const componenteFilaUnidad = (minutos) => {
+        const fila = []
+        minutos.forEach(min => {
+          fila.push([{ text: min.DescripcionControl, alignment: 'center', style: 'tableRow' }, { text: min.HoraProgSali_d, alignment: 'center', style: 'tableRow' },
+          { text: min.HoraMarcSali_d, alignment: 'center', style: 'tableRow' }, { text: min.AtrasoFTiempo === '00:00:00' ? '' : min.AtrasoFTiempo, alignment: 'center', style: 'tableRow' },
+          { text: min.AdelantoFTiempo === '00:00:00' ? '' : min.AdelantoFTiempo, alignment: 'center', style: 'tableRow' }, { text: min.AtrasoJTiempo === '00:00:00' ? '' : min.AtrasoJTiempo, alignment: 'center', style: 'tableRow' },
+          { text: min.AdelantoJTiempo === '00:00:00' ? '' : min.AdelantoJTiempo, alignment: 'center', style: 'tableRow' }, { text: min.RubroPenalidad === '0.00' ? '' : min.RubroPenalidad, alignment: 'center', style: 'tableRow' },
+          { text: min.VelocidadPenalidad === '0.00' ? '' : min.VelocidadPenalidad, alignment: 'center', style: 'tableRow' }])
+        })
+        return fila;
+      }
+
+      const componenteTablaUnidad = (salida) => {
+        const body = []
+        //Cabecera linea 1
+        body.push([{ text: 'Descipcion Control', style: 'tableHeader', alignment: 'center', rowSpan: 2, },
+        { text: 'Control', style: 'tableHeader', colSpan: 2, alignment: 'center' }, {},
+        { text: 'Faltas', style: 'tableHeader', colSpan: 2, alignment: 'center' }, {},
+        { text: 'Justificaciones', style: 'tableHeader', colSpan: 2 }, {},
+        { text: 'Rubros', style: 'tableHeader', alignment: 'center', rowSpan: 2 },
+        { text: 'Veloc', style: 'tableHeader', alignment: 'center', rowSpan: 2 }])
+        //Cabecera linea 2
+        body.push(['', { text: 'Timbrar', style: 'tableHeader', alignment: 'center' },
+          { text: 'Llegó', style: 'tableHeader', alignment: 'center' },
+          { text: 'Atraso', style: 'tableHeader', alignment: 'center' },
+          { text: 'Adelanto', style: 'tableHeader', alignment: 'center' },
+          { text: 'Atraso', style: 'tableHeader', alignment: 'center' },
+          { text: 'Adelanto', style: 'tableHeader', alignment: 'center' }, '', ''])
+        //Datos
+        body.push(...componenteFilaUnidad(salida.minutos))
+
+        return {
+          table: {
+            headerRows: 2,
+            widths: ['*', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+            body: body
+          }, margin: [0, 0, 0, 10]
+
+        };
+      }
+
+      const componenteSeparadorTabla = () => {
+        return {
+          text: '.'.repeat(166), margin: [0, 10, 0, 15]
+        };
+      }
+
+      const componenteContenido = (datos) => {
+        const contenido = []
+
+        datos.forEach(unidad => {
+          unidad.salidas.forEach((salida, index) => {
+            contenido.push(componenteHeader(unidad.unidad, salida.fechas, salida.linea, salida.salida))
+            contenido.push(componenteTablaUnidad(salida))
+
+            if (unidad.salidas[index + 1]) {
+              if (salida.fechas.substring(8, 10) !== unidad.salidas[index + 1].fechas.substring(8, 10)) {
+                contenido.push(componenteSeparadorTabla())
+              }
+            }
+          })
+        });
+        return contenido;
+      }
+
+
+      var docDefinition = {
+        pageSize: "A4",
+        pageOrientation: "portrait",
+        pageMargins: [30, 80, 40, 30],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE MINUTOS TARJETAS DIARIOS",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: this.$cookies.get("nameEmpresa"),
+                      alignment: 'center',
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
 
 
 
-      this.baseURlPDFPanelProduccionMinutosTarjetas = await pdfDoc.saveAsBase64({ dataUri: true });*/
+                ],
+              },
+            },
+          ],
+        },
+        content: componenteContenido(datos),
+        //content: ,
+        styles: {
+          tableHeader: {
+            bold: true,
+            fontSize: 11,
+            color: 'black'
+          },
+          tableRow: {
+            fontSize: 10,
+            color: 'black'
+          }
+        },
+      };
+
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition)
+      pdfDocGenerator.getBlob((blob) => {
+        var pdfUrl = URL.createObjectURL(blob)
+        let iframe = document.getElementById('iframeContainerrMinutosTarjetas');
+        iframe.src = pdfUrl;
+      });
+
     }
+
   }, mounted() {
     this.readUnidadesTableroProduccion()
     this.initFechaActualProduccionMinutosTarjetas()
   }
+
+
 };
 </script>
 <style>
-
-.cardMinutosTarjetas::-webkit-scrollbar{
+.cardMinutosTarjetas::-webkit-scrollbar {
   display: none;
 }
 
