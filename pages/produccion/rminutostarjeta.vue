@@ -330,23 +330,129 @@ export default {
         };
       }
 
+      const componenteAnotaciones = (anotaciones) => {
+        const listaAnotaciones = []
+        const titulo = {
+          text: anotaciones.length > 0 ? 'ANOTACIONES : ' : 'NO EXISTEN ANOTACIONES.', style: 'TableHeader0', bold: true, margin: [0, 10, 0, 20],
+        }
+        listaAnotaciones.push(titulo)
+        anotaciones.forEach(anotacion => {
+          listaAnotaciones.push({
+            text: anotacion, style: 'tableRow',
+          })
+        })
+        return listaAnotaciones
+
+      }
+
+      const componenteDatosCabezera = (atraso, adelanto, atrasoj, adelantoj, rubrosd, velofd, tarjetad, atrasod, adelantosd, totald) => {
+        var Atraso =
+        {
+          text: [{ text: `ATRASO : ${atraso}`, fontSize: 9 }], colSpan: 2,
+        };
+        var Adelanto =
+        {
+          text: [{ text: `ADELANTO : ${adelanto}`, fontSize: 9 }], colSpan: 2,
+        };
+        var AtrasosJustificado = {
+          text: [{ text: `ATRASO JUSTI : ${atrasoj}`, fontSize: 9 }], colSpan: 2,
+        }
+        var AdelantoJustificado = {
+          text: [{ text: `ADELANTO JUSTI : ${adelantoj}`, fontSize: 9 }], colSpan: 2,
+        }
+        var Rubros = {
+          text: [{ text: `RUBROS ($) : ${rubrosd}`, fontSize: 9 }], colSpan: 2,
+        }
+        var VelocidadFD = {
+          text: [{ text: `F.VELOCIDAD ($) : ${velofd}`, fontSize: 9 }], colSpan: 2,
+        }
+        var Tarjeta = {
+          text: [{ text: `TARJETA ($) : ${tarjetad}`, fontSize: 9 }], colSpan: 2,
+        }
+        var AtrasoD = {
+          text: [{ text: `ATRASOS ($) : ${atrasod}`, fontSize: 9 }], colSpan: 2,
+        }
+        var AdelantoD = {
+          text: [{ text: `ADELANTOS ($) : ${adelantosd}`, fontSize: 9 }], colSpan: 2,
+        }
+        var TotalD = {
+          text: [{ text: `TOTAL ($) : ${totald}`, fontSize: 16, bold: true }], colSpan: 2, margin: [0, 0, 0, 20]
+        }
+        return {
+          layout: "noBorders",
+          table: {
+            headerRows: 0,
+            widths: ["*", "*", "*", "*", "*", "*", "*", "*"],
+            body: [
+              [Atraso, {}, Adelanto, {}, AtrasosJustificado, {}, AdelantoJustificado, {}],
+              [Rubros, {}, VelocidadFD, {}, Tarjeta, {}, AtrasoD, {}],
+              [AdelantoD, {}, {}, {}, {}, {}, {}, {}],
+              [{}, {}, {}, {}, TotalD, {}, {}, {}],
+            ]
+          }
+
+        }
+
+      }
+
+      const componenteTablaFinal = (salidas) => {
+        const header = []
+        header.push([{ text: 'Descipcion Ruta', style: 'tableHeader', alignment: 'center', colSpan: 2 },
+        { text: 'Fecha', style: 'tableHeader', alignment: 'center' }, { text: 'Min. Generados ', style: 'tableHeader', alignment: 'center' },
+        { text: 'Min. Justificados', style: 'tableHeader' }, { text: 'Deuda Total', style: 'tableHeader' }
+        ]);
+        header.push(...componenteFilaFinal(salidas))
+
+        return {
+          table: {
+            widths: ['*', '*', '*', '*', '*', '*'],
+            body: body
+          }
+        }
+
+      }
+
+      const componenteFilaFinal = (salidas) => {
+        const fila = []
+        salidas.forEach(salida => {
+          fila.push([{ text: salida.linea, alignment: 'center', style: 'tableRow' }, { text: salida.fechas, alignment: 'center', style: 'tableRow' },
+          { text: 'Llenar', alignment: 'center', style: 'tableRow' }, { text: 'Llenar', alignment: 'center', style: 'tableRow' },
+          { text: salida.DeudaTotal , alignment: 'center', style: 'tableRow' },
+          ])
+        })
+        return fila;
+      }
+
       const componenteContenido = (datos) => {
+        var listaanotaciones = []
         const contenido = []
 
         datos.forEach(unidad => {
           unidad.salidas.forEach((salida, index) => {
             contenido.push(componenteHeader(unidad.unidad, salida.fechas, salida.linea, salida.salida))
             contenido.push(componenteTablaUnidad(salida))
-
+            if (salida.anotaciones.length > 0) {
+              listaanotaciones.push(...salida.anotaciones)
+            }
             if (unidad.salidas[index + 1]) {
               if (salida.fechas.substring(8, 10) !== unidad.salidas[index + 1].fechas.substring(8, 10)) {
                 contenido.push(componenteSeparadorTabla())
               }
             }
           })
+          contenido.push(...componenteAnotaciones(listaanotaciones))
+          contenido.push(componenteDatosCabezera(unidad.AtrasoFTiempoCabezera, unidad.AdelantoFTiempoCabezera,
+            unidad.AtrasoJTiempoCabezera, unidad.AdelantoJTiempoCabezera, unidad.RubroPenalidadCabezera,
+            unidad.VelocidadPenalidadCabezera, unidad.TarjetaDiariaCabezera, unidad.AtrasoPenalidadCabezera,
+            unidad.AdelantoPenalidadCabezera, unidad.DeudaTotalCabezera))
+          contenido.push(componenteTablaFinal(unidad.salidas))
+          contenido.push(componenteSeparadorTabla())
+
         });
+
         return contenido;
       }
+
 
 
       var docDefinition = {
@@ -392,15 +498,15 @@ export default {
           ],
         },
         content: componenteContenido(datos),
-        //content: ,
+        //content: componenteAnotaciones(),
         styles: {
           tableHeader: {
             bold: true,
-            fontSize: 11,
+            fontSize: 10,
             color: 'black'
           },
           tableRow: {
-            fontSize: 10,
+            fontSize: 9,
             color: 'black'
           }
         },
