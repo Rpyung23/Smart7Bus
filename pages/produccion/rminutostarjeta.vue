@@ -248,6 +248,17 @@ export default {
     },
 
     generatePdf(datos) {
+
+      const convertSecondtoTimeString = (seconds) => {
+        var hour = Math.floor(seconds / 3600);
+        hour = (hour < 10) ? '0' + hour : hour;
+        var minute = Math.floor((seconds / 60) % 60);
+        minute = (minute < 10) ? '0' + minute : minute;
+        var second = seconds % 60;
+        second = (second < 10) ? '0' + second : second;
+        return hour + ':' + minute + ':' + second;
+      }
+
       const componenteHeader = (uni, fechas, linea, sali) => {
         var unidad =
         {
@@ -395,42 +406,58 @@ export default {
 
       }
 
-      const componenteTablaFinal = (salidas) => {
+      const componenteTablaFinal = (datos, deudas) => {
         const header = []
-        header.push([{ text: 'Descipcion Ruta', style: 'tableHeader', alignment: 'center', colSpan: 2 },
+        header.push([{ text: 'Descipcion Ruta', style: 'tableHeader', alignment: 'center', colSpan: 2 }, {},
         { text: 'Fecha', style: 'tableHeader', alignment: 'center' }, { text: 'Min. Generados ', style: 'tableHeader', alignment: 'center' },
         { text: 'Min. Justificados', style: 'tableHeader' }, { text: 'Deuda Total', style: 'tableHeader' }
         ]);
-        header.push(...componenteFilaFinal(salidas))
 
+        datos.forEach((dato) => {
+          header.push([
+            { text: dato.linea, alignment: 'center', style: 'tableRow', colSpan: 2 }, {},
+            { text: dato.fecha, alignment: 'center', style: 'tableRow' },
+            { text: dato.minG, alignment: 'center', style: 'tableRow' },
+            { text: dato.minJ, alignment: 'center', style: 'tableRow' },
+            { text: dato.deuda, alignment: 'center', style: 'tableRow' }])
+        })
+        header.push([{ text: '', border: [false, true, false, false] },
+        { text: '', border: [false, true, false, false] },
+        { text: '', border: [false, true, false, false] },
+        { text: '', border: [false, true, true, false] },
+        { text: 'TOTAL', alignment: 'center', style: 'tableFinal' },
+        { text: deudas, alignment: 'center', style: 'tableFinal' }])
         return {
           table: {
             widths: ['*', '*', '*', '*', '*', '*'],
-            body: body
+            body: header
           }
         }
 
       }
 
-      const componenteFilaFinal = (salidas) => {
-        const fila = []
-        salidas.forEach(salida => {
-          fila.push([{ text: salida.linea, alignment: 'center', style: 'tableRow' }, { text: salida.fechas, alignment: 'center', style: 'tableRow' },
-          { text: 'Llenar', alignment: 'center', style: 'tableRow' }, { text: 'Llenar', alignment: 'center', style: 'tableRow' },
-          { text: salida.DeudaTotal , alignment: 'center', style: 'tableRow' },
-          ])
-        })
-        return fila;
-      }
+
 
       const componenteContenido = (datos) => {
         var listaanotaciones = []
         const contenido = []
+        const tablaFinal = {}
 
         datos.forEach(unidad => {
           unidad.salidas.forEach((salida, index) => {
             contenido.push(componenteHeader(unidad.unidad, salida.fechas, salida.linea, salida.salida))
             contenido.push(componenteTablaUnidad(salida))
+            //Key == PAGUCHI-2023-07-03
+            const clave = `${salida.linea}-${salida.fechas.substring(0, 10)}`;
+            if (!tablaFinal[clave]) {
+              tablaFinal[clave] = {
+                linea: salida.linea,
+                fecha: salida.fechas.substring(0, 10),
+                minG: convertSecondtoTimeString(salida.AtrasoFTiempoCabezera),
+                minJ: convertSecondtoTimeString(salida.AtrasoJTiempoCabezera),
+                deuda: salida.DeudaTotal,
+              }
+            }
             if (salida.anotaciones.length > 0) {
               listaanotaciones.push(...salida.anotaciones)
             }
@@ -445,7 +472,7 @@ export default {
             unidad.AtrasoJTiempoCabezera, unidad.AdelantoJTiempoCabezera, unidad.RubroPenalidadCabezera,
             unidad.VelocidadPenalidadCabezera, unidad.TarjetaDiariaCabezera, unidad.AtrasoPenalidadCabezera,
             unidad.AdelantoPenalidadCabezera, unidad.DeudaTotalCabezera))
-          contenido.push(componenteTablaFinal(unidad.salidas))
+          contenido.push(componenteTablaFinal(Object.values(tablaFinal), unidad.DeudaTotalCabezera))
           contenido.push(componenteSeparadorTabla())
 
         });
@@ -508,6 +535,11 @@ export default {
           tableRow: {
             fontSize: 9,
             color: 'black'
+          },
+          tableFinal: {
+            fontSize: 16,
+            color: 'green',
+            bold: true
           }
         },
       };
