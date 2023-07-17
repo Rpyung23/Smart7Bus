@@ -789,7 +789,7 @@ export default {
 
             alignment: "center",
           },{
-            text: this.mListSalidasFrecuenciasControles[i].PenaCtrlSali_d,
+            text: parseFloat(this.mListSalidasFrecuenciasControles[i].PenaCtrlSali_d).toFixed(2),
             fontSize: 8.5,
 
             alignment: "center",
