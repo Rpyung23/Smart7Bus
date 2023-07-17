@@ -3,6 +3,7 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
+
         <sidebar-item
         translate="no"
           :link="{
@@ -12,6 +13,18 @@
           }"
         >
         </sidebar-item>
+
+
+        <sidebar-item
+        translate="no"
+          :link="{
+            name: 'Perjudicado',
+            icon: 'ni ni-bus-front-12 text-warning',
+            path: './tableroPerjudicaVueltas',
+          }"
+        >
+        </sidebar-item>
+
   
       <sidebar-item
       translate="no"
