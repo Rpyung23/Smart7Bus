@@ -30,7 +30,7 @@
 
           <div class="cardSelecMinutosTarjetas">
             <div class="buttonsAdicionalesRMinutosTarjeta">
-              <base-button icon type="primary" size="sm" @click="createPDFMinutosTarjetas()">
+              <base-button icon type="primary" size="sm" @click="readMinutosTarjetas()">
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
             </div>
@@ -54,9 +54,8 @@
 
         <card class="no-border-card" style="margin-bottom: 0rem"
           body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
-          <div>
-            <iframe :src="baseURlPDFPanelProduccionMinutosTarjetas" style="width: 100%; height: 39rem"></iframe>
-          </div>
+          <embed id="iframeContainerrMinutosTarjetasV" :src="oBase64IndicadoresCalidad" type="application/pdf"
+            width="100%" height="100%" />
         </card>
 
 
@@ -72,6 +71,7 @@ import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import { PDFDocument, StandardFonts, rgb, PageSizes } from 'pdf-lib'
 import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
+
 
 import {
   Table,
@@ -93,6 +93,10 @@ import swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
+import { getBase64LogoReportes } from "../../util/logoReport";
+import *  as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
   mixins: [clientPaginationMixin],
@@ -181,7 +185,9 @@ export default {
         console.log(error)
       }
     },
-    async createPDFMinutosTarjetas() {
+    async readMinutosTarjetas() {
+      let iframe = document.getElementById('iframeContainerrMinutosTarjetasV');
+      iframe.src = "";
 
       swal.fire({
         title: "Generando Reporte ...",
@@ -200,28 +206,37 @@ export default {
                   `
       });
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionMinutosTarjetasVueltas", {
-        token: this.token,
-        fechaI: getFecha_dd_mm_yyyy(this.fechaInicialReporteMinutosTarjetas),
-        fechaF: getFecha_dd_mm_yyyy(this.fechaFinalReporteMinutosTarjetas),
-        unidades: this.itemUnidadPanelProduccion.length > 0 ? this.itemUnidadPanelProduccion : '*',
-        nameEmpresa: this.$cookies.get('nameEmpresa')
-      })
+      this.oBase64IndicadoresCalidad = ""
 
-      if (datos.data.status_code == 200) {
-        console.log(datos.data.datos)
-        this.baseURlPDFPanelProduccionMinutosTarjetas = "data:application/pdf;base64," + datos.data.datos
-      } else {
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionMinutosTarjetasVueltas", {
+          token: this.token,
+          fechaI: getFecha_dd_mm_yyyy(this.fechaInicialReporteMinutosTarjetas),
+          fechaF: getFecha_dd_mm_yyyy(this.fechaFinalReporteMinutosTarjetas),
+          unidades: this.itemUnidadPanelProduccion.length > 0 ? this.itemUnidadPanelProduccion : '*',
+          nameEmpresa: this.$cookies.get('nameEmpresa')
+        }, {
+          'Content-Type': 'application/json'
+        })
+        console.log('Datos .==================..', datos)
+        console.log('Datos .==================..', datos.data.status_code)
 
-        this.$notify({
-        message: datos.data.msm,
-        timeout: 3000,
-        icon: "ni ni-check-bold",
-        type:datos.data.msm,
-      });
 
+        if (datos.data.status_code == 200) {
+          console.log('Agrego Reportes de Minutos Tarjetas  Vueltas.........');
+          console.log(datos.data.datos)
+          //this.baseURlPDFPanelProduccionMinutosTarjetas = "data:application/pdf;base64," + datos.data.datos
+          this.generatePdf(datos.data.datos)
+        }
+      } catch (error) {
+        console.log(error)
+        Notification.error({
+          title: "ERROR",
+          message: error.toString(),
+          duration: 2500,
+        });
       }
-      
+
       swal.close()
 
       /*var pdfDoc = await PDFDocument.create()
@@ -268,6 +283,264 @@ export default {
 
 
       this.baseURlPDFPanelProduccionMinutosTarjetas = await pdfDoc.saveAsBase64({ dataUri: true });*/
+    },
+
+    generatePdf(datos) {
+
+      const componenteHeader = (uni, fechas, linea, sali, vuelta) => {
+        var unidad =
+        {
+          text: [{ text: `UNIDAD N: ${uni}`, fontSize: 10 }]
+        };
+        var periodo =
+        {
+          text: [
+            { text: fechas, fontSize: 10 },
+
+          ], colSpan: 2,
+        };
+        var desRuta = {
+          text: [
+            { text: linea, fontSize: 10, }
+          ],
+        }
+        var salida = {
+          text: [
+            { text: `Salida # ${sali}`, fontSize: 10, }
+          ],
+        }
+        var vuelta =
+        {
+          text: [{ text: `N Vuelta: ${vuelta}`, fontSize: 10 }]
+        };
+        return {
+          layout: "noBorders",
+          table: {
+            //headerRows: 0,
+            widths: ["*", "*", "*", "*", "*"],
+            body: [
+              [unidad, periodo, {}, desRuta, salida],
+              [vuelta, {}, {}, {}, {}]
+            ]
+          }
+
+        }
+
+      }
+
+      const componenteFilaUnidad = (minutos) => {
+        const fila = []
+        minutos.forEach(min => {
+          fila.push([{ text: min.DescripcionControl, alignment: 'center', style: 'tableRow' }, { text: min.HoraProgSali_d, alignment: 'center', style: 'tableRow' },
+          { text: min.HoraMarcSali_d, alignment: 'center', style: 'tableRow' }, { text: min.AtrasoFTiempo === '00:00:00' ? '' : min.AtrasoFTiempo, alignment: 'center', style: 'tableRow' },
+          { text: min.AdelantoFTiempo === '00:00:00' ? '' : min.AdelantoFTiempo, alignment: 'center', style: 'tableRow' }, { text: min.AtrasoJTiempo === '00:00:00' ? '' : min.AtrasoJTiempo, alignment: 'center', style: 'tableRow' },
+          { text: min.AdelantoJTiempo === '00:00:00' ? '' : min.AdelantoJTiempo, alignment: 'center', style: 'tableRow' }, { text: min.RubroPenalidad === 0 ? '' : min.RubroPenalidad, alignment: 'center', style: 'tableRow' },
+          { text: min.VelocidadPenalidad === 0 ? '' : min.VelocidadPenalidad, alignment: 'center', style: 'tableRow' }])
+        })
+        return fila;
+      }
+
+      const componenteTablaUnidad = (salida) => {
+        const body = []
+        //Cabecera linea 1
+        body.push([{ text: 'Descipcion Control', style: 'tableHeader', alignment: 'center', rowSpan: 2, },
+        { text: 'Control', style: 'tableHeader', colSpan: 2, alignment: 'center' }, {},
+        { text: 'Faltas', style: 'tableHeader', colSpan: 2, alignment: 'center' }, {},
+        { text: 'Justificaciones', style: 'tableHeader', colSpan: 2 }, {},
+        { text: 'Rubros', style: 'tableHeader', alignment: 'center', rowSpan: 2 },
+        { text: 'Veloc', style: 'tableHeader', alignment: 'center', rowSpan: 2 }])
+        //Cabecera linea 2
+        body.push(['', { text: 'Timbrar', style: 'tableHeader', alignment: 'center' },
+          { text: 'Llegó', style: 'tableHeader', alignment: 'center' },
+          { text: 'Atraso', style: 'tableHeader', alignment: 'center' },
+          { text: 'Adelanto', style: 'tableHeader', alignment: 'center' },
+          { text: 'Atraso', style: 'tableHeader', alignment: 'center' },
+          { text: 'Adelanto', style: 'tableHeader', alignment: 'center' }, '', ''])
+        //Datos
+        body.push(...componenteFilaUnidad(salida.minutos))
+
+        return {
+          table: {
+            headerRows: 2,
+            widths: ['*', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+            body: body
+          }, margin: [0, 0, 0, 10]
+
+        };
+      }
+
+      const componenteSeparadorTabla = () => {
+        return {
+          text: '.'.repeat(166), margin: [0, 10, 0, 15]
+        };
+      }
+
+
+      const componenteAnotaciones = (anotaciones) => {
+        const listaAnotaciones = []
+        const titulo = {
+          text: anotaciones.length > 0 ? 'ANOTACIONES : ' : 'NO EXISTEN ANOTACIONES.', style: 'TableHeader0', bold: true, margin: [0, 10, 0, 20],
+        }
+        listaAnotaciones.push(titulo)
+        anotaciones.forEach(anotacion => {
+          listaAnotaciones.push({
+            text: anotacion, style: 'tableRow',
+          })
+        })
+        return listaAnotaciones
+
+      }
+
+      const componenteDatosCabezera = (atraso, adelanto, atrasoj, adelantoj, rubrosd, velofd, tarjetad, atrasod, adelantosd, totald) => {
+        var Atraso =
+        {
+          text: [{ text: `ATRASO : ${atraso}`, fontSize: 9 }], colSpan: 2,
+        };
+        var Adelanto =
+        {
+          text: [{ text: `ADELANTO : ${adelanto}`, fontSize: 9 }], colSpan: 2,
+        };
+        var AtrasosJustificado = {
+          text: [{ text: `ATRASO JUSTI : ${atrasoj}`, fontSize: 9 }], colSpan: 2,
+        }
+        var AdelantoJustificado = {
+          text: [{ text: `ADELANTO JUSTI : ${adelantoj}`, fontSize: 9 }], colSpan: 2,
+        }
+        var Rubros = {
+          text: [{ text: `RUBROS ($) : ${rubrosd}`, fontSize: 9 }], colSpan: 2,
+        }
+        var VelocidadFD = {
+          text: [{ text: `F.VELOCIDAD ($) : ${velofd}`, fontSize: 9 }], colSpan: 2,
+        }
+        var Tarjeta = {
+          text: [{ text: `TARJETA ($) : ${tarjetad}`, fontSize: 9 }], colSpan: 2,
+        }
+        var AtrasoD = {
+          text: [{ text: `ATRASOS ($) : ${atrasod}`, fontSize: 9 }], colSpan: 2,
+        }
+        var AdelantoD = {
+          text: [{ text: `ADELANTOS ($) : ${adelantosd}`, fontSize: 9 }], colSpan: 2,
+        }
+        var TotalD = {
+          text: [{ text: `TOTAL ($) : ${totald}`, fontSize: 16, bold: true }], colSpan: 2, margin: [0, 0, 0, 20]
+        }
+        return {
+          layout: "noBorders",
+          table: {
+            headerRows: 0,
+            widths: ["*", "*", "*", "*", "*", "*", "*", "*"],
+            body: [
+              [Atraso, {}, Adelanto, {}, AtrasosJustificado, {}, AdelantoJustificado, {}],
+              [Rubros, {}, VelocidadFD, {}, Tarjeta, {}, AtrasoD, {}],
+              [AdelantoD, {}, {}, {}, {}, {}, {}, {}],
+              [{}, {}, {}, {}, TotalD, {}, {}, {}],
+            ]
+          }
+
+        }
+
+      }
+
+      const componenteContenido = (datos) => {
+        var listaanotaciones = []
+        const contenido = []
+        const tablaFinal = {}
+
+        datos.forEach(unidad => {
+          unidad.salidas.forEach((salida, index) => {
+            contenido.push(componenteHeader(unidad.unidad, salida.fechas, salida.linea, salida.salida, salida.NumeVuelSali_m))
+            contenido.push(componenteTablaUnidad(salida))
+            if (salida.anotaciones.length > 0) {
+              listaanotaciones.push(...salida.anotaciones)
+            }
+            if (unidad.salidas[index + 1]) {
+              if (salida.fechas.substring(8, 10) !== unidad.salidas[index + 1].fechas.substring(8, 10)) {
+                contenido.push(componenteSeparadorTabla())
+              }
+            }
+          })
+          contenido.push(...componenteAnotaciones(listaanotaciones))
+          contenido.push(componenteDatosCabezera(unidad.AtrasoFTiempoCabezera, unidad.AdelantoFTiempoCabezera,
+            unidad.AtrasoJTiempoCabezera, unidad.AdelantoJTiempoCabezera, unidad.RubroPenalidadCabezera,
+            unidad.VelocidadPenalidadCabezera, unidad.TarjetaDiariaCabezera, unidad.AtrasoPenalidadCabezera,
+            unidad.AdelantoPenalidadCabezera, unidad.DeudaTotalCabezera))
+          contenido.push(componenteSeparadorTabla())
+
+        });
+
+        return contenido;
+      }
+
+      var docDefinition = {
+        pageSize: "A4",
+        pageOrientation: "portrait",
+        pageMargins: [30, 80, 40, 30],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE MINUTOS TARJETAS DIARIOS",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: this.$cookies.get("nameEmpresa"),
+                      alignment: 'center',
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+
+
+
+                ],
+              },
+            },
+          ],
+        },
+        content: componenteContenido(datos),
+        //content: componenteAnotaciones(),
+        styles: {
+          tableHeader: {
+            bold: true,
+            fontSize: 10,
+            color: 'black'
+          },
+          tableRow: {
+            fontSize: 9,
+            color: 'black'
+          },
+          tableFinal: {
+            fontSize: 16,
+            color: 'green',
+            bold: true
+          }
+        },
+      };
+
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition)
+      pdfDocGenerator.getBlob((blob) => {
+        var pdfUrl = URL.createObjectURL(blob)
+        let iframe = document.getElementById('iframeContainerrMinutosTarjetasV');
+        iframe.src = pdfUrl;
+      });
+
+
     }
   }, mounted() {
     this.readUnidadesTableroProduccion()
@@ -276,8 +549,7 @@ export default {
 };
 </script>
 <style>
-
-.cardMinutosTarjetas::-webkit-scrollbar{
+.cardMinutosTarjetas::-webkit-scrollbar {
   display: none;
 }
 
