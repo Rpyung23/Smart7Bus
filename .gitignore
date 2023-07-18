@@ -1,3 +1,4 @@
 # Project exclude paths
 /.nuxt/
 /node_modules/
+nuxt.config.js

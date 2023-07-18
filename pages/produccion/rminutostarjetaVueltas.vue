@@ -223,7 +223,7 @@ export default {
 
 
         if (datos.data.status_code == 200) {
-          console.log('Agrego Reportes de Minutos Tarjetas  Vueltas.........');
+          console.log('Agrego Reportes de Minutos Tarjetas  Vueltas.........')
           console.log(datos.data.datos)
           //this.baseURlPDFPanelProduccionMinutosTarjetas = "data:application/pdf;base64," + datos.data.datos
           this.generatePdf(datos.data.datos)
