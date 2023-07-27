@@ -168,7 +168,7 @@
         </p>
         <div style="display: flex;  align-items: center;">
           <span class="subtituloModal" style="padding-right: 12px;"> Unidad: </span>
-          <span style="color: black;"> {{ auxUnidad }}</span>
+          <span style="color: black;"> {{ datamodal.CodiVehi_p }}</span>
         </div>
         <p class="tituloModal">
           INFORMACIÓN GENERAL
@@ -253,7 +253,6 @@ export default {
       datamodal: [],
       inputUnidad: "",
       inputMotivo: "",
-      auxUnidad: "",
     };
   },
   methods: {
@@ -449,7 +448,6 @@ export default {
         }
         this.isModalDetallePerjuicio = false;
       }
-      this.auxUnidad = this.inputUnidad;
       this.inputMotivo = ""
       this.inputUnidad = ""
       
