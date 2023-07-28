@@ -533,16 +533,17 @@ export default {
             motivo: this.inputMotivo,
           }
         );
-        if (datos.data.status_code == 200) {
+        if (datos.data.status_code == 200) 
+        {
+          this.inputMotivo = null;
+      this.inputUnidad = "";
+      this.readlPanelTableroPerjudicaVuelta();
+
           alert("Justificacion Enviado");
         }
 
         this.isModalDetallePerjuicio = false;
       }
-
-      this.inputMotivo = null;
-      this.inputUnidad = "";
-      this.readlPanelTableroPerjudicaVuelta();
     },
     async enviarPago() {
       if (this.inputMotivo == null) {
@@ -560,11 +561,12 @@ export default {
         );
         if (datos.data.status_code == 200) {
           alert("Pago Enviado");
+          this.inputMotivo = null;
+      this.inputUnidad = "";
         }
         this.isModalDetallePerjuicio = false;
       }
-      this.inputMotivo = null;
-      this.inputUnidad = "";
+
 
       this.readlPanelTableroPerjudicaVuelta();
     },
@@ -580,8 +582,9 @@ export default {
       if (datos.data.status_code == 200) {
         alert("Pago Devuelto");
         this.isModalDetallePerjuicio = false;
+        this.readlPanelTableroPerjudicaVuelta();
       }
-      this.readlPanelTableroPerjudicaVuelta();
+      
     },
   },
   mounted() {
