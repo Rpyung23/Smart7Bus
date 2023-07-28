@@ -2,208 +2,189 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
             <!--<el-autocomplete class="inline-input" v-model="itemUnidadPanelProduccion"
               :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo" style="margin-right: 0.5rem"
               placeholder="Unidad" prefix-icon="ni ni-bus-front-12" :trigger-on-focus="false"></el-autocomplete>-->
 
-            <el-select
-              v-model="itemUnidadPanelProduccion"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
-              :loading="loadingTableUnidadesPanelProduccoionLoading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesPanelProduccion"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadPanelProduccion" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
+              :loading="loadingTableUnidadesPanelProduccoionLoading">
+              <el-option v-for="item in optionsUnidadesPanelProduccion" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                :max="{ fechaInicialTableroProduccion }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialTableroProduccion"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+              <flat-picker slot-scope="{ focus, blur }" :max="{ fechaInicialTableroProduccion }" @on-open="focus"
+                @on-close="blur" :config="{ allowInput: true }" class="form-controlPersonal datepicker"
+                v-model="fechaInicialTableroProduccion">
               </flat-picker>
             </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalTableroProduccion"
-              >
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaFinalTableroProduccion">
               </flat-picker>
             </base-input>
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
             <div class="buttonCenterEndDerecha">
-              <base-button
-                icon
-                type="primary"
-                size="sm"
-                @click="readlPanelTableroPerjudicaVuelta()"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="el-icon-search"></i
-                ></span>
+              <base-button icon type="primary" size="sm" @click="readlPanelTableroPerjudicaVuelta()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
             </div>
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
             <!--<el-select v-model="mSelectRubroValueTablero" multiple collapse-tags placeholder="Rubros">
               <el-option v-for="item in mListRubrosTableroProduccion" :key="item.id" :label="item.descripcion"
                 :value="item.id">
               </el-option>
             </el-select>-->
-            <el-select
-              v-model="mSelectLineasValueTablero"
-              style="margin-right: 0.5rem"
-              multiple
-              collapse-tags
-              placeholder="Rutas"
-            >
-              <el-option
-                v-for="item in mListLineasTableroProduccion"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
-              >
+            <el-select v-model="mSelectLineasValueTablero" style="margin-right: 0.5rem" multiple collapse-tags
+              placeholder="Rutas">
+              <el-option v-for="item in mListLineasTableroProduccion" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.idRuta">
               </el-option>
             </el-select>
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: dark; margin-right: 0.5rem"
-              >Pendiente : {{ mPendienteRPagosVehiculo }} $</strong
-            >
-            <strong style="color: green"
-              >Total a Cobrar:
+            <strong style="color: dark; margin-right: 0.5rem">Pendiente : {{ mPendienteRPagosVehiculo }} $</strong>
+            <strong style="color: green">Total a Cobrar:
               {{
                 mTotalRPagosVehiculo
               }}
-              $</strong
-            >
+              $</strong>
           </div>
         </card>
 
-        <card
-          id="cardTableroCobros"
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="cardTableroCobros card-bodyRCobrosVehiculoProduccionPC px-0 pb-1"
-          footer-classes="pb-2"
-        >
-        <el-table
-                v-loading="loadingRTableroProduccionCobranzas"
-                element-loading-text="Cargando Datos..."
-                :data="tableDataPanelControlProduccion"
-                row-key="id"
-                class="col-12 col-md-8 tablePanelControlProduccion"
-                height="calc(100vh - 13rem)"
-                style="width: 100%"
-              >
+        <card id="cardTableroCobros" class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="cardTableroCobros card-bodyRCobrosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
 
-              <el-table-column  label="" minWidth="70">
+          <el-table v-loading="loadingRTableroProduccionCobranzas" element-loading-text="Cargando Datos..."
+            :data="tableDataPanelControlProduccion" row-key="id" class="col-12 col-md-8 tablePanelControlProduccion"
+            height="calc(100vh - 13rem)" style="width: 100%" @row-click="filaClickeada">
 
-                
-                <base-button
-                    size="sm"
-                    title="JUSTIFICAR"
-                    type="primary"
-                    ><i class="ni ni-check-bold"></i
-                  ></base-button>
+            <!--el-table-column label="" minWidth="70">
+              <base-button size="sm" title="JUSTIFICAR" type="primary"><i class="ni ni-check-bold"></i></base-button>
+
+              <base-button size="sm" title="PAGAR" type="default"><i class="ni ni-money-coins"></i></base-button>
+
+            </el-table-column-->
 
 
-                <base-button
-                    size="sm"
-                    title="PAGAR"
-                    type="default"
-                    ><i class="ni ni-money-coins"></i
-                  ></base-button>
 
-              </el-table-column>
+            <el-table-column prop="CodiVehiSali_m" label="Unidad" minWidth="60">
+            </el-table-column>
 
-                <el-table-column prop="CodiVehiSali_m" label="Unidad" minWidth="60">
-                </el-table-column>
+            <el-table-column prop="NumeVuelSali_m" label="N° Vuelta" minWidth="60">
+            </el-table-column>
 
-                <el-table-column
-                  prop="NumeVuelSali_m"
-                  label="N° Vuelta"
-                  minWidth="60"
-                >
-                </el-table-column>
+            <el-table-column prop="DescRuta" label="Ruta - Linea" minWidth="100">
+            </el-table-column>
 
-                <el-table-column
-                  prop="DescRuta"
-                  label="Ruta - Linea"
-                  minWidth="100"
-                >
-                </el-table-column>
+            <el-table-column prop="HoraSaliProgSali_m" label="Fecha" minWidth="60">
+            </el-table-column>
 
-                <el-table-column prop="HoraSaliProgSali_m" label="Fecha" minWidth="60">
-                </el-table-column>
+            <el-table-column prop="HoraProgSali_d" label="PROG" minWidth="60">
+            </el-table-column>
 
-                <el-table-column prop="HoraProgSali_d" label="PROG" minWidth="60">
-                </el-table-column>
-
-                <el-table-column prop="HoraMarcSali_d" label="MARC" minWidth="60">
-                </el-table-column>
+            <el-table-column prop="HoraMarcSali_d" label="MARC" minWidth="60">
+            </el-table-column>
 
 
-                <el-table-column prop="AtrasoTiempo" label="TIEMPO" minWidth="60">
-                </el-table-column>
+            <el-table-column prop="AtrasoTiempo" label="TIEMPO" minWidth="60">
+            </el-table-column>
 
-                <el-table-column
-                  prop="AtrasoPenalidad"
-                  label="Total($)"
-                  minWidth="75"
-                >
-                  <template slot-scope="scope">
-                    <strong style="color: black">{{
-                      scope.row.AtrasoPenalidad
-                    }}</strong>
-                  </template>
-                </el-table-column>
+            <el-table-column prop="AtrasoPenalidad" label="Total($)" minWidth="75">
+              <template slot-scope="scope">
+                <strong style="color: black">{{
+                  scope.row.AtrasoPenalidad
+                }}</strong>
+              </template>
+            </el-table-column>
 
-                <div slot="empty"></div>
-              </el-table>
+            <div slot="empty"></div>
+          </el-table>
+
         </card>
+
       </div>
     </base-header>
+
+
+    <!--Classic modal-->
+    <modal :show.sync="isModalDetallePerjuicio" size="s">
+      <p slot="header"> </p>
+
+      <div class="centerButton">
+        <base-button size="md" title="JUSTIFICAR" type="primary" v-show="datamodal.Estado === 0"
+          @click="enviarJustificacion()"><i class="ni ni-check-bold"></i></base-button>
+        <base-button size="md" title="PAGAR" type="default" v-show="datamodal.Estado != 2" @click="enviarPago()"><i
+            class="ni ni-money-coins"></i></base-button>
+        <base-button size="md" title="DEVOLVER" type="success" v-show="datamodal.Estado === 2"><i
+            @click="enviarDevolucion()" class="ni ni-check-bold"></i></base-button>
+      </div>
+      
+      <div v-if="datamodal.Estado != 2">
+        <p class="tituloModal">
+          INFORMACIÓN GENERAL
+        </p>
+        <span title="Unidad" class="subtituloModal" style="padding-right: 14px;">Unidad: </span>
+        <span style="color: black;"> {{ datamodal.CodiVehiSali_m }} <br></span>
+        <span title="Falta" class="subtituloModal" style="padding-right: 28px;">Falta: </span>
+        <span style="color: black;"> {{ datamodal.AtrasoNumero }} <br></span>
+        <span title="Tiempo" class="subtituloModal" style="padding-right: 10px;">Tiempo: </span>
+        <span style="color: black;"> {{ datamodal.AtrasoTiempo }}<br></span>
+        <span title="Valor" class="subtituloModal" style="padding-right: 25px;">Valor: </span>
+        <span style="color: black;"> {{ datamodal.AtrasoPenalidad }} <br></span>
+        <p class="tituloModal">
+          PERJUDICADO<br>
+        </p>
+        <div style="display: flex;  align-items: center;">
+          <span class="subtituloModal" style="padding-right: 12px;"> Unidad: </span>
+          <textarea type="text" style="width: 370px; height: 30px;" v-model="inputUnidad"></textarea>
+        </div>
+
+        <p class="tituloModal">
+          MOTIVO<br>
+        </p>
+        <textarea type="text" rows="2" cols="45" v-model="inputMotivo"></textarea>
+      </div>
+
+      <div v-if="datamodal.Estado === 2">
+        <p class="tituloModal">
+          PERJUDICADO<br>
+        </p>
+        <div style="display: flex;  align-items: center;">
+          <span class="subtituloModal" style="padding-right: 12px;"> Unidad: </span>
+          <span style="color: black;"> {{ datamodal.CodiVehi_p }}</span>
+        </div>
+        <p class="tituloModal">
+          INFORMACIÓN GENERAL
+        </p>
+        <span title="Unidad" class="subtituloModal" style="padding-right: 14px;">Unidad: </span>
+        <span style="color: black;"> {{ datamodal.CodiVehiSali_m }} <br></span>
+        <span title="Falta" class="subtituloModal" style="padding-right: 28px;">Falta: </span>
+        <span style="color: black;"> {{ datamodal.AtrasoNumero }} <br></span>
+        <span title="Tiempo" class="subtituloModal" style="padding-right: 10px;">Tiempo: </span>
+        <span style="color: black;"> {{ datamodal.AtrasoTiempo }}<br></span>
+        <span title="Valor" class="subtituloModal" style="padding-right: 25px;">Valor: </span>
+        <span style="color: black;"> {{ datamodal.AtrasoPenalidad }} <br></span>
+      </div>
+
+
+    </modal>
   </div>
 </template>
 <script>
@@ -268,6 +249,10 @@ export default {
       loadingTableUnidadesPanelProduccoionLoading: false,
       optionsUnidadesPanelProduccion: [],
       itemUnidadPanelProduccion: [],
+      isModalDetallePerjuicio: false,
+      datamodal: [],
+      inputUnidad: "",
+      inputMotivo: "",
     };
   },
   methods: {
@@ -354,8 +339,7 @@ export default {
 
       if (datos.data.status_code == 200) {
         let dinero = 0;
-        for (var i = 0; i < datos.data.datos.length; i++) 
-        {
+        for (var i = 0; i < datos.data.datos.length; i++) {
           dinero =
             dinero +
             (datos.data.datos[i].AtrasoPenalidad == null
@@ -409,7 +393,82 @@ export default {
         icon: icono,
         type,
       });
+    },
+    filaClickeada(row) {
+      console.log('Fila clickeada: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<', row);
+      console.log('Fila clickeada: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<', row.CodiVehiSali_m);
+      this.isModalDetallePerjuicio = true;
+      this.datamodal = [];
+      this.datamodal = row;
+
+    },
+    async enviarJustificacion() {
+      if (this.inputMotivo.trim() === "") {
+        alert("El campo de Motivo esta vacio. Por favor, ingresa información.");
+        return;
+      }
+      else {
+        let datos = await this.$axios.post(
+          process.env.baseUrl + "/ProduccionPerjudicadoVueltaJustificado",
+          {
+            token: this.token,
+            idSali_d: this.datamodal.idSali_d,
+            fechaJus: this.initFechaActualTicketPerjudica(),
+            motivo: this.inputMotivo,
+          }
+        );
+        if (datos.data.status_code == 200) {
+          alert("Justificacion Enviado");
+        }
+
+        this.isModalDetallePerjuicio = false;
+      }
+
+      this.inputMotivo = ""
+      this.inputUnidad = ""
+      this.readlPanelTableroPerjudicaVuelta();
+    },
+    async enviarPago() {
+      if (this.inputUnidad.trim() === "") {
+        alert("El campo de Unidad esta vacio. Por favor, ingresa información.");
+        return;
+      }
+      else {
+        let datos = await this.$axios.post(
+          process.env.baseUrl + "/ProduccionPerjudicadoVueltaPagado",
+          {
+            token: this.token,
+            idSali_d: this.datamodal.idSali_d,
+            fechaPaga: this.initFechaActualTicketPerjudica(),
+            unidadP: this.inputUnidad,
+          }
+        );
+        if (datos.data.status_code == 200) {
+          alert("Pago Enviado");
+        }
+        this.isModalDetallePerjuicio = false;
+      }
+      this.inputMotivo = ""
+      this.inputUnidad = ""
+      
+      this.readlPanelTableroPerjudicaVuelta();
+    },
+    async enviarDevolucion() {
+      let datos = await this.$axios.post(
+        process.env.baseUrl + "/ProduccionPerjudicadoVueltaDevuelto",
+        {
+          token: this.token,
+          idSali_d: this.datamodal.idSali_d,
+          fechaDev: this.initFechaActualTicketPerjudica(),
+        }
+      );
+      if (datos.data.status_code == 200) {
+        alert("Pago Devuelto");
+        this.isModalDetallePerjuicio = false;
+      }
+      this.readlPanelTableroPerjudicaVuelta();
     }
+
   },
   mounted() {
     this.readUnidadesTableroPerjudicaVueltas();
@@ -477,5 +536,35 @@ export default {
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
+}
+
+.tituloModal {
+  background: green;
+  color: white;
+  font-family: arial;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.subtituloModal {
+  background: greenyellow;
+  color: black;
+  margin-right: 5px;
+  /*font-size: 25px;*/
+  font-family: arial;
+  align-items: center;
+}
+
+.centerButton {
+  display: flex;
+  justify-content: center;
+}
+
+.modal-body {
+  padding: 0px 1.5rem 1.5rem 1.5rem !important;
+}
+
+.modal-header {
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem !important;
 }
 </style>
