@@ -112,16 +112,29 @@
 
     <!--Classic modal-->
     <modal :show.sync="isModalDetallePerjuicio" size="sm">
-      <p slot="header"></p>
+      <template slot="header">
+        <div>
+          <div style="display: flex; align-items: center">
+            <span class="cabeceraModal">
+              Unidad:
+            </span>
+            <span style="color: black"> {{ datamodal.CodiVehiSali_m }}</span>
+            <span class="cabeceraModal">
+              Ruta:
+            </span>
+            <span style="color: black"> {{ datamodal.DescRuta }}</span>
+          </div>
 
-      <div class="centerButton">
-        <base-button size="sm" title="JUSTIFICAR" type="primary" v-show="datamodal.Estado === 0"
-          @click="enviarJustificacion()"><i class="ni ni-check-bold"></i>JUSTIFICAR</base-button>
-        <base-button size="sm" title="PAGAR" type="default" v-show="datamodal.Estado != 2" @click="enviarPago()"><i
-            class="ni ni-money-coins">PAGAR</i></base-button>
-        <base-button size="sm" title="DEVOLVER" type="danger" v-show="datamodal.Estado === 2"
-          @click="enviarDevolucion()">DEVOLVER<i class="ni ni-fat-delete"></i></base-button>
-      </div>
+          <div style="display: flex; align-items: center">
+            <span class="cabeceraModal">
+              Fecha:
+            </span>
+            <span style="color: black"> {{ datamodal.HoraSaliProgSali_m, }} </span>
+            <span style="padding-right: 5px"></span>
+            <span style="color: black"> {{ datamodal.HoraProgSali_d }}</span>
+          </div>
+        </div>
+      </template>
 
       <div v-if="datamodal.Estado != 2">
         <p class="tituloModal">INFORMACIÓN GENERAL</p>
@@ -176,6 +189,19 @@
         <span style="color: black">
           {{ datamodal.AtrasoPenalidad }} <br /></span>
       </div>
+
+      <template slot="footer">
+        <div class="centerButton">
+          <base-button size="sm" title="JUSTIFICAR" type="primary" v-show="datamodal.Estado === 0"
+            @click="enviarJustificacion()"><i class="ni ni-check-bold"></i>JUSTIFICAR</base-button>
+          <base-button size="sm" title="PAGAR" type="default" v-show="datamodal.Estado != 2" @click="enviarPago()"><i
+              class="ni ni-money-coins">PAGAR</i></base-button>
+          <base-button size="sm" title="DEVOLVER" type="danger" v-show="datamodal.Estado === 2"
+            @click="enviarDevolucion()">DEVOLVER<i class="ni ni-fat-delete"></i></base-button>
+        </div>
+      </template>
+
+
     </modal>
   </div>
 </template>
@@ -533,17 +559,19 @@ export default {
   background: green;
   color: white;
   font-family: arial;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  padding-right: 10px;
+  padding-left: 12px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .subtituloModal {
-  background: greenyellow;
   color: black;
   margin-right: 5px;
-  /*font-size: 25px;*/
+  font-weight: bold;
   font-family: arial;
   align-items: center;
+
 }
 
 .centerButton {
@@ -567,5 +595,12 @@ export default {
   padding: 0rem !important;
   height: calc(100vh - 13.2rem);
 
+}
+
+.cabeceraModal {
+  padding-right: 5px;
+  padding-left: 12px;
+  color: black;
+  font-weight: bold;
 }
 </style>
