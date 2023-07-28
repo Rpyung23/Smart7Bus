@@ -196,27 +196,27 @@
 
       <div class="centerButton">
         <base-button
-          size="md"
+          size="sm"
           title="JUSTIFICAR"
           type="primary"
           v-show="datamodal.Estado === 0"
           @click="enviarJustificacion()"
           ><i class="ni ni-check-bold"></i
-        ></base-button>
+        >JUSTIFICAR</base-button>
         <base-button
-          size="md"
+          size="sm"
           title="PAGAR"
           type="default"
           v-show="datamodal.Estado != 2"
           @click="enviarPago()"
-          ><i class="ni ni-money-coins"></i
+          ><i class="ni ni-money-coins">PAGAR</i
         ></base-button>
         <base-button
-          size="md"
+          size="sm"
           title="DEVOLVER"
-          type="success"
+          type="danger"
           v-show="datamodal.Estado === 2"
-          ><i @click="enviarDevolucion()" class="ni ni-check-bold"></i
+          >DEVOLVER<i @click="enviarDevolucion()" class="ni ni-fat-delete"></i
         ></base-button>
       </div>
 
@@ -244,7 +244,6 @@
         <div style="display: flex; align-items: center">
           <el-select
             v-model="inputUnidad"
-            multiple
             filterable
             style="width: 100%; margin-right: 0.5rem"
             remote
