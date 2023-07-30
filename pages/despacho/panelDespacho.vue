@@ -376,9 +376,10 @@
         <div class="col-md-6">
           <el-date-picker
             type="datetime"
-            placeholder="Select date and time"
+            placeholder="Fecha Despacho"
             style="width: 100%"
             v-model="fechaActualSalidasPanelDespachoDespachador"
+            format="yyyy-MM-dd HH:mm:00"
           >
           </el-date-picker>
         </div>
@@ -472,16 +473,45 @@
 
     <!--Form modal Despacho Anular Salida-->
     <modal :show.sync="modalDespachoAnularSalida" body-classes="p-0">
-      <base-alert v-if="reponseAnularFinalizar != null && reponseAnularFinalizar.status_code != 200 " type="danger" class="container_body_modal_despacho">
-       {{reponseAnularFinalizar == null ? "ERROR INDEFINIDO" : reponseAnularFinalizar.msm}}
-  </base-alert>
+      <base-alert
+        v-if="
+          reponseAnularFinalizar != null &&
+          reponseAnularFinalizar.status_code != 200
+        "
+        type="danger"
+        class="container_body_modal_despacho"
+      >
+        {{
+          reponseAnularFinalizar == null
+            ? "ERROR INDEFINIDO"
+            : reponseAnularFinalizar.msm
+        }}
+      </base-alert>
       <h6 slot="header" class="modal-title">
-        Anular Salida N° {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.idSali_m }}
+        Anular Salida N°
+        {{
+          this.selectedRowSalida == null ? "" : this.selectedRowSalida.idSali_m
+        }}
       </h6>
       <div class="container_body_modal_despacho">
-        <strong>Unidad : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.CodiVehiSali_m }}
-        <strong>Ruta : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.DescRutaSali_m }}
-        <strong>Hora : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.HoraSaliProgSali_m }}
+        <strong>Unidad : </strong>
+        {{
+          this.selectedRowSalida == null
+            ? ""
+            : this.selectedRowSalida.CodiVehiSali_m
+        }}
+        <strong>Ruta : </strong>
+        {{
+          this.selectedRowSalida == null
+            ? ""
+            : this.selectedRowSalida.DescRutaSali_m
+        }}
+        <strong>Hora : </strong>
+        {{
+          this.selectedRowSalida == null
+            ? ""
+            : this.selectedRowSalida.HoraSaliProgSali_m
+        }}
       </div>
       <template slot="footer">
         <base-button
@@ -494,18 +524,46 @@
 
     <!--Form modal Despacho Finalizar Salida-->
     <modal :show.sync="modalDespachoFinalizarSalida" body-classes="p-0">
-
-      <base-alert v-if="reponseAnularFinalizar != null && reponseAnularFinalizar.status_code != 200 " type="danger" class="container_body_modal_despacho">
-       {{reponseAnularFinalizar == null ? "ERROR INDEFINIDO" : reponseAnularFinalizar.msm}}
+      <base-alert
+        v-if="
+          reponseAnularFinalizar != null &&
+          reponseAnularFinalizar.status_code != 200
+        "
+        type="danger"
+        class="container_body_modal_despacho"
+      >
+        {{
+          reponseAnularFinalizar == null
+            ? "ERROR INDEFINIDO"
+            : reponseAnularFinalizar.msm
+        }}
       </base-alert>
 
       <h6 slot="header" class="modal-title">
-        Finalizar Salida N° {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.idSali_m }}
+        Finalizar Salida N°
+        {{
+          this.selectedRowSalida == null ? "" : this.selectedRowSalida.idSali_m
+        }}
       </h6>
       <div class="container_body_modal_despacho">
-        <strong>Unidad : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.CodiVehiSali_m }}
-        <strong>Ruta : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.DescRutaSali_m }}
-        <strong>Hora : </strong> {{ this.selectedRowSalida == null ? "" : this.selectedRowSalida.HoraSaliProgSali_m }}
+        <strong>Unidad : </strong>
+        {{
+          this.selectedRowSalida == null
+            ? ""
+            : this.selectedRowSalida.CodiVehiSali_m
+        }}
+        <strong>Ruta : </strong>
+        {{
+          this.selectedRowSalida == null
+            ? ""
+            : this.selectedRowSalida.DescRutaSali_m
+        }}
+        <strong>Hora : </strong>
+        {{
+          this.selectedRowSalida == null
+            ? ""
+            : this.selectedRowSalida.HoraSaliProgSali_m
+        }}
       </div>
       <template slot="footer">
         <base-button
@@ -571,7 +629,7 @@ export default {
   },
   data() {
     return {
-      reponseAnularFinalizar:null,
+      reponseAnularFinalizar: null,
       minutosSalidaDiferida: 0,
       columnsInfo: [],
       imagenBaseUrl: "",
@@ -782,7 +840,7 @@ export default {
     },
     async createHeaderTable() {
       //this.selectedRowSalida = null;
-
+      this.selectRowId  = null
       //this.$refs.myGridDespachoPanel.clearSelection();
       if (this.ArrowGridSelect != null) {
         this.$refs.myGridDespachoPanel.unselectrow(this.ArrowGridSelect);
@@ -809,7 +867,9 @@ export default {
 
         //console.log(datos.data.datos)
         this.mListDespachosPanel.push(...datos.data.datos);
-        this.mListDespachosPanelAuxiliar.push(...datos.data.datos);
+        this.mListDespachosPanelAuxiliar = this.mListDespachosPanel
+        console.log("--///////////////-/")
+        console.log(this.mListDespachosPanelAuxiliar)
         this.$refs.myGridDespachoPanel.beginupdate();
         this.columnsInfo = [];
         this.columnsInfo[0] = {
@@ -984,52 +1044,56 @@ export default {
     createBodyDespacho(despachos) {
       var tiempoString = "";
       var minutosString = "";
+      var secondString = "00";
       var ListaLlena = [];
       var ListaVacia = [];
       var ListaCompleta = [];
       var inter = 0;
-      for (var hora = 4; hora <= 23; hora++) {
+      for (var hora = 3; hora <= 23; hora++) {
         tiempoString = hora < 10 ? "0" + hora : hora;
-        for (var minuto = 0; minuto <= 59; minuto++) {
-          minutosString = minuto < 10 ? "0" + minuto : minuto;
-          var HS = tiempoString + ":" + minutosString + ":00";
-          var HSa_ = tiempoString + ":" + minutosString + ":00 (A)";
-          var obj = this.getObjetoSalidaDespacho(HS, HSa_);
-          var objD =
-            obj == null
-              ? {
-                  LetraRutaSali_m: "",
-                  CodiVehiSali_m: "",
-                  idSali_m: "",
-                  HoraSaliProgSali_m: HS,
-                  HoraLlegProgSali_m: "",
-                  EstaSali_m: "",
-                  idFrecSali_m: "",
-                  DescFrec: "",
-                  PenaCtrlSali_d: "",
-                  VeloMaxiSali_m: "",
-                  NumeVuelSali_m: "",
-                  atrasoFaltasTime: "",
-                  adelantoFaltasTime: "",
-                  Country23: "",
-                  Intervalo: "",
-                  DescRutaSali_m: "",
-                }
-              : obj;
-          if (obj == null) {
-            ListaVacia.push(objD);
-            inter++;
-          } else {
-            var estado = obj.EstaSali_mCode == 4 ? HSa_ : HS;
-            obj.HoraSaliProgSali_m = estado;
-            obj.Intervalo = inter;
-            inter = 0;
+        for (var minuto = 0; minuto <= 59; minuto++) 
+        {
+          minutosString = minuto < 10 ? "0" + minuto : minuto
+            var HS = tiempoString + ":" + minutosString + ":"+secondString
+            var HSa_ = tiempoString + ":" + minutosString + ":"+secondString+ " (A)"
+            var obj = this.getObjetoSalidaDespacho(HS, HSa_)
+            var objD =
+              obj == null
+                ? {
+                    LetraRutaSali_m: "",
+                    CodiVehiSali_m: "",
+                    idSali_m: "",
+                    HoraSaliProgSali_m: HS,
+                    HoraLlegProgSali_m: "",
+                    EstaSali_m: "",
+                    idFrecSali_m: "",
+                    DescFrec: "",
+                    PenaCtrlSali_d: "",
+                    VeloMaxiSali_m: "",
+                    NumeVuelSali_m: "",
+                    atrasoFaltasTime: "",
+                    adelantoFaltasTime: "",
+                    Country23: "",
+                    Intervalo: "",
+                    DescRutaSali_m: "",
+                  }
+                : obj;
+            if (obj == null) {
+              ListaVacia.push(objD);
+              inter++;
+            } else {
+              var estado = obj.EstaSali_mCode == 4 ? HSa_ : HS;
+              obj.HoraSaliProgSali_m = estado;
+              obj.Intervalo = inter;
+              inter = 0;
 
-            ListaLlena.push(obj);
-          }
+              ListaLlena.push(obj);
+            }
         }
       }
       ListaCompleta = ListaLlena.concat(ListaVacia);
+      console.log("LISTA CCCCCCC");
+      console.log(ListaCompleta);
       return {
         localdata: ListaCompleta,
         datatype: "array",
@@ -1054,9 +1118,11 @@ export default {
       };
     },
     getObjetoSalidaDespacho(tiempo, tiempoA) {
-      //console.log("TAMANIO : "+this.mListDespachosPanelAuxiliar.length )
+      console.log("TAMANIO : "+this.mListDespachosPanelAuxiliar.length )
       if (this.mListDespachosPanelAuxiliar.length > 0) {
-        for (var i = 0; i < this.mListDespachosPanelAuxiliar.length; i++) {
+        for (var i = 0; i < this.mListDespachosPanelAuxiliar.length; i++) 
+        {
+          console.log(tiempo +" == "+ this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m)
           if (
             tiempo == this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m
           ) {
@@ -1249,16 +1315,14 @@ export default {
     },
     async showModalAnularFinalizarDespacho(estado) {
       //console.log(this.selectRowEstado)
-      this.reponseAnularFinalizar = null
+      this.reponseAnularFinalizar = null;
       if (estado == 3) {
         this.modalDespachoFinalizarSalida = true;
       } else if (estado == 4) {
         this.modalDespachoAnularSalida = true;
       }
     },
-    async consumirApiAnularFinalizarDespacho(estado) 
-    {
-      
+    async consumirApiAnularFinalizarDespacho(estado) {
       try {
         var unidad = this.getObjUnidad(this.selectedRowSalida.CodiVehiSali_m);
         console.log(this.getObjUnidad(this.selectedRowSalida.CodiVehiSali_m));
@@ -1280,6 +1344,7 @@ export default {
         console.log(response.data);
         this.reponseAnularFinalizar = response.data
         this.modalDespachoAnularSalida = false
+        this.modalDespachoFinalizarSalida = false
       } catch (e) {
         alert("ERROR TRYCATCH");
         console.log(e);

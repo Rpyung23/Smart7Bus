@@ -997,7 +997,7 @@ export default {
               this.crearPreviewReciboIngresoPanelCobroUAmbatena(
                 this.multipleSelectionProduccionCobros
               );
-            } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita"){
+            } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r"){
               this.crearPreviewReciboIngresoPanelCobroModelo3(
                 this.multipleSelectionProduccionCobros
               );
