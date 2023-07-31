@@ -60,7 +60,7 @@
 
           <div class="cardTextoRPagosVehiculoProduccion">
             <strong style="color: dark; margin-right: 0.5rem">Pendiente : {{ mPendienteRPagosVehiculo }} $</strong>
-            <strong style="color: green">Total a Cobrar:
+            <strong style="color: green">Total Cobrado:
               {{ mTotalRPagosVehiculo }}
               $</strong>
           </div>
@@ -192,11 +192,11 @@
 
       <template slot="footer">
         <div class="centerButton">
-          <base-button size="sm" title="JUSTIFICAR" type="primary" v-show="datamodal.Estado === 0"
+          <base-button size="sm" title="JUSTIFICAR" type="primary" v-show="datamodal.Estado == 0"
             @click="enviarJustificacion()"><i class="ni ni-check-bold"></i>JUSTIFICAR</base-button>
           <base-button size="sm" title="PAGAR" type="default" v-show="datamodal.Estado != 2" @click="enviarPago()"><i
               class="ni ni-money-coins">PAGAR</i></base-button>
-          <base-button size="sm" title="DEVOLVER" type="danger" v-show="datamodal.Estado === 2"
+          <base-button size="sm" title="DEVOLVER" type="danger" v-show="datamodal.Estado == 2"
             @click="enviarDevolucion()">DEVOLVER<i class="ni ni-fat-delete"></i></base-button>
         </div>
       </template>
@@ -357,12 +357,16 @@ export default {
 
       if (datos.data.status_code == 200) {
         let dinero = 0;
-        for (var i = 0; i < datos.data.datos.length; i++) {
-          dinero =
+        for (var i = 0; i < datos.data.datos.length; i++) 
+        {
+          if(datos.data.datos[i].Estado != 2)
+          {
+            dinero =
             dinero +
             (datos.data.datos[i].AtrasoPenalidad == null
               ? 0
               : parseFloat(datos.data.datos[i].AtrasoPenalidad));
+          }
         }
         console.log("DINERO : " + dinero);
         this.mPendienteRPagosVehiculo = dinero;
@@ -447,7 +451,7 @@ export default {
           this.readlPanelTableroPerjudicaVuelta();
 
           this.notifyVue(
-            "success",
+            "default",
             "Justificación enviada.",
             "ni ni-check-bold",
             4500
@@ -460,7 +464,7 @@ export default {
     async enviarPago() {
       if (this.inputUnidad == null || this.inputUnidad == '') {
         this.notifyVue(
-          "warning",
+          "danger",
           "El campo de la unidad esta vacio. Por favor, ingresa información.",
           "ni ni-notification-70",
           4500
@@ -478,7 +482,7 @@ export default {
         );
         if (datos.data.status_code == 200) {
           this.notifyVue(
-            "success",
+            "default",
             "Pago enviada.",
             "ni ni-check-bold",
             4500
@@ -502,7 +506,7 @@ export default {
       console.log(`Aca api de devolver ${datos.data}`)
       if (datos.data.status_code == 200) {
         this.notifyVue(
-          "success",
+          "default",
           "Pago Devuelto",
           "ni ni-check-bold",
           4500
