@@ -4,115 +4,78 @@
     <side-bar>
       <template slot="links">
 
-        <sidebar-item
-        translate="no"
-          :link="{
-            name: 'Tablero',
-            icon: 'ni ni-collection text-default',
-            path: pathTableroVueltas,
-          }"
-        >
+        <sidebar-item translate="no" :link="{
+          name: 'Tablero',
+          icon: 'ni ni-collection text-default',
+          path: pathTableroVueltas,
+        }">
         </sidebar-item>
 
 
-        <sidebar-item
-        translate="no"
-          :link="{
-            name: 'Perjudicado',
-            icon: 'ni ni-bus-front-12 text-warning',
-            path: './tableroPerjudicaVueltas',
-          }"
-        >
+        <sidebar-item translate="no" :link="{
+          name: 'Perjudicado',
+          icon: 'ni ni-bus-front-12 text-warning',
+          path: './tableroPerjudicaVueltas',
+        }">
         </sidebar-item>
 
-  
-      <sidebar-item
-      translate="no"
-          :link="{
-            name: 'Tablero Cobros',
-            icon: 'ni ni-money-coins text-success',
-            path: pathTableroVueltasCobros,
-          }"
-        >
+
+        <sidebar-item translate="no" :link="{
+          name: 'Tablero Cobros',
+          icon: 'ni ni-money-coins text-success',
+          path: pathTableroVueltasCobros,
+        }">
         </sidebar-item>
 
-        <sidebar-item
-        translate="no"
-          :link="{
-            name: 'Recibos',
-            icon: 'ni ni-single-copy-04 text-primary',
-          }"
-        >
-          <sidebar-item
-          translate="no"
-            :link="{ name: 'Recibos Pagos Vehiculo', path: pathRecibopagosvehiculo }"
-          />
+        <sidebar-item translate="no" :link="{
+          name: 'Recibos',
+          icon: 'ni ni-single-copy-04 text-primary',
+        }">
+          <sidebar-item translate="no" :link="{ name: 'Recibos Pagos Vehiculo', path: pathRecibopagosvehiculo }" />
           <!--<sidebar-item
             :link="{ name: 'Recibos Lineas', path: '#' }"
           />-->
         </sidebar-item>
 
-        <sidebar-item  
-        translate="no"
-          :link="{
-            name: 'Reportes',
-            icon: 'ni ni-book-bookmark text-blank',
-          }"
-          
-        >
+        <sidebar-item translate="no" :link="{
+          name: 'Reportes',
+          icon: 'ni ni-book-bookmark text-blank',
+        }">
 
 
-        <sidebar-item
-          translate="no"
-            :link="{ name: 'Valores Acumuladas', path: './rdeudasacumuladas' }"
-          />
+          <sidebar-item translate="no" :link="{ name: 'Valores Acumuladas', path: './rdeudasacumuladas' }" />
 
-          <sidebar-item
-          translate="no"
-            :link="{ name: 'Minutos y Tarjetas', path: pathRminutostarjeta }"
-          />
+          <sidebar-item translate="no" :link="{ name: 'Minutos y Tarjetas', path: pathRminutostarjeta }" />
 
-          <sidebar-item
-          translate="no"
-          v-if="rminutosjustificadosvuelta" 
-            :link="{ name: 'Minutos Justificados', path: './rMinutosJustificadosVuelta' }"
-          ></sidebar-item>
+          <sidebar-item translate="no" v-if="rminutosjustificadosvuelta"
+            :link="{ name: 'Minutos Justificados', path: './rMinutosJustificadosVuelta' }"></sidebar-item>
 
-          <sidebar-item
-          translate="no"
-          v-if="rminutosjustificados" 
-            :link="{ name: 'Minutos Justificados', path: './rMinutosJustificados' }"
-          ></sidebar-item>
+          <sidebar-item translate="no" v-if="rminutosjustificados"
+            :link="{ name: 'Minutos Justificados', path: './rMinutosJustificados' }"></sidebar-item>
 
-          <sidebar-item
-          translate="no"
-            :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }"
-          />
+          <sidebar-item translate="no"
+            :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }" />
           <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
           <sidebar-item translate="no" :link="{ name: 'Resumidos Vehiculo', path: pathResumidoVehiculo }" />
-          
+          <sidebar-item translate="no" :link="{ name: 'Reporte Perjudicado', path: './rPerjudicado' }" />
+
           <!--<sidebar-item
             :link="{ name: 'Pagos Vehiculo Resumido', path: './rpagosvehiculoresumido' }"
           />-->
 
         </sidebar-item>
 
-        <sidebar-item
-      translate="no"
-          :link="{
-            name: 'Estadistico Controles',
-            icon: 'ni ni-chart-bar-32 text-success',
-            path: './estadistico',
-          }"
-        >
+        <sidebar-item translate="no" :link="{
+          name: 'Estadistico Controles',
+          icon: 'ni ni-chart-bar-32 text-success',
+          path: './estadistico',
+        }">
         </sidebar-item>
 
       </template>
     </side-bar>
     <div class="main-content">
-      <dashboard-navbar
-        :type="$route.name === 'alternative' ? 'light' : 'default'"
-      ></dashboard-navbar>
+      <dashboard-navbar :type="$route.name === 'alternative' ? 'light' : 'default'"></dashboard-navbar>
 
       <div @click="$sidebar.displaySidebar(false)">
         <nuxt></nuxt>
@@ -149,18 +112,17 @@ export default {
     DashboardNavbar,
     DashboardContent,
   },
-  data()
-  {
+  data() {
     return {
-      oPermisosWebProduccionPanelJSON:null,
-      pathTableroVueltas:'./tablero',
-      pathTableroVueltasCobros:'./tableroCobros',
+      oPermisosWebProduccionPanelJSON: null,
+      pathTableroVueltas: './tablero',
+      pathTableroVueltasCobros: './tableroCobros',
       pathRecibopagosvehiculo: './recibopagosvehiculo',
       pathRminutostarjetaResumidoVueltas: './rminutostarjetaResumido',
-      pathRminutostarjeta : './rminutostarjeta',
-      pathResumidoVehiculo : './resumidovehiculo',
+      pathRminutostarjeta: './rminutostarjeta',
+      pathResumidoVehiculo: './resumidovehiculo',
       rminutosjustificadosvuelta: false,
-      rminutosjustificados:false
+      rminutosjustificados: false
     }
   },
   methods: {
@@ -179,44 +141,42 @@ export default {
 
     var permisos = this.$cookies.get("permisos")
 
-    this.rminutosjustificadosvuelta = (permisos.produccion != null &&  
-                               permisos.produccion.reportes != null &&
-                               permisos.produccion.reportes.RMinutosJustificadosVuelta != null &&
-                               permisos.produccion.reportes.RMinutosJustificadosVuelta) ? true :  false
+    this.rminutosjustificadosvuelta = (permisos.produccion != null &&
+      permisos.produccion.reportes != null &&
+      permisos.produccion.reportes.RMinutosJustificadosVuelta != null &&
+      permisos.produccion.reportes.RMinutosJustificadosVuelta) ? true : false
 
-    this.rminutosjustificados  = (permisos.produccion != null &&  
-                               permisos.produccion.reportes != null &&
-                               permisos.produccion.reportes.RMinutosJustificados != null &&
-                               permisos.produccion.reportes.RMinutosJustificados) ? true :  false
+    this.rminutosjustificados = (permisos.produccion != null &&
+      permisos.produccion.reportes != null &&
+      permisos.produccion.reportes.RMinutosJustificados != null &&
+      permisos.produccion.reportes.RMinutosJustificados) ? true : false
 
-    this.pathTableroVueltas = (this.oPermisosWebProduccionPanelJSON != null &&  
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroVueltas' :  './tablero'
-    
-    this.pathTableroVueltasCobros = (this.oPermisosWebProduccionPanelJSON != null &&  
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroCobrosVueltas' :  './tableroCobros'  
+    this.pathTableroVueltas = (this.oPermisosWebProduccionPanelJSON != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroVueltas' : './tablero'
 
-    this.pathRecibopagosvehiculo = (this.oPermisosWebProduccionPanelJSON != null &&  
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './recibopagosvehiculoVueltas' : './recibopagosvehiculo'
-    
-    this.pathRminutostarjetaResumidoVueltas = (this.oPermisosWebProduccionPanelJSON != null &&  
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaResumidoVueltas' : './rminutostarjetaResumido'
-   
-    this.pathRminutostarjeta = (this.oPermisosWebProduccionPanelJSON != null &&  
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaVueltas' : './rminutostarjeta'
-   
-    this.pathResumidoVehiculo = (this.oPermisosWebProduccionPanelJSON != null &&  
-                                this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                                this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './resumidovehiculoVueltas' : './resumidovehiculo'
-   
-                               
+    this.pathTableroVueltasCobros = (this.oPermisosWebProduccionPanelJSON != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroCobrosVueltas' : './tableroCobros'
+
+    this.pathRecibopagosvehiculo = (this.oPermisosWebProduccionPanelJSON != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './recibopagosvehiculoVueltas' : './recibopagosvehiculo'
+
+    this.pathRminutostarjetaResumidoVueltas = (this.oPermisosWebProduccionPanelJSON != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaResumidoVueltas' : './rminutostarjetaResumido'
+
+    this.pathRminutostarjeta = (this.oPermisosWebProduccionPanelJSON != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaVueltas' : './rminutostarjeta'
+
+    this.pathResumidoVehiculo = (this.oPermisosWebProduccionPanelJSON != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './resumidovehiculoVueltas' : './resumidovehiculo'
+
     this.initScrollbar();
   },
 };
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>
