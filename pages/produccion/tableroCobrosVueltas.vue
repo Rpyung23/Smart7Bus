@@ -348,7 +348,7 @@ export default {
             this.crearPreviewReciboIngresoPanelCobroUAmbatena(
               this.multipleSelectionProduccionCobros
             );
-          } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita") {
+          } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r") {
             this.crearPreviewReciboIngresoPanelCobroModelo3(
               this.multipleSelectionProduccionCobros
             );
@@ -850,7 +850,7 @@ export default {
 
             resultadoString.push([
               {
-                text: datosSalidas[i].detalle[j].DescCtrl.substring(0,9),
+                text: datosSalidas[i].detalle[j].DescCtrl.substring(0,8),
                 fontSize: 8.5,
               },
               {
@@ -998,10 +998,12 @@ export default {
                 this.multipleSelectionProduccionCobros
               );
             } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r"){
+  
               this.crearPreviewReciboIngresoPanelCobroModelo3(
                 this.multipleSelectionProduccionCobros
               );
             }else{
+              
               this.crearPreviewReciboIngresoPanelCobro(
                 this.multipleSelectionProduccionCobros
               );
@@ -1082,7 +1084,7 @@ export default {
 
     if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
       this.crearPreviewReciboIngresoPanelCobroUAmbatena([]);
-    } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita") {
+    } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r") {
       this.crearPreviewReciboIngresoPanelCobroModelo3([]);
     } else {
       this.crearPreviewReciboIngresoPanelCobro([]);
