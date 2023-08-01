@@ -18,13 +18,19 @@
                         </el-select>
 
 
-                        <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
-                            v-model="fechaInicialReportePerjudicado">
-                        </el-date-picker>
+                        <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+                            <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur"
+                                :config="{ allowInput: true }" class="form-controlPersonal datepicker"
+                                v-model="fechaInicialReportePerjudicado">
+                            </flat-picker>
+                        </base-input>
+                        <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+                            <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur"
+                                :config="{ allowInput: true }" class="form-controlPersonal datepicker"
+                                v-model="fechaFinalReportePerjudicado">
+                            </flat-picker>
+                        </base-input>
 
-                        <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
-                            v-model="fechaFinalReportePerjudicado">
-                        </el-date-picker>
 
                     </div>
 
@@ -33,8 +39,17 @@
                             <base-button icon type="primary" size="sm" @click="readPerjudicado()">
                                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
                             </base-button>
+
+                            <base-button size="sm" title="EXPORTAR PDF" v-if="mListaRPerjudicado.length > 0 ? true : false"
+                                type="danger" @click="generatePdf()">
+                                <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
+                            </base-button>
                         </div>
+
+
+
                     </div>
+
                 </card>
 
                 <card class="no-border-card col" style="margin-bottom: 0.5rem"
@@ -67,14 +82,14 @@
                             class="tablePanelControlProduccion" header-row-class-name="thead-dark"
                             height="calc(100vh - 13rem)">
 
-                            <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label"
-                                v-bind="column">
+                            <el-table-column v-for="column in tableColumnsPerjudicado" :key="column.label" v-bind="column">
                             </el-table-column>
 
                             <div slot="empty"></div>
                         </el-table>
                     </div>
                 </card>
+
 
             </div>
 
@@ -141,18 +156,55 @@ export default {
             mListaUnidadesPanelProduccion: [],
             optionsUnidadesPanelProduccion: [],
             itemUnidadPanelProduccion: [],
-            baseURlPDFPanelProduccionMinutosTarjetas: "",
+            base64PDFRPERJUDICADO: "",
             loadingTableUnidadesPanelProduccoionLoading: false,
             modelTiposEvento: [],
             loadingTableUnidadesSalidasPanelBusquedaloading: false,
             mListaRutasSalidasSemanales: [],
             mListaUnidadesSalidasPanelBusqueda: [],
             optionsUnidadesSalidasPanelBusqueda: [],
-            itemUnidadSalidasPanelBusqueda: [],
             mListaGruposPenalidadesSemanales: [],
             itemGruposPenalidadesSemanales: [],
             loadingTableRPerjudicadoBusquedaloading: false,
             mListaRPerjudicado: [],
+            tableColumnsPerjudicado: [
+                {
+                    prop: "CodiVehiSali_m",
+                    label: "Unidad",
+                    minWidth: 100,
+                }, {
+                    prop: "HoraProgSali_d",
+                    label: "Hora",
+                    minWidth: 150,
+                }, {
+                    prop: "CodiVehi_p",
+                    label: "U. Afectada",
+                    minWidth: 110,
+                },
+                {
+                    prop: "FechaPago",
+                    label: "Fecha pago",
+                    minWidth: 150,
+                },
+                {
+                    prop: "FechaDevolucion",
+                    label: "Fecha devuelto",
+                    minWidth: 150,
+                }, {
+                    prop: "AtrasoPenalidad",
+                    label: "Monto",
+                    minWidth: 100,
+                }, {
+                    prop: "descripcion",
+                    label: "Empresa",
+                    minWidth: 150,
+                }, {
+                    prop: "NombApellUsua",
+                    label: "Usuario",
+                    minWidth: 150,
+                },
+
+            ],
         };
     },
     methods: {
@@ -183,8 +235,8 @@ export default {
                 "-" +
                 (day < 10 ? "0" + day : day);
 
-            this.fechaInicialReportePerjudicado = format + " ";
-            this.fechaFinalReportePerjudicado = format + " "
+            this.fechaInicialReportePerjudicado = format;
+            this.fechaFinalReportePerjudicado = format;
         },
         async readUnidadesTableroProduccionPerjudicado() {
             this.mListaUnidadesPanelProduccion = []
@@ -243,22 +295,267 @@ export default {
                 this.mListaGruposPenalidadesSemanales.push(...datos.data.data);
             }
         },
-        async readRPErjudicado() {
+        async readPerjudicado() {
             this.mListaRPerjudicado = [];
             this.loadingTableRPerjudicadoBusquedaloading = true;
             try {
+                var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionReportePerjudicadosDevueltos",
+                    {
+                        token: this.token,
+                        unidades:
+                            this.itemUnidadPanelProduccion.length > 0
+                                ? this.itemUnidadPanelProduccion
+                                : "*",
+                        fechaI: this.fechaInicialReportePerjudicado,
+                        fechaF: this.fechaFinalReportePerjudicado,
+                        rutas:
+                            this.modelTiposEvento.length <= 0 ? "*" : this.modelTiposEvento,
+                        grupos:
+                            this.itemGruposPenalidadesSemanales.length <= 0
+                                ? "*"
+                                : this.itemGruposPenalidadesSemanales,
+                    },
+                    {
+                        timeout: 600000,
+                    });
 
+                console.log("Aca datos todos ......", datos.data.datos);
+                console.log("Aca datos Unidades ......", this.itemUnidadPanelProduccion);
+                console.log("Aca datos Rutasssss ......", this.modelTiposEvento);
+                console.log("Aca datos Grupossss ......", this.itemGruposPenalidadesSemanales);
+                this.loadingTableRPerjudicadoBusquedaloading = false;
+                if (datos.data.status_code == 200) {
+                    this.mListaRPerjudicado.push(...datos.data.datos);
+                } else {
+                    Notification.info({
+                        title: "Reporte Perjudicados Devueltos",
+                        message: datos.data.msm,
+                    });
+                }
             }
             catch (error) {
                 Notification.error({
-                    title: "Reporte Eventos Dispositivos",
+                    title: "Reporte Perjudicados Devueltos",
                     message: error.toString(),
                 });
                 console.log(error);
             }
-            this.loadingTableRPerjudicadoBusquedaloading = true;
+            this.loadingTableRPerjudicadoBusquedaloading = false;
 
         },
+        generatePdf() {
+            var empresa = [
+                {
+                    text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+                    fontSize: 12,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var tipoReporte = [
+                {
+                    text: "REPORTE DE LA RUTA : " + (this.modelTiposEvento.length === 0 ? "TODAS LAS RUTAS" : this.modelTiposEvento.toString()),
+                    fontSize: 12,
+                    alignment: "left",
+                    bold: true,
+                },
+
+            ];
+            var desde_hasta = [
+                {
+                    text:
+                        "Del : " +
+                        this.fechaInicialReportePerjudicado +
+                        " Hasta " +
+                        this.fechaFinalReportePerjudicado,
+                    fontSize: 12,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var resultadoString = [
+                [
+                    {
+                        text: "Unidad",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Hora",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "U. Afectada",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Fecha pago",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Fecha Devolucion",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Monto",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Empresa",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Usuario",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                ],
+            ];
+
+            for (var i = 0; i < this.mListaRPerjudicado.length; i++) {
+                var arrys = [
+                    {
+                        text: this.mListaRPerjudicado[i].CodiVehiSali_m,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRPerjudicado[i].HoraProgSali_d,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRPerjudicado[i].CodiVehi_p,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRPerjudicado[i].FechaPago,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRPerjudicado[i].FechaDevolucion,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRPerjudicado[i].AtrasoPenalidad,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRPerjudicado[i].descripcion,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRPerjudicado[i].NombApellUsua,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+
+                ];
+                resultadoString.push(arrys);
+
+            }
+            var docDefinition = {
+                pageSize: "A4",
+                pageOrientation: "landscape",
+                pageMargins: [30, 80, 40, 30],
+                header: {
+                    margin: 15,
+                    columns: [
+                        {
+                            image: getBase64LogoReportes(this.$cookies.get("empresa")),
+                            width: 100,
+                            height: 50,
+                            margin: [30, 0, 0, 0],
+                        },
+                        {
+                            layout: "noBorders",
+                            table: {
+                                widths: ["*"],
+                                body: [
+                                    [
+                                        {
+                                            text: "REPORTE PERJUDICADOS COBRADOS",
+                                            alignment: "center",
+                                            fontSize: 16,
+                                            bold: true,
+                                        },
+                                    ],
+                                    [
+                                        {
+                                            text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                                            alignment: "center",
+                                            fontSize: 8,
+                                        },
+                                    ],
+                                    [
+                                        {
+                                            text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                                            alignment: "center",
+                                            fontSize: 8,
+                                        },
+                                    ],
+                                ],
+                            },
+                        },
+                    ],
+                },
+                content: [
+                    {
+                        layout: "noBorders",
+                        table: {
+                            headerRows: 0,
+                            widths: [450, 450, 450],
+                            body: [empresa, tipoReporte, desde_hasta],
+                        },
+                    },
+                    {
+                        table: {
+                            headerRows: 0,
+                            widths: [40, 80, 60, 80, 80, 50, 90, 60],
+                            body: resultadoString,
+                        },
+                    },
+                ],
+            };
+
+            pdfMake.createPdf(docDefinition).download("RPD_" + Date.now());
+
+        }
     },
     mounted() {
         this.readGruposActivosPenalidadesSemanales();
