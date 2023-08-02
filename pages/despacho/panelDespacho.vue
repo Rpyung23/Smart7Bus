@@ -864,12 +864,8 @@ export default {
             tipo: "*",
           }
         );
-
-        //console.log(datos.data.datos)
         this.mListDespachosPanel.push(...datos.data.datos);
         this.mListDespachosPanelAuxiliar = this.mListDespachosPanel
-        console.log("--///////////////-/")
-        console.log(this.mListDespachosPanelAuxiliar)
         this.$refs.myGridDespachoPanel.beginupdate();
         this.columnsInfo = [];
         this.columnsInfo[0] = {
