@@ -2,39 +2,71 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelecMinutosTarjetas"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardTextoRPagosMinutosTarjetas">
-
-
-            <el-select v-model="itemUnidadPanelProduccion" multiple filterable style="margin-right: 0.5rem" remote
-              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
-              :loading="loadingTableUnidadesPanelProduccoionLoading">
-              <el-option v-for="item in optionsUnidadesPanelProduccion" :key="item.CodiVehi" :label="item.CodiVehi"
-                :value="item.CodiVehi">
+            <el-select
+              v-model="itemUnidadPanelProduccion"
+              multiple
+              filterable
+              style="margin-right: 0.5rem"
+              remote
+              placeholder="Ingrese unidad"
+              :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
+              :loading="loadingTableUnidadesPanelProduccoionLoading"
+            >
+              <el-option
+                v-for="item in optionsUnidadesPanelProduccion"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
               </el-option>
             </el-select>
 
-            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
-              v-model="fechaInicialReporteMinutosTarjetas">
+            <el-date-picker
+              type="date"
+              placeholder="Select date and time"
+              style="margin-right: 0.5rem"
+              v-model="fechaInicialReporteMinutosTarjetas"
+            >
             </el-date-picker>
 
-            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
-              v-model="fechaFinalReporteMinutosTarjetas">
+            <el-date-picker
+              type="date"
+              placeholder="Select date and time"
+              style="margin-right: 0.5rem"
+              v-model="fechaFinalReporteMinutosTarjetas"
+            >
             </el-date-picker>
 
-
-            <el-checkbox style="margin-bottom: 0 !important;" v-model="checkedPEN">PENDIENTE</el-checkbox>
-            <el-checkbox style="margin-bottom: 0 !important;" v-model="checkedPAG">PAGADOS</el-checkbox>
-
+            <el-checkbox
+              style="margin-bottom: 0 !important"
+              v-model="checkedPEN"
+              >PENDIENTE</el-checkbox
+            >
+            <el-checkbox
+              style="margin-bottom: 0 !important"
+              v-model="checkedPAG"
+              >PAGADOS</el-checkbox
+            >
           </div>
 
           <div class="cardSelecMinutosTarjetas">
             <div class="buttonsAdicionalesRMinutosTarjeta">
-              <base-button icon type="primary" size="sm" @click="readMinutosTarjetas()">
-                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              <base-button
+                icon
+                type="primary"
+                size="sm"
+                @click="readMinutosTarjetas()"
+              >
+                <span class="btn-inner--icon"
+                  ><i class="el-icon-search"></i
+                ></span>
               </base-button>
             </div>
           </div>
@@ -55,25 +87,28 @@
           </div>
         </card>-->
 
-        <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
-          <embed id="iframeContainerrMinutosTarjetas" :src="oBase64IndicadoresCalidad" type="application/pdf" width="100%"
-            height="100%" />
+        <card
+          class="no-border-card"
+          style="margin-bottom: 0rem"
+          body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1"
+          footer-classes="pb-2"
+        >
+          <embed
+            id="iframeContainerrMinutosTarjetas"
+            type="application/pdf"
+            width="100%"
+            height="100%"
+          />
         </card>
-
-
-
-
       </div>
     </base-header>
   </div>
 </template>
 <script>
-
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-import { PDFDocument, StandardFonts, rgb, PageSizes } from 'pdf-lib'
-import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
+import { PDFDocument, StandardFonts, rgb, PageSizes } from "pdf-lib";
+import { getFecha_dd_mm_yyyy, FechaStringToHour } from "../../util/fechas";
 
 import {
   Table,
@@ -86,18 +121,18 @@ import {
   Radio,
   Notification,
   Button,
-  Checkbox
+  Checkbox,
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
-import swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.css';
+import swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.css";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getBase64LogoReportes } from "../../util/logoReport";
-import *  as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import { text } from "d3";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -121,7 +156,7 @@ export default {
     [Autocomplete.name]: Autocomplete,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
-    [Checkbox.name]: Checkbox
+    [Checkbox.name]: Checkbox,
   },
   data() {
     return {
@@ -134,11 +169,10 @@ export default {
       baseURlPDFPanelProduccionMinutosTarjetas: "",
       loadingTableUnidadesPanelProduccoionLoading: false,
       checkedPEN: false,
-      checkedPAG: false
+      checkedPAG: false,
     };
   },
   methods: {
-
     remoteMethodUnidadesPanelProduccionJustificacion(query) {
       if (query !== "") {
         this.loadingTableUnidadesPanelProduccoionLoading = true;
@@ -168,20 +202,19 @@ export default {
         (day < 10 ? "0" + day : day);
 
       this.fechaInicialReporteMinutosTarjetas = format + " ";
-      this.fechaFinalReporteMinutosTarjetas = format + " "
+      this.fechaFinalReporteMinutosTarjetas = format + " ";
     },
     selectionChange(selectedRows) {
       this.selectedRows = selectedRows;
     },
     async readUnidadesTableroProduccion() {
-      this.mListaUnidadesPanelProduccion = []
+      this.mListaUnidadesPanelProduccion = [];
       try {
         var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
-          token: this.token
-        })
+          token: this.token,
+        });
 
         if (datos.data.status_code == 200) {
-
           for (var i = 0; i < datos.data.data.length; i++) {
             var obj = datos.data.data[i];
             obj.value = obj.CodiVehi;
@@ -189,11 +222,11 @@ export default {
           }
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
     async readMinutosTarjetas() {
-      let iframe = document.getElementById('iframeContainerrMinutosTarjetas');
+      let iframe = document.getElementById("iframeContainerrMinutosTarjetas");
       iframe.src = "";
 
       swal.fire({
@@ -210,33 +243,57 @@ export default {
                     rgba(0, 0, 0, 0.5)
                     left top
                     no-repeat
-                  `
+                  `,
       });
 
-      this.oBase64IndicadoresCalidad = ""
+      this.oBase64IndicadoresCalidad = "";
 
       try {
-        var datos = await this.$axios.post(process.env.baseUrl + "/ProduccionMinutosTarjetas", {
-          token: this.token,
-          fechaI: getFecha_dd_mm_yyyy(this.fechaInicialReporteMinutosTarjetas),
-          fechaF: getFecha_dd_mm_yyyy(this.fechaFinalReporteMinutosTarjetas),
-          unidades: this.itemUnidadPanelProduccion.length > 0 ? this.itemUnidadPanelProduccion : '*',
-          nameEmpresa: this.$cookies.get('nameEmpresa'),
-          tipo: (this.checkedPEN && this.checkedPAG) ? 3 : (!this.checkedPEN && !this.checkedPAG) ? 3 : (this.checkedPAG) ? 1 : (this.checkedPEN) ? 0 : 0
-        }, {
-          'Content-Type': 'application/json'
-        })
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/ProduccionMinutosTarjetas",
+          {
+            token: this.token,
+            fechaI: getFecha_dd_mm_yyyy(
+              this.fechaInicialReporteMinutosTarjetas
+            ),
+            fechaF: getFecha_dd_mm_yyyy(this.fechaFinalReporteMinutosTarjetas),
+            unidades:
+              this.itemUnidadPanelProduccion.length > 0
+                ? this.itemUnidadPanelProduccion
+                : "*",
+            nameEmpresa: this.$cookies.get("nameEmpresa"),
+            tipo:
+              this.checkedPEN && this.checkedPAG
+                ? 3
+                : !this.checkedPEN && !this.checkedPAG
+                ? 3
+                : this.checkedPAG
+                ? 1
+                : this.checkedPEN
+                ? 0
+                : 0,
+          },
+          {
+            "Content-Type": "application/json",
+          }
+        );
 
-        console.log('Datos .==================..', datos)
+        console.log("Datos .==================..", datos);
 
         if (datos.data.status_code == 200) {
-          console.log(datos.data.datos)
-          console.log('Agrego Reportes de Minutos Tarjetas  .........');
+          console.log(datos.data.datos);
+          console.log("Agrego Reportes de Minutos Tarjetas  .........");
           //this.baseURlPDFPanelProduccionMinutosTarjetas = "data:application/pdf;base64," + datos.data.datos
-          this.generatePdf(datos.data.datos)
+          this.generatePdf(datos.data.datos);
+        } else{
+          Notification.info({
+            title: "MINUTOS Y TARJETAS",
+            message: datos.data.msm,
+            duration: 2500,
+          });
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
         Notification.error({
           title: "ERROR",
           message: error.toString(),
@@ -244,209 +301,346 @@ export default {
         });
       }
 
-      swal.close()
+      swal.close();
     },
 
     generatePdf(datos) {
-
       const convertSecondtoTimeString = (seconds) => {
         var hour = Math.floor(seconds / 3600);
-        hour = (hour < 10) ? '0' + hour : hour;
+        hour = hour < 10 ? "0" + hour : hour;
         var minute = Math.floor((seconds / 60) % 60);
-        minute = (minute < 10) ? '0' + minute : minute;
+        minute = minute < 10 ? "0" + minute : minute;
         var second = seconds % 60;
-        second = (second < 10) ? '0' + second : second;
-        return hour + ':' + minute + ':' + second;
-      }
+        second = second < 10 ? "0" + second : second;
+        return hour + ":" + minute + ":" + second;
+      };
 
       const componenteHeader = (uni, fechas, linea, sali) => {
-        var unidad =
-        {
-          text: [{ text: `UNIDAD N: ${uni}`, fontSize: 10 }]
+        var unidad = {
+          text: [{ text: `UNIDAD N: ${uni}`, fontSize: 10 }],
         };
-        var periodo =
-        {
-          text: [
-            { text: fechas, fontSize: 10 },
-
-          ], colSpan: 2,
+        var periodo = {
+          text: [{ text: fechas, fontSize: 10 }],
+          colSpan: 2,
         };
         var desRuta = {
-          text: [
-            { text: linea, fontSize: 10, }
-          ],
-        }
+          text: [{ text: linea, fontSize: 10 }],
+        };
         var salida = {
-          text: [
-            { text: `Salida # ${sali}`, fontSize: 10, }
-          ],
-        }
+          text: [{ text: `Salida # ${sali}`, fontSize: 10 }],
+        };
         return {
           layout: "noBorders",
           table: {
             headerRows: 0,
             widths: ["*", "*", "*", "*", "*"],
-            body: [
-              [unidad, periodo, {}, desRuta, salida]
-            ]
-          }
-
-        }
-
-      }
+            body: [[unidad, periodo, {}, desRuta, salida]],
+          },
+        };
+      };
       const componenteFilaUnidad = (minutos) => {
-        const fila = []
-        minutos.forEach(min => {
-          fila.push([{ text: min.DescripcionControl, alignment: 'center', style: 'tableRow' }, { text: min.HoraProgSali_d, alignment: 'center', style: 'tableRow' },
-          { text: min.HoraMarcSali_d, alignment: 'center', style: 'tableRow' }, { text: min.AtrasoFTiempo === '00:00:00' ? '' : min.AtrasoFTiempo, alignment: 'center', style: 'tableRow' },
-          { text: min.AdelantoFTiempo === '00:00:00' ? '' : min.AdelantoFTiempo, alignment: 'center', style: 'tableRow' }, { text: min.AtrasoJTiempo === '00:00:00' ? '' : min.AtrasoJTiempo, alignment: 'center', style: 'tableRow' },
-          { text: min.AdelantoJTiempo === '00:00:00' ? '' : min.AdelantoJTiempo, alignment: 'center', style: 'tableRow' }, { text: min.RubroPenalidad === '0.00' ? '' : min.RubroPenalidad, alignment: 'center', style: 'tableRow' },
-          { text: min.VelocidadPenalidad === '0.00' ? '' : min.VelocidadPenalidad, alignment: 'center', style: 'tableRow' }])
-        })
+        const fila = [];
+        minutos.forEach((min) => {
+          fila.push([
+            {
+              text: min.DescripcionControl,
+              alignment: "center",
+              style: "tableRow",
+            },
+            {
+              text: min.HoraProgSali_d,
+              alignment: "center",
+              style: "tableRow",
+            },
+            {
+              text: min.HoraMarcSali_d,
+              alignment: "center",
+              style: "tableRow",
+            },
+            {
+              text: min.AtrasoFTiempo === "00:00:00" ? "" : min.AtrasoFTiempo,
+              alignment: "center",
+              style: "tableRow",
+            },
+            {
+              text:
+                min.AdelantoFTiempo === "00:00:00" ? "" : min.AdelantoFTiempo,
+              alignment: "center",
+              style: "tableRow",
+            },
+            {
+              text: min.AtrasoJTiempo === "00:00:00" ? "" : min.AtrasoJTiempo,
+              alignment: "center",
+              style: "tableRow",
+            },
+            {
+              text:
+                min.AdelantoJTiempo === "00:00:00" ? "" : min.AdelantoJTiempo,
+              alignment: "center",
+              style: "tableRow",
+            },
+            {
+              text: min.RubroPenalidad === "0.00" ? "" : min.RubroPenalidad,
+              alignment: "center",
+              style: "tableRow",
+            },
+            {
+              text:
+                min.VelocidadPenalidad === "0.00" ? "" : min.VelocidadPenalidad,
+              alignment: "center",
+              style: "tableRow",
+            },
+          ]);
+        });
         return fila;
-      }
+      };
 
       const componenteTablaUnidad = (salida) => {
-        const body = []
+        const body = [];
         //Cabecera linea 1
-        body.push([{ text: 'Descipcion Control', style: 'tableHeader', alignment: 'center', rowSpan: 2, },
-        { text: 'Control', style: 'tableHeader', colSpan: 2, alignment: 'center' }, {},
-        { text: 'Faltas', style: 'tableHeader', colSpan: 2, alignment: 'center' }, {},
-        { text: 'Justificaciones', style: 'tableHeader', colSpan: 2 }, {},
-        { text: 'Rubros', style: 'tableHeader', alignment: 'center', rowSpan: 2 },
-        { text: 'Veloc', style: 'tableHeader', alignment: 'center', rowSpan: 2 }])
+        body.push([
+          {
+            text: "Descipcion Control",
+            style: "tableHeader",
+            alignment: "center",
+            rowSpan: 2,
+          },
+          {
+            text: "Control",
+            style: "tableHeader",
+            colSpan: 2,
+            alignment: "center",
+          },
+          {},
+          {
+            text: "Faltas",
+            style: "tableHeader",
+            colSpan: 2,
+            alignment: "center",
+          },
+          {},
+          { text: "Justificaciones", style: "tableHeader", colSpan: 2 },
+          {},
+          {
+            text: "Rubros",
+            style: "tableHeader",
+            alignment: "center",
+            rowSpan: 2,
+          },
+          {
+            text: "Veloc",
+            style: "tableHeader",
+            alignment: "center",
+            rowSpan: 2,
+          },
+        ]);
         //Cabecera linea 2
-        body.push(['', { text: 'Timbrar', style: 'tableHeader', alignment: 'center' },
-          { text: 'Llegó', style: 'tableHeader', alignment: 'center' },
-          { text: 'Atraso', style: 'tableHeader', alignment: 'center' },
-          { text: 'Adelanto', style: 'tableHeader', alignment: 'center' },
-          { text: 'Atraso', style: 'tableHeader', alignment: 'center' },
-          { text: 'Adelanto', style: 'tableHeader', alignment: 'center' }, '', ''])
+        body.push([
+          "",
+          { text: "Timbrar", style: "tableHeader", alignment: "center" },
+          { text: "Llegó", style: "tableHeader", alignment: "center" },
+          { text: "Atraso", style: "tableHeader", alignment: "center" },
+          { text: "Adelanto", style: "tableHeader", alignment: "center" },
+          { text: "Atraso", style: "tableHeader", alignment: "center" },
+          { text: "Adelanto", style: "tableHeader", alignment: "center" },
+          "",
+          "",
+        ]);
         //Datos
-        body.push(...componenteFilaUnidad(salida.minutos))
+        body.push(...componenteFilaUnidad(salida.minutos));
 
         return {
           table: {
             headerRows: 2,
-            widths: ['*', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
-            body: body
-          }, margin: [0, 0, 0, 10]
-
+            widths: [
+              "*",
+              "auto",
+              "auto",
+              "auto",
+              "auto",
+              "auto",
+              "auto",
+              "auto",
+              "auto",
+            ],
+            body: body,
+          },
+          margin: [0, 0, 0, 10],
         };
-      }
+      };
 
       const componenteSeparadorTabla = () => {
         return {
-          text: '.'.repeat(166), margin: [0, 10, 0, 15]
+          text: ".".repeat(166),
+          margin: [0, 10, 0, 15],
         };
-      }
+      };
 
       const componenteAnotaciones = (anotaciones) => {
-        const listaAnotaciones = []
+        const listaAnotaciones = [];
         const titulo = {
-          text: anotaciones.length > 0 ? 'ANOTACIONES : ' : 'NO EXISTEN ANOTACIONES.', style: 'TableHeader0', bold: true, margin: [0, 10, 0, 20],
-        }
-        listaAnotaciones.push(titulo)
-        anotaciones.forEach(anotacion => {
-          listaAnotaciones.push({
-            text: anotacion, style: 'tableRow',
-          })
-        })
-        return listaAnotaciones
-
-      }
-
-      const componenteDatosCabezera = (atraso, adelanto, atrasoj, adelantoj, rubrosd, velofd, tarjetad, atrasod, adelantosd, totald) => {
-        var Atraso =
-        {
-          text: [{ text: `ATRASO : ${atraso}`, fontSize: 9 }], colSpan: 2,
+          text:
+            anotaciones.length > 0
+              ? "ANOTACIONES : "
+              : "NO EXISTEN ANOTACIONES.",
+          style: "TableHeader0",
+          bold: true,
+          margin: [0, 10, 0, 20],
         };
-        var Adelanto =
-        {
-          text: [{ text: `ADELANTO : ${adelanto}`, fontSize: 9 }], colSpan: 2,
+        listaAnotaciones.push(titulo);
+        anotaciones.forEach((anotacion) => {
+          listaAnotaciones.push({
+            text: anotacion,
+            style: "tableRow",
+          });
+        });
+        return listaAnotaciones;
+      };
+
+      const componenteDatosCabezera = (
+        atraso,
+        adelanto,
+        atrasoj,
+        adelantoj,
+        rubrosd,
+        velofd,
+        tarjetad,
+        atrasod,
+        adelantosd,
+        totald
+      ) => {
+        var Atraso = {
+          text: [{ text: `ATRASO : ${atraso}`, fontSize: 9 }],
+          colSpan: 2,
+        };
+        var Adelanto = {
+          text: [{ text: `ADELANTO : ${adelanto}`, fontSize: 9 }],
+          colSpan: 2,
         };
         var AtrasosJustificado = {
-          text: [{ text: `ATRASO JUSTI : ${atrasoj}`, fontSize: 9 }], colSpan: 2,
-        }
+          text: [{ text: `ATRASO JUSTI : ${atrasoj}`, fontSize: 9 }],
+          colSpan: 2,
+        };
         var AdelantoJustificado = {
-          text: [{ text: `ADELANTO JUSTI : ${adelantoj}`, fontSize: 9 }], colSpan: 2,
-        }
+          text: [{ text: `ADELANTO JUSTI : ${adelantoj}`, fontSize: 9 }],
+          colSpan: 2,
+        };
         var Rubros = {
-          text: [{ text: `RUBROS ($) : ${rubrosd}`, fontSize: 9 }], colSpan: 2,
-        }
+          text: [{ text: `RUBROS ($) : ${rubrosd}`, fontSize: 9 }],
+          colSpan: 2,
+        };
         var VelocidadFD = {
-          text: [{ text: `F.VELOCIDAD ($) : ${velofd}`, fontSize: 9 }], colSpan: 2,
-        }
+          text: [{ text: `F.VELOCIDAD ($) : ${velofd}`, fontSize: 9 }],
+          colSpan: 2,
+        };
         var Tarjeta = {
-          text: [{ text: `TARJETA ($) : ${tarjetad}`, fontSize: 9 }], colSpan: 2,
-        }
+          text: [{ text: `TARJETA ($) : ${tarjetad}`, fontSize: 9 }],
+          colSpan: 2,
+        };
         var AtrasoD = {
-          text: [{ text: `ATRASOS ($) : ${atrasod}`, fontSize: 9 }], colSpan: 2,
-        }
+          text: [{ text: `ATRASOS ($) : ${atrasod}`, fontSize: 9 }],
+          colSpan: 2,
+        };
         var AdelantoD = {
-          text: [{ text: `ADELANTOS ($) : ${adelantosd}`, fontSize: 9 }], colSpan: 2,
-        }
+          text: [{ text: `ADELANTOS ($) : ${adelantosd}`, fontSize: 9 }],
+          colSpan: 2,
+        };
         var TotalD = {
-          text: [{ text: `TOTAL ($) : ${totald}`, fontSize: 16, bold: true }], colSpan: 2, margin: [0, 0, 0, 20]
-        }
+          text: [{ text: `TOTAL ($) : ${totald}`, fontSize: 16, bold: true }],
+          colSpan: 2,
+          margin: [0, 0, 0, 20],
+        };
         return {
           layout: "noBorders",
           table: {
             headerRows: 0,
             widths: ["*", "*", "*", "*", "*", "*", "*", "*"],
             body: [
-              [Atraso, {}, Adelanto, {}, AtrasosJustificado, {}, AdelantoJustificado, {}],
+              [
+                Atraso,
+                {},
+                Adelanto,
+                {},
+                AtrasosJustificado,
+                {},
+                AdelantoJustificado,
+                {},
+              ],
               [Rubros, {}, VelocidadFD, {}, Tarjeta, {}, AtrasoD, {}],
               [AdelantoD, {}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, TotalD, {}, {}, {}],
-            ]
-          }
-
-        }
-
-      }
+            ],
+          },
+        };
+      };
 
       const componenteTablaFinal = (datos, deudas) => {
-        const header = []
-        header.push([{ text: 'Descipcion Ruta', style: 'tableHeader', alignment: 'center', colSpan: 2 }, {},
-        { text: 'Fecha', style: 'tableHeader', alignment: 'center' }, { text: 'Min. Generados ', style: 'tableHeader', alignment: 'center' },
-        { text: 'Min. Justificados', style: 'tableHeader' }, { text: 'Deuda Total', style: 'tableHeader' }
+        const header = [];
+        header.push([
+          {
+            text: "Descipcion Ruta",
+            style: "tableHeader",
+            alignment: "center",
+            colSpan: 2,
+          },
+          {},
+          { text: "Fecha", style: "tableHeader", alignment: "center" },
+          {
+            text: "Min. Generados ",
+            style: "tableHeader",
+            alignment: "center",
+          },
+          { text: "Min. Justificados", style: "tableHeader" },
+          { text: "Deuda Total", style: "tableHeader" },
         ]);
 
         datos.forEach((dato) => {
           header.push([
-            { text: dato.linea, alignment: 'center', style: 'tableRow', colSpan: 2 }, {},
-            { text: dato.fecha, alignment: 'center', style: 'tableRow' },
-            { text: dato.minG, alignment: 'center', style: 'tableRow' },
-            { text: dato.minJ, alignment: 'center', style: 'tableRow' },
-            { text: dato.deuda, alignment: 'center', style: 'tableRow' }])
-        })
-        header.push([{ text: '', border: [false, true, false, false] },
-        { text: '', border: [false, true, false, false] },
-        { text: '', border: [false, true, false, false] },
-        { text: '', border: [false, true, true, false] },
-        { text: 'TOTAL', alignment: 'center', style: 'tableFinal' },
-        { text: deudas, alignment: 'center', style: 'tableFinal' }])
+            {
+              text: dato.linea,
+              alignment: "center",
+              style: "tableRow",
+              colSpan: 2,
+            },
+            {},
+            { text: dato.fecha, alignment: "center", style: "tableRow" },
+            { text: dato.minG, alignment: "center", style: "tableRow" },
+            { text: dato.minJ, alignment: "center", style: "tableRow" },
+            { text: dato.deuda, alignment: "center", style: "tableRow" },
+          ]);
+        });
+        header.push([
+          { text: "", border: [false, true, false, false] },
+          { text: "", border: [false, true, false, false] },
+          { text: "", border: [false, true, false, false] },
+          { text: "", border: [false, true, true, false] },
+          { text: "TOTAL", alignment: "center", style: "tableFinal" },
+          { text: deudas, alignment: "center", style: "tableFinal" },
+        ]);
         return {
           table: {
-            widths: ['*', '*', '*', '*', '*', '*'],
-            body: header
-          }
-        }
-
-      }
-
-
+            widths: ["*", "*", "*", "*", "*", "*"],
+            body: header,
+          },
+        };
+      };
 
       const componenteContenido = (datos) => {
-        var listaanotaciones = []
-        const contenido = []
-        const tablaFinal = {}
+        var listaanotaciones = [];
+        const contenido = [];
+        const tablaFinal = {};
 
-        datos.forEach(unidad => {
+        datos.forEach((unidad) => {
           unidad.salidas.forEach((salida, index) => {
-            contenido.push(componenteHeader(unidad.unidad, salida.fechas, salida.linea, salida.salida))
-            contenido.push(componenteTablaUnidad(salida))
+            contenido.push(
+              componenteHeader(
+                unidad.unidad,
+                salida.fechas,
+                salida.linea,
+                salida.salida
+              )
+            );
+            contenido.push(componenteTablaUnidad(salida));
             //Key == PAGUCHI-2023-07-03
             const clave = `${salida.linea}-${salida.fechas.substring(0, 10)}`;
             if (!tablaFinal[clave]) {
@@ -456,31 +650,46 @@ export default {
                 minG: convertSecondtoTimeString(salida.AtrasoFTiempoCabezera),
                 minJ: convertSecondtoTimeString(salida.AtrasoJTiempoCabezera),
                 deuda: salida.DeudaTotal,
-              }
+              };
             }
             if (salida.anotaciones.length > 0) {
-              listaanotaciones.push(...salida.anotaciones)
+              listaanotaciones.push(...salida.anotaciones);
             }
             if (unidad.salidas[index + 1]) {
-              if (salida.fechas.substring(8, 10) !== unidad.salidas[index + 1].fechas.substring(8, 10)) {
-                contenido.push(componenteSeparadorTabla())
+              if (
+                salida.fechas.substring(8, 10) !==
+                unidad.salidas[index + 1].fechas.substring(8, 10)
+              ) {
+                contenido.push(componenteSeparadorTabla());
               }
             }
-          })
-          contenido.push(...componenteAnotaciones(listaanotaciones))
-          contenido.push(componenteDatosCabezera(unidad.AtrasoFTiempoCabezera, unidad.AdelantoFTiempoCabezera,
-            unidad.AtrasoJTiempoCabezera, unidad.AdelantoJTiempoCabezera, unidad.RubroPenalidadCabezera,
-            unidad.VelocidadPenalidadCabezera, unidad.TarjetaDiariaCabezera, unidad.AtrasoPenalidadCabezera,
-            unidad.AdelantoPenalidadCabezera, unidad.DeudaTotalCabezera))
-          contenido.push(componenteTablaFinal(Object.values(tablaFinal), unidad.DeudaTotalCabezera))
-          contenido.push(componenteSeparadorTabla())
-
+          });
+          contenido.push(...componenteAnotaciones(listaanotaciones));
+          contenido.push(
+            componenteDatosCabezera(
+              unidad.AtrasoFTiempoCabezera,
+              unidad.AdelantoFTiempoCabezera,
+              unidad.AtrasoJTiempoCabezera,
+              unidad.AdelantoJTiempoCabezera,
+              unidad.RubroPenalidadCabezera,
+              unidad.VelocidadPenalidadCabezera,
+              unidad.TarjetaDiariaCabezera,
+              unidad.AtrasoPenalidadCabezera,
+              unidad.AdelantoPenalidadCabezera,
+              unidad.DeudaTotalCabezera
+            )
+          );
+          contenido.push(
+            componenteTablaFinal(
+              Object.values(tablaFinal),
+              unidad.DeudaTotalCabezera
+            )
+          );
+          contenido.push(componenteSeparadorTabla());
         });
 
         return contenido;
-      }
-
-
+      };
 
       var docDefinition = {
         pageSize: "A4",
@@ -511,14 +720,11 @@ export default {
                   [
                     {
                       text: this.$cookies.get("nameEmpresa"),
-                      alignment: 'center',
+                      alignment: "center",
                       fontSize: 16,
                       bold: true,
                     },
                   ],
-
-
-
                 ],
               },
             },
@@ -530,35 +736,32 @@ export default {
           tableHeader: {
             bold: true,
             fontSize: 10,
-            color: 'black'
+            color: "black",
           },
           tableRow: {
             fontSize: 9,
-            color: 'black'
+            color: "black",
           },
           tableFinal: {
             fontSize: 16,
-            color: 'green',
-            bold: true
-          }
+            color: "green",
+            bold: true,
+          },
         },
       };
 
-      var pdfDocGenerator = pdfMake.createPdf(docDefinition)
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
       pdfDocGenerator.getBlob((blob) => {
-        var pdfUrl = URL.createObjectURL(blob)
-        let iframe = document.getElementById('iframeContainerrMinutosTarjetas');
+        var pdfUrl = URL.createObjectURL(blob);
+        let iframe = document.getElementById("iframeContainerrMinutosTarjetas");
         iframe.src = pdfUrl;
       });
-
-    }
-
-  }, mounted() {
-    this.readUnidadesTableroProduccion()
-    this.initFechaActualProduccionMinutosTarjetas()
-  }
-
-
+    },
+  },
+  mounted() {
+    this.readUnidadesTableroProduccion();
+    this.initFechaActualProduccionMinutosTarjetas();
+  },
 };
 </script>
 <style>
@@ -589,8 +792,6 @@ export default {
   transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-
-
 .cardTextoRPagosMinutosTarjetas {
   display: flex;
   align-items: center;
@@ -602,7 +803,6 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-
 
 .no-border-card .card-footer {
   border-top: 0;
