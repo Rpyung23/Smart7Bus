@@ -453,11 +453,11 @@ export default {
             if (salida.anotaciones.length > 0) {
               listaanotaciones.push(...salida.anotaciones)
             }
-            if (unidad.salidas[index + 1]) {
+            /* if (unidad.salidas[index + 1]) {
               if (salida.fechas.substring(8, 10) !== unidad.salidas[index + 1].fechas.substring(8, 10)) {
                 contenido.push(componenteSeparadorTabla())
               }
-            }
+            } */
           })
           contenido.push(...componenteAnotaciones(listaanotaciones))
           contenido.push(componenteDatosCabezera(unidad.AtrasoFTiempoCabezera, unidad.AdelantoFTiempoCabezera,
