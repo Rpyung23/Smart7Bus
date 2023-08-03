@@ -371,7 +371,7 @@ export default {
 
       const componenteSeparadorTabla = () => {
         return {
-          text: '.'.repeat(166), margin: [0, 10, 0, 15]
+          text: '.'.repeat(166), margin: [0, 0, 0, 20]
         };
       }
 
@@ -379,7 +379,7 @@ export default {
       const componenteAnotaciones = (anotaciones) => {
         const listaAnotaciones = []
         const titulo = {
-          text: anotaciones.length > 0 ? 'ANOTACIONES : ' : 'NO EXISTEN ANOTACIONES.', style: 'TableHeader0', bold: true, margin: [0, 10, 0, 20],
+          text: anotaciones.length > 0 ? 'ANOTACIONES : ' : 'NO EXISTEN ANOTACIONES.', style: 'TableHeader0', bold: true, margin: [0, 10, 0, 10],
         }
         listaAnotaciones.push(titulo)
         anotaciones.forEach(anotacion => {
@@ -422,7 +422,7 @@ export default {
           text: [{ text: `ADELANTOS ($) : ${adelantosd}`, fontSize: 9 }], colSpan: 2,
         }
         var TotalD = {
-          text: [{ text: `TOTAL ($) : ${totald}`, fontSize: 16, bold: true }], colSpan: 2, margin: [0, 0, 0, 20]
+          text: [{ text: `TOTAL ($) : ${totald}`, fontSize: 16, bold: true }], colSpan: 2, margin: [0, 0, 0, 10]
         }
         return {
           layout: "noBorders",
@@ -442,11 +442,10 @@ export default {
       }
 
       const componenteContenido = (datos) => {
-        var listaanotaciones = []
         const contenido = []
-        const tablaFinal = {}
-
         datos.forEach(unidad => {
+          var listaanotaciones = []
+          const tablaFinal = {}
           unidad.salidas.forEach((salida, index) => {
             contenido.push(componenteHeader(unidad.unidad, salida.fechas, salida.linea, salida.salida, salida.NumeVuelSali_m))
             contenido.push(componenteTablaUnidad(salida))

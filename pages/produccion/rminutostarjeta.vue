@@ -426,7 +426,7 @@ export default {
       const componenteSeparadorTabla = () => {
         return {
           text: ".".repeat(166),
-          margin: [0, 10, 0, 15],
+          margin: [0, 10, 0, 10],
         };
       };
 
@@ -437,15 +437,16 @@ export default {
             anotaciones.length > 0
               ? "ANOTACIONES : "
               : "NO EXISTEN ANOTACIONES.",
-          style: "TableHeader0",
+          style: "TableHeader",
           bold: true,
-          margin: [0, 10, 0, 20],
+          margin: [0, 10, 0, 10],
         };
         listaAnotaciones.push(titulo);
         anotaciones.forEach((anotacion) => {
           listaAnotaciones.push({
             text: anotacion,
             style: "tableRow",
+            margin: [0, 0, 0, 5],
           });
         });
         return listaAnotaciones;
@@ -524,6 +525,7 @@ export default {
               [AdelantoD, {}, {}, {}, {}, {}, {}, {}],
               [{}, {}, {}, {}, TotalD, {}, {}, {}],
             ],
+            margin: [0, 20, 0, 0],
           },
         };
       };
@@ -579,11 +581,10 @@ export default {
       };
 
       const componenteContenido = (datos) => {
-        var listaanotaciones = [];
         const contenido = [];
-
         datos.forEach((unidad) => {
           const tablaFinal = {};
+          var listaanotaciones = [];
           unidad.salidas.forEach((salida, index) => {
             contenido.push(
               componenteHeader(
@@ -676,7 +677,6 @@ export default {
           ],
         },
         content: componenteContenido(datos),
-        //content: componenteAnotaciones(),
         styles: {
           tableHeader: {
             bold: true,
