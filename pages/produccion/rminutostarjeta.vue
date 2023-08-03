@@ -581,7 +581,6 @@ export default {
       const componenteContenido = (datos) => {
         var listaanotaciones = [];
         const contenido = [];
-        
 
         datos.forEach((unidad) => {
           const tablaFinal = {};
@@ -609,16 +608,8 @@ export default {
             if (salida.anotaciones.length > 0) {
               listaanotaciones.push(...salida.anotaciones);
             }
-            if (unidad.salidas[index + 1]) {
-              if (
-                salida.fechas.substring(8, 10) !==
-                unidad.salidas[index + 1].fechas.substring(8, 10)
-              ) {
-                contenido.push(componenteSeparadorTabla());
-              }
-            }
           });
-          
+
           contenido.push(...componenteAnotaciones(listaanotaciones));
           contenido.push(
             componenteDatosCabezera(
@@ -641,7 +632,7 @@ export default {
             )
           );
           contenido.push(componenteSeparadorTabla());
-        }); 
+        });
         return contenido;
       };
 
