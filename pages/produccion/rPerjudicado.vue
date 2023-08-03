@@ -748,4 +748,10 @@ export default {
 .el-table .estadoJustificado {
     background: rgba(140, 248, 126, 0.384) !important;
 }
+
+.cardSelecMinutosTarjetas{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 </style>
