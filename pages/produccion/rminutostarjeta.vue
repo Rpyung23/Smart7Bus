@@ -2,71 +2,34 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelecMinutosTarjetas"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosMinutosTarjetas">
-            <el-select
-              v-model="itemUnidadPanelProduccion"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
-              :loading="loadingTableUnidadesPanelProduccoionLoading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesPanelProduccion"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadPanelProduccion" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
+              :loading="loadingTableUnidadesPanelProduccoionLoading">
+              <el-option v-for="item in optionsUnidadesPanelProduccion" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
-            <el-date-picker
-              type="date"
-              placeholder="Select date and time"
-              style="margin-right: 0.5rem"
-              v-model="fechaInicialReporteMinutosTarjetas"
-            >
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem"
+              v-model="fechaInicialReporteMinutosTarjetas">
             </el-date-picker>
 
-            <el-date-picker
-              type="date"
-              placeholder="Select date and time"
-              style="margin-right: 0.5rem"
-              v-model="fechaFinalReporteMinutosTarjetas"
-            >
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem"
+              v-model="fechaFinalReporteMinutosTarjetas">
             </el-date-picker>
 
-            <el-checkbox
-              style="margin-bottom: 0 !important"
-              v-model="checkedPEN"
-              >PENDIENTE</el-checkbox
-            >
-            <el-checkbox
-              style="margin-bottom: 0 !important"
-              v-model="checkedPAG"
-              >PAGADOS</el-checkbox
-            >
+            <el-checkbox style="margin-bottom: 0 !important" v-model="checkedPEN">PENDIENTE</el-checkbox>
+            <el-checkbox style="margin-bottom: 0 !important" v-model="checkedPAG">PAGADOS</el-checkbox>
           </div>
 
           <div class="cardSelecMinutosTarjetas">
             <div class="buttonsAdicionalesRMinutosTarjeta">
-              <base-button
-                icon
-                type="primary"
-                size="sm"
-                @click="readMinutosTarjetas()"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="el-icon-search"></i
-                ></span>
+              <base-button icon type="primary" size="sm" @click="readMinutosTarjetas()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
             </div>
           </div>
@@ -87,18 +50,9 @@
           </div>
         </card>-->
 
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1"
-          footer-classes="pb-2"
-        >
-          <embed
-            id="iframeContainerrMinutosTarjetas"
-            type="application/pdf"
-            width="100%"
-            height="100%"
-          />
+        <card class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
+          <embed id="iframeContainerrMinutosTarjetas" type="application/pdf" width="100%" height="100%" />
         </card>
       </div>
     </base-header>
@@ -266,12 +220,12 @@ export default {
               this.checkedPEN && this.checkedPAG
                 ? 3
                 : !this.checkedPEN && !this.checkedPAG
-                ? 3
-                : this.checkedPAG
-                ? 1
-                : this.checkedPEN
-                ? 0
-                : 0,
+                  ? 3
+                  : this.checkedPAG
+                    ? 1
+                    : this.checkedPEN
+                      ? 0
+                      : 0,
           },
           {
             "Content-Type": "application/json",
@@ -285,7 +239,7 @@ export default {
           console.log("Agrego Reportes de Minutos Tarjetas  .........");
           //this.baseURlPDFPanelProduccionMinutosTarjetas = "data:application/pdf;base64," + datos.data.datos
           this.generatePdf(datos.data.datos);
-        } else{
+        } else {
           Notification.info({
             title: "MINUTOS Y TARJETAS",
             message: datos.data.msm,
@@ -593,7 +547,6 @@ export default {
           { text: "Min. Justificados", style: "tableHeader" },
           { text: "Deuda Total", style: "tableHeader" },
         ]);
-
         datos.forEach((dato) => {
           header.push([
             {
@@ -628,9 +581,10 @@ export default {
       const componenteContenido = (datos) => {
         var listaanotaciones = [];
         const contenido = [];
-        const tablaFinal = {};
+        
 
         datos.forEach((unidad) => {
+          const tablaFinal = {};
           unidad.salidas.forEach((salida, index) => {
             contenido.push(
               componenteHeader(
@@ -664,6 +618,7 @@ export default {
               }
             }
           });
+          
           contenido.push(...componenteAnotaciones(listaanotaciones));
           contenido.push(
             componenteDatosCabezera(
@@ -686,8 +641,7 @@ export default {
             )
           );
           contenido.push(componenteSeparadorTabla());
-        });
-
+        }); 
         return contenido;
       };
 
