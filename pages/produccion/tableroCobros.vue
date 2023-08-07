@@ -320,6 +320,8 @@ export default {
             this.crearPreviewReciboIngresoPanelCobroUAmbatena(
               this.multipleSelectionProduccionCobros
             );
+          } else if(this.codigoEmpresaTableroCobrosProduccion == "trujamasa"){
+            this.crearPreviewReciboIngresoPanelCobroModelo3(this.multipleSelectionProduccionCobros)
           } else {
             this.crearPreviewReciboIngresoPanelCobro(
               this.multipleSelectionProduccionCobros
@@ -697,6 +699,236 @@ export default {
 
       this.banderaMarcoAguaRecibo = true;
     },
+    async crearPreviewReciboIngresoPanelCobroModelo3(mLista) 
+    {
+      var atrasoFaltaTotal = 0
+      var atrasoJustTotal = 0
+      var dineroTotal = 0
+      var mListaSalidas = []
+
+      var datosSalidas = [];
+      var contentPDF = [];
+      for(var contador = 0;contador<mLista.length;contador++){
+        mListaSalidas.push(mLista[contador].Codigo)
+      }
+      console.log("--------------------")
+      console.log(mListaSalidas)
+
+
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrl +
+            "/ProduccionPreviewDetalleInfoPanelProduccionCobranza",
+          {
+            token: this.token,
+            salidas: mListaSalidas,
+          }
+        );
+        datosSalidas.push(...datos.data.datos);
+      } catch (error) {
+        console.log(error);
+        datosSalidas = [];
+      }
+
+      var empresa = [
+        {
+          text: this.$cookies.get("nameEmpresa").substring(0, 30),
+          fontSize: 12,
+          bold: true,
+          alignment: "center",
+        },
+      ];
+
+      contentPDF.push({
+        headerRows: 0,
+        fontSize: 12,
+        bold: true,
+        layout: "noBorders", // optional
+        table: {
+          widths: ["*"],
+          body: [empresa],
+        },
+      });
+
+      if (datosSalidas.length > 0) {
+
+        for (var i = 0; i < datosSalidas.length; i++) 
+        {
+          console.log(datosSalidas[i])
+          
+
+          var resultadoString = [
+            [
+              { text: "RELOJ", fontSize: 8.5, bold: true, alignment: "center" },
+              { text: "PROG", fontSize: 8.5, bold: true, alignment: "center" },
+              { text: "MARC", fontSize: 8.5, bold: true, alignment: "center" },
+              { text: "FALT", fontSize: 8.5, bold: true, alignment: "center" },
+              { text: "PEN", fontSize: 8.5, bold: true, alignment: "center" },
+            ],
+          ];
+
+          contentPDF.push(
+            {
+              bold: true,
+              fontSize: 9,
+              alignment: "center",
+              layout: "noBorders", // optional
+              table: {
+                headerRows: 0,
+                widths: [35, 75, 25, 22],
+                body: [
+                  [
+                    "Unidad",
+                    "Salida # " + datosSalidas[i].idSali_m,
+                    "Ruta",
+                    "Vue",
+                  ],
+                ],
+              },
+            },
+            {
+              fontSize: 9,
+              alignment: "center",
+              layout: "noBorders", // optional
+              table: {
+                headerRows: 0,
+                widths: [35, 75, 25, 22],
+                body: [
+                  [
+                    datosSalidas[i].CodiVehiSali_m,
+                    datosSalidas[i].HoraSaliProgSali_mF.substring(0, 10),
+                    { text: datosSalidas[i].LetraRutaSali_m, bold: true },
+                    datosSalidas[i].NumeVuelSali_m,
+                  ],
+                ],
+              },
+            },
+            {
+              fontSize: 10,
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [["FREC : " + datosSalidas[i].DescFrec]],
+              },
+            }
+          );
+          
+          for (var j = 0; j < datosSalidas[i].detalle.length; j++) 
+          {
+            dineroTotal =  dineroTotal + parseFloat(datosSalidas[i].detalle[j].AtrasoPenalidadControl)
+
+            atrasoFaltaTotal = atrasoFaltaTotal + datosSalidas[i].detalle[j].AtrasoFNumeroControl
+            atrasoJustTotal = atrasoJustTotal + datosSalidas[i].detalle[j].AtrasoJNumeroControl
+            
+
+            resultadoString.push([
+              {
+                text: datosSalidas[i].detalle[j].DescCtrl.substring(0,8),
+                fontSize: 8.5,
+              },
+              {
+                text: datosSalidas[i].detalle[j].HoraProgSali_d.substring(
+                  0,
+                  5
+                ),
+                fontSize: 8.5,
+                alignment: "center",
+              },
+              {
+                text:
+                datosSalidas[i].detalle[j].HoraMarcSali_d,
+                fontSize: 8.5,
+                alignment: "center",
+              },
+              {
+                text: datosSalidas[i].detalle[j].AtrasoFNumeroControl,
+                fontSize: 8.5,
+                alignment: "center",
+              },
+              {
+                text: datosSalidas[i].detalle[j].AtrasoFPenalidadControl,
+                fontSize: 8.5,
+                alignment: "center",
+              },
+            ]);
+          }
+
+          contentPDF.push({
+            fontSize: 8.5,
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [45, 23, 33, 19, 27],
+
+              body: resultadoString,
+            },
+          },{
+            fontSize: 6,
+            layout: "noBorders", // optional
+            table: {
+              body: [
+                ["."]
+              ],
+            },
+          })
+          
+        }
+      }
+
+      contentPDF.push( { text: "---------------------------------------------------------" },{
+            text:
+              "Fecha de Pago : " +
+              (this.banderaMarcoAguaRecibo
+                ? "RECIBO SIN PAGAR"
+                : this.initFechaActualTicket()),
+            pageOrientation: "portrait",
+            fontSize: 8,
+          },
+          {
+            text: "Fecha Impresion : " + this.initFechaActualTicket(),
+            pageOrientation: "portrait",
+            fontSize: 8,
+          },{
+            text:
+              "Atraso Falta: "+atrasoFaltaTotal,
+            fontSize: 7.5,
+          },
+          {
+            text:
+              "Atraso Just: "+atrasoJustTotal,
+            fontSize: 7.5,
+          },{
+            text:
+              "DINERO TOTAL: "+Number(dineroTotal).toFixed(2),
+            fontSize: 10,
+            bold: true,
+          })
+
+      var docDefinition = {
+        // a string or { width: 190, height: number }
+        pageSize: { width: 220, height: "auto" },
+        watermark: {
+          text: this.banderaMarcoAguaRecibo ? "NO PAGADO" : "",
+          color: "red",
+          opacity: 0.30,
+          bold: true,
+          fontSize: mLista.length > 50 ? 120 : 27,
+        },
+        pageMargins: [15, 15, 15, 15],
+        compress: true,
+        // header: [empresa],
+        content: contentPDF,
+      };
+
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl;
+        this.banderaMarcoAguaRecibo = true;
+      });
+
+      this.banderaMarcoAguaRecibo = true;
+    },
     async realizarCobro() {
       var mListaCobrosAuxiliar = [];
       mListaCobrosAuxiliar.push(...this.multipleSelectionProduccionCobros);
@@ -738,10 +970,15 @@ export default {
               this.crearPreviewReciboIngresoPanelCobroUAmbatena(
                 this.multipleSelectionProduccionCobros
               );
+            } else if(this.codigoEmpresaTableroCobrosProduccion == "trujamasa")
+            {
+              this.crearPreviewReciboIngresoPanelCobroModelo3(
+                this.multipleSelectionProduccionCobros
+              )
             } else {
               this.crearPreviewReciboIngresoPanelCobro(
                 this.multipleSelectionProduccionCobros
-              );
+              )
             }
 
             this.reloadStoreTableCobros(mListaCobrosAuxiliar);
@@ -819,6 +1056,8 @@ export default {
 
     if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
       this.crearPreviewReciboIngresoPanelCobroUAmbatena([]);
+    } else if (this.codigoEmpresaTableroCobrosProduccion == "trujamasa") {
+      this.crearPreviewReciboIngresoPanelCobroModelo3([])
     } else {
       this.crearPreviewReciboIngresoPanelCobro([]);
     }
