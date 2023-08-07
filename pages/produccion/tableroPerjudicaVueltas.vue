@@ -38,6 +38,7 @@
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
             </div>
+
           </div>
         </card>
 
@@ -72,6 +73,14 @@
             v-loading="loadingRTableroProduccionCobranzas" element-loading-text="Cargando Datos..."
             :data="tableDataPanelControlProduccion" row-key="id" class="tablePanelControlProduccion"
             height="calc(100vh - 13.5rem)" style="width: 100%" @row-click="filaClickeada">
+
+            <el-table-column prop="Estado" label="Estado" minWidth="80">
+              <template slot-scope="scope">
+                <badge type="default" class="mr-2" v-if="scope.row.Estado === 2">Pagado</badge>
+                <badge type="danger" class="mr-2" v-if="scope.row.Estado === 0">Pendiente</badge>
+              </template>
+            </el-table-column>
+
             <el-table-column prop="CodiVehiSali_m" label="Unidad" minWidth="80">
             </el-table-column>
 
@@ -203,6 +212,177 @@
 
 
     </modal>
+
+    <!-- Modal ComprobantePago -->
+    <!--modal :show.sync="isModalDetallePago" size="sm">
+      <template slot="header">
+        <div style="width: 100%;">
+          <div style="display: flex; align-items: center; justify-content: center;">
+            <p class="cabeceraModal" style="margin-bottom: 0px;">
+              Comprobante de Pago
+            </p>
+          </div>
+        </div>
+      </template>
+
+      <template class="modal-body">
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 5px;">
+          <span class="cabeceraModal">
+            Empresa:
+          </span>
+          <span style="color: black"> {{ this.$cookies.get("nameEmpresa") }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            N.Comprobante:
+          </span>
+          <span style="color: black"> {{ "00001" }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            Unidad:
+          </span>
+          <span style="color: black"> {{ datamodal.CodiVehiSali_m }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            Perjudicado:
+          </span>
+          <span style="color: black"> {{ this.inputUnidad }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            Valor : $
+          </span>
+          <span style="color: black"> {{ datamodal.AtrasoPenalidad }}</span>
+        </div>
+
+        <div style=" flex-direction: row ;align-items: center">
+          <span class="cabeceraModal">
+            F.Creacion:
+          </span>
+          <span style="color: black"> {{ datamodal.HoraSaliProgSali_m, }} </span>
+          <span style="padding-right: 5px"></span>
+          <span style="color: black"> {{ datamodal.HoraProgSali_d }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            F.Pago :
+          </span>
+          <span style="color: black"> {{ "2023-08-04 14:05:00" }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            Usuario :
+          </span>
+          <span style="color: black"> {{ "Administrador" }}</span>
+        </div>
+      </template>
+
+
+      <template slot="footer">
+        <div class="centerButton">
+          <base-button size="sm" title="CERRAR" type="danger" @click="cerrarModal()">Cerrar<i
+              class="ni ni-fat-delete"></i></base-button>
+        </div>
+      </template>
+
+    </modal-->
+    <!-- Modal ComprobanteDevuelto -->
+    <!--modal :show.sync="isModalDetalleDevuelto" size="sm">
+      <template slot="header">
+        <div style="width: 100%;">
+          <div style="display: flex; align-items: center; justify-content: center;">
+            <p class="cabeceraModal" style="margin-bottom: 0px;">
+              Comprobante de Devolucion
+            </p>
+          </div>
+        </div>
+
+      </template>
+
+      <template class="modal-body">
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 5px;">
+          <span class="cabeceraModal">
+            Empresa:
+          </span>
+          <span style="color: black"> {{ this.$cookies.get("nameEmpresa") }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            N.Devolucion:
+          </span>
+          <span style="color: black"> {{ 54796314 }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            Unidad:
+          </span>
+          <span style="color: black"> {{ 1254 }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            Perjudicado:
+          </span>
+          <span style="color: black"> {{ 1254 }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            Valor : $
+          </span>
+          <span style="color: black"> {{ 20 }}</span>
+        </div>
+
+        <div style=" flex-direction: row ;align-items: center">
+          <span class="cabeceraModal">
+            F.Creacion:
+          </span>
+          <span style="color: black"> {{ "2023-08-01 10:05:25" }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            F.Pago :
+          </span>
+          <span style="color: black"> {{ "2023-08-04 14:05:00" }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center">
+          <span class="cabeceraModal">
+            Usuario :
+          </span>
+          <span style="color: black"> {{ "Administrador" }}</span>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: center; margin-top: 40px">
+          <p style="color: black; margin-bottom: 0px;">
+            ...................................................
+          </p>
+        </div>
+
+      </template>
+
+      <template slot="footer">
+        <div class="centerButton">
+          <base-button size="sm" title="CERRAR" type="danger" @click="cerrarModal()">Cerrar<i
+              class="ni ni-fat-delete"></i></base-button>
+        </div>
+      </template>
+
+
+    </modal-->
+
+
   </div>
 </template>
 <script>
@@ -269,8 +449,11 @@ export default {
       itemUnidadPanelProduccion: [],
       isModalDetallePerjuicio: false,
       datamodal: [],
+      datos: [],
       inputUnidad: null,
       inputMotivo: "",
+      isSendPago: false,
+      isSendDevolucion: false,
     };
   },
   methods: {
@@ -353,25 +536,25 @@ export default {
         }
       );
 
-      //console.log(datos.data)
+      console.log("Aca datos de la consulta general >>>>>", datos.data)
 
       if (datos.data.status_code == 200) {
         let dinero = 0;
-        for (var i = 0; i < datos.data.datos.length; i++) 
-        {
-          if(datos.data.datos[i].Estado != 2)
-          {
+        for (var i = 0; i < datos.data.datos.length; i++) {
+          if (datos.data.datos[i].Estado != 2) {
             dinero =
-            dinero +
-            (datos.data.datos[i].AtrasoPenalidad == null
-              ? 0
-              : parseFloat(datos.data.datos[i].AtrasoPenalidad));
+              dinero +
+              (datos.data.datos[i].AtrasoPenalidad == null
+                ? 0
+                : parseFloat(datos.data.datos[i].AtrasoPenalidad));
           }
         }
         console.log("DINERO : " + dinero);
         this.mPendienteRPagosVehiculo = dinero;
         this.tableDataPanelControlProduccion.push(...datos.data.datos);
+        console.log("Aca datos de la consulta general >>>>>", datos.data.datos[0].Estado);
       }
+
 
       this.loadingRTableroProduccionCobranzas = false;
     },
@@ -446,6 +629,7 @@ export default {
           }
         );
         if (datos.data.status_code == 200) {
+
           this.inputMotivo = null;
           this.inputUnidad = "";
           this.readlPanelTableroPerjudicaVuelta();
@@ -481,6 +665,7 @@ export default {
           }
         );
         if (datos.data.status_code == 200) {
+          this.isSendPago = true;
           this.notifyVue(
             "default",
             "Pago enviada.",
@@ -491,8 +676,10 @@ export default {
           this.inputUnidad = "";
         }
         this.isModalDetallePerjuicio = false;
+        this.readlPanelTableroPerjudicaVuelta();
+
       }
-      this.readlPanelTableroPerjudicaVuelta();
+
     },
     async enviarDevolucion() {
       let datos = await this.$axios.post(
@@ -523,6 +710,137 @@ export default {
         type,
       });
     },
+    /*generatePdf() {
+      //this.isModalDetallePago = true;
+
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 12,
+          alignment: "left",
+          bold: true,
+          margin: [20, 0, 0, 0],
+        },
+      ];
+      var resultadoString = [
+        [
+          {
+            text: "Unidad",
+            fontSize: 11,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "1234",
+            fontSize: 10,
+            //alignment: "center",
+          },
+        ],
+        [
+          {
+            text: "Perjudicado",
+            fontSize: 11,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "4321",
+            fontSize: 10,
+            //alignment: "center",
+          },
+        ],
+        [
+          {
+            text: "Valor",
+            fontSize: 11,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "$ 20",
+            fontSize: 10,
+            //alignment: "center",
+          },
+        ],
+        [
+          {
+            text: "F.Creacion",
+            fontSize: 11,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "2023-08-01 10:10:00",
+            fontSize: 10,
+            alignment: "center",
+          },
+          
+        ],
+        [
+          {
+            text: "Fecha pago",
+            fontSize: 11,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "2023-08-03 14:25:00",
+            fontSize: 10,
+            alignment: "center",
+          },
+        ],
+       
+        [
+          {
+            text: "Usuario",
+            fontSize: 11,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Administrador Pepito",
+            fontSize: 10,
+            alignment: "center",
+          },
+        ],
+
+      ];
+
+      var docDefinition = {
+        pageSize: { width: 220, height: "auto" },
+        pageMargins: [10, 10, 10, 10],
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450],
+              body: [empresa],
+            },
+          },
+          {
+            layout: "noBorders",
+            headerRows: 0,
+            table: {
+              body: resultadoString,
+            },
+          }
+        ]
+      };
+      pdfMake.createPdf(docDefinition).download("RPD_" + Date.now());
+    }, */
   },
   mounted() {
     this.readUnidadesTableroPerjudicaVueltas();
@@ -537,8 +855,6 @@ export default {
   margin-bottom: 0rem;
 }
 
-
-
 .el-loading-text {
   color: black !important;
 }
@@ -552,7 +868,6 @@ export default {
 .no-border-card .card-footer {
   border-top: 0;
 }
-
 
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
@@ -584,11 +899,11 @@ export default {
 }
 
 .modal-body {
-  padding: 0px 1.5rem 1.5rem 1.5rem !important;
+  padding: 0px 1.5rem 0px 1.5rem !important;
 }
 
 .modal-header {
-  padding: 1.5rem 1.5rem 0.5rem 1.5rem !important;
+  padding: 1.5rem 1.5rem 0px 1.5rem !important;
 }
 
 .no-border-card .card-footer {
@@ -607,4 +922,9 @@ export default {
   color: black;
   font-weight: bold;
 }
+/*
+.badge-success {
+  background-color: #2dce89;
+  color: white;
+}*/
 </style>
