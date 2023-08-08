@@ -83,7 +83,13 @@
                             <el-table-column prop="CodiVehi_p" label="U. Afectada" minWidth="140">
                             </el-table-column>
 
+                            <el-table-column prop="NumeroPago" label="N.Pago" minWidth="110">
+                            </el-table-column>
+
                             <el-table-column prop="FechaPago" label="F. Pago" minWidth="180">
+                            </el-table-column>
+
+                            <el-table-column prop="NumeroDevolucion" label="N.Devolucion" minWidth="150">
                             </el-table-column>
 
                             <el-table-column prop="FechaDevolucion" label="F. Devuelto" minWidth="180">
@@ -392,7 +398,23 @@ export default {
                         alignment: "center",
                     },
                     {
+                        text: "N. Pago",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
                         text: "Fecha pago",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "N. Devl",
                         fontSize: 8.5,
                         bold: true,
                         fillColor: "#039BC4",
@@ -465,7 +487,17 @@ export default {
                         alignment: "center",
                     },
                     {
+                        text: this.mListaRPerjudicado[i].NumeroPago,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
                         text: this.mListaRPerjudicado[i].FechaPago,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRPerjudicado[i].NumeroDevolucion,
                         fontSize: 8.5,
                         alignment: "center",
                     },
@@ -554,7 +586,7 @@ export default {
                     {
                         table: {
                             headerRows: 0,
-                            widths: [40 ,70 ,80 ,60 ,80 ,80 ,60 ,50 ,90 ,60],
+                            widths: [30 ,60 ,80 ,50 ,40 ,80 ,40 ,80 ,40 ,25 ,85 ,80],
                             body: resultadoString,
                         },
                     },
