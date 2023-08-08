@@ -47,6 +47,7 @@
               <base-button
               icon
               type="primary"
+              v-if="!loadingRTableroProduccionCobranzas"
               size="sm"
               @click="readlPanelTableroProduccion()"
             >
@@ -373,7 +374,8 @@ export default {
     },
     async readlPanelTableroProduccion() {
       this.loadingRTableroProduccionCobranzas = true;
-      this.tableDataPanelControlProduccion = [];
+      try {
+        this.tableDataPanelControlProduccion = [];
 
       var datos = await this.$axios.post(
         process.env.baseUrl + "/ProduccionPanelProduccionCobranza",
@@ -407,7 +409,9 @@ export default {
         this.mPendienteRPagosVehiculo = dinero;
         this.tableDataPanelControlProduccion.push(...datos.data.datos);
       }
-
+      } catch (error) {
+        console.log(error)
+      }
       this.loadingRTableroProduccionCobranzas = false;
     },
     async readLineasTableroProduccion() {

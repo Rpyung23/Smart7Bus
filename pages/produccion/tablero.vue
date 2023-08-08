@@ -68,6 +68,7 @@
                 icon
                 type="primary"
                 size="sm"
+                v-if="!loadingRTableroProduccion"
                 @click="readlPanelTableroProduccion()"
               >
                 <span class="btn-inner--icon"
