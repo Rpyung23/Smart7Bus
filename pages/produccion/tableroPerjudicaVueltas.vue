@@ -2,149 +2,81 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
             <!--<el-autocomplete class="inline-input" v-model="itemUnidadPanelProduccion"
               :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo" style="margin-right: 0.5rem"
               placeholder="Unidad" prefix-icon="ni ni-bus-front-12" :trigger-on-focus="false"></el-autocomplete>-->
 
-            <el-select
-              v-model="itemUnidadPanelProduccion"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
-              :loading="loadingTableUnidadesPanelProduccoionLoading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesPanelProduccion"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadPanelProduccion" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
+              :loading="loadingTableUnidadesPanelProduccoionLoading">
+              <el-option v-for="item in optionsUnidadesPanelProduccion" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                :max="{ fechaInicialTableroProduccion }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialTableroProduccion"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+              <flat-picker slot-scope="{ focus, blur }" :max="{ fechaInicialTableroProduccion }" @on-open="focus"
+                @on-close="blur" :config="{ allowInput: true }" class="form-controlPersonal datepicker"
+                v-model="fechaInicialTableroProduccion">
               </flat-picker>
             </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalTableroProduccion"
-              >
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaFinalTableroProduccion">
               </flat-picker>
             </base-input>
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
             <div class="buttonCenterEndDerecha">
-              <base-button
-                icon
-                type="primary"
-                size="sm"
-                v-if="!loadingRTableroProduccionCobranzas"
-                @click="readlPanelTableroPerjudicaVuelta()"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="el-icon-search"></i
-                ></span>
+              <base-button icon type="primary" size="sm" v-if="!loadingRTableroProduccionCobranzas"
+                @click="readlPanelTableroPerjudicaVuelta()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
             </div>
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
             <!--<el-select v-model="mSelectRubroValueTablero" multiple collapse-tags placeholder="Rubros">
               <el-option v-for="item in mListRubrosTableroProduccion" :key="item.id" :label="item.descripcion"
                 :value="item.id">
               </el-option>
             </el-select>-->
-            <el-select
-              v-model="mSelectLineasValueTablero"
-              style="margin-right: 0.5rem"
-              multiple
-              collapse-tags
-              placeholder="Rutas"
-            >
-              <el-option
-                v-for="item in mListLineasTableroProduccion"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
-              >
+            <el-select v-model="mSelectLineasValueTablero" style="margin-right: 0.5rem" multiple collapse-tags
+              placeholder="Rutas">
+              <el-option v-for="item in mListLineasTableroProduccion" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.idRuta">
               </el-option>
             </el-select>
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: dark; margin-right: 0.5rem"
-              >Pendiente : {{ mPendienteRPagosVehiculo }} $</strong
-            >
-            <strong style="color: green"
-              >Total Cobrado:
+            <strong style="color: dark; margin-right: 0.5rem">Pendiente : {{ mPendienteRPagosVehiculo }} $</strong>
+            <strong style="color: green">Total Cobrado:
               {{ mTotalRPagosVehiculo }}
-              $</strong
-            >
+              $</strong>
           </div>
         </card>
 
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1"
-          footer-classes="pb-2"
-        >
-          <el-table
-            :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-            header-row-class-name="thead-dark"
-            v-loading="loadingRTableroProduccionCobranzas"
-            element-loading-text="Cargando Datos..."
-            :data="tableDataPanelControlProduccion"
-            row-key="id"
-            class="tablePanelControlProduccion"
-            height="calc(100vh - 13.5rem)"
-            style="width: 100%"
-            @row-click="filaClickeada"
-          >
+        <card class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1" footer-classes="pb-2">
+          <el-table :row-class-name="tableRowClassNameSalidasPanelBusqueda" header-row-class-name="thead-dark"
+            v-loading="loadingRTableroProduccionCobranzas" element-loading-text="Cargando Datos..."
+            :data="tableDataPanelControlProduccion" row-key="id" class="tablePanelControlProduccion"
+            height="calc(100vh - 13.5rem)" style="width: 100%" @row-click="filaClickeada">
             <el-table-column prop="Estado" label="Estado" minWidth="75">
               <template slot-scope="scope">
-                <badge type="default" class="mr-2" v-if="scope.row.Estado == 2"
-                  >Pagado</badge
-                >
-                <badge type="danger" class="mr-2" v-if="scope.row.Estado == 0"
-                  >Pendiente</badge
-                >
+                <badge type="default" class="mr-2" v-if="scope.row.Estado == 2">Pagado</badge>
+                <badge type="danger" class="mr-2" v-if="scope.row.Estado == 0">Pendiente</badge>
               </template>
             </el-table-column>
 
@@ -157,18 +89,10 @@
             <el-table-column prop="NumeVuelSali_m" label="Vuelta" minWidth="80">
             </el-table-column>
 
-            <el-table-column
-              prop="DescRuta"
-              label="Ruta - Linea"
-              minWidth="110"
-            >
+            <el-table-column prop="DescRuta" label="Ruta - Linea" minWidth="110">
             </el-table-column>
 
-            <el-table-column
-              prop="HoraSaliProgSali_m"
-              label="Fecha"
-              minWidth="80"
-            >
+            <el-table-column prop="HoraSaliProgSali_m" label="Fecha" minWidth="80">
             </el-table-column>
 
             <el-table-column prop="HoraProgSali_d" label="PROG" minWidth="80">
@@ -180,11 +104,7 @@
             <el-table-column prop="AtrasoTiempo" label="TIEMPO" minWidth="80">
             </el-table-column>
 
-            <el-table-column
-              prop="AtrasoPenalidad"
-              label="Total($)"
-              minWidth="85"
-            >
+            <el-table-column prop="AtrasoPenalidad" label="Total($)" minWidth="85">
               <template slot-scope="scope">
                 <strong style="color: black">{{
                   scope.row.AtrasoPenalidad
@@ -222,53 +142,32 @@
 
       <div v-if="datamodal.Estado != 2">
         <p class="tituloModal">INFORMACIÓN GENERAL</p>
-        <span title="Unidad" class="subtituloModal" style="padding-right: 14px"
-          >Unidad:
+        <span title="Unidad" class="subtituloModal" style="padding-right: 14px">Unidad:
         </span>
         <span style="color: black"> {{ datamodal.CodiVehiSali_m }} <br /></span>
-        <span title="Falta" class="subtituloModal" style="padding-right: 28px"
-          >Falta:
+        <span title="Falta" class="subtituloModal" style="padding-right: 28px">Falta:
         </span>
         <span style="color: black"> {{ datamodal.AtrasoNumero }} <br /></span>
-        <span title="Tiempo" class="subtituloModal" style="padding-right: 10px"
-          >Tiempo:
+        <span title="Tiempo" class="subtituloModal" style="padding-right: 10px">Tiempo:
         </span>
         <span style="color: black"> {{ datamodal.AtrasoTiempo }}<br /></span>
-        <span title="Valor" class="subtituloModal" style="padding-right: 25px"
-          >Valor:
+        <span title="Valor" class="subtituloModal" style="padding-right: 25px">Valor:
         </span>
         <span style="color: black">
-          {{ datamodal.AtrasoPenalidad }} <br
-        /></span>
+          {{ datamodal.AtrasoPenalidad }} <br /></span>
         <p class="tituloModal">PERJUDICADO<br /></p>
         <div style="display: flex; align-items: center">
-          <el-select
-            v-model="inputUnidad"
-            filterable
-            style="width: 100%; margin-right: 0.5rem"
-            remote
-            placeholder="Ingrese unidad"
-            :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
-            :loading="loadingTableUnidadesPanelProduccoionLoading"
-          >
-            <el-option
-              v-for="item in optionsUnidadesPanelProduccion"
-              :key="item.CodiVehi"
-              :label="item.CodiVehi"
-              :value="item.CodiVehi"
-            >
+          <el-select v-model="inputUnidad" filterable style="width: 100%; margin-right: 0.5rem" remote
+            placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
+            :loading="loadingTableUnidadesPanelProduccoionLoading">
+            <el-option v-for="item in optionsUnidadesPanelProduccion" :key="item.CodiVehi" :label="item.CodiVehi"
+              :value="item.CodiVehi">
             </el-option>
           </el-select>
         </div>
 
         <p class="tituloModal">MOTIVO<br /></p>
-        <textarea
-          type="text"
-          style="width: 100%"
-          rows="2"
-          cols="45"
-          v-model="inputMotivo"
-        ></textarea>
+        <textarea type="text" style="width: 100%" rows="2" cols="45" v-model="inputMotivo"></textarea>
       </div>
 
       <div v-if="datamodal.Estado === 2">
@@ -280,52 +179,29 @@
           <span style="color: black"> {{ datamodal.CodiVehi_p }}</span>
         </div>
         <p class="tituloModal">INFORMACIÓN GENERAL</p>
-        <span title="Unidad" class="subtituloModal" style="padding-right: 14px"
-          >Unidad:
+        <span title="Unidad" class="subtituloModal" style="padding-right: 14px">Unidad:
         </span>
         <span style="color: black"> {{ datamodal.CodiVehiSali_m }} <br /></span>
-        <span title="Falta" class="subtituloModal" style="padding-right: 28px"
-          >Falta:
+        <span title="Falta" class="subtituloModal" style="padding-right: 28px">Falta:
         </span>
         <span style="color: black"> {{ datamodal.AtrasoNumero }} <br /></span>
-        <span title="Tiempo" class="subtituloModal" style="padding-right: 10px"
-          >Tiempo:
+        <span title="Tiempo" class="subtituloModal" style="padding-right: 10px">Tiempo:
         </span>
         <span style="color: black"> {{ datamodal.AtrasoTiempo }}<br /></span>
-        <span title="Valor" class="subtituloModal" style="padding-right: 25px"
-          >Valor:
+        <span title="Valor" class="subtituloModal" style="padding-right: 25px">Valor:
         </span>
         <span style="color: black">
-          {{ datamodal.AtrasoPenalidad }} <br
-        /></span>
+          {{ datamodal.AtrasoPenalidad }} <br /></span>
       </div>
 
       <template slot="footer">
         <div class="centerButton">
-          <base-button
-            size="sm"
-            title="JUSTIFICAR"
-            type="primary"
-            v-show="datamodal.Estado == 0"
-            @click="enviarJustificacion()"
-            ><i class="ni ni-check-bold"></i>JUSTIFICAR</base-button
-          >
-          <base-button
-            size="sm"
-            title="PAGAR"
-            type="default"
-            v-show="datamodal.Estado != 2"
-            @click="enviarPago()"
-            ><i class="ni ni-money-coins">PAGAR</i></base-button
-          >
-          <base-button
-            size="sm"
-            title="DEVOLVER"
-            type="danger"
-            v-show="datamodal.Estado == 2"
-            @click="enviarDevolucion()"
-            >DEVOLVER<i class="ni ni-fat-delete"></i
-          ></base-button>
+          <base-button size="sm" title="JUSTIFICAR" type="primary" v-show="datamodal.Estado == 0"
+            @click="enviarJustificacion()"><i class="ni ni-check-bold"></i>JUSTIFICAR</base-button>
+          <base-button size="sm" title="PAGAR" type="default" v-show="datamodal.Estado != 2" @click="enviarPago()"><i
+              class="ni ni-money-coins">PAGAR</i></base-button>
+          <base-button size="sm" title="DEVOLVER" type="danger" v-show="datamodal.Estado == 2"
+            @click="enviarDevolucion()">DEVOLVER<i class="ni ni-fat-delete"></i></base-button>
         </div>
       </template>
     </modal>
@@ -631,6 +507,7 @@ export default {
     },
     async readlPanelTableroPerjudicaVuelta() {
       this.mPendienteRPagosVehiculo = "0.00";
+      this.mTotalRPagosVehiculo = "0.00";
       this.loadingRTableroProduccionCobranzas = true;
       this.tableDataPanelControlProduccion = [];
 
@@ -656,6 +533,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           let dinero = 0;
+          let pagados = 0;
           for (var i = 0; i < datos.data.datos.length; i++) {
             if (datos.data.datos[i].Estado != 2) {
               dinero =
@@ -664,9 +542,16 @@ export default {
                   ? 0
                   : parseFloat(datos.data.datos[i].AtrasoPenalidad));
             }
+            if (datos.data.datos[i].Estado === 2) {
+              pagados = pagados + (datos.data.datos[i].AtrasoPenalidad == null
+                ? 0
+                : parseFloat(datos.data.datos[i].AtrasoPenalidad));
+            }
           }
           console.log("DINERO : " + dinero);
           this.mPendienteRPagosVehiculo = dinero;
+          console.log("PAGADOS : " + pagados);
+          this.mTotalRPagosVehiculo = pagados;
           this.tableDataPanelControlProduccion.push(...datos.data.datos);
           console.log(
             "Aca datos de la consulta general >>>>>",
@@ -1025,6 +910,7 @@ export default {
   color: black;
   font-weight: bold;
 }
+
 /*
 .badge-success {
   background-color: #2dce89;
