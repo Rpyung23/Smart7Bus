@@ -769,6 +769,16 @@ export default {
         },
       ];
 
+      
+      var grupo = [
+        {
+          text: this.$cookies.get("empresa") == "consorcio-r" ? datosSalidas.length > 0 ? datosSalidas[0].detalle.length > 0 ? datosSalidas[0].detalle[0].descripcion : "" : "" : "",
+          fontSize: 12,
+          bold: true,
+          alignment: "center",
+        },
+      ];
+
       contentPDF.push({
         headerRows: 0,
         fontSize: 12,
@@ -776,7 +786,7 @@ export default {
         layout: "noBorders", // optional
         table: {
           widths: ["*"],
-          body: [empresa],
+          body: [empresa,grupo],
         },
       });
 
