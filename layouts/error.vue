@@ -7,9 +7,9 @@
           <div class="row justify-content-center">
             <div class="col-xl-5 col-lg-6 col-md-8 px-5">
               <h1 class="text-white">Ooops!</h1>
-              <p class="text-lead text-white">Page not found. Don't worry though, we have plenty of other pages to explore</p>
+              <p class="text-lead text-white">Página no encontrada. Sin embargo, no se preocupe, tenemos muchas otras páginas para explorar.</p>
 
-              <nuxt-link to="/dashboard" class="font-weight-bold text-white mt-5">Regresar al Pnael</nuxt-link>
+              <nuxt-link to="/monitoreo" class="font-weight-bold text-white mt-5">Regresar al Monitoreo</nuxt-link>
             </div>
           </div>
         </div>
@@ -30,8 +30,8 @@
           <div class="col-md-6">
             <div class="pr-md-5">
               <h1 class="text-light">Explore pages</h1>
-              <p class="text-light">If you want to get inspiration or just show something directly to your clients, you can jump start your development with our pre-built example pages.</p>
-              <nuxt-link to="/pages/user" class="font-weight-bold text-warning mt-5">Explore pages</nuxt-link>
+              <p class="text-light">VIGITRACKLATAM CIA.LTDA</p>
+              
             </div>
           </div>
         </div>

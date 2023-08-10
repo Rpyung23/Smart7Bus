@@ -68,6 +68,7 @@
                 icon
                 type="primary"
                 size="sm"
+                v-if="!loadingRTableroProduccion"
                 @click="readlPanelTableroProduccion()"
               >
                 <span class="btn-inner--icon"
@@ -108,6 +109,7 @@
           <div>
 
             <el-table
+              
               v-loading="loadingRTableroProduccion"
               element-loading-text="Cargando Datos..."
               :data="tableDataPanelControlProduccion"

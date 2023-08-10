@@ -991,6 +991,8 @@ export default {
               ],
             },
           },
+          {text:"*",fontSize:5,color:"#FFFFFF"},
+          { text: "Nota : Abono de sanción correspondiente al control Gruta La Virgen.",fontSize:10,bold:true },
           { text: "---------------------------------------------------------" },
           {
             text:
@@ -1013,12 +1015,12 @@ export default {
                 : this.initFechaActualTicketPerjudica()),
             pageOrientation: "portrait",
             fontSize: 9,
-          },
+          },/*
           {
             text: "Fecha Impresion : " + this.initFechaActualTicketPerjudica(),
             pageOrientation: "portrait",
             fontSize: 9,
-          },
+          },*/
           {
             text: "Operador : " + this.$cookies.get("namesUsuario"),
             pageOrientation: "portrait",
@@ -1039,7 +1041,7 @@ export default {
             text: ".",
             pageOrientation: "portrait",
             color:"#FFFFFF",
-            fontSize: 60,
+            fontSize: 45,
             margin: [0, 5, 0, 0],
           },
 

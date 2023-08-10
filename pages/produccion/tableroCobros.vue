@@ -321,9 +321,7 @@ export default {
             this.crearPreviewReciboIngresoPanelCobroUAmbatena(
               this.multipleSelectionProduccionCobros
             );
-          } else if(this.codigoEmpresaTableroCobrosProduccion == "trujamasa"){
-            this.crearPreviewReciboIngresoPanelCobroModelo3(this.multipleSelectionProduccionCobros)
-          } else {
+          }else {
             this.crearPreviewReciboIngresoPanelCobro(
               this.multipleSelectionProduccionCobros
             );
@@ -974,11 +972,6 @@ export default {
               this.crearPreviewReciboIngresoPanelCobroUAmbatena(
                 this.multipleSelectionProduccionCobros
               );
-            } else if(this.codigoEmpresaTableroCobrosProduccion == "trujamasa")
-            {
-              this.crearPreviewReciboIngresoPanelCobroModelo3(
-                this.multipleSelectionProduccionCobros
-              )
             } else {
               this.crearPreviewReciboIngresoPanelCobro(
                 this.multipleSelectionProduccionCobros
@@ -1060,8 +1053,6 @@ export default {
 
     if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
       this.crearPreviewReciboIngresoPanelCobroUAmbatena([]);
-    } else if (this.codigoEmpresaTableroCobrosProduccion == "trujamasa") {
-      this.crearPreviewReciboIngresoPanelCobroModelo3([])
     } else {
       this.crearPreviewReciboIngresoPanelCobro([]);
     }
