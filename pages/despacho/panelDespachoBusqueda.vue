@@ -28,13 +28,21 @@
               </el-option>
             </el-select>
 
-            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
-            v-model="fechaInicialSalidasPanelBusqueda">
-          </el-date-picker>
+            <el-date-picker
+              type="date"
+              placeholder="Select date and time"
+              style="margin-right: 0.5rem"
+              v-model="fechaInicialSalidasPanelBusqueda"
+            >
+            </el-date-picker>
 
-          <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
-            v-model="fechaFinalSalidasPanelBusqueda">
-          </el-date-picker>
+            <el-date-picker
+              type="date"
+              placeholder="Select date and time"
+              style="margin-right: 0.5rem"
+              v-model="fechaFinalSalidasPanelBusqueda"
+            >
+            </el-date-picker>
 
             <el-switch
               v-model="oSwitchOrdenarSalidasDespachoPanelBusqueda"
@@ -149,64 +157,68 @@
           body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1"
           footer-classes="pb-2"
         >
-            <el-table
-              v-loading="loadingTableUnidadesSalidasPanelBusqueda"
-              element-loading-text="Cargando Datos..."
-              :data="mListaSalidasPanelBusqueda"
-              row-key="id"
-              class="tablePanelControlProduccion"
-              :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-              header-row-class-name="thead-dark"
-              height="calc(100vh - 13rem)"
-              style="width: 100%"
-            >
-              <el-table-column label="Actions" width="210">
-                <template slot-scope="scope">
-                  <base-button
-                    size="sm"
-                    title="TARJETA PEQUEÑA"
-                    @click="showTarjetaSalidasPanelBusqueda(scope.row)"
-                    type="primary"
-                    ><i class="ni ni-single-copy-04"></i
-                  ></base-button>
-                  <base-button
-                    size="sm"
-                    title="TARJETA GRANDE(A4)"
-                    @click="showTarjetaSalidasPanelBusquedaA4(scope.row)"
-                    type="danger"
-                    ><i class="ni ni-book-bookmark"></i
-                  ></base-button>
-                  <base-button
-                    size="sm"
-                    title="Recorrido"
-                    @click="showRecorridoSalidasPanelBusqueda(scope.row)"
-                    type="success"
-                    ><i class="ni ni-world"></i
-                  ></base-button>
-                </template>
-              </el-table-column>
+          <el-table
+            v-loading="loadingTableUnidadesSalidasPanelBusqueda"
+            element-loading-text="Cargando Datos..."
+            :data="mListaSalidasPanelBusqueda"
+            row-key="id"
+            class="tablePanelControlProduccion"
+            :row-class-name="tableRowClassNameSalidasPanelBusqueda"
+            header-row-class-name="thead-dark"
+            height="calc(100vh - 13rem)"
+            style="width: 100%"
+          >
+            <el-table-column label="Actions" width="220">
+              <template slot-scope="scope">
+                <base-button
+                  size="sm"
+                  title="VER RUBROS"
+                  @click="showModalRubro(scope.row)"
+                  type="default"
+                  ><i class="ni ni-fat-add"></i
+                ></base-button>
 
-              <el-table-column prop="CodiVehiSali_m" label="Unidad" width="130">
-              </el-table-column>
+                <base-button
+                  size="sm"
+                  title="TARJETA PEQUEÑA"
+                  @click="showTarjetaSalidasPanelBusqueda(scope.row)"
+                  type="primary"
+                  ><i class="ni ni-single-copy-04"></i
+                ></base-button>
+                <base-button
+                  size="sm"
+                  title="TARJETA GRANDE(A4)"
+                  @click="showTarjetaSalidasPanelBusquedaA4(scope.row)"
+                  type="danger"
+                  ><i class="ni ni-book-bookmark"></i
+                ></base-button>
+                <base-button
+                  size="sm"
+                  title="Recorrido"
+                  @click="showRecorridoSalidasPanelBusqueda(scope.row)"
+                  type="success"
+                  ><i class="ni ni-world"></i
+                ></base-button>
+              </template>
+            </el-table-column>
 
-              <!--<el-table-column prop="idSali_m" label="Salida" width="140">
+            <el-table-column prop="CodiVehiSali_m" label="Unidad" width="130">
+            </el-table-column>
+
+            <!--<el-table-column prop="idSali_m" label="Salida" width="140">
               </el-table-column>-->
 
-              <el-table-column
-                v-for="column in tableColumnsUnidadesFlotaVehicular"
-                :key="column.label"
-                v-bind="column"
-              >
-              </el-table-column>
+            <el-table-column
+              v-for="column in tableColumnsUnidadesFlotaVehicular"
+              :key="column.label"
+              v-bind="column"
+            >
+            </el-table-column>
 
-              <el-table-column
-                label="Estado"
-                min-width="270px"
-                prop="EstaSali_m"
-              >
-                <template v-slot="{ row }">
-                  <badge class="badge-dot mr-4" type="">
-                    <!--<i
+            <el-table-column label="Estado" min-width="270px" prop="EstaSali_m">
+              <template v-slot="{ row }">
+                <badge class="badge-dot mr-4" type="">
+                  <!--<i
                       :class="`bg-${
                         row.EstaSali_m == 4
                           ? 'danger'
@@ -215,26 +227,26 @@
                           : 'success'
                       }`"
                     ></i>-->
-                    <span class="status"
-                      ><strong>{{
-                        row.EstaSali_m == 1 || row.EstaSali_m == 0
-                          ? "DIFERIDA"
-                          : row.EstaSali_m == 4
-                          ? "ANULADO"
-                          : row.EstaSali_m == 2
-                          ? "EN RUTA"
-                          : row.EstaSali_m == 3 &&
-                            row.atrasoFaltasTime != '00:00:00'
-                          ? "FINALIZADO CON PENALIDAD"
-                          : "FINALIZADA SIN PENALIDAD"
-                      }}</strong></span
-                    >
-                  </badge>
-                </template>
-              </el-table-column>
+                  <span class="status"
+                    ><strong>{{
+                      row.EstaSali_m == 1 || row.EstaSali_m == 0
+                        ? "DIFERIDA"
+                        : row.EstaSali_m == 4
+                        ? "ANULADO"
+                        : row.EstaSali_m == 2
+                        ? "EN RUTA"
+                        : row.EstaSali_m == 3 &&
+                          row.atrasoFaltasTime != "00:00:00"
+                        ? "FINALIZADO CON PENALIDAD"
+                        : "FINALIZADA SIN PENALIDAD"
+                    }}</strong></span
+                  >
+                </badge>
+              </template>
+            </el-table-column>
 
-              <div slot="empty"></div>
-            </el-table>
+            <div slot="empty"></div>
+          </el-table>
         </card>
       </div>
     </base-header>
@@ -376,6 +388,50 @@
     >
       <ComponenteTarjetaA4 ref="ComponenteTarjetaA4"></ComponenteTarjetaA4>
     </modal>
+
+    <!--Form modal TICKET (A4) SALIDA-->
+    <modal :show.sync="modalRubro" size="xl">
+
+      <div class="container-add-rubro">
+        <el-select v-model="oSelectRubro" filterable placeholder="RUBROS" style="width: 30%;margin-right: 0.5rem;">
+        <el-option
+          v-for="item in mListTipoRubro"
+          :key="item.id"
+          :label="'('+item.precio + ' $) ' + item.descripcion"
+          :value="item.id"
+        >
+        </el-option>
+      </el-select>
+
+      <el-input type="textarea" v-model="oTextAreaAnotacion" style="width: 50%;margin-right: 0.5rem;" ></el-input>
+
+      <base-button size="sm" icon="ni ni-circle-08 pt-1" type="default">AGREGAR</base-button>
+      </div>
+
+      <el-table
+        v-loading="loadingRubrosList"
+        element-loading-text="Cargando Datos..."
+        :data="mListaRubros"
+        row-key="id"
+        header-row-class-name="thead-dark"
+        height="calc(100vh - 18rem)"
+        style="width: 100%"
+      >
+        <el-table-column label="FECHA" min-width="170" prop="fecha_creacion">
+        </el-table-column>
+
+        <el-table-column label="RUBRO" min-width="200" prop="descripcion">
+        </el-table-column>
+
+        <el-table-column label="VALOR ($)" min-width="130" prop="monto">
+        </el-table-column>
+
+        <el-table-column label="DETALLE" min-width="270" prop="anotaciones">
+        </el-table-column>
+
+        <div slot="empty"></div>
+      </el-table>
+    </modal>
   </div>
 </template>
 <script>
@@ -386,7 +442,7 @@ import flatPicker from "vue-flatpickr-component";
 import { getBase64LogoReportes } from "../../util/logoReport";
 import { convertSecondtoTimeString } from "../../util/fechas";
 import "flatpickr/dist/flatpickr.css";
-import { getFecha_dd_mm_yyyy } from '../../util/fechas'
+import { getFecha_dd_mm_yyyy } from "../../util/fechas";
 
 import {
   Table,
@@ -532,6 +588,12 @@ export default {
       modalSalidasTarjetaPanelDespachoBusqueda: false,
       modalSalidasTarjetaPanelDespachoBusquedaA4: false,
       mListControlesSalidaPanelBusquedaDespacho: [],
+      modalRubro: false,
+      mListaRubros: [],
+      loadingRubrosList: true,
+      mListTipoRubro:[],
+      oSelectRubro:null,
+      oTextAreaAnotacion:null
     };
   },
   methods: {
@@ -555,17 +617,21 @@ export default {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
       var day = fecha.getDate();
-      var hora = fecha.getHours() < 10 ? '0' + fecha.getHours() : fecha.getHours()
-      var minutes = fecha.getMinutes() < 10 ? '0' + fecha.getMinutes() : fecha.getMinutes()
+      var hora =
+        fecha.getHours() < 10 ? "0" + fecha.getHours() : fecha.getHours();
+      var minutes =
+        fecha.getMinutes() < 10 ? "0" + fecha.getMinutes() : fecha.getMinutes();
       var format =
         fecha.getFullYear() +
         "-" +
         (mes < 10 ? "0" + mes : mes) +
         "-" +
         (day < 10 ? "0" + day : day);
-      console.log(format)
-      this.fechaInicialSalidasPanelBusqueda = format + " " + hora + ":" + minutes + ":00";
-      this.fechaFinalSalidasPanelBusqueda = format + " " + hora + ":" + minutes + ":00"
+      console.log(format);
+      this.fechaInicialSalidasPanelBusqueda =
+        format + " " + hora + ":" + minutes + ":00";
+      this.fechaFinalSalidasPanelBusqueda =
+        format + " " + hora + ":" + minutes + ":00";
     },
     async readAllUnidadesSalidasPanelBusqueda() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
@@ -607,7 +673,9 @@ export default {
                 this.mSelectRutaSalidaPanelBusqueda.length <= 0
                   ? "*"
                   : this.mSelectRutaSalidaPanelBusqueda,
-              fechaI: getFecha_dd_mm_yyyy(this.fechaInicialSalidasPanelBusqueda),
+              fechaI: getFecha_dd_mm_yyyy(
+                this.fechaInicialSalidasPanelBusqueda
+              ),
               fechaF: getFecha_dd_mm_yyyy(this.fechaFinalSalidasPanelBusqueda),
               tipo:
                 this.radioEstadoRSalidasPanelBusqueda.length <= 0
@@ -658,14 +726,14 @@ export default {
         return "diferido-row-panelControlProduccion";
       } else if (row.EstaSali_m <= 1) {
         return "finalizado-row-panelControlProduccion";
-      } else if (row.EstaSali_m == 3 && row.atrasoFaltasTime != '00:00:00') {
+      } else if (row.EstaSali_m == 3 && row.atrasoFaltasTime != "00:00:00") {
         return "success-row-panelControlProduccion";
       } else {
         return "";
       }
     },
     showRecorridoSalidasPanelBusqueda(item) {
-      console.log(item)
+      console.log(item);
       this.modalSalidasPanelDespachoBusqueda = true;
       this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(item);
     },
@@ -678,15 +746,14 @@ export default {
       this.modalSalidasTarjetaPanelDespachoBusquedaA4 = true;
       this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusqueda(salida);
     },
-
     async exportPdfSalidasPanelBusqueda() {
       let totalPenalidad = 0;
       let totalTimeAdelantos = 0;
       let totalTimeAtrasos = 0;
 
       var totalPenalidadLocal = 0;
-          var totalTimeAdelantosLocal = 0;
-          var totalTimeAtrasosLocal = 0;
+      var totalTimeAdelantosLocal = 0;
+      var totalTimeAtrasosLocal = 0;
 
       var empresa = [
         {
@@ -768,7 +835,7 @@ export default {
           },
           {
             text: "T. Atraso",
-            fontSize:11,
+            fontSize: 11,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
@@ -793,14 +860,15 @@ export default {
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
-          }
+          },
         ],
       ];
 
-      if (this.oSwitchOrdenarSalidasDespachoPanelBusqueda || this.itemUnidadSalidasPanelBusqueda.length == 1) 
-      {
+      if (
+        this.oSwitchOrdenarSalidasDespachoPanelBusqueda ||
+        this.itemUnidadSalidasPanelBusqueda.length == 1
+      ) {
         for (var i = 0; i < this.mListaSalidasPanelBusqueda.length; i++) {
- 
           totalPenalidad =
             totalPenalidad +
             parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d);
@@ -830,7 +898,7 @@ export default {
               ? "EN RUTA"
               : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
                 this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime !=
-                  '00:00:00'
+                  "00:00:00"
               ? "FINALIZADO CON PENALIDAD"
               : "FINALIZADA SIN PENALIDAD";
           var arrys = [
@@ -838,7 +906,6 @@ export default {
               text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
               alignment: "center",
               fontSize: 8.5,
-              
             },
             {
               text: this.mListaSalidasPanelBusqueda[i].DescRutaSali_m,
@@ -893,7 +960,7 @@ export default {
                   fontSize: 9,
                   bold: true,
                   fillColor: "#039BC4",
-              color: "white",
+                  color: "white",
                   alignment: "center",
                 },
                 {
@@ -901,7 +968,7 @@ export default {
                   fontSize: 9,
                   bold: true,
                   fillColor: "#039BC4",
-              color: "white",
+                  color: "white",
                   alignment: "center",
                 },
                 {
@@ -909,7 +976,7 @@ export default {
                   fontSize: 9,
                   bold: true,
                   fillColor: "#039BC4",
-              color: "white",
+                  color: "white",
                   alignment: "center",
                 },
                 {
@@ -917,7 +984,7 @@ export default {
                   fontSize: 9,
                   bold: true,
                   fillColor: "#039BC4",
-              color: "white",
+                  color: "white",
                   alignment: "center",
                 },
                 {
@@ -925,7 +992,7 @@ export default {
                   fontSize: 9,
                   bold: true,
                   fillColor: "#039BC4",
-              color: "white",
+                  color: "white",
                   alignment: "center",
                 },
                 {
@@ -933,15 +1000,15 @@ export default {
                   fontSize: 9,
                   bold: true,
                   fillColor: "#039BC4",
-              color: "white",
+                  color: "white",
                   alignment: "center",
                 },
                 {
                   text: convertSecondtoTimeString(totalTimeAdelantosLocal * 60),
-                  fontSize:9,
+                  fontSize: 9,
                   bold: true,
                   fillColor: "#039BC4",
-              color: "white",
+                  color: "white",
                   alignment: "center",
                 },
                 {
@@ -949,7 +1016,7 @@ export default {
                   fontSize: 9,
                   bold: true,
                   fillColor: "#039BC4",
-              color: "white",
+                  color: "white",
                   alignment: "center",
                 },
 
@@ -958,13 +1025,13 @@ export default {
                   fontSize: 9,
                   bold: true,
                   fillColor: "#039BC4",
-              color: "white",
+                  color: "white",
                   alignment: "center",
                 },
               ]);
               totalPenalidadLocal = 0;
-            totalTimeAdelantosLocal = 0;
-            totalTimeAtrasosLocal = 0;
+              totalTimeAdelantosLocal = 0;
+              totalTimeAtrasosLocal = 0;
             }
           } else {
             resultadoString.push([
@@ -973,7 +1040,7 @@ export default {
                 fontSize: 9,
                 bold: true,
                 fillColor: "#039BC4",
-              color: "white",
+                color: "white",
                 alignment: "center",
               },
               {
@@ -981,7 +1048,7 @@ export default {
                 fontSize: 9,
                 bold: true,
                 fillColor: "#039BC4",
-              color: "white",
+                color: "white",
                 alignment: "center",
               },
               {
@@ -989,7 +1056,7 @@ export default {
                 fontSize: 9,
                 bold: true,
                 fillColor: "#039BC4",
-              color: "white",
+                color: "white",
                 alignment: "center",
               },
               {
@@ -997,7 +1064,7 @@ export default {
                 fontSize: 9,
                 bold: true,
                 fillColor: "#039BC4",
-              color: "white",
+                color: "white",
                 alignment: "center",
               },
               {
@@ -1005,7 +1072,7 @@ export default {
                 fontSize: 9,
                 bold: true,
                 fillColor: "#039BC4",
-              color: "white",
+                color: "white",
                 alignment: "center",
               },
               {
@@ -1013,7 +1080,7 @@ export default {
                 fontSize: 9,
                 bold: true,
                 fillColor: "#039BC4",
-              color: "white",
+                color: "white",
                 alignment: "center",
               },
               {
@@ -1021,7 +1088,7 @@ export default {
                 fontSize: 9,
                 bold: true,
                 fillColor: "#039BC4",
-              color: "white",
+                color: "white",
                 alignment: "center",
               },
               {
@@ -1029,7 +1096,7 @@ export default {
                 fontSize: 9,
                 bold: true,
                 fillColor: "#039BC4",
-              color: "white",
+                color: "white",
                 alignment: "center",
               },
 
@@ -1038,10 +1105,10 @@ export default {
                 fontSize: 9,
                 bold: true,
                 fillColor: "#039BC4",
-              color: "white",
+                color: "white",
                 alignment: "center",
               },
-            ])
+            ]);
 
             totalPenalidadLocal = 0;
             totalTimeAdelantosLocal = 0;
@@ -1068,7 +1135,8 @@ export default {
               : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
               ? "EN RUTA"
               : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
-                this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime != '00:00:00'
+                this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime !=
+                  "00:00:00"
               ? "FINALIZADO CON PENALIDAD"
               : "FINALIZADA SIN PENALIDAD";
           var arrys = [
@@ -1275,9 +1343,74 @@ export default {
       pdfMake.createPdf(docDefinition).open({}, win);*/
       pdfMake.createPdf(docDefinition).download("RSD_" + Date.now());
     },
+    showModalRubro(item) {
+      this.mListaRubros = [];
+      this.filaSelectionCurrentSalidaPanelBusqueda = item;
+      this.modalRubro = true;
+      this.readDetalleRubros();
+    },
+    async readDetalleRubros() {
+      this.loadingRubrosList = true;
+      //console.log(this.filaSelectionCurrentSalidaPanelBusqueda)
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/AllRubrosUnidadSalidad",
+          {
+            token: this.token,
+            unidad: this.filaSelectionCurrentSalidaPanelBusqueda.CodiVehiSali_m,
+            salida: this.filaSelectionCurrentSalidaPanelBusqueda.idSali_m,
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          /*Notification.success({
+              title: "Panel Salidas",
+              message: "Datos consultados con éxito",
+            });*/
+          this.mListaRubros.push(...datos.data.datos);
+        } else if (datos.data.status_code == 300) {
+          Notification.info({
+            title: "Panel Salidas",
+            message: "No existen rubros disponibles.",
+          });
+        } else {
+          Notification.error({
+            title: "Panel Salidas",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        Notification.info({
+          title: "TryCatch Panel Salidas",
+          message: error.toString(),
+        });
+      }
+
+      this.loadingRubrosList = false;
+    },
+    async readTipoRubro() {
+      this.mListTipoRubro = [];
+
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/AllTipoRubros",
+          {
+            token: this.token
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          this.mListTipoRubro.push(...datos.data.datos);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
+    this.readTipoRubro()
     this.readAllUnidadesSalidasPanelBusqueda();
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllLineasContadorSalidasPanelBusqueda();
@@ -1286,6 +1419,14 @@ export default {
 };
 </script>
 <style>
+
+.container-add-rubro{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .containerModalRecorridoPanelDespacho {
   display: flex;
 }
@@ -1382,8 +1523,7 @@ export default {
 .card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda {
   padding-top: 0.25rem !important;
 }
-.cardOpcinesRPagosVehiculoProduccionPanelDespachoBusqueda
-{
+.cardOpcinesRPagosVehiculoProduccionPanelDespachoBusqueda {
   display: flex;
   align-items: center;
 }
