@@ -389,23 +389,54 @@
       <ComponenteTarjetaA4 ref="ComponenteTarjetaA4"></ComponenteTarjetaA4>
     </modal>
 
-    <!--Form modal TICKET (A4) SALIDA-->
     <modal :show.sync="modalRubro" size="xl">
+      <template slot="header">
+        {{
+          titulo_modal_add_anotacion == null
+            ? ""
+            : "Unidad N° : " +
+              titulo_modal_add_anotacion.CodiVehiSali_m +
+              " Vuelta N° : " +
+              titulo_modal_add_anotacion.NumeVuelSali_m +
+              " Ruta : " +
+              titulo_modal_add_anotacion.DescRutaSali_m +
+              " (" +
+              titulo_modal_add_anotacion.HoraSaliProgSali_m +
+              " - " +
+              titulo_modal_add_anotacion.HoraLlegProgSali_m +
+              ")"
+        }}
+      </template>
 
       <div class="container-add-rubro">
-        <el-select v-model="oSelectRubro" filterable placeholder="RUBROS" style="width: 30%;margin-right: 0.5rem;">
-        <el-option
-          v-for="item in mListTipoRubro"
-          :key="item.id"
-          :label="'('+item.precio + ' $) ' + item.descripcion"
-          :value="item.id"
+        <el-select
+          v-model="oSelectRubro"
+          filterable
+          placeholder="RUBROS"
+          style="width: 30%; margin-right: 0.5rem"
         >
-        </el-option>
-      </el-select>
+          <el-option
+            v-for="item in mListTipoRubro"
+            :key="item.id"
+            :label="'(' + item.precio + ' $) ' + item.descripcion"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
 
-      <el-input type="textarea" v-model="oTextAreaAnotacion" style="width: 50%;margin-right: 0.5rem;" ></el-input>
+        <el-input
+          type="textarea"
+          v-model="oTextAreaAnotacion"
+          style="width: 50%; margin-right: 0.5rem"
+        ></el-input>
 
-      <base-button size="sm" icon="ni ni-circle-08 pt-1" type="default">AGREGAR</base-button>
+        <base-button
+          size="sm"
+          icon="ni ni-circle-08 pt-1"
+          type="default"
+          @click="insertNuevoRubro()"
+          >AGREGAR</base-button
+        >
       </div>
 
       <el-table
@@ -591,10 +622,11 @@ export default {
       modalRubro: false,
       mListaRubros: [],
       loadingRubrosList: true,
-      mListTipoRubro:[],
-      oSelectRubro:null,
-      oTextAreaAnotacion:null
-    };
+      mListTipoRubro: [],
+      oSelectRubro: null,
+      oTextAreaAnotacion: '',
+      titulo_modal_add_anotacion: null,
+    }
   },
   methods: {
     remoteMethodUnidadesSalidasPanelBusqueda(query) {
@@ -1344,12 +1376,16 @@ export default {
       pdfMake.createPdf(docDefinition).download("RSD_" + Date.now());
     },
     showModalRubro(item) {
-      this.mListaRubros = [];
+      this.oSelectRubro = null;
+      this.oTextAreaAnotacion = '';
+      this.mListaRubros = []
       this.filaSelectionCurrentSalidaPanelBusqueda = item;
+      this.titulo_modal_add_anotacion = item;
       this.modalRubro = true;
       this.readDetalleRubros();
     },
     async readDetalleRubros() {
+      this.mListaRubros = []
       this.loadingRubrosList = true;
       //console.log(this.filaSelectionCurrentSalidaPanelBusqueda)
       try {
@@ -1396,7 +1432,7 @@ export default {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/AllTipoRubros",
           {
-            token: this.token
+            token: this.token,
           }
         );
 
@@ -1407,10 +1443,67 @@ export default {
         console.log(error);
       }
     },
+
+    async insertNuevoRubro() {
+      try {
+        if (this.oSelectRubro != null) {
+          var datos = await this.$axios.post(
+            process.env.baseUrl + "/crearNuevoRubro",
+            {
+              token: this.token,
+              salida_id: this.filaSelectionCurrentSalidaPanelBusqueda.idSali_m,
+              vehiculo_codigo:
+                this.filaSelectionCurrentSalidaPanelBusqueda.CodiVehiSali_m,
+              item_id: this.oSelectRubro,
+              monto: this.getValorRubro(this.oSelectRubro),
+              anotaciones: this.oTextAreaAnotacion,
+            }
+          );
+
+          if (datos.data.status_code == 200) {
+            this.oSelectRubro = null
+            this.oTextAreaAnotacion = ''
+            this.readDetalleRubros();
+          } else {
+            this.$notify({
+              title: "RUBROS SALIDA",
+              message: datos.data.msm,
+              type: "default",
+            });
+          }
+        } else {
+          this.$notify({
+            title: "RUBROS SALIDA",
+            message: "DEBE SELECCIONAR UN RUBRO",
+            type: "warning",
+          });
+        }
+      } catch (error) {
+        this.$notify({
+          title: "Error TRY CATCH",
+          message: error.toString(),
+          type: "danger",
+        });
+      }
+    },
+
+    getValorRubro(id_rubro) {
+      try {
+        for (var i = 0; i < this.mListTipoRubro.length; i++) {
+          if (this.mListTipoRubro[i].id == id_rubro) {
+            return parseFloat(this.mListTipoRubro[i].precio);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      return 0;
+    },
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
-    this.readTipoRubro()
+    this.readTipoRubro();
     this.readAllUnidadesSalidasPanelBusqueda();
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllLineasContadorSalidasPanelBusqueda();
@@ -1419,8 +1512,7 @@ export default {
 };
 </script>
 <style>
-
-.container-add-rubro{
+.container-add-rubro {
   display: flex;
   justify-content: center;
   align-items: center;

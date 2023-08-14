@@ -110,7 +110,7 @@
               </span>
               <small>Monitoreo</small>
             </a>
-            <a href="./produccion/tablero" class="col-4 shortcut-item"
+            <a :href=pathProduccionTablero class="col-4 shortcut-item"
               v-if="permisos != null && permisos.produccion != null && permisos.produccion.active != null && permisos.produccion.active">
               <span class="shortcut-media avatar rounded-circle bg-gradient-info">
                 <i class="ni ni-credit-card"></i>
@@ -238,7 +238,8 @@ export default {
       searchQuery: "",
       permisos: null,
       oEspacio:false,
-      nameEmpresa:"Gestión Inteligente de Transporte Urbano"
+      nameEmpresa:"Gestión Inteligente de Transporte Urbano",
+      pathProduccionTablero:'/produccion/tablero'
     };
   },
   methods: {
@@ -331,6 +332,14 @@ export default {
       this.mueveReloj();
     }, 1000);*/
 
+
+    this.oPermisosWebProduccionPanelJSON = this.$cookies.get("WebProduccion")
+    this.pathProduccionTablero = (this.oPermisosWebProduccionPanelJSON != null &&  
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
+                               this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? 
+                               '/produccion/tableroVueltas' :  '/produccion/tablero'
+
+                               
   },
 };
 </script>
