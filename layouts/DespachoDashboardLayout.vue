@@ -124,6 +124,21 @@
             }"
           />
 
+
+          <sidebar-item
+            translate="no"
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles3 !=
+                null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles3
+            "
+            :link="{
+              name: 'R. Salidas Controles',
+              path: './rSalidasControles3',
+            }"
+          />
+
         </sidebar-item>
       </template>
     </side-bar>

@@ -377,6 +377,15 @@
               >
               </el-table-column>
 
+              <el-table-column prop="RubroFPenalidad" label="Rubros" minWidth="60">
+            </el-table-column>
+            <el-table-column
+              prop="RubroJPenalidad"
+              label="Rubros Jus."
+              minWidth="100"
+            >
+            </el-table-column>
+
               <el-table-column
                 prop="FechaJustifica"
                 label="F. Justificación"
@@ -1030,7 +1039,6 @@ export default {
         return ""
       }
     },
-
 
     async readHISTORIALTrazadoAllTramosTableroProduccion(item) {
       this.oCenterTableroExVelocidad = { lat: -1.249546, lng: -78.585376 }

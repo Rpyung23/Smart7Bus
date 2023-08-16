@@ -34,7 +34,7 @@
               </div>
             </div>
             <div class="card-body">
-              <div class="card-body">
+              <div style="margin-bottom: 0.5rem;">
                 <div class="text-center">
                   <strong>{{ sub_empresa_texto }}</strong>
                 </div>
