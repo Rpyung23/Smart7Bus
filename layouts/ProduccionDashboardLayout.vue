@@ -19,7 +19,6 @@
         }">
         </sidebar-item>
 
-
         <sidebar-item translate="no" :link="{
           name: 'Tablero Cobros',
           icon: 'ni ni-money-coins text-success',
@@ -56,7 +55,9 @@
           <sidebar-item translate="no"
             :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }" />
           <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
+          <sidebar-item translate="no" :link="{ name: 'Minutos Sancion Consorcio', path: './rminutosSancionConsorcio' }" />
           <sidebar-item translate="no" :link="{ name: 'Resumidos Vehiculo', path: pathResumidoVehiculo }" />
+
           <sidebar-item translate="no" :link="{ name: 'Reporte Perjudicado', path: './rPerjudicado' }" />
 
           <!--<sidebar-item
