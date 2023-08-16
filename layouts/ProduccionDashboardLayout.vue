@@ -123,7 +123,8 @@ export default {
       pathRminutostarjeta: './rminutostarjeta',
       pathResumidoVehiculo: './resumidovehiculo',
       rminutosjustificadosvuelta: false,
-      rminutosjustificados: false
+      rminutosjustificados: false,
+      rPerjudicado:false
     }
   },
   methods: {
@@ -146,6 +147,12 @@ export default {
       permisos.produccion.reportes != null &&
       permisos.produccion.reportes.RMinutosJustificadosVuelta != null &&
       permisos.produccion.reportes.RMinutosJustificadosVuelta) ? true : false
+
+
+    this.rPerjudicado = (permisos.produccion != null &&
+      permisos.produccion.reportes != null &&
+      permisos.produccion.reportes.rPerjudicado != null &&
+      permisos.produccion.reportes.rPerjudicado == 1) ? true : false 
 
     this.rminutosjustificados = (permisos.produccion != null &&
       permisos.produccion.reportes != null &&
