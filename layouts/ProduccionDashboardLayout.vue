@@ -55,9 +55,10 @@
 
           <sidebar-item translate="no"
             :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }" />
-          <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
+          
+            <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
           <sidebar-item translate="no" :link="{ name: 'Resumidos Vehiculo', path: pathResumidoVehiculo }" />
-          <sidebar-item translate="no" :link="{ name: 'Reporte Perjudicado', path: './rPerjudicado' }" />
+          <sidebar-item translate="no" v-if="rminutosjustificados" :link="{ name: 'Reporte Perjudicado', path: './rPerjudicado' }" />
 
           <!--<sidebar-item
             :link="{ name: 'Pagos Vehiculo Resumido', path: './rpagosvehiculoresumido' }"
@@ -122,7 +123,8 @@ export default {
       pathRminutostarjeta: './rminutostarjeta',
       pathResumidoVehiculo: './resumidovehiculo',
       rminutosjustificadosvuelta: false,
-      rminutosjustificados: false
+      rminutosjustificados: false,
+      rPerjudicado:false
     }
   },
   methods: {
@@ -145,6 +147,12 @@ export default {
       permisos.produccion.reportes != null &&
       permisos.produccion.reportes.RMinutosJustificadosVuelta != null &&
       permisos.produccion.reportes.RMinutosJustificadosVuelta) ? true : false
+
+
+    this.rPerjudicado = (permisos.produccion != null &&
+      permisos.produccion.reportes != null &&
+      permisos.produccion.reportes.rPerjudicado != null &&
+      permisos.produccion.reportes.rPerjudicado == 1) ? true : false 
 
     this.rminutosjustificados = (permisos.produccion != null &&
       permisos.produccion.reportes != null &&
