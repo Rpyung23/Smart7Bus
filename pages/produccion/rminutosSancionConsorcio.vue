@@ -97,7 +97,7 @@
 
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem"
+        <card class="no-border-card" style="margin-bottom: 0rem; height: 72vh;"
           body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
           <embed id="iframeContainerrMinutosTarjetas" type="application/pdf" width="100%" height="100%" />
         </card>
@@ -296,17 +296,63 @@ export default {
       });
 
       this.oBase64IndicadoresCalidad = "";
-      
-      
+
+
       this.generatePdf();
       swal.close();
     },
 
-    generatePdf(){
+    generatePdf() {
+
+      const componenteTabla = (titulo) => {
+        const table = {
+          headerRows: 1,
+          widths: ['auto', 'auto', 'auto', 'auto'],
+          body: [
+            [{ text: titulo, colSpan: 4, alignment: 'center' }, {}, {}, {}],
+            [{ text: 'Unidad' }, { text: 'Multas' }, { text: 'Tarjetas' }, { text: 'Suspensión' }]],
+        }
+        for (let index = 0; index < 10; index++) {
+          table.body.push([{ text: '1' }, { text: '6.00' }, { text: '5.00' }, { text: '-' }])
+
+        }
+        table.body.push([{ text: '', border: [false, true, false, true] }, { text: '10', border: [false, true, false, true] }, { text: '60', border: [false, true, false, true] }, { text: '50', border: [false, true, false, true] },])
+        return ({
+          table
+        })
+      }
+      const componenteTotal = () => {
+        const table = {
+          headerRows: 0,
+          widths: [80, 100],
+          
+          body: [
+            [{ text: 'Multas', border: [false, false, false, false],margin: [ 0, 20, 0, 0 ] }, { text: '40', border: [false, false, false, false], margin: [ 0, 20, 0, 0 ] }],
+            [{ text: 'Tarjetas', border: [false, false, false, false] }, { text: '40', border: [false, false, false, false] }],
+            [{ text: 'Suspensión', border: [false, false, false, false] }, { text: '40', border: [false, false, false, true] }],
+            [{ text: 'Total', border: [false, false, false, false] }, { text: '40', border: [false, false, false, false] }],
+
+          ],
+
+        }
+        return ({ table })
+      }
+
+      const componentePdf = (datos) => {
+        const contenido = [];
+        const columns = [];
+        columns.push(componenteTabla('Expreso Milagro'));
+        columns.push(componenteTabla('Ruta Milagreña'));
+        columns.push(componenteTabla('Ejecutivo Expres'));
+        contenido.push({ columns })
+        contenido.push(componenteTotal())
+        return contenido;
+      }
+
 
       var docDefinition = {
         pageSize: "A4",
-        pageOrientation: "portrait",
+        pageOrientation: "landscape",
         pageMargins: [30, 80, 40, 30],
         header: {
           margin: 15,
@@ -319,12 +365,13 @@ export default {
             },
             {
               layout: "noBorders",
+              margin: [120, 0, 0, 0],
               table: {
-                widths: ["*"],
+                widths: ["400"],
                 body: [
                   [
                     {
-                      text: "REPORTE MINUTOS TARJETAS DIARIOS",
+                      text: "REPORTE MINUTOS SANCION CONSORCIO",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
@@ -338,14 +385,22 @@ export default {
                       bold: true,
                     },
                   ],
+                  [
+                    {
+                      text: "Detalles cobrados del dia " + this.fechaInicialRPagosVehiculoProduccionRecibo + " hasta " + this.fechaFinalRPagosVehiculoProduccionRecibo,
+                      alignment: "center",
+                      fontSize: 12,
+
+                    },
+                  ],
                 ],
               },
             },
           ],
         },
-        
-        
+        content: componentePdf([])
       };
+
 
       var pdfDocGenerator = pdfMake.createPdf(docDefinition);
       pdfDocGenerator.getBlob((blob) => {
