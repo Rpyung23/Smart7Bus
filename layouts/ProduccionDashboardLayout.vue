@@ -12,7 +12,7 @@
         </sidebar-item>
 
 
-        <sidebar-item translate="no" :link="{
+        <sidebar-item translate="no" v-if="TableroPerjudicado" :link="{
           name: 'Perjudicado',
           icon: 'ni ni-bus-front-12 text-warning',
           path: './tableroPerjudicaVueltas',
@@ -55,7 +55,7 @@
           <sidebar-item translate="no"
             :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }" />
           <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
-          <sidebar-item translate="no" :link="{ name: 'Minutos Sancion Consorcio', path: './rminutosSancionConsorcio' }" />
+          <sidebar-item translate="no" v-if="rminutossancionconsorcio" :link="{ name: 'Minutos Sancion Consorcio', path: './rminutosSancionConsorcio' }" />
           <sidebar-item translate="no" :link="{ name: 'Resumidos Vehiculo', path: pathResumidoVehiculo }" />
 
           <sidebar-item translate="no" :link="{ name: 'Reporte Perjudicado', path: './rPerjudicado' }" />
@@ -107,6 +107,7 @@ function initScrollbar(className) {
 import DashboardNavbar from "~/components/layouts/argon/DashboardNavbar.vue";
 import DashboardContent from "~/components/layouts/argon/Content.vue";
 import RMinutosJustificadosVuelta from "../pages/produccion/rMinutosJustificadosVuelta.vue";
+import RminutosSancionConsorcio from "../pages/produccion/rminutosSancionConsorcio.vue";
 
 export default {
   components: {
@@ -124,7 +125,9 @@ export default {
       pathResumidoVehiculo: './resumidovehiculo',
       rminutosjustificadosvuelta: false,
       rminutosjustificados: false,
-      rPerjudicado:false
+      rPerjudicado:false,
+      rminutossancionconsorcio:false,
+      TableroPerjudicado:false
     }
   },
   methods: {
@@ -142,6 +145,16 @@ export default {
     this.oPermisosWebProduccionPanelJSON = this.$cookies.get("WebProduccion")
 
     var permisos = this.$cookies.get("permisos")
+
+
+    this.TableroPerjudicado = (permisos.produccion != null &&
+      permisos.produccion.TableroPerjudicado != null &&
+      permisos.produccion.TableroPerjudicado) ? true : false
+
+    this.rminutossancionconsorcio = (permisos.produccion != null &&
+      permisos.produccion.reportes != null &&
+      permisos.produccion.reportes.rminutossancionconsorcio != null &&
+      permisos.produccion.reportes.rminutossancionconsorcio) ? true : false 
 
     this.rminutosjustificadosvuelta = (permisos.produccion != null &&
       permisos.produccion.reportes != null &&

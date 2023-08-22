@@ -266,7 +266,7 @@
                 </div>
               </div>
 
-              <!--<div class="navbarModal">
+              <div class="navbarModal">
                 <strong style="color: red">{{ oPriceFalta }} $</strong>
                 <div
                   class="containerButtonMasMenos bg-gradient-default border-0"
@@ -289,7 +289,7 @@
                     class="inputTimer"
                   />
                 </div>
-              </div>-->
+              </div>
             </div>
 
             <div class="containerRigthTopNavbarModal">
@@ -596,14 +596,84 @@ export default {
 
       this.fechaInicialTableroProduccion = format;
     },
-    selectionChange(selectedRows) {
-      var obj = selectedRows;
+    selectionChange(selectedRows) 
+    {
+      try {
+        var obj = selectedRows;
       this.objSeleccionado = obj;
       console.log("objSeleccionado");
       console.log(this.objSeleccionado);
       if (obj != null && obj != undefined) 
       {
-        this.oMotivoString = obj.Motivo;
+
+        if(parseFloat(obj.RubroPenalidad) > 0)
+        {
+          this.oUsuarioJustificador = obj.NombApellUsua;
+          this.oMotivoString = obj.Motivo;
+
+          if (obj.RubroPenalidad == "0.00") {
+            if (obj.TarjetaTrabajo == "0.00") {
+              this.oPriceFalta = "0.00";
+            } else {
+              this.oPriceFalta = obj.TarjetaTrabajo;
+              var dinero = this.oPriceFalta.split(".");
+              if (dinero[0].length == 1) {
+                this.oDolaresPena = 0 + dinero[0];
+              } else if (this.oDolaresPena > dinero[0]) {
+                this.oDolaresPena = dinero[0];
+              }
+              if (dinero[1].length == 1) {
+                this.oCentavosPena = 0 + dinero[1];
+              } else if (this.oCentavosPena > dinero[1]) {
+                this.oCentavosPena = dinero[1];
+              }
+            }
+          } else {
+            this.oPriceFalta = obj.RubroPenalidad;
+            var dinero = this.oPriceFalta.split(".");
+
+            console.log("-------------------------------------------");
+            console.log(dinero[0]);
+            console.log(dinero[1]);
+            console.log("-------------------------------------------");
+
+            if (dinero[0].length == 1) {
+              this.oDolaresPena = 0 + dinero[0];
+            } else if (this.oDolaresPena > dinero[0]) {
+              this.oDolaresPena = dinero[0];
+            } else {
+              this.oDolaresPena = dinero[0];
+            }
+
+            if (dinero[1].length == 1) {
+              this.oCentavosPena = 0 + dinero[1];
+            } else {
+              this.oCentavosPena = dinero[1];
+            }
+          }
+          if (this.oPriceFalta > 0) {
+            this.oTiempoFalta = "00:00:00";
+            var tiempo = this.oTiempoFalta.split(":");
+            this.oHora = tiempo[0];
+            this.oMinutos = tiempo[1];
+            this.oSegundos = tiempo[2];
+            this.oBanderaHora = 1;
+            this.oBanderaMinutos = 1;
+            this.oBanderaSegundos = 1;
+          }
+          console.log("//////////////////");
+          console.log(this.oCentavosPena);
+
+          this.oBanderaDolares = this.oDolaresPena == "00" ? 1 : 0;
+          if (parseFloat(dinero[1]) == 0) {
+            this.oBanderaCentavos = 1;
+          } else {
+            this.oBanderaCentavos = 0;
+          }
+
+        }else{
+
+          this.oMotivoString = obj.Motivo;
           this.oPriceFalta = "00.00";
           this.oDolaresPena = "00";
           this.oCentavosPena = "00";
@@ -624,6 +694,11 @@ export default {
           this.oBanderaSegundos = 0;
           this.oBanderaDolares = 1;
           this.oBanderaCentavos = 1;
+
+        }
+      }
+      } catch (error) {
+       console.log(error) 
       }
     },
     async readlPanelTableroProduccion() {
@@ -824,7 +899,13 @@ export default {
     },
     async registerJustificacionProduccion() {
 
+      console.log(this.objSeleccionado)
+
       var tiempo = this.oHora + ":" + this.oMinutos + ":" + this.oSegundos
+
+      var dinero =
+        this.objSeleccionado.Tipo == 3 ? this.oDolaresPena + "." + this.oCentavosPena
+          : "0.00";
 
       var objBody = {
         token: this.token,
@@ -832,7 +913,10 @@ export default {
         salidaD: this.objSeleccionado.Codigo,
         tiempo: tiempo,
         motivo: this.oMotivoString == null ? '' : this.oMotivoString,
-      };
+        valor: parseFloat(dinero)
+      }
+
+      console.log(objBody)
 
       try {
         var datos = await this.$axios.post(

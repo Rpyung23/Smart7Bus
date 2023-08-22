@@ -2,26 +2,27 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2">
+          footer-classes="pb-2"
+        >
           <div class="cardTextoRPagosVehiculoProduccion">
-
-
             <!--<el-autocomplete class="inline-input" v-model="itemUnidadCobrosPorRubros" []ltiple
                 collapse-tags :fetch-suggestions="
                   querySearchUnidadProduccionRPagoVehiculoRecibo
                 " style="margin-right: 0.5rem" placeholder="Unidad" prefix-icon="ni ni-bus-front-12"
                 :trigger-on-focus="false" @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"></el-autocomplete>-->
 
-            <el-select v-model="itemUnidadCobrosPorRubros" multiple filterable remote placeholder="Unidades"
+            <!--<el-select v-model="itemUnidadCobrosPorRubros" multiple filterable remote placeholder="Unidades"
               prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
               :remote-method="remoteMethodUnidadesCobrosPorOperador"
               :loading="loadingTableUnidadesRecibosVehiculoProduccion">
               <el-option v-for="item in optionsUnidadesCobrosPorOperador" :key="item.CodiVehi" :label="item.CodiVehi"
                 :value="item.CodiVehi">
               </el-option>
-            </el-select>
+            </el-select>-->
 
             <!--<el-select v-model="itemRubroCobrosPorRubros" multiple filterable remote
                 placeholder="Operador" prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
@@ -32,27 +33,43 @@
                 </el-option>
               </el-select>-->
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaInicialRPagosVehiculoProduccionRecibo">
+            <base-input
+              addon-left-icon="ni ni-calendar-grid-58"
+              style="margin-right: 0.5rem"
+            >
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaInicialRPagosVehiculoProduccionRecibo"
+              >
               </flat-picker>
             </base-input>
 
-            <base-input style="margin-right: 0.5rem" addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker" v-model="fechaFinalRPagosVehiculoProduccionRecibo">
+            <base-input
+              style="margin-right: 0.5rem"
+              addon-left-icon="ni ni-calendar-grid-58"
+            >
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker"
+                v-model="fechaFinalRPagosVehiculoProduccionRecibo"
+              >
               </flat-picker>
             </base-input>
-
-
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-
-
             <div class="buttonCenterEndDerecha">
-              <base-button icon type="primary" size="sm" @click="readAllRPagosVehiculoProduccionRecibos()">
-                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              <base-button icon type="primary" size="sm" @click="generatePdf()">
+                <span class="btn-inner--icon"
+                  ><i class="el-icon-search"></i
+                ></span>
               </base-button>
 
               <!--download-excel v-if="tableDataRPagosVEhiculoProduccionRecibo.length > 0 ? true : false" 
@@ -66,7 +83,7 @@
           </div>
         </card>
 
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <!--<card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
           footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
@@ -75,13 +92,6 @@
               placeholder="Todas las Lineas">
               <el-option v-for="item in mListaLineasActivosCobrosRubros" :key="item.LetrRuta" :label="item.DescRuta"
                 :value="item.idRuta">
-              </el-option>
-            </el-select>
-
-            <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRubroCobrosPorRubros" multiple
-              placeholder="Todos los Rubros">
-              <el-option v-for="item in mListaRubrosActivosCobrosRubros" :key="item.id" :label="item.descripcion"
-                :value="item.id">
               </el-option>
             </el-select>
 
@@ -95,25 +105,37 @@
 
           </div>
 
+        </card>-->
+
+        <card
+          class="no-border-card"
+          style="margin-bottom: 0rem; height: calc(100vh - 23vh)"
+          body-classes="body0 px-0 pb-1"
+          footer-classes="pb-2"
+        >
+          <embed
+            id="iframeContainerrMinutosTarjetas"
+            type="application/pdf"
+            width="100%"
+            height="100%"
+          />
         </card>
-
-        <card class="no-border-card" style="margin-bottom: 0rem; height: 72vh;"
-          body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
-          <embed id="iframeContainerrMinutosTarjetas" type="application/pdf" width="100%" height="100%" />
-        </card>
-
-
       </div>
     </base-header>
 
     <!--Form modal-->
     <modal :show.sync="modalsReciboProduccion" size="sm" body-classes="p-0">
-      <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
-        <iframe :src="baseURlPDFPanelDetalleRecibo" style="width: 100%; height: 33rem"></iframe>
+      <card
+        type="secondary"
+        header-classes="bg-transparent pb-5"
+        class="border-0 mb-0"
+      >
+        <iframe
+          :src="baseURlPDFPanelDetalleRecibo"
+          style="width: 100%; height: 33rem"
+        ></iframe>
       </card>
     </modal>
-
-
   </div>
 </template>
 <script>
@@ -140,6 +162,7 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getBase64LogoReportes } from "../../util/logoReport";
+import { getFecha_dd_mm_yyyy, FechaStringToHour } from "../../util/fechas";
 
 export default {
   mixins: [clientPaginationMixin],
@@ -160,7 +183,7 @@ export default {
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
     [Button.name]: Button,
-    [Switch.name]: Switch
+    [Switch.name]: Switch,
   },
   data() {
     return {
@@ -189,7 +212,7 @@ export default {
       optionsCobradoresProduccionPagosVehiculo: [],
       loadingTableUnidadesRecibosVehiculoProduccion: false,
       loadingTableCobradoresRecibosVehiculoProduccion: false,
-      baseURlPDFPanelDetalleRecibo: '',
+      baseURlPDFPanelDetalleRecibo: "",
       RecibosWorksheetExcelRPagosVehiculoProduccion: "",
       RecibosFileNameExcelRPagosVehiculoProduccion: "",
       mListaGruposPenalidadesSemanales: [],
@@ -210,15 +233,6 @@ export default {
         }, 200);
       } else {
         this.optionsUnidadesCobrosPorOperador = [];
-      }
-    },
-    tableRowClassNameRPagosVehiculoProduccionRecibo({ row, rowIndex }) {
-      if (row.EstadoCobro == 0) {
-        //row.estado = "ANULADO";
-        return "warning-row-panelControlProduccion";
-      } else if (row.EstadoCobro == 1) {
-        //row.estado = "PAGADO";
-        return "success-row-panelControlProduccion";
       }
     },
     initFechaActualProduccionRPAgosVehiculoRecibo() {
@@ -250,33 +264,20 @@ export default {
         }
       }
     },
-    async readAllRubrosActivosCobrosRubros() {
-      this.mListaRubrosActivosCobrosRubros = []
-
-      var datos = await this.$axios.post(process.env.baseUrl + "/rubros-activos", {
-        token: this.token,
-      });
-
-      if (datos.data.status_code == 200) {
-        this.mListaRubrosActivosCobrosRubros.push(...datos.data.datos)
-      }
-    },
     async readAllLineasActivosCobrosRubros() {
-      this.mListaLineasActivosCobrosRubros = []
+      this.mListaLineasActivosCobrosRubros = [];
 
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
-        tipo: 1
+        tipo: 1,
       });
 
       if (datos.data.status_code == 200) {
-        this.mListaLineasActivosCobrosRubros.push(...datos.data.data)
+        this.mListaLineasActivosCobrosRubros.push(...datos.data.data);
       }
     },
-    async readAllRPagosVehiculoProduccionRecibos() {
 
-      let iframe = document.getElementById("iframeContainerrMinutosTarjetas");
-      iframe.src = "";
+    async generatePdf() {
 
       swal.fire({
         title: "Generando Reporte ...",
@@ -295,60 +296,121 @@ export default {
                   `,
       });
 
-      this.oBase64IndicadoresCalidad = "";
+      var DatoApi = []
+      var oMultas = "0.00"
+      var oTarjeta = "0.00"
+      var oSuspension = "0.00"
+      var oTotal = "0.00"
+
+      document.getElementById("iframeContainerrMinutosTarjetas").src = ""
 
 
-      this.generatePdf();
-      swal.close();
-    },
+      try {
+        var response = await this.$axios.post(
+          process.env.baseUrl + "/MinutoSancionConsorcio",
+          {
+            token: this.token,
+            fechaI: getFecha_dd_mm_yyyy(
+              this.fechaInicialRPagosVehiculoProduccionRecibo
+            ),
+            fechaF: getFecha_dd_mm_yyyy(
+              this.fechaFinalRPagosVehiculoProduccionRecibo
+            ),
+          }
+        );
 
-    generatePdf() {
-
-      const componenteTabla = (titulo) => {
-        const table = {
-          headerRows: 1,
-          widths: ['auto', 'auto', 'auto', 'auto'],
-          body: [
-            [{ text: titulo, colSpan: 4, alignment: 'center' }, {}, {}, {}],
-            [{ text: 'Unidad' }, { text: 'Multas' }, { text: 'Tarjetas' }, { text: 'Suspensión' }]],
+        DatoApi.push(...response.data.datos)
+        
+        
+        for(var i = 0;i<DatoApi.length;i++)
+        {
+          oMultas = parseFloat(DatoApi[i].AtrasoPenalidad) + parseFloat(oMultas) 
+          oTarjeta = parseFloat(DatoApi[i].TarjetaDiaria) + parseFloat(oTarjeta)
+          oSuspension = parseFloat(DatoApi[i].RubroPenalidad) + parseFloat(oSuspension)
+          oTotal = oSuspension + oTarjeta + oMultas 
         }
-        for (let index = 0; index < 10; index++) {
-          table.body.push([{ text: '1' }, { text: '6.00' }, { text: '5.00' }, { text: '-' }])
 
-        }
-        table.body.push([{ text: '', border: [false, true, false, true] }, { text: '10', border: [false, true, false, true] }, { text: '60', border: [false, true, false, true] }, { text: '50', border: [false, true, false, true] },])
-        return ({
-          table
-        })
+
+      } catch (error) {
+        console.log(error);
       }
+
+      const componenteTabla = (titulo, id_) => {
+        const table = {
+          headerRows: 0,
+          widths: ["auto", "auto", "auto", "auto"],
+          body: [
+            [{ text: titulo, colSpan: 4, alignment: "center" }, {}, {}, {}],
+            [
+              { text: "Unidad",bold:true },
+              { text: "Multas", alignment: "center",bold:true },
+              { text: "Tarjetas", alignment: "center",bold:true },
+              { text: "Suspensión", alignment: "center",bold:true },
+            ],
+          ],
+        };
+
+        for (let index = 0; index < DatoApi.length; index++) {
+          if (id_ == DatoApi[index].id_descripcion) {
+            table.body.push([
+              { text: DatoApi[index].CodiVehiSali_m },
+              { text: DatoApi[index].AtrasoPenalidad, alignment: "center" },
+              { text: DatoApi[index].TarjetaDiaria, alignment: "center" },
+              { text: DatoApi[index].RubroPenalidad, alignment: "center" },
+            ]);
+          }
+        }
+        //table.body.push([{ text: '', border: [false, true, false, true] }, { text: '10', border: [false, true, false, true] }, { text: '60', border: [false, true, false, true] }, { text: '50', border: [false, true, false, true] },])
+        return {
+          table,
+        };
+      };
+
       const componenteTotal = () => {
         const table = {
           headerRows: 0,
           widths: [80, 100],
-          
+
           body: [
-            [{ text: 'Multas', border: [false, false, false, false],margin: [ 0, 20, 0, 0 ] }, { text: '40', border: [false, false, false, false], margin: [ 0, 20, 0, 0 ] }],
-            [{ text: 'Tarjetas', border: [false, false, false, false] }, { text: '40', border: [false, false, false, false] }],
-            [{ text: 'Suspensión', border: [false, false, false, false] }, { text: '40', border: [false, false, false, true] }],
-            [{ text: 'Total', border: [false, false, false, false] }, { text: '40', border: [false, false, false, false] }],
-
+            [
+              {
+                text: "Multas",
+                border: [false, false, false, false],
+                margin: [0, 20, 0, 0],
+              },
+              {
+                text: Number(oMultas).toFixed(2),
+                border: [false, false, false, false],
+                margin: [0, 20, 0, 0],
+              },
+            ],
+            [
+              { text: "Tarjetas", border: [false, false, false, false] },
+              { text: Number(oTarjeta).toFixed(2), border: [false, false, false, false] },
+            ],
+            [
+              { text: "Suspensión", border: [false, false, false, false] },
+              { text: Number(oSuspension).toFixed(2), border: [false, false, false, true] },
+            ],
+            [
+              { text: "Total", border: [false, false, false, false] },
+              { text: Number(oTotal).toFixed(2),bold:true, border: [false, false, false, false] },
+            ],
           ],
-
-        }
-        return ({ table })
-      }
+        };
+        return { table };
+      };
 
       const componentePdf = (datos) => {
         const contenido = [];
         const columns = [];
-        columns.push(componenteTabla('Expreso Milagro'));
-        columns.push(componenteTabla('Ruta Milagreña'));
-        columns.push(componenteTabla('Ejecutivo Expres'));
-        contenido.push({ columns })
-        contenido.push(componenteTotal())
+        columns.push(componenteTabla("Expreso Milagro", 0));
+        columns.push(componenteTabla("Ruta Milagreña", 1));
+        columns.push(componenteTabla("Ejecutivo Expres", 2));
+        contenido.push({ columns });
+        contenido.push(componenteTotal());
         return contenido;
-      }
-
+      };
 
       var docDefinition = {
         pageSize: "A4",
@@ -387,10 +449,13 @@ export default {
                   ],
                   [
                     {
-                      text: "Detalles cobrados del dia " + this.fechaInicialRPagosVehiculoProduccionRecibo + " hasta " + this.fechaFinalRPagosVehiculoProduccionRecibo,
+                      text:
+                        "Detalles cobrados del dia " +
+                        this.fechaInicialRPagosVehiculoProduccionRecibo +
+                        " hasta " +
+                        this.fechaFinalRPagosVehiculoProduccionRecibo,
                       alignment: "center",
                       fontSize: 12,
-
                     },
                   ],
                 ],
@@ -398,41 +463,20 @@ export default {
             },
           ],
         },
-        content: componentePdf([])
+        content: componentePdf([]),
       };
-
 
       var pdfDocGenerator = pdfMake.createPdf(docDefinition);
       pdfDocGenerator.getBlob((blob) => {
         var pdfUrl = URL.createObjectURL(blob);
         let iframe = document.getElementById("iframeContainerrMinutosTarjetas");
         iframe.src = pdfUrl;
-      });
+      })
+
+      swal.close()
+
     },
 
-    async readAllDetalleReciboPagosVehiculoProduccion(index, item) {
-      this.modalsReciboProduccion = true;
-      try {
-        var datos = await this.$axios.post(
-          process.env.baseUrl + "/ProduccionDetalleRecibosPagosVehiculo",
-          {
-            token: this.token,
-            recibo: item.numero_cobro,
-            nameEmpresa: this.$cookies.get('nameEmpresa'),
-            unidad: item.Unidad,
-            fechaPago: item.fecha_cobro,
-          }
-        );
-
-        this.baseURlPDFPanelDetalleRecibo = "data:application/pdf;base64," + datos.data.datos
-      } catch (error) {
-        Notification.error({
-          title: "ERROR CATCH Reporte Pagos Vehiculo",
-          message: error.toString(),
-          duration: 2500,
-        });
-      }
-    },
     async readGruposActivosPenalidadesSemanales() {
       this.mListaGruposPenalidadesSemanales = [];
 
@@ -449,18 +493,20 @@ export default {
     },
   },
   mounted() {
-    this.readAllRubrosActivosCobrosRubros()
     this.readGruposActivosPenalidadesSemanales();
-    this.readAllLineasActivosCobrosRubros()
-    this.readAllUnidadesPagosVehiculoProduccionRecibo()
-    this.initFechaActualProduccionRPAgosVehiculoRecibo()
+    this.readAllLineasActivosCobrosRubros();
+    this.readAllUnidadesPagosVehiculoProduccionRecibo();
+    this.initFechaActualProduccionRPAgosVehiculoRecibo();
   },
 };
 </script>
 <style>
-.form-group {
-  margin-bottom: 0rem;
+.body0 {
+  padding-right: 0.2rem;
+  padding-left: 0.2rem;
+  padding-top: 0.2rem;
 }
+
 
 .form-controlPersonal {
   display: block;
@@ -522,4 +568,3 @@ export default {
   padding-top: 0.25rem !important;
 }
 </style>
-  
