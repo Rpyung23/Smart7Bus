@@ -15,7 +15,7 @@
         <sidebar-item translate="no" v-if="TableroPerjudicado" :link="{
           name: 'Perjudicado',
           icon: 'ni ni-bus-front-12 text-warning',
-          path: './tableroPerjudicaVueltas',
+          path: '/tableroPerjudicaVueltas',
         }">
         </sidebar-item>
 
@@ -42,26 +42,26 @@
         }">
 
 
-          <sidebar-item translate="no" :link="{ name: 'Valores Acumuladas', path: './rdeudasacumuladas' }" />
+          <sidebar-item translate="no" :link="{ name: 'Valores Acumuladas', path: '/rdeudasacumuladas' }" />
 
           <sidebar-item translate="no" :link="{ name: 'Minutos y Tarjetas', path: pathRminutostarjeta }" />
 
           <sidebar-item translate="no" v-if="rminutosjustificadosvuelta"
-            :link="{ name: 'Minutos Justificados', path: './rMinutosJustificadosVuelta' }"></sidebar-item>
+            :link="{ name: 'Minutos Justificados', path: '/rMinutosJustificadosVuelta' }"></sidebar-item>
 
           <sidebar-item translate="no" v-if="rminutosjustificados"
-            :link="{ name: 'Minutos Justificados', path: './rMinutosJustificados' }"></sidebar-item>
+            :link="{ name: 'Minutos Justificados', path: '/rMinutosJustificados' }"></sidebar-item>
 
           <sidebar-item translate="no"
             :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }" />
-          <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: './rcobrosRubros' }" />
-          <sidebar-item translate="no" v-if="rminutossancionconsorcio" :link="{ name: 'Minutos Sancion Consorcio', path: './rminutosSancionConsorcio' }" />
+          <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: '/rcobrosRubros' }" />
+          <sidebar-item translate="no" v-if="rminutossancionconsorcio" :link="{ name: 'Minutos Sancion Consorcio', path: '/rminutosSancionConsorcio' }" />
           <sidebar-item translate="no" :link="{ name: 'Resumidos Vehiculo', path: pathResumidoVehiculo }" />
 
-          <sidebar-item translate="no" :link="{ name: 'Reporte Perjudicado', path: './rPerjudicado' }" />
+          <sidebar-item translate="no" :link="{ name: 'Reporte Perjudicado', path: '/rPerjudicado' }" />
 
           <!--<sidebar-item
-            :link="{ name: 'Pagos Vehiculo Resumido', path: './rpagosvehiculoresumido' }"
+            :link="{ name: 'Pagos Vehiculo Resumido', path: '/rpagosvehiculoresumido' }"
           />-->
 
         </sidebar-item>
@@ -69,7 +69,7 @@
         <sidebar-item translate="no" :link="{
           name: 'Estadistico Controles',
           icon: 'ni ni-chart-bar-32 text-success',
-          path: './estadistico',
+          path: '/estadistico',
         }">
         </sidebar-item>
 
@@ -106,8 +106,6 @@ function initScrollbar(className) {
 
 import DashboardNavbar from "~/components/layouts/argon/DashboardNavbar.vue";
 import DashboardContent from "~/components/layouts/argon/Content.vue";
-import RMinutosJustificadosVuelta from "../pages/produccion/rMinutosJustificadosVuelta.vue";
-import RminutosSancionConsorcio from "../pages/produccion/rminutosSancionConsorcio.vue";
 
 export default {
   components: {
@@ -117,12 +115,12 @@ export default {
   data() {
     return {
       oPermisosWebProduccionPanelJSON: null,
-      pathTableroVueltas: './tablero',
-      pathTableroVueltasCobros: './tableroCobros',
-      pathRecibopagosvehiculo: './recibopagosvehiculo',
-      pathRminutostarjetaResumidoVueltas: './rminutostarjetaResumido',
-      pathRminutostarjeta: './rminutostarjeta',
-      pathResumidoVehiculo: './resumidovehiculo',
+      pathTableroVueltas: '/tablero',
+      pathTableroVueltasCobros: '/tableroCobros',
+      pathRecibopagosvehiculo: '/recibopagosvehiculo',
+      pathRminutostarjetaResumidoVueltas: '/rminutostarjetaResumido',
+      pathRminutostarjeta: '/rminutostarjeta',
+      pathResumidoVehiculo: '/resumidovehiculo',
       rminutosjustificadosvuelta: false,
       rminutosjustificados: false,
       rPerjudicado:false,
@@ -174,27 +172,27 @@ export default {
 
     this.pathTableroVueltas = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroVueltas' : './tablero'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/tableroVueltas' : '/tablero'
 
     this.pathTableroVueltasCobros = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroCobrosVueltas' : './tableroCobros'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/tableroCobrosVueltas' : '/tableroCobros'
 
     this.pathRecibopagosvehiculo = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './recibopagosvehiculoVueltas' : './recibopagosvehiculo'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/recibopagosvehiculoVueltas' : '/recibopagosvehiculo'
 
     this.pathRminutostarjetaResumidoVueltas = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaResumidoVueltas' : './rminutostarjetaResumido'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/rminutostarjetaResumidoVueltas' : '/rminutostarjetaResumido'
 
     this.pathRminutostarjeta = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaVueltas' : './rminutostarjeta'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/rminutostarjetaVueltas' : '/rminutostarjeta'
 
     this.pathResumidoVehiculo = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './resumidovehiculoVueltas' : './resumidovehiculo'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/resumidovehiculoVueltas' : '/resumidovehiculo'
 
     this.initScrollbar();
   },

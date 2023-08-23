@@ -13,7 +13,7 @@
           :link="{
             name: 'Calendario',
             icon: 'ni ni-calendar-grid-58 text-success',
-            path: './CalendarioDespachoAutomatico',
+            path: '/CalendarioDespachoAutomatico',
           }"
         >
         </sidebar-item>
@@ -25,7 +25,7 @@
           :link="{
             name: 'Despacho Busqueda',
             icon: 'ni ni-collection text-primary',
-            path: './panelDespachoBusqueda',
+            path: '/panelDespachoBusqueda',
           }"
         >
         </sidebar-item>
