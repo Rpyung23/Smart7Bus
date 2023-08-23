@@ -14,7 +14,6 @@
                             </el-option>
                         </el-select>
 
-
                         <div class="el-range-separator">
                             <el-date-picker v-model="datePickerRhrrecorrido" type="datetimerange" range-separator=" Hasta "
                                 format="yyyy-MM-dd HH:mm:ss" start-placeholder="Fecha Inicial"
@@ -22,15 +21,17 @@
                             </el-date-picker>
                         </div>
 
-
-
                     </div>
 
                     <div class="buttonsAdicionalesRVelocidad">
-                        <base-button icon type="primary" size="sm" @click="readRDispositivoEventos()">
+                        <base-button icon type="primary" size="sm" @click="readRVelocidadesDetallados()">
                             <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
                         </base-button>
-
+                        <base-button size="sm" title="EXPORTAR PDF"
+                            v-if="mListaRVelocidadesDettallados.length > 0 ? true : false" type="danger"
+                            @click="generatePdf()">
+                            <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
+                        </base-button>
 
                     </div>
                 </card>
@@ -60,30 +61,72 @@
                     footer-classes="pb-2">
                     <div>
                         <div>
-                            <el-table v-loading="loadingTableRVelocidadesBusquedaloading"
-                                element-loading-text="Cargando Datos..." :data="mListaREventosDispositivos" row-key="id"
+                            <el-table v-loading="loadingTableRVelocidadesDetalladosBusquedaloading"
+                                element-loading-text="Cargando Datos..." :data="mListaRVelocidadesDettallados" row-key="id"
                                 class="tablePanelControlProduccion" header-row-class-name="thead-dark"
                                 height="calc(100vh - 13.5rem)">
 
-                                <el-table-column prop="" label="Unidad" minWidth="110">
+                                <el-table-column prop="CodiVehiHistEven" label="Unidad" minWidth="110">
+                                    <template slot-scope="scope">
+                                        <p
+                                            :class="{ 'text-normal': scope.row.EvenExceVeloHistEven === 0, 'text-red': scope.row.EvenExceVeloHistEven === 1 }">
+                                            {{ scope.row.CodiVehiHistEven }}
+                                        </p>
+                                    </template>
                                 </el-table-column>
 
-                                <el-table-column prop="" label="N-vuelta" minWidth="180">
+                                <el-table-column prop="NumeVuelSali_m" label="N-vuelta" minWidth="180">
+                                    <template slot-scope="scope">
+                                        <p
+                                        :class="{ 'text-normal': scope.row.EvenExceVeloHistEven === 0, 'text-red': scope.row.EvenExceVeloHistEven === 1 }">
+                                            {{ scope.row.NumeVuelSali_m }}
+                                        </p>
+                                    </template>
                                 </el-table-column>
 
-                                <el-table-column prop="" label="Grupo" minWidth="140">
+                                <el-table-column prop="descripcion" label="Grupo" minWidth="140">
+                                    <template slot-scope="scope">
+                                        <p
+                                        :class="{ 'text-normal': scope.row.EvenExceVeloHistEven === 0, 'text-red': scope.row.EvenExceVeloHistEven === 1 }">
+                                            {{ scope.row.descripcion }}
+                                        </p>
+                                    </template>
                                 </el-table-column>
 
-                                <el-table-column prop="" label="Ruta" minWidth="140">
+                                <el-table-column prop="DescRuta" label="Ruta" minWidth="140">
+                                    <template slot-scope="scope">
+                                        <p
+                                        :class="{ 'text-normal': scope.row.EvenExceVeloHistEven === 0, 'text-red': scope.row.EvenExceVeloHistEven === 1 }">
+                                            {{ scope.row.DescRuta }}
+                                        </p>
+                                    </template>
                                 </el-table-column>
 
-                                <el-table-column prop="" label="Velocidad" minWidth="140">
+                                <el-table-column prop="VeloHistEven" label="Velocidad" minWidth="140">
+                                    <template slot-scope="scope">
+                                        <p
+                                        :class="{ 'text-normal': scope.row.EvenExceVeloHistEven === 0, 'text-red': scope.row.EvenExceVeloHistEven === 1 }">
+                                            {{ scope.row.VeloHistEven }}
+                                        </p>
+                                    </template>
                                 </el-table-column>
 
-                                <el-table-column prop="" label="Latitud" minWidth="110">
+                                <el-table-column prop="LatiHistEven" label="Latitud" minWidth="110">
+                                    <template slot-scope="scope">
+                                        <p
+                                           :class="{ 'text-normal': scope.row.EvenExceVeloHistEven === 0, 'text-red': scope.row.EvenExceVeloHistEven === 1 }">
+                                            {{ scope.row.LatiHistEven }}
+                                        </p>
+                                    </template>
                                 </el-table-column>
 
-                                <el-table-column prop="" label="Longitud" minWidth="180">
+                                <el-table-column prop="LongHistEven" label="Longitud" minWidth="180">
+                                    <template slot-scope="scope">
+                                        <p
+                                           :class="{ 'text-normal': scope.row.EvenExceVeloHistEven === 0, 'text-red': scope.row.EvenExceVeloHistEven === 1 }">
+                                            {{ scope.row.LongHistEven }}
+                                        </p>
+                                    </template>
                                 </el-table-column>
 
                                 <div slot="empty"></div>
@@ -167,7 +210,6 @@ export default {
         return {
             mListaUnidadesSalidasPanelBusqueda: [],
             mListLineasSalidasPanelBusqueda: [],
-            loadingTableRVelocidadesBusquedaloading: false,
             loadingTableUnidadesSalidasPanelBusquedaloading: false,
             itemUnidadSalidasPanelBusqueda: [],
             token: this.$cookies.get("token"),
@@ -179,11 +221,12 @@ export default {
             mListaRutasSalidasSemanales: [],
             tableColumnsUnidadesFlotaVehicular: [],
             mListaPosicionesFueraRuta: [],
-            mListaREventosDispositivos: [],
             modalUbicacionEventoDispositivo: false,
             mListaTiposEventos: [],
             modelTiposEvento: [],
             datePickerRhrrecorrido: [],
+            mListaRVelocidadesDettallados: [],
+            loadingTableRVelocidadesDetalladosBusquedaloading: false,
         };
     },
 
@@ -256,7 +299,283 @@ export default {
                 this.mListaGruposPenalidadesSemanales.push(...datos.data.data);
             }
         },
+        async readRVelocidadesDetallados() {
+            this.mListaRVelocidadesDettallados = [];
+            this.loadingTableRVelocidadesDetalladosBusquedaloading = true;
+            try {
+                var datos = await this.$axios.post(
+                    process.env.baseUrl + "/RVelocidadesDetallados",
+                    {
+                        token: this.token,
+                        unidades:
+                            this.itemUnidadSalidasPanelBusqueda.length > 0
+                                ? this.itemUnidadSalidasPanelBusqueda
+                                : "*",
+                        fechaI: getformatFechaDateTime(this.datePickerRhrrecorrido[0]),
+                        fechaF: getformatFechaDateTime(this.datePickerRhrrecorrido[1]),
+                        grupos:
+                            this.itemGruposPenalidadesSemanales.length <= 0
+                                ? "*"
+                                : this.itemGruposPenalidadesSemanales,
+                        rutas:
+                            this.modelTiposEvento.length <= 0 ? "*" : this.modelTiposEvento,
 
+                    },
+                    {
+                        timeout: 600000,
+                    }
+                );
+                console.log("Aca datos todos ......", datos.data.datos);
+                console.log(
+                    "Aca datos Unidades ......",
+                    this.itemUnidadSalidasPanelBusqueda
+                );
+                console.log(
+                    "Aca datos Fechas ......",
+                    getformatFechaDateTime(this.datePickerRhrrecorrido[0]), "--", getformatFechaDateTime(this.datePickerRhrrecorrido[1])
+                );
+                console.log("Aca datos Rutasssss ......", this.modelTiposEvento);
+                console.log(
+                    "Aca datos Grupossss ......",
+                    this.itemGruposPenalidadesSemanales
+                );
+                this.loadingTableRVelocidadesDetalladosBusquedaloading = false;
+
+                if (datos.data.status_code == 200) {
+                    this.mListaRVelocidadesDettallados.push(...datos.data.datos);
+                } else {
+                    Notification.info({
+                        title: "Reporte Velocidades Detallados",
+                        message: datos.data.msm,
+                    });
+                }
+            } catch (error) {
+                Notification.error({
+                    title: "Reporte Perjudicados Devueltos",
+                    message: error.toString(),
+                });
+                console.log(error);
+            }
+            this.loadingTableRVelocidadesDetalladosBusquedaloading = false;
+        },
+        async generatePdf() {
+            var empresa = [
+                {
+                    text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+                    fontSize: 12,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var tipoReporte = [
+                {
+                    text:
+                        "REPORTE DE LA RUTA : " +
+                        (this.modelTiposEvento.length === 0
+                            ? "TODAS LAS RUTAS"
+                            : this.modelTiposEvento.toString()),
+                    fontSize: 11,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var desde_hasta = [
+                {
+                    text:
+                        "Del : " +
+                        getformatFechaDateTime(this.datePickerRhrrecorrido[0]) +
+                        " Hasta " +
+                        getformatFechaDateTime(this.datePickerRhrrecorrido[1]),
+                    fontSize: 11,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var unidades = [
+                {
+                    text:
+                        "Unidades : " +
+                        (this.itemUnidadSalidasPanelBusqueda.length === 0
+                            ? "TODAS LAS RUTAS"
+                            : this.itemUnidadSalidasPanelBusqueda.toString()),
+                    fontSize: 11,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var resultadoString = [
+                [
+                    {
+                        text: "Unidad",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "N-Vuelta",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Grupo",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Ruta",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Velocidad",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Latitud",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Longitud",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                ],
+            ];
+            for (var i = 0; i < this.mListaRVelocidadesDettallados.length; i++) {
+                var arrys = [
+                    {
+                        text: this.mListaRVelocidadesDettallados[i].CodiVehiHistEven,
+                        fontSize: 8.5,
+                        alignment: "center",
+                        color: this.mListaRVelocidadesDettallados[i].EvenExceVeloHistEven === 1 ? "red" : "black",
+                    },
+                    {
+                        text: this.mListaRVelocidadesDettallados[i].NumeVuelSali_m,
+                        fontSize: 8.5,
+                        alignment: "center",
+                        color: this.mListaRVelocidadesDettallados[i].EvenExceVeloHistEven === 1 ? "red" : "black",
+                    },
+                    {
+                        text: this.mListaRVelocidadesDettallados[i].descripcion,
+                        fontSize: 8.5,
+                        alignment: "center",
+                        color: this.mListaRVelocidadesDettallados[i].EvenExceVeloHistEven === 1 ? "red" : "black",
+                    },
+                    {
+                        text: this.mListaRVelocidadesDettallados[i].DescRuta,
+                        fontSize: 8.5,
+                        alignment: "center",
+                        color: this.mListaRVelocidadesDettallados[i].EvenExceVeloHistEven === 1 ? "red" : "black",
+                    },
+                    {
+                        text: this.mListaRVelocidadesDettallados[i].VeloHistEven,
+                        fontSize: 8.5,
+                        alignment: "center",
+                        color: this.mListaRVelocidadesDettallados[i].EvenExceVeloHistEven === 1 ? "red" : "black",
+                    },
+                    {
+                        text: this.mListaRVelocidadesDettallados[i].LatiHistEven,
+                        fontSize: 8.5,
+                        alignment: "center",
+                        color: this.mListaRVelocidadesDettallados[i].EvenExceVeloHistEven === 1 ? "red" : "black",
+                    },
+                    {
+                        text: this.mListaRVelocidadesDettallados[i].LongHistEven,
+                        fontSize: 8.5,
+                        alignment: "center",
+                        color: this.mListaRVelocidadesDettallados[i].EvenExceVeloHistEven === 1 ? "red" : "black",
+                    },
+
+                ];
+                resultadoString.push(arrys);
+            }
+            var docDefinition = {
+                pageSize: "A4",
+                pageOrientation: "portrait",
+                pageMargins: [30, 80, 40, 30],
+                header: {
+                    margin: 15,
+                    columns: [
+                        {
+                            image: getBase64LogoReportes(this.$cookies.get("empresa")),
+                            width: 100,
+                            height: 50,
+                            margin: [30, 0, 0, 0],
+                        },
+                        {
+                            layout: "noBorders",
+                            table: {
+                                widths: ["*"],
+                                body: [
+                                    [
+                                        {
+                                            text: "REPORTE VELOCIDADES DETALLADOS",
+                                            alignment: "center",
+                                            fontSize: 16,
+                                            bold: true,
+                                        },
+                                    ],
+                                    [
+                                        {
+                                            text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                                            alignment: "center",
+                                            fontSize: 8,
+                                        },
+                                    ],
+                                    [
+                                        {
+                                            text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                                            alignment: "center",
+                                            fontSize: 8,
+                                        },
+                                    ],
+                                ],
+                            },
+                        },
+                    ],
+                },
+                content: [
+                    {
+                        layout: "noBorders",
+                        table: {
+                            headerRows: 0,
+                            widths: [450, 450, 450],
+                            body: [empresa, tipoReporte, desde_hasta, unidades],
+                        },
+                    },
+                    {
+                        table: {
+                            headerRows: 0,
+                            widths: [30, 60, 80, 60, 40, 80, 80],
+                            body: resultadoString,
+                        },
+                    },
+                ],
+            };
+            pdfMake.createPdf(docDefinition).download("RVD_" + Date.now());
+        }
 
     },
     mounted() {
@@ -343,5 +662,18 @@ export default {
 .el-range-separator {
     width: fit-content !important;
 }
-</style>
+
+.text-normal {
+    color: #525f7f!important;
+    margin: 0!important;
+    font-size: 0.8125rem!important;
+    font-weight: 400!important;
+}
+
+.text-red {
+    color: red!important;
+    margin: 0!important;
+    font-size: 0.8125rem!important;
+    font-weight: 400!important;
+}</style>
   
