@@ -8,7 +8,7 @@
             :link="{
               name: 'Tablero',
               icon: 'ni ni-collection text-default',
-              path: './tablero',
+              path: '/tablero',
             }"
           >
           </sidebar-item>
@@ -18,7 +18,7 @@
             :link="{
               name: 'Reportes',
               icon: 'ni ni-book-bookmark text-blank',
-              path: './tmantenimiento',
+              path: '/tmantenimiento',
             }"
           >
           </sidebar-item>
@@ -32,15 +32,15 @@
         >
           <sidebar-item
           translate="no"
-            :link="{ name: 'Tipos Mantenimiento', path: './tmantenimiento' }"
+            :link="{ name: 'Tipos Mantenimiento', path: '/tmantenimiento' }"
           />
           <sidebar-item
           translate="no"
-            :link="{ name: 'Asignar Mantenimiento', path: './amantenimiento' }"
+            :link="{ name: 'Asignar Mantenimiento', path: '/amantenimiento' }"
           />
           
           <!--<sidebar-item
-            :link="{ name: 'Pagos Vehiculo Resumido', path: './rpagosvehiculoresumido' }"
+            :link="{ name: 'Pagos Vehiculo Resumido', path: '/rpagosvehiculoresumido' }"
           />-->
 
         </sidebar-item>
@@ -90,12 +90,12 @@
     {
       return {
         oPermisosWebProduccionPanelJSON:null,
-        pathTableroVueltas:'./tablero',
-        pathTableroVueltasCobros:'./tableroCobros',
-        pathRecibopagosvehiculo: './recibopagosvehiculo',
-        pathRminutostarjetaResumidoVueltas: './rminutostarjetaResumido',
-        pathRminutostarjeta : './rminutostarjeta',
-        pathResumidoVehiculo : './resumidovehiculo'
+        pathTableroVueltas:'/tablero',
+        pathTableroVueltasCobros:'/tableroCobros',
+        pathRecibopagosvehiculo: '/recibopagosvehiculo',
+        pathRminutostarjetaResumidoVueltas: '/rminutostarjetaResumido',
+        pathRminutostarjeta : '/rminutostarjeta',
+        pathResumidoVehiculo : '/resumidovehiculo'
       }
     },
     methods: {
@@ -112,27 +112,27 @@
       this.oPermisosWebProduccionPanelJSON = this.$cookies.get("WebProduccion")
       this.pathTableroVueltas = (this.oPermisosWebProduccionPanelJSON != null &&  
                                  this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroVueltas' :  './tablero'
+                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/tableroVueltas' :  '/tablero'
       
       this.pathTableroVueltasCobros = (this.oPermisosWebProduccionPanelJSON != null &&  
                                  this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './tableroCobrosVueltas' :  './tableroCobros'  
+                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/tableroCobrosVueltas' :  '/tableroCobros'  
   
       this.pathRecibopagosvehiculo = (this.oPermisosWebProduccionPanelJSON != null &&  
                                  this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './recibopagosvehiculoVueltas' : './recibopagosvehiculo'
+                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/recibopagosvehiculoVueltas' : '/recibopagosvehiculo'
       
       this.pathRminutostarjetaResumidoVueltas = (this.oPermisosWebProduccionPanelJSON != null &&  
                                  this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaResumidoVueltas' : './rminutostarjetaResumido'
+                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/rminutostarjetaResumidoVueltas' : '/rminutostarjetaResumido'
      
       this.pathRminutostarjeta = (this.oPermisosWebProduccionPanelJSON != null &&  
                                  this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './rminutostarjetaVueltas' : './rminutostarjeta'
+                                 this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/rminutostarjetaVueltas' : '/rminutostarjeta'
      
       this.pathResumidoVehiculo = (this.oPermisosWebProduccionPanelJSON != null &&  
                                   this.oPermisosWebProduccionPanelJSON.produccionVueltas != null && 
-                                  this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? './resumidovehiculoVueltas' : './resumidovehiculo'
+                                  this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/resumidovehiculoVueltas' : '/resumidovehiculo'
      
                                  
       this.initScrollbar();

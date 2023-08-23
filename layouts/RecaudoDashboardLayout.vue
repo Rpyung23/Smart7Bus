@@ -9,7 +9,7 @@
           :link="{
             name: 'C. Pasajeros',
             icon: 'ni ni-single-02 text-success',
-            path: './rcontador',
+            path: '/recaudo/rcontador',
           }"
         >
         </sidebar-item>
@@ -19,7 +19,7 @@
           :link="{
             name: 'C. Pasajeros (Vueltas)',
             icon: 'ni ni-ungroup text-default',
-            path: './rcontadorvueltas',
+            path: '/recaudo/rcontadorvueltas',
           }"
         >
         </sidebar-item>
@@ -31,8 +31,8 @@
             icon: 'ni ni-book-bookmark text-blank',
           }"
         >
-          <sidebar-item :link="{ name: 'C. Pasajeros', path: './rcontador' }" />
-          <sidebar-item :link="{ name: 'C. Pasajeros (Vueltas)', path: './rcontadorvueltas' }" />
+          <sidebar-item :link="{ name: 'C. Pasajeros', path: '/rcontador' }" />
+          <sidebar-item :link="{ name: 'C. Pasajeros (Vueltas)', path: '/rcontadorvueltas' }" />
           
         </sidebar-item>-->
 

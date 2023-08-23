@@ -13,7 +13,7 @@
           :link="{
             name: 'Despacho',
             icon: 'ni ni-calendar-grid-58 text-success',
-            path: './panelDespacho',
+            path: '/despacho/panelDespacho',
           }"
         >
         </sidebar-item>
@@ -23,7 +23,7 @@
           :link="{
             name: 'Despacho Busqueda',
             icon: 'ni ni-collection text-primary',
-            path: './panelDespachoBusqueda',
+            path: '/despacho/panelDespachoBusqueda',
           }"
         >
         </sidebar-item>
@@ -37,22 +37,22 @@
         >
           <sidebar-item
             translate="no"
-            :link="{ name: 'R. Salidas', path: './rSalidas' }"
+            :link="{ name: 'R. Salidas', path: '/despacho/rSalidas' }"
           />
 
           <sidebar-item
             translate="no"
-            :link="{ name: 'R. Salidas Semanales', path: './rPenalidadesSemanales' }"
+            :link="{ name: 'R. Salidas Semanales', path: '/despacho/rPenalidadesSemanales' }"
           />
 
           <sidebar-item
             translate="no"
-            :link="{ name: 'R. Salidas Semanales (Resumido)', path: './rPenalidadesSemanalesResumido' }"
+            :link="{ name: 'R. Salidas Semanales (Resumido)', path: '/despacho/rPenalidadesSemanalesResumido' }"
           />
 
           <sidebar-item
             translate="no"
-            :link="{ name: 'R. Cumplimiento de Salidas', path: './rCumplimientoSalidas' }"
+            :link="{ name: 'R. Cumplimiento de Salidas', path: '/despacho/rCumplimientoSalidas' }"
           />
 
           <sidebar-item
@@ -64,7 +64,7 @@
             "
             :link="{
               name: 'Despachos Generados',
-              path: './rDespachosGenerados',
+              path: '/despacho/rDespachosGenerados',
             }"
           />
 
@@ -78,7 +78,7 @@
             "
             :link="{
               name: 'Despachos Generados S/P',
-              path: './rDespachosGeneradosSim',
+              path: '/despacho/rDespachosGeneradosSim',
             }"
           />
 
@@ -92,7 +92,7 @@
             "
             :link="{
               name: 'R. Salidas F. Controles',
-              path: './rSalidasControles',
+              path: '/despacho/rSalidasControles',
             }"
           />
 
@@ -106,7 +106,7 @@
             "
             :link="{
               name: 'R. Salidas Controles (ESPECIFICOS)',
-              path: './rSalidasControles1',
+              path: '/despacho/rSalidasControles1',
             }"
           />
 
@@ -120,7 +120,7 @@
             "
             :link="{
               name: 'R. Salidas Controles (OTROS)',
-              path: './rSalidasControles2',
+              path: '/despacho/rSalidasControles2',
             }"
           />
 
@@ -135,7 +135,7 @@
             "
             :link="{
               name: 'R. Salidas Controles',
-              path: './rSalidasControles3',
+              path: '/despacho/rSalidasControles3',
             }"
           />
 

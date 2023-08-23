@@ -8,7 +8,7 @@
           :link="{
             name: 'Incadores de Calidad',
             icon: 'ni ni-chart-pie-35 text-default',
-            path: './rIcanlidadMovilidad',
+            path: '/movilidad/rIcanlidadMovilidad',
           }"
         />
 
@@ -20,7 +20,7 @@
           :link="{
             name: 'Tabla Operacional',
             icon: 'ni ni-bullet-list-67 text-danger',
-            path: './tablaOperacional',
+            path: '/movilidad/tablaOperacional',
           }"
         />
 
@@ -31,7 +31,7 @@
           :link="{
             name: 'H. Recorridos',
             icon: 'ni ni-sound-wave text-warning',
-            path: './rhrecorrido',
+            path: '/movilidad/rhrecorrido',
           }"
         />
 

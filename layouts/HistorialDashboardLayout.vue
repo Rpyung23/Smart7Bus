@@ -9,7 +9,7 @@
           :link="{
             name: 'Recorrido',
             icon: 'ni ni-vector text-success',
-            path: './recorrido',
+            path: '/historial/recorrido',
           }"
         >
         </sidebar-item>
@@ -19,7 +19,7 @@
           :link="{
             name: 'Simulador',
             icon: 'ni ni-button-play text-info',
-            path: './simulador',
+            path: '/historial/simulador',
           }"
         >
         </sidebar-item>

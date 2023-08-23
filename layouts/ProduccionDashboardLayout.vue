@@ -15,7 +15,7 @@
         <sidebar-item translate="no" v-if="TableroPerjudicado" :link="{
           name: 'Perjudicado',
           icon: 'ni ni-bus-front-12 text-warning',
-          path: '/tableroPerjudicaVueltas',
+          path: '/produccion/tableroPerjudicaVueltas',
         }">
         </sidebar-item>
 
@@ -42,23 +42,23 @@
         }">
 
 
-          <sidebar-item translate="no" :link="{ name: 'Valores Acumuladas', path: '/rdeudasacumuladas' }" />
+          <sidebar-item translate="no" :link="{ name: 'Valores Acumuladas', path: '/produccion/rdeudasacumuladas' }" />
 
           <sidebar-item translate="no" :link="{ name: 'Minutos y Tarjetas', path: pathRminutostarjeta }" />
 
           <sidebar-item translate="no" v-if="rminutosjustificadosvuelta"
-            :link="{ name: 'Minutos Justificados', path: '/rMinutosJustificadosVuelta' }"></sidebar-item>
+            :link="{ name: 'Minutos Justificados', path: '/produccion/rMinutosJustificadosVuelta' }"></sidebar-item>
 
           <sidebar-item translate="no" v-if="rminutosjustificados"
-            :link="{ name: 'Minutos Justificados', path: '/rMinutosJustificados' }"></sidebar-item>
+            :link="{ name: 'Minutos Justificados', path: '/produccion/rMinutosJustificados' }"></sidebar-item>
 
           <sidebar-item translate="no"
             :link="{ name: 'Minutos y Tarjetas (RESUMIDO)', path: pathRminutostarjetaResumidoVueltas }" />
-          <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: '/rcobrosRubros' }" />
-          <sidebar-item translate="no" v-if="rminutossancionconsorcio" :link="{ name: 'Minutos Sancion Consorcio', path: '/rminutosSancionConsorcio' }" />
+          <sidebar-item translate="no" :link="{ name: 'Cobros por Rubros', path: '/produccion/rcobrosRubros' }" />
+          <sidebar-item translate="no" v-if="rminutossancionconsorcio" :link="{ name: 'Minutos Sancion Consorcio', path: '/produccion/rminutosSancionConsorcio' }" />
           <sidebar-item translate="no" :link="{ name: 'Resumidos Vehiculo', path: pathResumidoVehiculo }" />
 
-          <sidebar-item translate="no" :link="{ name: 'Reporte Perjudicado', path: '/rPerjudicado' }" />
+          <sidebar-item translate="no" :link="{ name: 'Reporte Perjudicado', path: '/produccion/rPerjudicado' }" />
 
           <!--<sidebar-item
             :link="{ name: 'Pagos Vehiculo Resumido', path: '/rpagosvehiculoresumido' }"
@@ -69,7 +69,7 @@
         <sidebar-item translate="no" :link="{
           name: 'Estadistico Controles',
           icon: 'ni ni-chart-bar-32 text-success',
-          path: '/estadistico',
+          path: '/produccion/estadistico',
         }">
         </sidebar-item>
 
@@ -115,12 +115,12 @@ export default {
   data() {
     return {
       oPermisosWebProduccionPanelJSON: null,
-      pathTableroVueltas: '/tablero',
-      pathTableroVueltasCobros: '/tableroCobros',
-      pathRecibopagosvehiculo: '/recibopagosvehiculo',
-      pathRminutostarjetaResumidoVueltas: '/rminutostarjetaResumido',
-      pathRminutostarjeta: '/rminutostarjeta',
-      pathResumidoVehiculo: '/resumidovehiculo',
+      pathTableroVueltas: '/produccion/tablero',
+      pathTableroVueltasCobros: '/produccion/tableroCobros',
+      pathRecibopagosvehiculo: '/produccion/recibopagosvehiculo',
+      pathRminutostarjetaResumidoVueltas: '/produccion/rminutostarjetaResumido',
+      pathRminutostarjeta: '/produccion/rminutostarjeta',
+      pathResumidoVehiculo: '/produccion/resumidovehiculo',
       rminutosjustificadosvuelta: false,
       rminutosjustificados: false,
       rPerjudicado:false,
@@ -172,27 +172,27 @@ export default {
 
     this.pathTableroVueltas = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/tableroVueltas' : '/tablero'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/produccion/tableroVueltas' : '/produccion/tablero'
 
     this.pathTableroVueltasCobros = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/tableroCobrosVueltas' : '/tableroCobros'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/produccion/tableroCobrosVueltas' : '/produccion/tableroCobros'
 
     this.pathRecibopagosvehiculo = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/recibopagosvehiculoVueltas' : '/recibopagosvehiculo'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/produccion/recibopagosvehiculoVueltas' : '/produccion/recibopagosvehiculo'
 
     this.pathRminutostarjetaResumidoVueltas = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/rminutostarjetaResumidoVueltas' : '/rminutostarjetaResumido'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/produccion/rminutostarjetaResumidoVueltas' : '/produccion/rminutostarjetaResumido'
 
     this.pathRminutostarjeta = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/rminutostarjetaVueltas' : '/rminutostarjeta'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/produccion/rminutostarjetaVueltas' : '/produccion/rminutostarjeta'
 
     this.pathResumidoVehiculo = (this.oPermisosWebProduccionPanelJSON != null &&
       this.oPermisosWebProduccionPanelJSON.produccionVueltas != null &&
-      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/resumidovehiculoVueltas' : '/resumidovehiculo'
+      this.oPermisosWebProduccionPanelJSON.produccionVueltas == 1) ? '/produccion/resumidovehiculoVueltas' : '/produccion/resumidovehiculo'
 
     this.initScrollbar();
   },
