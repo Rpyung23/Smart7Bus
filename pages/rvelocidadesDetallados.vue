@@ -27,11 +27,11 @@
                         <base-button icon type="primary" size="sm" @click="readRVelocidadesDetallados()">
                             <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
                         </base-button>
-                        <base-button size="sm" title="EXPORTAR PDF"
+                        <!--  <base-button size="sm" title="EXPORTAR PDF"
                             v-if="mListaRVelocidadesDettallados.length > 0 ? true : false" type="danger"
                             @click="generatePdf()">
                             <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
-                        </base-button>
+                        </base-button> -->
 
                     </div>
                 </card>
@@ -57,7 +57,7 @@
                     </div>
                 </card>
 
-                <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRFueraRuta px-0 pb-1"
+                <!--  <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRFueraRuta px-0 pb-1"
                     footer-classes="pb-2">
                     <div>
                         <div>
@@ -136,7 +136,14 @@
                         <div slot="empty"></div>
 
                     </div>
+                </card> -->
+
+                <card class="no-border-card" style="margin-bottom: 0rem" :style="{ height: '70vh' }"
+                    body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
+                    <embed id="iframeContainerrMinutosTarjetasV" :src="oBase64IndicadoresCalidad" type="application/pdf"
+                        width="100%" height="100%" />
                 </card>
+
             </div>
         </base-header>
 
@@ -226,7 +233,6 @@ export default {
             modelTiposEvento: [],
             datePickerRhrrecorrido: [],
             mListaRVelocidadesDettallados: [],
-            loadingTableRVelocidadesDetalladosBusquedaloading: false,
         };
     },
 
@@ -300,8 +306,27 @@ export default {
             }
         },
         async readRVelocidadesDetallados() {
+            let iframe = document.getElementById('iframeContainerrMinutosTarjetasV');
+            iframe.src = "";
             this.mListaRVelocidadesDettallados = [];
-            this.loadingTableRVelocidadesDetalladosBusquedaloading = true;
+            swal.fire({
+                title: "Generando Reporte ...",
+                width: 600,
+                padding: "3em",
+                background: "#fff",
+                showCancelButton: false,
+                showConfirmButton: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                allowOutsideClick: false,
+                backdrop: `
+                    rgba(0, 0, 0, 0.5)
+                    left top
+                    no-repeat
+                  `
+            });
+
+            this.oBase64IndicadoresCalidad = ""
             try {
                 var datos = await this.$axios.post(
                     process.env.baseUrl + "/RVelocidadesDetallados",
@@ -323,8 +348,11 @@ export default {
                     },
                     {
                         timeout: 600000,
-                    }
-                );
+                    },
+                    {
+                        'Content-Type': 'application/json'
+                    });
+
                 console.log("Aca datos todos ......", datos.data.datos);
                 console.log(
                     "Aca datos Unidades ......",
@@ -339,10 +367,10 @@ export default {
                     "Aca datos Grupossss ......",
                     this.itemGruposPenalidadesSemanales
                 );
-                this.loadingTableRVelocidadesDetalladosBusquedaloading = false;
 
                 if (datos.data.status_code == 200) {
                     this.mListaRVelocidadesDettallados.push(...datos.data.datos);
+                    this.generatePdf()
                 } else {
                     Notification.info({
                         title: "Reporte Velocidades Detallados",
@@ -356,7 +384,7 @@ export default {
                 });
                 console.log(error);
             }
-            this.loadingTableRVelocidadesDetalladosBusquedaloading = false;
+            swal.close()
         },
         async generatePdf() {
             var empresa = [
@@ -574,7 +602,13 @@ export default {
                     },
                 ],
             };
-            pdfMake.createPdf(docDefinition).download("RVD_" + Date.now());
+            //pdfMake.createPdf(docDefinition).download("RVD_" + Date.now());
+            var pdfDocGenerator = pdfMake.createPdf(docDefinition)
+            pdfDocGenerator.getBlob((blob) => {
+                var pdfUrl = URL.createObjectURL(blob)
+                let iframe = document.getElementById('iframeContainerrMinutosTarjetasV');
+                iframe.src = pdfUrl;
+            });
         }
 
     },
@@ -664,16 +698,17 @@ export default {
 }
 
 .text-normal {
-    color: #525f7f!important;
-    margin: 0!important;
-    font-size: 0.8125rem!important;
-    font-weight: 400!important;
+    color: #525f7f !important;
+    margin: 0 !important;
+    font-size: 0.8125rem !important;
+    font-weight: 400 !important;
 }
 
 .text-red {
-    color: red!important;
-    margin: 0!important;
-    font-size: 0.8125rem!important;
-    font-weight: 400!important;
-}</style>
+    color: red !important;
+    margin: 0 !important;
+    font-size: 0.8125rem !important;
+    font-weight: 400 !important;
+}
+</style>
   
