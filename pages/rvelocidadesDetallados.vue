@@ -424,7 +424,7 @@ export default {
                     text:
                         "Unidades : " +
                         (this.itemUnidadSalidasPanelBusqueda.length === 0
-                            ? "TODAS LAS RUTAS"
+                            ? "TODAS LAS UNIDADES"
                             : this.itemUnidadSalidasPanelBusqueda.toString()),
                     fontSize: 11,
                     alignment: "left",
