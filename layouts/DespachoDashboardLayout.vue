@@ -19,6 +19,15 @@
         </sidebar-item>
 
         <sidebar-item
+        translate="no"
+          :link="{
+            name: 'Rol Programado',
+            icon: 'ni ni-calendar-grid-58 text-default',
+            path: '/despacho/rol_programado'
+          }">
+        </sidebar-item>
+
+        <sidebar-item
           translate="no"
           :link="{
             name: 'Despacho Busqueda',
@@ -27,6 +36,8 @@
           }"
         >
         </sidebar-item>
+
+
 
         <sidebar-item
           translate="no"

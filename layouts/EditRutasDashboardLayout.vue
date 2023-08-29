@@ -9,26 +9,19 @@
           :link="{
             name: 'Controles',
             icon: 'ni ni-ungroup text-success',
-            path: '/controles'
+            path: '/rutas/controles'
           }">
         </sidebar-item>
 
 
-        <sidebar-item
-        translate="no"
-          :link="{
-            name: 'Rol Programado',
-            icon: 'ni ni-calendar-grid-58 text-default',
-            path: '/rol_programado'
-          }">
-        </sidebar-item>
+
 
         <sidebar-item
         translate="no"
           :link="{
             name: 'Tramos EX. Velocidad',
             icon: 'ni ni-vector text-danger',
-            path: '/tramos'
+            path: '/rutas/tramos'
           }">
         </sidebar-item>
 
@@ -38,7 +31,7 @@
           :link="{
             name: 'Rutas y Frecuencias',
             icon: 'ni ni-bus-front-12 text-primary',
-            path: '/rutasfrecuencias'
+            path: '/rutas/rutasfrecuencias'
           }">
         </sidebar-item>
 
@@ -48,7 +41,7 @@
           :link="{
             name: 'Tendencia Central Rutas',
             icon: 'ni ni-sound-wave text-primary',
-            path: '/mediaCentralRutas'
+            path: '/rutas/mediaCentralRutas'
           }">
         </sidebar-item>
 
