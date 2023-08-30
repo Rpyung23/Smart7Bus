@@ -90,7 +90,7 @@
             height="calc(100vh - 10rem)"
             style="width: 100%"
           >
-            <el-table-column label="Actions" width="210">
+            <el-table-column label="Actions" width="250">
               <template slot-scope="scope">
                 <base-button
                   icon
@@ -100,6 +100,17 @@
                 >
                   <span class="btn-inner--icon"
                     ><i class="ni ni-ruler-pencil"></i
+                  ></span>
+                </base-button>
+
+                <base-button
+                  icon
+                  type="danger"
+                  @click="deleteRolProgramadoM(scope.row)"
+                  size="sm"
+                >
+                  <span class="btn-inner--icon"
+                    ><i class="ni ni-fat-remove"></i
                   ></span>
                 </base-button>
 
@@ -1162,6 +1173,37 @@ export default {
       this.objRolSelect = item;
       this.readAllLFrecuenciaRutas(item.idRuta);
       this.readRolProgramadoD();
+    },
+
+    async deleteRolProgramadoM(item) 
+    {
+      try {
+        var response = await this.$axios.delete(
+          process.env.baseUrl + "/eliminarRolProgramadoM",
+          {
+            data: {
+              token: this.token,
+              rol_programado_m: item.id_rol_programado_m,
+            },
+          }
+        );
+
+        if (response.data.status_code == 200) {
+          this.readRolProgramado();
+        } else {
+          this.$notify({
+            title: "ROL PROGRAMADO",
+            message: response.data.msm,
+            type: "danger",
+          });
+        }
+      } catch (error) {
+        this.$notify({
+          title: "ROL PROGRAMADO",
+          message: error.toString(),
+          type: "danger",
+        });
+      }
     },
 
     showModalRolProgramado() {
