@@ -1,6 +1,9 @@
 <template>
   <div class="content">
     <base-header>
+
+
+
       <div class="align-items-center py-3">
         <card
           class="no-border-card col"
@@ -139,11 +142,11 @@
             <el-table-column label="LUNES" width="150">
               <template slot-scope="scope"
                 ><badge
-                  :type="scope.row.active_dia == 1 ? 'default' : 'danger'"
+                  :type="scope.row.isLunes == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
                   >{{
-                    scope.row.active_dia == 1 ? "ACTIVO" : "INACTIVO"
+                    scope.row.isLunes == 1 ? "ACTIVO" : "INACTIVO"
                   }}</badge
                 >
               </template>
@@ -152,11 +155,11 @@
             <el-table-column label="MARTES" width="150">
               <template slot-scope="scope"
                 ><badge
-                  :type="scope.row.active_dia == 1 ? 'default' : 'danger'"
+                  :type="scope.row.isMartes == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
                   >{{
-                    scope.row.active_dia == 1 ? "ACTIVO" : "INACTIVO"
+                    scope.row.isMartes == 1 ? "ACTIVO" : "INACTIVO"
                   }}</badge
                 >
               </template>
@@ -164,11 +167,11 @@
             <el-table-column label="MIERCOLES" width="150">
               <template slot-scope="scope"
                 ><badge
-                  :type="scope.row.active_dia == 1 ? 'default' : 'danger'"
+                  :type="scope.row.isMiercoles == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
                   >{{
-                    scope.row.active_dia == 1 ? "ACTIVO" : "INACTIVO"
+                    scope.row.isMiercoles == 1 ? "ACTIVO" : "INACTIVO"
                   }}</badge
                 >
               </template>
@@ -176,11 +179,11 @@
             <el-table-column label="JUEVES" width="150">
               <template slot-scope="scope"
                 ><badge
-                  :type="scope.row.active_dia == 1 ? 'default' : 'danger'"
+                  :type="scope.row.isJueves == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
                   >{{
-                    scope.row.active_dia == 1 ? "ACTIVO" : "INACTIVO"
+                    scope.row.isJueves == 1 ? "ACTIVO" : "INACTIVO"
                   }}</badge
                 >
               </template>
@@ -188,11 +191,11 @@
             <el-table-column label="VIERNES" width="150">
               <template slot-scope="scope"
                 ><badge
-                  :type="scope.row.active_dia == 1 ? 'default' : 'danger'"
+                  :type="scope.row.isViernes == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
                   >{{
-                    scope.row.active_dia == 1 ? "ACTIVO" : "INACTIVO"
+                    scope.row.isViernes == 1 ? "ACTIVO" : "INACTIVO"
                   }}</badge
                 >
               </template>
@@ -200,11 +203,11 @@
             <el-table-column label="SABADO" width="150">
               <template slot-scope="scope"
                 ><badge
-                  :type="scope.row.active_dia == 1 ? 'default' : 'danger'"
+                  :type="scope.row.isSabado == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
                   >{{
-                    scope.row.active_dia == 1 ? "ACTIVO" : "INACTIVO"
+                    scope.row.isSabado == 1 ? "ACTIVO" : "INACTIVO"
                   }}</badge
                 >
               </template>
@@ -212,11 +215,11 @@
             <el-table-column label="DOMINGO" width="150">
               <template slot-scope="scope"
                 ><badge
-                  :type="scope.row.active_dia == 1 ? 'default' : 'danger'"
+                  :type="scope.row.isDomingo == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
                   >{{
-                    scope.row.active_dia == 1 ? "ACTIVO" : "INACTIVO"
+                    scope.row.isDomingo == 1 ? "ACTIVO" : "INACTIVO"
                   }}</badge
                 >
               </template>
@@ -224,17 +227,32 @@
             <el-table-column label="FERIADO" width="150">
               <template slot-scope="scope"
                 ><badge
-                  :type="scope.row.active_dia == 1 ? 'default' : 'danger'"
+                  :type="scope.row.isFeriado == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
                   >{{
-                    scope.row.active_dia == 1 ? "ACTIVO" : "INACTIVO"
+                    scope.row.isFeriado == 1 ? "ACTIVO" : "INACTIVO"
                   }}</badge
                 >
               </template>
             </el-table-column>
             <div slot="empty"></div>
           </el-table>
+
+          <div v-if="isVisibleLoadingSendDespachos" class="loadingDespachos">
+            <div class="msmSendDespacho">
+              <div class="loader"></div>
+            <h4 style="color: white;margin-bottom: 0rem;"> ENVIANDO DESPACHOS DE {{
+              objRolSelect == null
+                ? ""
+                : objRolSelect.detalle_rol_programado_m +
+                  " (" +
+                  objRolSelect.DescRuta +
+                  ")"
+            }}</h4>
+            </div>
+          </div>
+
         </card>
 
         <modal :show.sync="oModalAddRol">
@@ -321,8 +339,43 @@
           </h6>
 
           <div class="create_rol">
+            <base-button
+              icon
+              title="NUEVO"
+              type="success"
+              @click="createNuevoRolD()"
+              size="sm"
+            >
+              <span class="btn-inner--icon"
+                ><i class="ni ni-check-bold"></i
+              ></span>
+            </base-button>
+
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora1"></base-input>
+              <el-select
+                v-model="itemUnidadRolProgramado"
+                filterable
+                style="margin-right: 1rem; width: 10rem"
+                remote
+                placeholder="Ingrese unidad"
+                :remote-method="remoteMethodUnidadRolProgramado"
+              >
+                <el-option
+                  v-for="item in optionsUnidadesSalidasPanelBusqueda"
+                  :key="item.CodiVehi"
+                  :label="item.CodiVehi"
+                  :value="item.CodiVehi"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora1"
+              ></base-input>
               <el-select
                 v-model="frecuencia1"
                 collapse-tags
@@ -339,7 +392,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora2"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora2"
+              ></base-input>
               <el-select
                 v-model="frecuencia2"
                 collapse-tags
@@ -356,7 +413,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora3"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora3"
+              ></base-input>
               <el-select
                 v-model="frecuencia3"
                 collapse-tags
@@ -373,7 +434,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora4"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora4"
+              ></base-input>
               <el-select
                 v-model="frecuencia4"
                 collapse-tags
@@ -390,7 +455,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora5"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora5"
+              ></base-input>
               <el-select
                 v-model="frecuencia5"
                 collapse-tags
@@ -407,7 +476,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora6"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora6"
+              ></base-input>
               <el-select
                 v-model="frecuencia6"
                 collapse-tags
@@ -424,7 +497,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora7"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora7"
+              ></base-input>
               <el-select
                 v-model="frecuencia7"
                 collapse-tags
@@ -441,7 +518,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora8"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora8"
+              ></base-input>
               <el-select
                 v-model="frecuencia8"
                 collapse-tags
@@ -458,7 +539,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora9"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora9"
+              ></base-input>
               <el-select
                 v-model="frecuencia9"
                 collapse-tags
@@ -475,7 +560,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora10"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora10"
+              ></base-input>
               <el-select
                 v-model="frecuencia10"
                 collapse-tags
@@ -492,7 +581,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora11"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora11"
+              ></base-input>
               <el-select
                 v-model="frecuencia11"
                 collapse-tags
@@ -509,7 +602,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora12"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora12"
+              ></base-input>
               <el-select
                 v-model="frecuencia12"
                 collapse-tags
@@ -526,7 +623,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora13"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora13"
+              ></base-input>
               <el-select
                 v-model="frecuencia13"
                 collapse-tags
@@ -543,7 +644,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora14"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora14"
+              ></base-input>
               <el-select
                 v-model="frecuencia14"
                 collapse-tags
@@ -560,7 +665,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora15"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora15"
+              ></base-input>
               <el-select
                 v-model="frecuencia15"
                 collapse-tags
@@ -577,7 +686,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora16"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora16"
+              ></base-input>
               <el-select
                 v-model="frecuencia16"
                 collapse-tags
@@ -594,7 +707,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora17"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora17"
+              ></base-input>
               <el-select
                 v-model="frecuencia17"
                 collapse-tags
@@ -611,7 +728,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora18"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora18"
+              ></base-input>
               <el-select
                 v-model="frecuencia18"
                 collapse-tags
@@ -628,7 +749,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora19"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora19"
+              ></base-input>
               <el-select
                 v-model="frecuencia19"
                 collapse-tags
@@ -645,7 +770,11 @@
               </el-select>
             </div>
             <div class="container_item_rol">
-              <base-input type="time" placeholder="HORA1" v-model="hora20"></base-input>
+              <base-input
+                type="time"
+                placeholder="HORA1"
+                v-model="hora20"
+              ></base-input>
               <el-select
                 v-model="frecuencia20"
                 collapse-tags
@@ -670,11 +799,24 @@
             row-key="id"
             class="tablePanelControlProduccion"
             header-row-class-name="thead-dark"
-            highlight-current-row
-            @current-change="handleCurrentChangeRolDetalle"
             height="calc(100vh - 20rem)"
             style="width: 100%"
           >
+            <el-table-column>
+              <template slot-scope="scope">
+                <base-button
+                  icon
+                  type="danger"
+                  @click="eliminarRolD(scope.row)"
+                  size="sm"
+                >
+                  <span class="btn-inner--icon"
+                    ><i class="ni ni-fat-remove"></i
+                  ></span>
+                </base-button>
+              </template>
+            </el-table-column>
+
             <el-table-column label="UNIDAD" prop="unidad" width="150">
             </el-table-column>
             <el-table-column label="HORA 1" width="90" prop="hora1">
@@ -841,11 +983,12 @@
             <div slot="empty"></div>
           </el-table>
 
-          <template slot="footer">
-          </template>
+          <template slot="footer"> </template>
         </modal>
       </div>
+      
     </base-header>
+    
   </div>
 </template>
 <script>
@@ -910,12 +1053,14 @@ export default {
   },
   data() {
     return {
+      config_flatpicker: { allowInput: true, locale: Spanish,minDate:"2020-01-01",maxDate:"2050-01-01" },
+      isVisibleLoadingSendDespachos : false,
       mListaUnidadesSalidasPanelBusqueda: [],
       mListLineasSalidasPanelBusqueda: [],
       loadingRolProgramadoloading: false,
       loadingRolProgramado: false,
       mSelectRutaSalidaPanelBusqueda: [],
-      itemUnidadSalidasPanelBusqueda: [],
+      itemUnidadRolProgramado: null,
       token: this.$cookies.get("token"),
       fechaInicialSalidasPanelBusqueda: "",
       tableColumnsUnidadesFlotaVehicular: [
@@ -950,7 +1095,6 @@ export default {
       objRolSelect: null,
       fechaInicialRol: null,
       mListFrecuencia: [],
-      mSelectFrecuencia: null,
       hora1: null,
       hora2: null,
       hora3: null,
@@ -999,7 +1143,7 @@ export default {
       const fecha = new Date(today);
       fecha.setDate(fecha.getDate());
       var mes = fecha.getMonth() + 1;
-      var day = fecha.getDate();
+      var day = fecha.getDate()+1;
       var format =
         fecha.getFullYear() +
         "-" +
@@ -1007,10 +1151,13 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialRol = format;
+      this.fechaInicialRol = format
+      this.config_flatpicker.minDate = this.fechaInicialRol
     },
 
-    showModalRolProgramadoDetalle(item) {
+    showModalRolProgramadoDetalle(item) 
+    {
+      this.clearNuevoRolD()
       this.oModalAddRolDetalleD = true;
       this.objRolSelect = item;
       this.readAllLFrecuenciaRutas(item.idRuta);
@@ -1034,7 +1181,7 @@ export default {
       this.isDomingo = 0;
       this.isFeriado = 0;
     },
-    remoteMethodUnidadesSalidasPanelBusqueda(query) {
+    remoteMethodUnidadRolProgramado(query) {
       if (query !== "") {
         this.loadingRolProgramadoloading = true;
         setTimeout(() => {
@@ -1103,10 +1250,7 @@ export default {
               this.mSelectRutaSalidaPanelBusqueda.length > 0
                 ? this.mSelectRutaSalidaPanelBusqueda
                 : "*",
-            unidad:
-              this.itemUnidadSalidasPanelBusqueda.length > 0
-                ? this.itemUnidadSalidasPanelBusqueda
-                : "*",
+            unidad: "*",
           }
         );
 
@@ -1160,15 +1304,15 @@ export default {
             token: this.token,
             detalle_rol_programado_m: this.nombreRolProgramadoM,
             letrRuta: this.mSelectLineaRolProgrmadoNueva,
-            active_dia: this.isRolProgramadoXDia,
-            isLunes: this.isLunes,
-            isMartes: this.isMartes,
-            isMiercoles: this.isMiercoles,
-            isJueves: this.isJueves,
-            isViernes: this.isViernes,
-            isSabado: this.isSabado,
-            isDomingo: this.isDomingo,
-            isFeriado: this.isFeriado,
+            active_dia: this.isRolProgramadoXDia == false ? 0 : 1,
+            isLunes: this.isLunes == false ? 0 : 1,
+            isMartes: this.isMartes == false ? 0 : 1,
+            isMiercoles: this.isMiercoles == false ? 0 : 1,
+            isJueves: this.isJueves == false ? 0 : 1,
+            isViernes: this.isViernes == false ? 0 : 1,
+            isSabado: this.isSabado == false ? 0 : 1,
+            isDomingo: this.isDomingo == false ? 0 : 1,
+            isFeriado: this.isFeriado == false ? 0 : 1,
           }
         );
 
@@ -1189,7 +1333,10 @@ export default {
       }
     },
 
-    async sendDespachoProgramado(item) {
+    async sendDespachoProgramado(item) 
+    {
+      this.objRolSelect = item
+      this.isVisibleLoadingSendDespachos = true
       try {
         var response = await this.$axios.post(
           process.env.baseUrl + "/generarDespachoRolProgramado",
@@ -1218,6 +1365,8 @@ export default {
           message: error.toString(),
         });
       }
+      this.isVisibleLoadingSendDespachos = false
+      this.objRolSelect = null
     },
 
     async readRolProgramadoD() {
@@ -1244,9 +1393,173 @@ export default {
 
       this.loadingRolProgramadoD = false;
     },
-    handleCurrentChangeRolDetalle(item){
-      console.log(item)
-    }
+
+    async createNuevoRolD() 
+    {
+      if(this.itemUnidadRolProgramado == null)
+      {
+        this.$notify({
+          title: "ROL PROGRAMADO",
+          message: "PORFAVOR SELECCIONE UNA UNIDAD",
+          type: "danger",
+        });
+
+        return
+      }
+
+      if(this.hora1 == null && this.hora2 == null && this.hora3 == null && this.hora4 == null && this.hora5 == null && 
+         this.hora6 == null && this.hora7 == null && this.hora8 == null && this.hora9 == null && this.hora10 == null && 
+         this.hora11 == null && this.hora12 == null && this.hora13 == null && this.hora14 == null && this.hora15 == null && 
+         this.hora16 == null && this.hora17 == null && this.hora18 == null && this.hora19 == null && this.hora20 == null && 
+         this.frecuencia1 == null && this.frecuencia2 == null && this.frecuencia3 == null && this.frecuencia4 == null && 
+         this.frecuencia5 == null && this.frecuencia6 == null && this.frecuencia7 == null && this.frecuencia8 == null && 
+         this.frecuencia9 == null && this.frecuencia10 == null && this.frecuencia11 == null && this.frecuencia12 == null && 
+         this.frecuencia13 == null && this.frecuencia14 == null && this.frecuencia15 == null && this.frecuencia16 == null &&
+         this.frecuencia17 == null && this.frecuencia18 == null && this.frecuencia19 == null && this.frecuencia20 == null)
+         {
+          this.$notify({
+          title: "ROL PROGRAMADO",
+          message: "INGRESE AL MENOS UNA HORA Y FRECUENCIA VALIDA",
+          type: "danger",
+        })
+        return
+      }
+
+      var response = await this.$axios.post(
+        process.env.baseUrl + "/createRolProgramadoD",
+        {
+          token: this.token,
+          rol_programado_m: this.objRolSelect.id_rol_programado_m,
+          unidad: this.itemUnidadRolProgramado,
+          hora1: this.hora1,
+          frecuencia1: this.frecuencia1,
+          hora2: this.hora2,
+          frecuencia2: this.frecuencia2,
+          hora3: this.hora3,
+          frecuencia3: this.frecuencia3,
+          hora4: this.hora4,
+          frecuencia4: this.frecuencia4,
+          hora5: this.hora5,
+          frecuencia5: this.frecuencia5,
+          hora6: this.hora6,
+          frecuencia6: this.frecuencia6,
+          hora7: this.hora7,
+          frecuencia7: this.frecuencia7,
+          hora8: this.hora8,
+          frecuencia8: this.frecuencia8,
+          hora9: this.hora9,
+          frecuencia9: this.frecuencia9,
+          hora10: this.hora10,
+          frecuencia10: this.frecuencia10,
+          hora11: this.hora11,
+          frecuencia11: this.frecuencia11,
+          hora12: this.hora12,
+          frecuencia12: this.frecuencia12,
+          hora13: this.hora13,
+          frecuencia13: this.frecuencia13,
+          hora14: this.hora14,
+          frecuencia14: this.frecuencia14,
+          hora15: this.hora15,
+          frecuencia15: this.frecuencia15,
+          hora16: this.hora16,
+          frecuencia16: this.frecuencia16,
+          hora17: this.hora17,
+          frecuencia17: this.frecuencia17,
+          hora18: this.hora18,
+          frecuencia18: this.frecuencia18,
+          hora19: this.hora19,
+          frecuencia19: this.frecuencia19,
+          hora20: this.hora20,
+          frecuencia20: this.frecuencia20,
+        }
+      );
+
+      if (response.data.status_code == 200) {
+        this.clearNuevoRolD();
+        this.readRolProgramadoD();
+      } else {
+        this.$notify({
+          title: "ROL PROGRAMADO",
+          message: response.data.msm,
+          type: "danger",
+        });
+      }
+    },
+    clearNuevoRolD() {
+      this.itemUnidadRolProgramado = null;
+      this.hora1 = null;
+      this.hora2 = null;
+      this.hora3 = null;
+      this.hora4 = null;
+      this.hora5 = null;
+      this.hora6 = null;
+      this.hora7 = null;
+      this.hora8 = null;
+      this.hora9 = null;
+      this.hora10 = null;
+      this.hora11 = null;
+      this.hora12 = null;
+      this.hora13 = null;
+      this.hora14 = null;
+      this.hora15 = null;
+      this.hora16 = null;
+      this.hora17 = null;
+      this.hora18 = null;
+      this.hora19 = null;
+      this.hora20 = null;
+      this.frecuencia1 = null;
+      this.frecuencia2 = null;
+      this.frecuencia3 = null;
+      this.frecuencia4 = null;
+      this.frecuencia5 = null;
+      this.frecuencia6 = null;
+      this.frecuencia7 = null;
+      this.frecuencia8 = null;
+      this.frecuencia9 = null;
+      this.frecuencia10 = null;
+      this.frecuencia11 = null;
+      this.frecuencia12 = null;
+      this.frecuencia13 = null;
+      this.frecuencia14 = null;
+      this.frecuencia15 = null;
+      this.frecuencia16 = null;
+      this.frecuencia17 = null;
+      this.frecuencia18 = null;
+      this.frecuencia19 = null;
+      this.frecuencia20 = null;
+    },
+    async eliminarRolD(item) 
+    {
+      try {
+        var response = await this.$axios.delete(
+          process.env.baseUrl + "/eliminarRolProgramadoD",
+          {
+            data: {
+              token: this.token,
+              rol_programado_d: item.id_despacho_programado_d,
+            },
+          }
+        );
+
+        if (response.data.status_code == 200) {
+          this.readRolProgramadoD();
+        } else {
+          this.$notify({
+            title: "ROL PROGRAMADO",
+            message: response.data.msm,
+            type: "danger",
+          });
+        }
+      } catch (error) {
+        this.$notify({
+          title: "ROL PROGRAMADO",
+          message: error.toString(),
+          type: "danger",
+        });
+      }
+
+      this.clearNuevoRolD()
+    },
   },
   mounted() {
     this.initFechaActual();
@@ -1256,7 +1569,45 @@ export default {
   },
 };
 </script>
+
 <style>
+.msmSendDespacho{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  align-content: center;
+}
+
+.loader {
+  border: 8px solid rgb(255, 255, 255);
+  border-top: 8px solid #0772b9;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  margin-right: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.loadingDespachos{
+  background-color: rgba(0, 0, 0, 0.705);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999999999999999999999999999999999999999999999999;
+}
+
+
 .container_item_rol {
   width: 25rem;
   display: flex;
