@@ -1,9 +1,6 @@
 <template>
   <div class="content">
     <base-header>
-
-
-
       <div class="align-items-center py-3">
         <card
           class="no-border-card col"
@@ -99,7 +96,7 @@
                   size="sm"
                 >
                   <span class="btn-inner--icon"
-                    ><i class="ni ni-ruler-pencil"></i
+                    ><i class="ni ni-single-copy-04"></i
                   ></span>
                 </base-button>
 
@@ -117,7 +114,7 @@
                 <base-button
                   icon
                   type="success"
-                  @click="sendDespachoProgramado(scope.row)"
+                  @click="showModalSendDespachoProgramado(scope.row)"
                   size="sm"
                 >
                   <span class="btn-inner--icon"
@@ -156,9 +153,7 @@
                   :type="scope.row.isLunes == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
-                  >{{
-                    scope.row.isLunes == 1 ? "ACTIVO" : "INACTIVO"
-                  }}</badge
+                  >{{ scope.row.isLunes == 1 ? "ACTIVO" : "INACTIVO" }}</badge
                 >
               </template>
             </el-table-column>
@@ -169,9 +164,7 @@
                   :type="scope.row.isMartes == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
-                  >{{
-                    scope.row.isMartes == 1 ? "ACTIVO" : "INACTIVO"
-                  }}</badge
+                  >{{ scope.row.isMartes == 1 ? "ACTIVO" : "INACTIVO" }}</badge
                 >
               </template>
             </el-table-column>
@@ -193,9 +186,7 @@
                   :type="scope.row.isJueves == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
-                  >{{
-                    scope.row.isJueves == 1 ? "ACTIVO" : "INACTIVO"
-                  }}</badge
+                  >{{ scope.row.isJueves == 1 ? "ACTIVO" : "INACTIVO" }}</badge
                 >
               </template>
             </el-table-column>
@@ -205,9 +196,7 @@
                   :type="scope.row.isViernes == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
-                  >{{
-                    scope.row.isViernes == 1 ? "ACTIVO" : "INACTIVO"
-                  }}</badge
+                  >{{ scope.row.isViernes == 1 ? "ACTIVO" : "INACTIVO" }}</badge
                 >
               </template>
             </el-table-column>
@@ -217,9 +206,7 @@
                   :type="scope.row.isSabado == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
-                  >{{
-                    scope.row.isSabado == 1 ? "ACTIVO" : "INACTIVO"
-                  }}</badge
+                  >{{ scope.row.isSabado == 1 ? "ACTIVO" : "INACTIVO" }}</badge
                 >
               </template>
             </el-table-column>
@@ -229,9 +216,7 @@
                   :type="scope.row.isDomingo == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
-                  >{{
-                    scope.row.isDomingo == 1 ? "ACTIVO" : "INACTIVO"
-                  }}</badge
+                  >{{ scope.row.isDomingo == 1 ? "ACTIVO" : "INACTIVO" }}</badge
                 >
               </template>
             </el-table-column>
@@ -241,9 +226,7 @@
                   :type="scope.row.isFeriado == 1 ? 'default' : 'danger'"
                   rounded
                   class="mr-2"
-                  >{{
-                    scope.row.isFeriado == 1 ? "ACTIVO" : "INACTIVO"
-                  }}</badge
+                  >{{ scope.row.isFeriado == 1 ? "ACTIVO" : "INACTIVO" }}</badge
                 >
               </template>
             </el-table-column>
@@ -253,17 +236,19 @@
           <div v-if="isVisibleLoadingSendDespachos" class="loadingDespachos">
             <div class="msmSendDespacho">
               <div class="loader"></div>
-            <h4 style="color: white;margin-bottom: 0rem;"> ENVIANDO DESPACHOS DE {{
-              objRolSelect == null
-                ? ""
-                : objRolSelect.detalle_rol_programado_m +
-                  " (" +
-                  objRolSelect.DescRuta +
-                  ")"
-            }}</h4>
+              <h4 style="color: white; margin-bottom: 0rem">
+                ENVIANDO DESPACHOS DE
+                {{
+                  objRolSelect == null
+                    ? ""
+                    : objRolSelect.detalle_rol_programado_m +
+                      " (" +
+                      objRolSelect.DescRuta +
+                      ")"
+                }}
+              </h4>
             </div>
           </div>
-
         </card>
 
         <modal :show.sync="oModalAddRol">
@@ -813,7 +798,7 @@
             height="calc(100vh - 20rem)"
             style="width: 100%"
           >
-            <el-table-column>
+            <el-table-column width="140">
               <template slot-scope="scope">
                 <base-button
                   icon
@@ -823,6 +808,16 @@
                 >
                   <span class="btn-inner--icon"
                     ><i class="ni ni-fat-remove"></i
+                  ></span>
+                </base-button>
+                <base-button
+                  icon
+                  type="default"
+                  @click="updateRolD(scope.row)"
+                  size="sm"
+                >
+                  <span class="btn-inner--icon"
+                    ><i class="ni ni-ruler-pencil"></i
                   ></span>
                 </base-button>
               </template>
@@ -997,9 +992,23 @@
           <template slot="footer"> </template>
         </modal>
       </div>
-      
+
+      <modal :show.sync="modalEnviarDespachos" body-classes="p-0">
+        <h6 slot="header" class="modal-title">
+          <strong>{{objRolSelect == null ? "S/N" : objRolSelect.DescRuta}}</strong>
+        </h6>
+        <div style="margin-left: 1rem;margin-right: 1rem;">
+          Esta seguro de enviar los despachos del ROL <strong>{{objRolSelect == null ? "S/N" :(objRolSelect.detalle_rol_programado_m)}}</strong> para el dia <strong>{{fechaInicialRol ==null ? "S/N" : fechaInicialRol}}</strong>
+        </div>
+        <template slot="footer">
+          <base-button
+            type="default"
+            @click="sendDespachoProgramado()"
+            >AUTORIZAR</base-button
+          >
+        </template>
+      </modal>
     </base-header>
-    
   </div>
 </template>
 <script>
@@ -1064,8 +1073,13 @@ export default {
   },
   data() {
     return {
-      config_flatpicker: { allowInput: true, locale: Spanish,minDate:"2020-01-01",maxDate:"2050-01-01" },
-      isVisibleLoadingSendDespachos : false,
+      config_flatpicker: {
+        allowInput: true,
+        locale: Spanish,
+        minDate: "2020-01-01",
+        maxDate: "2050-01-01",
+      },
+      isVisibleLoadingSendDespachos: false,
       mListaUnidadesSalidasPanelBusqueda: [],
       mListLineasSalidasPanelBusqueda: [],
       loadingRolProgramadoloading: false,
@@ -1104,6 +1118,7 @@ export default {
       isFeriado: false,
       oModalAddRolDetalleD: false,
       objRolSelect: null,
+      objRolSelectD: null,
       fechaInicialRol: null,
       mListFrecuencia: [],
       hora1: null,
@@ -1146,6 +1161,8 @@ export default {
       frecuencia18: null,
       frecuencia19: null,
       frecuencia20: null,
+      isUpdate: false,
+      modalEnviarDespachos:false
     };
   },
   methods: {
@@ -1154,7 +1171,7 @@ export default {
       const fecha = new Date(today);
       fecha.setDate(fecha.getDate());
       var mes = fecha.getMonth() + 1;
-      var day = fecha.getDate()+1;
+      var day = fecha.getDate();
       var format =
         fecha.getFullYear() +
         "-" +
@@ -1162,21 +1179,19 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialRol = format
-      this.config_flatpicker.minDate = this.fechaInicialRol
+      this.fechaInicialRol = format;
+      this.config_flatpicker.minDate = this.fechaInicialRol;
     },
 
-    showModalRolProgramadoDetalle(item) 
-    {
-      this.clearNuevoRolD()
+    showModalRolProgramadoDetalle(item) {
+      this.clearNuevoRolD();
       this.oModalAddRolDetalleD = true;
       this.objRolSelect = item;
       this.readAllLFrecuenciaRutas(item.idRuta);
       this.readRolProgramadoD();
     },
 
-    async deleteRolProgramadoM(item) 
-    {
+    async deleteRolProgramadoM(item) {
       try {
         var response = await this.$axios.delete(
           process.env.baseUrl + "/eliminarRolProgramadoM",
@@ -1309,16 +1324,6 @@ export default {
     },
     async createRolProgramado() {
       try {
-        console.log(this.nombreRolProgramadoM);
-        console.log(this.isRolProgramadoXDia);
-        console.log(this.isLunes);
-        console.log(this.isMartes);
-        console.log(this.isMiercoles);
-        console.log(this.isJueves);
-        console.log(this.isViernes);
-        console.log(this.isSabado);
-        console.log(this.isDomingo);
-        console.log(this.isFeriado);
 
         if (
           this.nombreRolProgramadoM == null ||
@@ -1375,16 +1380,22 @@ export default {
       }
     },
 
-    async sendDespachoProgramado(item) 
+    showModalSendDespachoProgramado(item)
     {
-      this.objRolSelect = item
-      this.isVisibleLoadingSendDespachos = true
+      this.objRolSelect = item;
+      this.modalEnviarDespachos = true
+    },
+
+    async sendDespachoProgramado() 
+    {
+      this.modalEnviarDespachos = false
+      this.isVisibleLoadingSendDespachos = true;
       try {
         var response = await this.$axios.post(
           process.env.baseUrl + "/generarDespachoRolProgramado",
           {
             token: this.token,
-            autodespacho_m: item.id_rol_programado_m,
+            autodespacho_m: this.objRolSelect.id_rol_programado_m,
             fecha: this.fechaInicialRol,
           }
         );
@@ -1407,8 +1418,9 @@ export default {
           message: error.toString(),
         });
       }
-      this.isVisibleLoadingSendDespachos = false
-      this.objRolSelect = null
+      this.isVisibleLoadingSendDespachos = false;
+      this.objRolSelect = null;
+      this.objRolSelectD = null;
     },
 
     async readRolProgramadoD() {
@@ -1436,93 +1448,177 @@ export default {
       this.loadingRolProgramadoD = false;
     },
 
-    async createNuevoRolD() 
-    {
-      if(this.itemUnidadRolProgramado == null)
-      {
-        this.$notify({
-          title: "ROL PROGRAMADO",
-          message: "PORFAVOR SELECCIONE UNA UNIDAD",
-          type: "danger",
-        });
-
-        return
-      }
-
-      if(this.hora1 == null && this.hora2 == null && this.hora3 == null && this.hora4 == null && this.hora5 == null && 
-         this.hora6 == null && this.hora7 == null && this.hora8 == null && this.hora9 == null && this.hora10 == null && 
-         this.hora11 == null && this.hora12 == null && this.hora13 == null && this.hora14 == null && this.hora15 == null && 
-         this.hora16 == null && this.hora17 == null && this.hora18 == null && this.hora19 == null && this.hora20 == null && 
-         this.frecuencia1 == null && this.frecuencia2 == null && this.frecuencia3 == null && this.frecuencia4 == null && 
-         this.frecuencia5 == null && this.frecuencia6 == null && this.frecuencia7 == null && this.frecuencia8 == null && 
-         this.frecuencia9 == null && this.frecuencia10 == null && this.frecuencia11 == null && this.frecuencia12 == null && 
-         this.frecuencia13 == null && this.frecuencia14 == null && this.frecuencia15 == null && this.frecuencia16 == null &&
-         this.frecuencia17 == null && this.frecuencia18 == null && this.frecuencia19 == null && this.frecuencia20 == null)
-         {
+    async createNuevoRolD() {
+      try {
+        if (
+          this.hora1 == null &&
+          this.hora2 == null &&
+          this.hora3 == null &&
+          this.hora4 == null &&
+          this.hora5 == null &&
+          this.hora6 == null &&
+          this.hora7 == null &&
+          this.hora8 == null &&
+          this.hora9 == null &&
+          this.hora10 == null &&
+          this.hora11 == null &&
+          this.hora12 == null &&
+          this.hora13 == null &&
+          this.hora14 == null &&
+          this.hora15 == null &&
+          this.hora16 == null &&
+          this.hora17 == null &&
+          this.hora18 == null &&
+          this.hora19 == null &&
+          this.hora20 == null &&
+          this.frecuencia1 == null &&
+          this.frecuencia2 == null &&
+          this.frecuencia3 == null &&
+          this.frecuencia4 == null &&
+          this.frecuencia5 == null &&
+          this.frecuencia6 == null &&
+          this.frecuencia7 == null &&
+          this.frecuencia8 == null &&
+          this.frecuencia9 == null &&
+          this.frecuencia10 == null &&
+          this.frecuencia11 == null &&
+          this.frecuencia12 == null &&
+          this.frecuencia13 == null &&
+          this.frecuencia14 == null &&
+          this.frecuencia15 == null &&
+          this.frecuencia16 == null &&
+          this.frecuencia17 == null &&
+          this.frecuencia18 == null &&
+          this.frecuencia19 == null &&
+          this.frecuencia20 == null
+        ) {
           this.$notify({
-          title: "ROL PROGRAMADO",
-          message: "INGRESE AL MENOS UNA HORA Y FRECUENCIA VALIDA",
-          type: "danger",
-        })
-        return
-      }
-
-      var response = await this.$axios.post(
-        process.env.baseUrl + "/createRolProgramadoD",
-        {
-          token: this.token,
-          rol_programado_m: this.objRolSelect.id_rol_programado_m,
-          unidad: this.itemUnidadRolProgramado,
-          hora1: this.hora1,
-          frecuencia1: this.frecuencia1,
-          hora2: this.hora2,
-          frecuencia2: this.frecuencia2,
-          hora3: this.hora3,
-          frecuencia3: this.frecuencia3,
-          hora4: this.hora4,
-          frecuencia4: this.frecuencia4,
-          hora5: this.hora5,
-          frecuencia5: this.frecuencia5,
-          hora6: this.hora6,
-          frecuencia6: this.frecuencia6,
-          hora7: this.hora7,
-          frecuencia7: this.frecuencia7,
-          hora8: this.hora8,
-          frecuencia8: this.frecuencia8,
-          hora9: this.hora9,
-          frecuencia9: this.frecuencia9,
-          hora10: this.hora10,
-          frecuencia10: this.frecuencia10,
-          hora11: this.hora11,
-          frecuencia11: this.frecuencia11,
-          hora12: this.hora12,
-          frecuencia12: this.frecuencia12,
-          hora13: this.hora13,
-          frecuencia13: this.frecuencia13,
-          hora14: this.hora14,
-          frecuencia14: this.frecuencia14,
-          hora15: this.hora15,
-          frecuencia15: this.frecuencia15,
-          hora16: this.hora16,
-          frecuencia16: this.frecuencia16,
-          hora17: this.hora17,
-          frecuencia17: this.frecuencia17,
-          hora18: this.hora18,
-          frecuencia18: this.frecuencia18,
-          hora19: this.hora19,
-          frecuencia19: this.frecuencia19,
-          hora20: this.hora20,
-          frecuencia20: this.frecuencia20,
+            title: "ROL PROGRAMADO",
+            message: "INGRESE AL MENOS UNA HORA Y FRECUENCIA VALIDA",
+            type: "danger",
+          });
+          return;
         }
-      );
 
-      if (response.data.status_code == 200) {
-        this.clearNuevoRolD();
-        this.readRolProgramadoD();
-      } else {
+        var response = null;
+        if (this.isUpdate == false) {
+          response = await this.$axios.post(
+            process.env.baseUrl + "/createRolProgramadoD",
+            {
+              token: this.token,
+              rol_programado_m: this.objRolSelect.id_rol_programado_m,
+              unidad: this.itemUnidadRolProgramado,
+              hora1: this.hora1,
+              frecuencia1: this.frecuencia1,
+              hora2: this.hora2,
+              frecuencia2: this.frecuencia2,
+              hora3: this.hora3,
+              frecuencia3: this.frecuencia3,
+              hora4: this.hora4,
+              frecuencia4: this.frecuencia4,
+              hora5: this.hora5,
+              frecuencia5: this.frecuencia5,
+              hora6: this.hora6,
+              frecuencia6: this.frecuencia6,
+              hora7: this.hora7,
+              frecuencia7: this.frecuencia7,
+              hora8: this.hora8,
+              frecuencia8: this.frecuencia8,
+              hora9: this.hora9,
+              frecuencia9: this.frecuencia9,
+              hora10: this.hora10,
+              frecuencia10: this.frecuencia10,
+              hora11: this.hora11,
+              frecuencia11: this.frecuencia11,
+              hora12: this.hora12,
+              frecuencia12: this.frecuencia12,
+              hora13: this.hora13,
+              frecuencia13: this.frecuencia13,
+              hora14: this.hora14,
+              frecuencia14: this.frecuencia14,
+              hora15: this.hora15,
+              frecuencia15: this.frecuencia15,
+              hora16: this.hora16,
+              frecuencia16: this.frecuencia16,
+              hora17: this.hora17,
+              frecuencia17: this.frecuencia17,
+              hora18: this.hora18,
+              frecuencia18: this.frecuencia18,
+              hora19: this.hora19,
+              frecuencia19: this.frecuencia19,
+              hora20: this.hora20,
+              frecuencia20: this.frecuencia20,
+            }
+          );
+        } else {
+          response = await this.$axios.put(
+            process.env.baseUrl + "/updateRolProgramadoD",
+            {
+              token: this.token,
+              id_rol_d: this.objRolSelectD.id_despacho_programado_d,
+              unidad:
+                this.itemUnidadRolProgramado == ""
+                  ? null
+                  : this.itemUnidadRolProgramado,
+              hora1: this.hora1,
+              frecuencia1: this.frecuencia1,
+              hora2: this.hora2,
+              frecuencia2: this.frecuencia2,
+              hora3: this.hora3,
+              frecuencia3: this.frecuencia3,
+              hora4: this.hora4,
+              frecuencia4: this.frecuencia4,
+              hora5: this.hora5,
+              frecuencia5: this.frecuencia5,
+              hora6: this.hora6,
+              frecuencia6: this.frecuencia6,
+              hora7: this.hora7,
+              frecuencia7: this.frecuencia7,
+              hora8: this.hora8,
+              frecuencia8: this.frecuencia8,
+              hora9: this.hora9,
+              frecuencia9: this.frecuencia9,
+              hora10: this.hora10,
+              frecuencia10: this.frecuencia10,
+              hora11: this.hora11,
+              frecuencia11: this.frecuencia11,
+              hora12: this.hora12,
+              frecuencia12: this.frecuencia12,
+              hora13: this.hora13,
+              frecuencia13: this.frecuencia13,
+              hora14: this.hora14,
+              frecuencia14: this.frecuencia14,
+              hora15: this.hora15,
+              frecuencia15: this.frecuencia15,
+              hora16: this.hora16,
+              frecuencia16: this.frecuencia16,
+              hora17: this.hora17,
+              frecuencia17: this.frecuencia17,
+              hora18: this.hora18,
+              frecuencia18: this.frecuencia18,
+              hora19: this.hora19,
+              frecuencia19: this.frecuencia19,
+              hora20: this.hora20,
+              frecuencia20: this.frecuencia20,
+            }
+          );
+        }
+
+        if (response.data.status_code == 200) {
+          this.clearNuevoRolD();
+          this.readRolProgramadoD();
+          this.isUpdate = false;
+        } else {
+          this.$notify({
+            title: "ROL PROGRAMADO",
+            message: response.data.msm,
+            type: "danger",
+          });
+        }
+      } catch (error) {
         this.$notify({
           title: "ROL PROGRAMADO",
-          message: response.data.msm,
+          message: error.toString(),
           type: "danger",
         });
       }
@@ -1570,8 +1666,7 @@ export default {
       this.frecuencia19 = null;
       this.frecuencia20 = null;
     },
-    async eliminarRolD(item) 
-    {
+    async eliminarRolD(item) {
       try {
         var response = await this.$axios.delete(
           process.env.baseUrl + "/eliminarRolProgramadoD",
@@ -1600,7 +1695,53 @@ export default {
         });
       }
 
-      this.clearNuevoRolD()
+      this.clearNuevoRolD();
+    },
+    async updateRolD(item) {
+      this.objRolSelectD = item;
+
+      this.isUpdate = true;
+      this.itemUnidadRolProgramado = item.unidad;
+      this.hora1 = item.hora1;
+      this.hora2 = item.hora2;
+      this.hora3 = item.hora3;
+      this.hora4 = item.hora4;
+      this.hora5 = item.hora5;
+      this.hora6 = item.hora6;
+      this.hora7 = item.hora7;
+      this.hora8 = item.hora8;
+      this.hora9 = item.hora9;
+      this.hora10 = item.hora10;
+      this.hora11 = item.hora11;
+      this.hora12 = item.hora12;
+      this.hora13 = item.hora13;
+      this.hora14 = item.hora14;
+      this.hora15 = item.hora15;
+      this.hora16 = item.hora16;
+      this.hora17 = item.hora17;
+      this.hora18 = item.hora18;
+      this.hora19 = item.hora19;
+      this.hora20 = item.hora20;
+      this.frecuencia1 = item.frecuencia1;
+      this.frecuencia2 = item.frecuencia2;
+      this.frecuencia3 = item.frecuencia3;
+      this.frecuencia4 = item.frecuencia4;
+      this.frecuencia5 = item.frecuencia5;
+      this.frecuencia6 = item.frecuencia6;
+      this.frecuencia7 = item.frecuencia7;
+      this.frecuencia8 = item.frecuencia8;
+      this.frecuencia9 = item.frecuencia9;
+      this.frecuencia10 = item.frecuencia10;
+      this.frecuencia11 = item.frecuencia11;
+      this.frecuencia12 = item.frecuencia12;
+      this.frecuencia13 = item.frecuencia13;
+      this.frecuencia14 = item.frecuencia14;
+      this.frecuencia15 = item.frecuencia15;
+      this.frecuencia16 = item.frecuencia16;
+      this.frecuencia17 = item.frecuencia17;
+      this.frecuencia18 = item.frecuencia18;
+      this.frecuencia19 = item.frecuencia19;
+      this.frecuencia20 = item.frecuencia20;
     },
   },
   mounted() {
@@ -1613,7 +1754,7 @@ export default {
 </script>
 
 <style>
-.msmSendDespacho{
+.msmSendDespacho {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1632,12 +1773,15 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-
-.loadingDespachos{
+.loadingDespachos {
   background-color: rgba(0, 0, 0, 0.705);
   width: 100%;
   height: 100%;
@@ -1648,7 +1792,6 @@ export default {
   align-items: center;
   z-index: 999999999999999999999999999999999999999999999999999;
 }
-
 
 .container_item_rol {
   width: 25rem;

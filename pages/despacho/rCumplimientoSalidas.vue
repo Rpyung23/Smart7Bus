@@ -47,7 +47,7 @@
 
             <base-input
               addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
+              style="margin-right: 1rem"
               disabled
             >
               <flat-picker
@@ -61,6 +61,10 @@
               >
               </flat-picker>
             </base-input>
+
+            <el-checkbox v-model="isFinalizadas"  style="margin-bottom: 0 !important;">FINALIZADAS</el-checkbox>
+
+
           </div>
 
           <div
@@ -155,6 +159,8 @@
               active-text="SALIDA"
             >
             </el-switch>
+
+            
           </div>
 
           <div
@@ -406,8 +412,8 @@ export default {
       WorksheetExcelRSalidasSemanales: "",
       FileNameExcelRSalidasSemanales: "",
       oheaderExcelRSalidasSemanales: "",
-      modalSalidasTarjetaCumplientoSalidaA4:false,
-      modalSalidasTarjetaCumplientoSalida:false
+      modalSalidasTarjetaCumplientoSalidaA4: false,
+      modalSalidasTarjetaCumplientoSalida: false,
     };
   },
   methods: {
@@ -834,6 +840,7 @@ export default {
           fechaI: fechaI,
           fechaF: fechaF,
           unidad: unidads,
+          isFinalizada: this.isFinalizadas == true ? 1 : 0 
         };
 
         var responde = await this.$axios.post(
