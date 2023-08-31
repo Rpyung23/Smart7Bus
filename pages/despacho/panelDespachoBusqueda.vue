@@ -168,7 +168,7 @@
             height="calc(100vh - 13rem)"
             style="width: 100%"
           >
-            <el-table-column label="Actions" width="220">
+            <el-table-column label="Actions" :width="250">
               <template slot-scope="scope">
                 <base-button
                   size="sm"
