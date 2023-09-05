@@ -624,9 +624,9 @@ export default {
       loadingRubrosList: true,
       mListTipoRubro: [],
       oSelectRubro: null,
-      oTextAreaAnotacion: '',
+      oTextAreaAnotacion: "",
       titulo_modal_add_anotacion: null,
-    }
+    };
   },
   methods: {
     remoteMethodUnidadesSalidasPanelBusqueda(query) {
@@ -690,32 +690,34 @@ export default {
     async readSalidasPanelBusqueda() {
       this.mListaSalidasPanelBusqueda = [];
 
+      var obj = {
+        token: this.token,
+        unidades:
+          this.itemUnidadSalidasPanelBusqueda.length <= 0
+            ? "*"
+            : this.itemUnidadSalidasPanelBusqueda,
+        rutas:
+          this.mSelectRutaSalidaPanelBusqueda.length <= 0
+            ? "*"
+            : this.mSelectRutaSalidaPanelBusqueda,
+        fechaI: getFecha_dd_mm_yyyy(this.fechaInicialSalidasPanelBusqueda),
+        fechaF: getFecha_dd_mm_yyyy(this.fechaFinalSalidasPanelBusqueda),
+        tipo:
+          this.radioEstadoRSalidasPanelBusqueda.length <= 0
+            ? "*"
+            : this.radioEstadoRSalidasPanelBusqueda,
+        orderUnidad:
+          this.oSwitchOrdenarSalidasDespachoPanelBusqueda == true ? 1 : 0,
+      };
+
+      console.log(obj);
+
       if (!this.loadingTableUnidadesSalidasPanelBusqueda) {
         this.loadingTableUnidadesSalidasPanelBusqueda = true;
         try {
           var datos = await this.$axios.post(
             process.env.baseUrl + "/readSalidasPanel",
-            {
-              token: this.token,
-              unidades:
-                this.itemUnidadSalidasPanelBusqueda.length <= 0
-                  ? "*"
-                  : this.itemUnidadSalidasPanelBusqueda,
-              rutas:
-                this.mSelectRutaSalidaPanelBusqueda.length <= 0
-                  ? "*"
-                  : this.mSelectRutaSalidaPanelBusqueda,
-              fechaI: getFecha_dd_mm_yyyy(
-                this.fechaInicialSalidasPanelBusqueda
-              ),
-              fechaF: getFecha_dd_mm_yyyy(this.fechaFinalSalidasPanelBusqueda),
-              tipo:
-                this.radioEstadoRSalidasPanelBusqueda.length <= 0
-                  ? "*"
-                  : this.radioEstadoRSalidasPanelBusqueda,
-              orderUnidad:
-                this.oSwitchOrdenarSalidasDespachoPanelBusqueda == true ? 1 : 0,
-            }
+            obj
           );
 
           if (datos.data.status_code == 200) {
@@ -1377,15 +1379,15 @@ export default {
     },
     showModalRubro(item) {
       this.oSelectRubro = null;
-      this.oTextAreaAnotacion = '';
-      this.mListaRubros = []
+      this.oTextAreaAnotacion = "";
+      this.mListaRubros = [];
       this.filaSelectionCurrentSalidaPanelBusqueda = item;
       this.titulo_modal_add_anotacion = item;
       this.modalRubro = true;
       this.readDetalleRubros();
     },
     async readDetalleRubros() {
-      this.mListaRubros = []
+      this.mListaRubros = [];
       this.loadingRubrosList = true;
       //console.log(this.filaSelectionCurrentSalidaPanelBusqueda)
       try {
@@ -1461,8 +1463,8 @@ export default {
           );
 
           if (datos.data.status_code == 200) {
-            this.oSelectRubro = null
-            this.oTextAreaAnotacion = ''
+            this.oSelectRubro = null;
+            this.oTextAreaAnotacion = "";
             this.readDetalleRubros();
           } else {
             this.$notify({

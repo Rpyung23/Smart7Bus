@@ -55,6 +55,151 @@
         </div>
 
         <div class="buttonsAdicionalesDespacho">
+
+          <base-button
+            icon
+            type="danger"
+            title="Despachar"
+            size="sm"
+            @click=""
+          >
+            <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i> ANULAR TODO</span>
+          </base-button>
+
+          <base-button
+            icon
+            type="warning"
+            title="Despachar"
+            size="sm"
+            @click=""
+          >
+            <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i> RECALIFICAR TODO</span>
+          </base-button>
+
+
+
+          <base-button
+            icon
+            type="success"
+            title="Despachar"
+            size="sm"
+            @click="showEnviarDespachoPanel()"
+          >
+            <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
+          </base-button>
+
+          <!--<base-button
+            icon
+            type="info"
+            @click="showModalDespachoRecalificarSalida()"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.selectRowEstado != 'DIFERIDO'
+            "
+            size="sm"
+            title="Recalificar Salida"
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-watch-time"></i
+            ></span>
+          </base-button>
+
+          <base-button
+            icon
+            type="danger"
+            @click="showModalAnularFinalizarDespacho(4)"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.selectRowEstado != 'FINALIZADO'
+            "
+            size="sm"
+            title="Anular Salida"
+          >
+            <span class="btn-inner--icon"><i class="ni ni-scissors"></i></span>
+          </base-button>
+
+          <base-button
+            icon
+            type="warning"
+            @click="showModalAnularFinalizarDespacho(3)"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.selectRowEstado != 'FINALIZADO' &&
+              this.selectRowEstado != 'DIFERIDO'
+            "
+            size="sm"
+            title="Finalizar Salida"
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-fat-delete"></i
+            ></span>
+          </base-button>
+
+          <base-button
+            icon
+            type="default"
+            @click="showRecorridoSalidaPanelDespacho()"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.selectRowEstado != 'DIFERIDO'
+            "
+            size="sm"
+            title="Recorrido"
+          >
+            <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
+          </base-button>
+
+          <base-button
+            icon
+            type="primary"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != ''
+            "
+            @click="showReporteLlegadaSAlida()"
+            size="sm"
+            title="Ver Tarjeta"
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-collection"></i
+            ></span>
+          </base-button>
+
+          -->
+        </div>
+      </card>
+
+      <card
+        class="no-border-card col"
+        style="margin-bottom: 0.5rem"
+        body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+        footer-classes="pb-2"
+      >
+        <div class="cardTiposDespachosPanelDespacho">
+
+          <base-button
+            icon
+            type="link"
+            size="sm"
+            disabled
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-collection" style="color: white;cursor:none"></i
+            ></span>
+          </base-button>
+
+        </div>
+
+        <div class="buttonsAdicionalesDespacho">
           <base-button
             icon
             type="info"
@@ -141,7 +286,7 @@
             ></span>
           </base-button>
 
-          <base-button
+          <!--<base-button
             icon
             type="success"
             title="Despachar"
@@ -149,7 +294,7 @@
             @click="showEnviarDespachoPanel()"
           >
             <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
-          </base-button>
+          </base-button>-->
         </div>
       </card>
 
@@ -337,28 +482,6 @@
 
     <!--DESPACHAR modal-->
     <modal :show.sync="modalEnviarDespachoPanel">
-      <base-alert
-        v-if="
-          responseApiDespachoWeb != null &&
-          responseApiDespachoWeb.data.status_code == 200
-        "
-        type="default"
-      >
-        SALIDA
-        <strong>{{ responseApiDespachoWeb.data.salida_id }}</strong> GENERADA
-        CON EXITO
-      </base-alert>
-
-      <base-alert
-        v-if="
-          responseApiDespachoWeb != null &&
-          responseApiDespachoWeb.data.status_code == 400
-        "
-        type="danger"
-      >
-        {{ responseApiDespachoWeb.data.msm }}
-      </base-alert>
-
       <div class="row" style="margin-bottom: 1rem">
         <div class="col-md-12">
           <el-radio-group
@@ -734,12 +857,15 @@ export default {
         : (this.modalEnviarDespachoPanel = true);
     },
     getObjetoFrecuencia(idFreceucnia) {
-      for (var i = 0; this.mListRutasFrecuencias.length; i++) {
-        if (idFreceucnia == this.mListRutasFrecuencias[i].idFrec) {
-          return this.mListRutasFrecuencias[i];
+      try {
+        for (var i = 0; this.mListRutasFrecuencias.length; i++) {
+          if (idFreceucnia == this.mListRutasFrecuencias[i].idFrec) {
+            return this.mListRutasFrecuencias[i];
+          }
         }
+      } catch (e) {
+        console.log(e);
       }
-
       return null;
     },
     showModalDespacho() {
@@ -793,6 +919,9 @@ export default {
         format + " " + hora + ":" + minutes + ":00";
       this.fechaActualSalidasPanelDespachoDespachador =
         format + " " + hora + ":" + minutes + ":00";
+
+      console.log(this.fechaActualSalidasPanelDespacho);
+      console.log(this.fechaActualSalidasPanelDespachoDespachado);
     },
     myGridOnContextMenu: function () {
       return false;
@@ -840,7 +969,7 @@ export default {
     },
     async createHeaderTable() {
       //this.selectedRowSalida = null;
-      this.selectRowId  = null
+      this.selectRowId = null;
       //this.$refs.myGridDespachoPanel.clearSelection();
       if (this.ArrowGridSelect != null) {
         this.$refs.myGridDespachoPanel.unselectrow(this.ArrowGridSelect);
@@ -865,7 +994,7 @@ export default {
           }
         );
         this.mListDespachosPanel.push(...datos.data.datos);
-        this.mListDespachosPanelAuxiliar = this.mListDespachosPanel
+        this.mListDespachosPanelAuxiliar = this.mListDespachosPanel;
         this.$refs.myGridDespachoPanel.beginupdate();
         this.columnsInfo = [];
         this.columnsInfo[0] = {
@@ -1014,7 +1143,7 @@ export default {
         if (datos.data.status_code == 200) {
           this.mListRutasDespacho.push(...datos.data.data);
           this.mSelectRutaSalidaPanelDespacho = datos.data.data[0].idRuta;
-          this.mSelectRutaSalidaDespachar = datos.data.data[0].idRuta;
+          //this.mSelectRutaSalidaDespachar = datos.data.data[0].idRuta;
           this.initFechaActualSalidaDespachoPanel();
 
           this.createHeaderTable();
@@ -1047,49 +1176,49 @@ export default {
       var inter = 0;
       for (var hora = 3; hora <= 23; hora++) {
         tiempoString = hora < 10 ? "0" + hora : hora;
-        for (var minuto = 0; minuto <= 59; minuto++) 
-        {
-          minutosString = minuto < 10 ? "0" + minuto : minuto
-            var HS = tiempoString + ":" + minutosString + ":"+secondString
-            var HSa_ = tiempoString + ":" + minutosString + ":"+secondString+ " (A)"
-            var obj = this.getObjetoSalidaDespacho(HS, HSa_)
-            var objD =
-              obj == null
-                ? {
-                    LetraRutaSali_m: "",
-                    CodiVehiSali_m: "",
-                    idSali_m: "",
-                    HoraSaliProgSali_m: HS,
-                    HoraLlegProgSali_m: "",
-                    EstaSali_m: "",
-                    idFrecSali_m: "",
-                    DescFrec: "",
-                    PenaCtrlSali_d: "",
-                    VeloMaxiSali_m: "",
-                    NumeVuelSali_m: "",
-                    atrasoFaltasTime: "",
-                    adelantoFaltasTime: "",
-                    Country23: "",
-                    Intervalo: "",
-                    DescRutaSali_m: "",
-                  }
-                : obj;
-            if (obj == null) {
-              ListaVacia.push(objD);
-              inter++;
-            } else {
-              var estado = obj.EstaSali_mCode == 4 ? HSa_ : HS;
-              obj.HoraSaliProgSali_m = estado;
-              obj.Intervalo = inter;
-              inter = 0;
+        for (var minuto = 0; minuto <= 59; minuto++) {
+          minutosString = minuto < 10 ? "0" + minuto : minuto;
+          var HS = tiempoString + ":" + minutosString + ":" + secondString;
+          var HSa_ =
+            tiempoString + ":" + minutosString + ":" + secondString + " (A)";
+          var obj = this.getObjetoSalidaDespacho(HS, HSa_);
+          var objD =
+            obj == null
+              ? {
+                  LetraRutaSali_m: "",
+                  CodiVehiSali_m: "",
+                  idSali_m: "",
+                  HoraSaliProgSali_m: HS,
+                  HoraLlegProgSali_m: "",
+                  EstaSali_m: "",
+                  idFrecSali_m: "",
+                  DescFrec: "",
+                  PenaCtrlSali_d: "",
+                  VeloMaxiSali_m: "",
+                  NumeVuelSali_m: "",
+                  atrasoFaltasTime: "",
+                  adelantoFaltasTime: "",
+                  Country23: "",
+                  Intervalo: "",
+                  DescRutaSali_m: "",
+                }
+              : obj;
+          if (obj == null) {
+            ListaVacia.push(objD);
+            inter++;
+          } else {
+            var estado = obj.EstaSali_mCode == 4 ? HSa_ : HS;
+            obj.HoraSaliProgSali_m = estado;
+            obj.Intervalo = inter;
+            inter = 0;
 
-              ListaLlena.push(obj);
-            }
+            ListaLlena.push(obj);
+          }
         }
       }
       ListaCompleta = ListaLlena.concat(ListaVacia);
-      console.log("LISTA CCCCCCC");
-      console.log(ListaCompleta);
+      /*console.log("LISTA CCCCCCC");
+      console.log(ListaCompleta);*/
       return {
         localdata: ListaCompleta,
         datatype: "array",
@@ -1114,11 +1243,10 @@ export default {
       };
     },
     getObjetoSalidaDespacho(tiempo, tiempoA) {
-      console.log("TAMANIO : "+this.mListDespachosPanelAuxiliar.length )
+      //console.log("TAMANIO : "+this.mListDespachosPanelAuxiliar.length )
       if (this.mListDespachosPanelAuxiliar.length > 0) {
-        for (var i = 0; i < this.mListDespachosPanelAuxiliar.length; i++) 
-        {
-          console.log(tiempo +" == "+ this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m)
+        for (var i = 0; i < this.mListDespachosPanelAuxiliar.length; i++) {
+          //console.log(tiempo +" == "+ this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m)
           if (
             tiempo == this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m
           ) {
@@ -1260,24 +1388,41 @@ export default {
         return false;
       }
     },
+    clearModalDespacho() {
+      this.itemUnidadSalidasPanelDespacho = null;
+      this.mSelectRutaSalidaDespachar = null;
+      this.mSelectRutaFrecuenciaPanelDespacho = null;
+    },
     async EnviarDespachoUnidad() {
       try {
         var objFrecuencia = this.getObjetoFrecuencia(
           this.mSelectRutaFrecuenciaPanelDespacho
         );
-        console.log(objFrecuencia);
-        this.responseApiDespachoWeb = null;
-        console.log(this.radioTipoDespacho);
-        console.log(this.itemUnidadSalidasPanelDespacho);
-        console.log("ENVIANDO DESPACHO ............");
-        console.log(`UNIDAD : ${this.itemUnidadSalidasPanelDespacho.CodiVehi}`);
+
         console.log(
-          `API : ${this.itemUnidadSalidasPanelDespacho.api_despacho}`
+          "itemUnidadSalidasPanelDespacho : " +
+            this.itemUnidadSalidasPanelDespacho
         );
-        console.log(this.fechaActualSalidasPanelDespachoDespachador);
-        console.log(`FRECUENCIA : ${this.mSelectRutaFrecuenciaPanelDespacho}`);
-        console.log(objFrecuencia);
-        console.log(`RUTA ${this.mSelectRutaSalidaDespachar}`);
+        console.log(
+          "mSelectRutaSalidaDespachar : " + this.mSelectRutaSalidaDespachar
+        );
+        console.log(
+          "mSelectRutaFrecuenciaPanelDespacho : " +
+            this.mSelectRutaFrecuenciaPanelDespacho
+        );
+
+        if (
+          this.itemUnidadSalidasPanelDespacho == null ||
+          this.mSelectRutaSalidaDespachar == null ||
+          this.mSelectRutaFrecuenciaPanelDespacho == null
+        ) {
+          Notification.warning({
+            title: "PANEL DESPACHO",
+            message: "PORFAVOR LLENAR LOS DATOS VACIOS",
+            duration: 1500,
+          });
+          return;
+        }
 
         this.responseApiDespachoWeb = await this.$axios.post(
           process.env.baseUrl + "/generarDespacho",
@@ -1303,9 +1448,30 @@ export default {
           }
         );
 
-        console.log(this.responseApiDespachoWeb.data);
+        if (this.responseApiDespachoWeb.data.status_code == 200) {
+          this.clearModalDespacho();
+
+          Notification.success({
+            title: "SALIDA GENERADA CON EXITO",
+            message: "CODIGO : " + this.responseApiDespachoWeb.data.salida_id,
+            duration: 1500,
+          });
+        } else {
+          Notification.error({
+            title: "ERROR DESPACHO API",
+            message: this.responseApiDespachoWeb.data.msm,
+            duration: 1500,
+          });
+        }
+
+        //console.log(this.responseApiDespachoWeb.data);
       } catch (error) {
         console.log(error);
+        Notification.error({
+          title: "ERROR DESPACHO TRY",
+          message: error.toString(),
+          duration: 1500,
+        });
       }
       this.createHeaderTable();
     },
@@ -1338,9 +1504,9 @@ export default {
         );
 
         console.log(response.data);
-        this.reponseAnularFinalizar = response.data
-        this.modalDespachoAnularSalida = false
-        this.modalDespachoFinalizarSalida = false
+        this.reponseAnularFinalizar = response.data;
+        this.modalDespachoAnularSalida = false;
+        this.modalDespachoFinalizarSalida = false;
       } catch (e) {
         alert("ERROR TRYCATCH");
         console.log(e);
@@ -1499,7 +1665,7 @@ export default {
 }
 
 .containerTablero {
-  height: calc(100vh - 9.5rem);
+  height: calc(100vh - 12rem);
   display: flex;
 }
 
