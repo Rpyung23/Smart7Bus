@@ -8,22 +8,22 @@
         footer-classes="pb-2"
       >
         <div class="cardTiposDespachosPanelDespacho">
-          <!--<base-button
+          <base-button
             icon
             type="danger"
-            title="Ver Salidas Anuladas"
+            title="SALIDAS ANULADAS"
             size="sm"
             @click="showModalDespachoSalidasAnuladas()"
           >
             <span class="btn-inner--icon"
-              ><i class="ni ni-fat-remove"></i
+              ><i class="ni ni-single-copy-04"></i
             ></span>
-          </base-button>-->
+          </base-button>
 
           <el-date-picker
             type="date"
             placeholder="Select date and time"
-            style="margin-right: 0.5rem;width: 10rem;"
+            style="margin-right: 0.5rem; width: 10rem"
             v-model="fechaActualSalidasPanelDespacho"
           >
           </el-date-picker>
@@ -77,12 +77,7 @@
             >
           </base-button>
 
-          <base-button
-            icon
-            type="info"
-            size="sm"
-            @click=""
-          >
+          <base-button icon type="info" size="sm" @click="">
             <span class="btn-inner--icon"
               ><i class="ni ni-watch-time"></i> RECALIFICAR TODO</span
             >
@@ -194,7 +189,29 @@
         body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
         footer-classes="pb-2"
       >
-        <div class="cardTiposDespachosPanelDespacho">
+        <div class="cardTiposDespachosPanelDespacho2">
+          <el-checkbox-group v-model="radioEstadoRSalidasPanelDespacho">
+            <el-checkbox
+              label="0,1"
+              style="
+                background-color: rgba(140, 248, 126, 0.384);
+                margin-right: 0.5rem;
+              "
+              >SALIDAS DIFERIDAS
+            </el-checkbox>
+            <el-checkbox
+              label="2"
+              style="
+                background-color: hsla(226, 88%, 61%, 0.274);
+                margin-right: 0.5rem;
+              "
+              >EN RUTA</el-checkbox
+            >
+            <el-checkbox label="3" style="margin-right: 0rem"
+              >FINALIZADOS</el-checkbox
+            >
+          </el-checkbox-group>
+
           <base-button icon type="link" size="sm" disabled>
             <span class="btn-inner--icon"
               ><i
@@ -205,7 +222,7 @@
           </base-button>
         </div>
 
-        <div class="buttonsAdicionalesDespacho">
+        <div class="buttonsAdicionalesDespacho2">
           <base-button
             icon
             type="info"
@@ -497,16 +514,18 @@
             <el-radio :label="2">Salida Diferida</el-radio>
             <el-radio :label="1">Salida Normal.</el-radio>
             <el-radio :label="3">Generar Tarjeta</el-radio>
-            
           </el-radio-group>
         </div>
       </div>
 
-      
-
       <div class="row" style="margin-bottom: 0.5rem">
         <div class="col-md-12">
-          <base-input class="inputDatimeDespachoPanel2" type="datetime-local" v-model="fechaActualSalidasPanelDespachoDespachador" format="yyyy-MM-dd HH:mm:00"></base-input>
+          <base-input
+            class="inputDatimeDespachoPanel2"
+            type="datetime-local"
+            v-model="fechaActualSalidasPanelDespachoDespachador"
+            format="yyyy-MM-dd HH:mm:00"
+          ></base-input>
           <!--<el-date-picker
             type="datetime"
             class="dateTimeDespacho"
@@ -520,7 +539,6 @@
       </div>
 
       <div class="row" style="margin-bottom: 0.3rem">
-
         <div class="col-md-12">
           <el-select
             v-model="itemUnidadSalidasPanelDespacho"
@@ -799,13 +817,18 @@
         >
           EN RUTA
         </base-checkbox>
-        <base-checkbox class="col-md-3" v-model="mCheckFinalizadaFinalizarAnulado">
+        <base-checkbox
+          class="col-md-3"
+          v-model="mCheckFinalizadaFinalizarAnulado"
+        >
           FINALIZADAS
         </base-checkbox>
       </div>
 
       <template slot="footer">
-        <base-button type="danger" @click="sendFinalizarAnularAllSalidas(4,'CANCELAR')"
+        <base-button
+          type="danger"
+          @click="sendFinalizarAnularAllSalidas(4, 'CANCELAR')"
           >ANULAR SALIDAS</base-button
         >
       </template>
@@ -897,18 +920,22 @@
         >
           EN RUTA
         </base-checkbox>
-        <base-checkbox class="col-md-3" v-model="mCheckFinalizadaFinalizarAnulado">
+        <base-checkbox
+          class="col-md-3"
+          v-model="mCheckFinalizadaFinalizarAnulado"
+        >
           FINALIZADAS
         </base-checkbox>
       </div>
 
       <template slot="footer">
-        <base-button type="warning" @click="sendFinalizarAnularAllSalidas(3,'FINALIZAR')"
+        <base-button
+          type="warning"
+          @click="sendFinalizarAnularAllSalidas(3, 'FINALIZAR')"
           >FINALIZAR SALIDAS</base-button
         >
       </template>
     </modal>
-
   </div>
 </template>
 <script>
@@ -928,6 +955,7 @@ import {
   Button,
   Dropdown,
   Checkbox,
+  CheckboxGroup,
   MessageBox,
 } from "element-ui";
 import JqxGrid from "jqwidgets-scripts/jqwidgets-vue/vue_jqxgrid.vue";
@@ -964,6 +992,7 @@ export default {
     [Checkbox.name]: Checkbox,
     [DatePicker.name]: DatePicker,
     [TableColumn.name]: TableColumn,
+    [CheckboxGroup.name]: CheckboxGroup,
     [MessageBox.name]: MessageBox,
     [Notification.name]: Notification,
     ComponenteRecorrido: recorrido,
@@ -1030,9 +1059,8 @@ export default {
       mSelectRutaAnularFinalizarTodo: null,
       mCheckDiferidaFinalizarAnulado: false,
       mCheckEnRutaFinalizarAnulado: false,
-      mCheckFinalizadaFinalizarAnulado: false
-
-      
+      mCheckFinalizadaFinalizarAnulado: false,
+      radioEstadoRSalidasPanelDespacho: [],
     };
   },
   methods: {
@@ -1156,7 +1184,8 @@ export default {
         format + " " + hora + ":" + minutes + ":00";
       this.fechaActualSalidasPanelDespachoDespachador =
         format + " " + hora + ":" + minutes + ":00";
-      this.fechaActualAnularFinalizarTodo = format + " " + hora + ":" + minutes + ":00";
+      this.fechaActualAnularFinalizarTodo =
+        format + " " + hora + ":" + minutes + ":00";
       this.config_flatpicker.minDate = this.fechaActualAnularFinalizarTodo;
     },
     myGridOnContextMenu: function () {
@@ -1239,6 +1268,8 @@ export default {
 
       var oRuta = this.getRutaPorID(this.mSelectRutaSalidaPanelDespacho);
       this.readDespachoSalidasAnuladas();
+      console.log("*****************************************")
+      console.log(this.radioEstadoRSalidasPanelDespacho)
 
       try {
         this.mListDespachosPanel = [];
@@ -1252,7 +1283,9 @@ export default {
             rutas: [oRuta.LetrRuta],
             fechaI: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
             fechaF: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
-            tipo: "*",
+            tipo: this.radioEstadoRSalidasPanelDespacho.length <= 0
+            ? "*"
+            : this.radioEstadoRSalidasPanelDespacho
           }
         );
         this.mListDespachosPanel.push(...datos.data.datos);
@@ -1787,11 +1820,11 @@ export default {
       return objUnidad;
     },
     showModalAnularTodo() {
-      this.clearModalFinalizarAnularToda()
+      this.clearModalFinalizarAnularToda();
       this.modalDespachoAnularSalidaTodo = true;
     },
     showModalFinalizarTodo() {
-      this.clearModalFinalizarAnularToda()
+      this.clearModalFinalizarAnularToda();
       this.modalDespachoFinalizarSalidaTodo = true;
     },
     clearModalFinalizarAnularToda() {
@@ -1801,7 +1834,7 @@ export default {
       this.mCheckEnRutaFinalizarAnulado = false;
       this.mCheckFinalizadaFinalizarAnulado = false;
     },
-    sendFinalizarAnularAllSalidas(estado_,title) {
+    sendFinalizarAnularAllSalidas(estado_, title) {
       if (this.mSelectRutaAnularFinalizarTodo == null) {
         Notification.warning({
           title: "PANEL DESPACHO",
@@ -1813,7 +1846,9 @@ export default {
       }
 
       MessageBox.confirm(
-        "Esta seguro que desea "+title+" LAS SALIDAS para las unidades : " +
+        "Esta seguro que desea " +
+          title +
+          " LAS SALIDAS para las unidades : " +
           (this.itemUnidadSalidaAnularFinalizar == null ||
           this.itemUnidadSalidaAnularFinalizar.length <= 0
             ? "TODAS LAS UNIDADES"
@@ -1824,7 +1859,18 @@ export default {
             ? "TODAS LAS RUTAS"
             : this.getRutaPorID(this.mSelectRutaAnularFinalizarTodo).DescRuta) +
           " para la FECHA " +
-          this.fechaActualAnularFinalizarTodo +" ("+(this.mCheckDiferidaFinalizarAnulado == false && this.mCheckEnRutaFinalizarAnulado == false && this.mCheckFinalizadaFinalizarAnulado == false ? " DIFERIDA,EN RUTA,FINALIZADA" : ((this.mCheckDiferidaFinalizarAnulado == true ? "DIFERIDA," : "")+(this.mCheckFinalizadaFinalizarAnulado == true ? "FINALIZADAS," : "")+(this.mCheckEnRutaFinalizarAnulado == true ? "EN RUTA" : "")))+") ",
+          this.fechaActualAnularFinalizarTodo +
+          " (" +
+          (this.mCheckDiferidaFinalizarAnulado == false &&
+          this.mCheckEnRutaFinalizarAnulado == false &&
+          this.mCheckFinalizadaFinalizarAnulado == false
+            ? " DIFERIDA,EN RUTA,FINALIZADA"
+            : (this.mCheckDiferidaFinalizarAnulado == true ? "DIFERIDA," : "") +
+              (this.mCheckFinalizadaFinalizarAnulado == true
+                ? "FINALIZADAS,"
+                : "") +
+              (this.mCheckEnRutaFinalizarAnulado == true ? "EN RUTA" : "")) +
+          ") ",
         "Advertencia",
         {
           confirmButtonText: "Confirmar",
@@ -1837,7 +1883,7 @@ export default {
         })
         .catch((error) => {
           this.createHeaderTable();
-          console.log(error)
+          console.log(error);
         });
     },
     async apiAnularFinalizarAllSalida(estado_) {
@@ -1864,7 +1910,10 @@ export default {
           this.clearModalFinalizarAnularToda();
           Notification.success({
             title: "PANEL DESPACHO",
-            message: ("DESPACHOS " +(estado_ == 3 ? "FINALIZADOS" : "ANULADOS")+ " CON EXITO"),
+            message:
+              "DESPACHOS " +
+              (estado_ == 3 ? "FINALIZADOS" : "ANULADOS") +
+              " CON EXITO",
             duration: 1500,
           });
         } else {
@@ -1902,14 +1951,12 @@ export default {
 </script>
 
 <style>
-
-.inputDatimeDespachoPanel2 .form-group .form-control{
+.inputDatimeDespachoPanel2 .form-group .form-control {
   margin-bottom: 0rem;
   font-size: 2rem;
   color: black;
 }
-.dateTimeDespacho  .el-input__inner
-{
+.dateTimeDespacho .el-input__inner {
   font-size: 2.5rem;
   height: 3rem;
 }
@@ -1926,6 +1973,13 @@ export default {
   display: flex;
   justify-content: flex-end;
   width: 50%;
+}
+
+.buttonsAdicionalesDespacho2 {
+  margin: auto;
+  display: flex;
+  justify-content: flex-end;
+  width: 30%;
 }
 
 .container-rutas::-webkit-scrollbar {
@@ -1960,6 +2014,14 @@ export default {
   align-items: center;
   flex-wrap: nowrap;
   width: 50%;
+  justify-content: flex-start;
+}
+
+.cardTiposDespachosPanelDespacho2 {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: 70%;
   justify-content: flex-start;
 }
 
