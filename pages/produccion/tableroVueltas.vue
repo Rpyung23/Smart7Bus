@@ -224,7 +224,7 @@
           <div class="topModalJustificaciones">
             <div class="containerLeftTopNavbarModal">
               <div class="navbarModal" style="margin-bottom: 0.5rem">
-                <strong style="color: red">{{ oTiempoFalta }}</strong>
+                <!--<strong style="color: red">{{ oTiempoFalta }}</strong>-->
                 <div
                   class="containerButtonMasMenos bg-gradient-default border-0"
                 >
@@ -267,7 +267,7 @@
               </div>
 
               <div class="navbarModal">
-                <strong style="color: red">{{ oPriceFalta }} $</strong>
+                <!--<strong style="color: red">{{ oPriceFalta }} $</strong>-->
                 <div
                   class="containerButtonMasMenos bg-gradient-default border-0"
                 >

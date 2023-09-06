@@ -943,7 +943,7 @@ export default {
 
       var docDefinition = {
         // a string or { width: 190, height: number }
-        pageSize: { width: 220, height: "auto" },
+        pageSize: { width: 220, height: mLista.length < 4 ? 300 : "auto" },
         watermark: {
           text: this.banderaMarcoAguaRecibo ? "NO PAGADO" : "",
           color: "red",
@@ -973,8 +973,9 @@ export default {
       var unidades = [];
       var codigos = [];
       var totalC = 0;
-      for (var i = 0; i < this.multipleSelectionProduccionCobros.length; i++) {
-        unidades.push(this.multipleSelectionProduccionCobros[i].Unidad);
+      for (var i = 0; i < this.multipleSelectionProduccionCobros.length; i++) 
+      {
+        unidades.push(this.multipleSelectionProduccionCobros[i].Unidad)
         codigos.push(this.multipleSelectionProduccionCobros[i].CodigoDeuda);
         totalC =
           totalC +
@@ -982,6 +983,7 @@ export default {
       }
 
       try {
+
         var datos = await this.$axios.post(
           process.env.baseUrl + "/RegistrarProduccionPagosVueltas",
           {
@@ -990,7 +992,7 @@ export default {
             total: totalC,
             codigos: codigos,
           }
-        );
+        )
 
         if (datos.data.status_code == 200) {
           if (datos.data.code == 200) {

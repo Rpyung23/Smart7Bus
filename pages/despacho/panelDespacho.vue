@@ -494,9 +494,10 @@
             v-model="radioTipoDespacho"
             style="display: flex; justify-content: center"
           >
+            <el-radio :label="2">Salida Diferida</el-radio>
             <el-radio :label="1">Salida Normal.</el-radio>
             <el-radio :label="3">Generar Tarjeta</el-radio>
-            <el-radio :label="2">Salida Diferida</el-radio>
+            
           </el-radio-group>
         </div>
       </div>
@@ -1009,7 +1010,7 @@ export default {
       selectedRowSalida: null,
       selectRowId: null,
       selectRowEstado: null,
-      radioTipoDespacho: 1,
+      radioTipoDespacho: 2,
       checkboxOrdenamientoDespacho: false,
       checkboxOSalidasAnuladasDespacho: false,
       modalDespachoSalidasAnuladas: false,
