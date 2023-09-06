@@ -503,9 +503,9 @@
 
       
 
-      <div class="row">
+      <div class="row" style="margin-bottom: 0.5rem">
         <div class="col-md-12">
-          <base-input class="inputDatimeDespacho2" type="datetime-local" v-model="fechaActualSalidasPanelDespachoDespachador" format="yyyy-MM-dd HH:mm:00"></base-input>
+          <base-input class="inputDatimeDespachoPanel2" type="datetime-local" v-model="fechaActualSalidasPanelDespachoDespachador" format="yyyy-MM-dd HH:mm:00"></base-input>
           <!--<el-date-picker
             type="datetime"
             class="dateTimeDespacho"
@@ -1902,7 +1902,7 @@ export default {
 
 <style>
 
-.inputDatimeDespacho2 .form-group .form-control{
+.inputDatimeDespachoPanel2 .form-group .form-control{
   margin-bottom: 0rem;
   font-size: 2rem;
   color: black;
