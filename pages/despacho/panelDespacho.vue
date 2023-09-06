@@ -8,7 +8,7 @@
         footer-classes="pb-2"
       >
         <div class="cardTiposDespachosPanelDespacho">
-          <base-button
+          <!--<base-button
             icon
             type="danger"
             title="Ver Salidas Anuladas"
@@ -18,7 +18,7 @@
             <span class="btn-inner--icon"
               ><i class="ni ni-fat-remove"></i
             ></span>
-          </base-button>
+          </base-button>-->
 
           <el-date-picker
             type="date"
@@ -1924,7 +1924,7 @@ export default {
   margin: auto;
   display: flex;
   justify-content: flex-end;
-  width: 40%;
+  width: 50%;
 }
 
 .container-rutas::-webkit-scrollbar {
@@ -1958,7 +1958,7 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  width: 60%;
+  width: 50%;
   justify-content: flex-start;
 }
 
