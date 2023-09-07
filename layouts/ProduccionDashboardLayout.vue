@@ -226,8 +226,8 @@ export default {
 
     this.ReporteProduccion =
       permisos.produccion != null &&
-      permisos.produccion.ReporteProduccion != null &&
-      permisos.produccion.ReporteProduccion.active != null && permisos.produccion.ReporteProduccion.active == true
+      permisos.produccion.reportes != null &&
+      permisos.produccion.reportes.active != null && permisos.produccion.reportes.active == true
         ? true
         : false;
 
