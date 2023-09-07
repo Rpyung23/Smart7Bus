@@ -71,6 +71,7 @@
 
         <sidebar-item
           translate="no"
+          v-if="ReporteProduccion"
           :link="{
             name: 'Reportes',
             icon: 'ni ni-book-bookmark text-blank',
@@ -222,6 +223,13 @@ export default {
     this.oPermisosWebProduccionPanelJSON = this.$cookies.get("WebProduccion");
 
     var permisos = this.$cookies.get("permisos");
+
+    this.ReporteProduccion =
+      permisos.produccion != null &&
+      permisos.produccion.ReporteProduccion != null &&
+      permisos.produccion.ReporteProduccion.active != null && permisos.produccion.ReporteProduccion.active == true
+        ? true
+        : false;
 
     this.tableroCobroTarjeta =
       permisos.produccion != null &&
