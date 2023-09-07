@@ -221,6 +221,7 @@ export default {
       RecibosWorksheetExcelRPagosVehiculoProduccion: "",
       RecibosFileNameExcelRPagosVehiculoProduccion: "",
       mListaGruposPenalidadesSemanales: [],
+      nameUsuario:"S/N"
     };
   },
   methods: {
@@ -325,8 +326,11 @@ export default {
         );
 
         DatoApi.push(...response.data.datos);
+        console.log(response.data.datos)
 
-        for (var i = 0; i < DatoApi.length; i++) {
+        for (var i = 0; i < DatoApi.length; i++) 
+        {
+          console.log(DatoApi[i].AtrasoPenalidad)
           oMultas =
             parseFloat(DatoApi[i].AtrasoPenalidad) + parseFloat(oMultas);
           oTarjeta =
@@ -418,9 +422,17 @@ export default {
       const componentePdf = (datos) => {
         const contenido = [];
         const columns = [];
-        columns.push(componenteTabla("Expreso Milagro", 0));
+        contenido.push({
+                      text: ("USUARIO : "+this.nameUsuario ),
+                      fontSize: 12,
+                    },{
+                      text: ".",
+                      color:"#FFFFFF",
+                      fontSize: 6,
+                    })
+        columns.push(componenteTabla("Expreso Milagro", 3));
         columns.push(componenteTabla("Ruta Milagreña", 1));
-        columns.push(componenteTabla("Ejecutivo Expres", 2));
+        columns.push(componenteTabla("Ejecutivo Express", 2));
         contenido.push({ columns });
         contenido.push(componenteTotal());
         return contenido;
@@ -471,7 +483,7 @@ export default {
                       alignment: "center",
                       fontSize: 12,
                     },
-                  ],
+                  ]
                 ],
               },
             },
@@ -506,6 +518,7 @@ export default {
     },
   },
   mounted() {
+    this.nameUsuario = this.$cookies.get("namesUsuario")
     this.readGruposActivosPenalidadesSemanales();
     this.readAllLineasActivosCobrosRubros();
     this.readAllUnidadesPagosVehiculoProduccionRecibo();
