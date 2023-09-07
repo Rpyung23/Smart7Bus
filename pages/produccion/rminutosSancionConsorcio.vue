@@ -476,7 +476,7 @@ export default {
                   [
                     {
                       text:
-                        "Detalles cobrados del dia " +
+                        "(FECHA COBRO) Detalles cobrados del dia " +
                         this.fechaInicialRPagosVehiculoProduccionRecibo +
                         " hasta " +
                         this.fechaFinalRPagosVehiculoProduccionRecibo,
