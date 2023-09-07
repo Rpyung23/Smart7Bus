@@ -115,6 +115,15 @@
               path: pathRminutostarjetaResumidoVueltas,
             }"
           />
+
+          <sidebar-item
+            translate="no"
+            :link="{
+              name: 'Minutos Sancion C. General',
+              path: '/produccion/rminutosSancionConsorcioGeneral',
+            }"
+          />
+
           <sidebar-item
             translate="no"
             :link="{
