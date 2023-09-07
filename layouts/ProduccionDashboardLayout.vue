@@ -26,6 +26,13 @@
         }">
         </sidebar-item>
 
+        <sidebar-item translate="no" v-if="tableroCobroTarjeta" :link="{
+          name: 'Tablero Cobro Tarjeta',
+          icon: 'ni ni-single-copy-04 text-danger',
+          path: '/produccion/tableroCobrosTarjeta',
+        }">
+        </sidebar-item>
+
         <sidebar-item translate="no" :link="{
           name: 'Recibos',
           icon: 'ni ni-single-copy-04 text-primary',
@@ -125,7 +132,8 @@ export default {
       rminutosjustificados: false,
       rPerjudicado:false,
       rminutossancionconsorcio:false,
-      TableroPerjudicado:false
+      TableroPerjudicado:false,
+      tableroCobroTarjeta:false
     }
   },
   methods: {
@@ -144,6 +152,10 @@ export default {
 
     var permisos = this.$cookies.get("permisos")
 
+
+    this.tableroCobroTarjeta = (permisos.produccion != null &&
+      permisos.produccion.tableroCobroTarjeta != null &&
+      permisos.produccion.tableroCobroTarjeta) ? true : false
 
     this.TableroPerjudicado = (permisos.produccion != null &&
       permisos.produccion.TableroPerjudicado != null &&

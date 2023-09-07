@@ -8,7 +8,7 @@
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
           footer-classes="pb-2"
         >
-          <div class="cardTextoRPagosVehiculoProduccion">
+          <div class="cardOpcionesRPagosVehiculoProduccion">
             <!--<el-autocomplete class="inline-input" v-model="itemUnidadPanelProduccion"
               :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo" style="margin-right: 0.5rem"
               placeholder="Unidad" prefix-icon="ni ni-bus-front-12" :trigger-on-focus="false"></el-autocomplete>-->
@@ -32,61 +32,42 @@
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                :max="{ fechaInicialTableroProduccion }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialTableroProduccion"
-              >
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaInicialTableroProduccion">
+            </el-date-picker>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalTableroProduccion"
-              >
-              </flat-picker>
-            </base-input>
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem;"
+              v-model="fechaFinalTableroProduccion">
+            </el-date-picker>
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
+
             <div class="buttonCenterEndDerecha">
               <base-button
-                icon
-                type="primary"
-                size="sm"
-                @click="readlPanelTableroProduccion()"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="el-icon-search"></i
-                ></span>
-              </base-button>
+              icon
+              type="primary"
+              v-if="!loadingRTableroProduccionCobranzas"
+              size="sm"
+              @click="readPanelCobroTarjeta()"
+            >
+              <span class="btn-inner--icon"
+                ><i class="el-icon-search"></i
+              ></span>
+            </base-button>
 
-              <base-button
-                icon
-                type="default"
-                size="sm"
-                @click="realizarCobro()"
-                v-if="multipleSelectionProduccionCobros.length > 0"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="ni ni-money-coins"></i
-                ></span>
-                <span class="btn-inner--text">GENERAR PAGO</span>
-              </base-button>
+            <base-button
+              icon
+              type="default"
+              size="sm"
+              @click="realizarCobro()"
+              v-if="multipleSelectionProduccionCobros.length > 0"
+            >
+              <span class="btn-inner--icon"><i class="ni ni-money-coins"></i></span>
+              <span class="btn-inner--text">PAGAR</span>
+            </base-button>
             </div>
+
           </div>
         </card>
 
@@ -97,26 +78,23 @@
           footer-classes="pb-2"
         >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
-            <!--<el-select v-model="mSelectRubroValueTablero" multiple collapse-tags placeholder="Rubros">
-              <el-option v-for="item in mListRubrosTableroProduccion" :key="item.id" :label="item.descripcion"
-                :value="item.id">
-              </el-option>
-            </el-select>-->
+
             <el-select
-              v-model="mSelectLineasValueTablero"
+              v-model="mSelectGrupo"
               style="margin-right: 0.5rem"
               multiple
               collapse-tags
-              placeholder="Rutas"
+              placeholder="GRUPOS"
             >
               <el-option
-                v-for="item in mListLineasTableroProduccion"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
+                v-for="item in mListGrupos"
+                :key="item.id"
+                :label="item.descripcion"
+                :value="item.id"
               >
               </el-option>
             </el-select>
+
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
@@ -161,18 +139,10 @@
 
                 <el-table-column prop="Unidad" label="Unidad" minWidth="70">
                 </el-table-column>
-
                 <el-table-column
-                  prop="NumeVuelSali_m"
-                  label="N° Vuelta"
-                  minWidth="65"
-                >
-                </el-table-column>
-
-                <el-table-column
-                  prop="DescRuta"
-                  label="Ruta - Linea"
-                  minWidth="130"
+                  prop="descripcion"
+                  label="GRUPO UNIDAD"
+                  minWidth="140"
                 >
                 </el-table-column>
 
@@ -202,39 +172,13 @@
                   width: 100%;
                   padding: 0rem;
                   border-width: 0rem;
-                  height: calc(100vh - 13em);
+                  height: calc(100vh - 13rem);
                 "
               ></iframe>
             </div>
           </div>
         </card>
 
-        <!--Classic modal-->
-        <modal :show.sync="isObservacionesTableroProduccion" size="xl">
-          <h6 slot="header" class="modal-title">Type your modal title</h6>
-
-          <p>
-            Far far away, behind the word mountains, far from the countries
-            Vokalia and Consonantia, there live the blind texts. Separated they
-            live in Bookmarksgrove right at the coast of the Semantics, a large
-            language ocean.
-          </p>
-          <p>
-            A small river named Duden flows by their place and supplies it with
-            the necessary regelialia. It is a paradisematic country, in which
-            roasted parts of sentences fly into your mouth.
-          </p>
-
-          <template slot="footer">
-            <base-button type="primary">Save changes</base-button>
-            <base-button
-              type="link"
-              class="ml-auto"
-              @click="modals.classic = false"
-              >Close</base-button
-            >
-          </template>
-        </modal>
       </div>
     </base-header>
   </div>
@@ -245,6 +189,7 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import { getFecha_dd_mm_yyyy, FechaStringToHour } from '../../util/fechas'
 
 import {
   Table,
@@ -297,8 +242,8 @@ export default {
       loadingRTableroProduccionCobranzas: false,
       mListRubrosTableroProduccion: [],
       mSelectRubroValueTablero: [],
-      mListLineasTableroProduccion: [],
-      mSelectLineasValueTablero: [],
+      mListGrupos: [],
+      mSelectGrupo: [],
       mListaUnidadesPanelProduccion: [],
       loadingTableUnidadesPanelProduccoionLoading: false,
       optionsUnidadesPanelProduccion: [],
@@ -328,7 +273,6 @@ export default {
       }
     },
     handleSelectionChangeTableCobros(val) {
-      console.log(val);
       if (val != undefined && val != null) {
         if (this.banderaMarcoAguaRecibo) {
           this.multipleSelectionProduccionCobros = val;
@@ -344,26 +288,16 @@ export default {
           }
           this.mTotalRPagosVehiculo = dinero.toFixed(2);
 
-          if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
-            this.crearPreviewReciboIngresoPanelCobroUAmbatena(
+          this.crearPreviewReciboIngresoPanelCobro(
               this.multipleSelectionProduccionCobros
             );
-          } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r") {
-            this.crearPreviewReciboIngresoPanelCobroModelo3(
-              this.multipleSelectionProduccionCobros
-            );
-          } else {
-            this.crearPreviewReciboIngresoPanelCobro(
-              this.multipleSelectionProduccionCobros
-            );
-          }
         }
       }
     },
     initFechaActualProduccionPanelControl() {
       const today = new Date();
       const fecha = new Date(today);
-      //fecha.setDate(fecha.getDate() - 1);
+      fecha.setDate(fecha.getDate());
       var mes = fecha.getMonth() + 1;
       var day = fecha.getDate();
       var format =
@@ -373,8 +307,8 @@ export default {
         "-" +
         (day < 10 ? "0" + day : day);
 
-      this.fechaInicialTableroProduccion = format;
-      this.fechaFinalTableroProduccion = format;
+      this.fechaInicialTableroProduccion = format + " ";
+      this.fechaFinalTableroProduccion = format + " ";
     },
     initFechaActualTicket() {
       const today = new Date();
@@ -401,20 +335,21 @@ export default {
 
       return format + " " + formatHora;
     },
-    async readlPanelTableroProduccion() {
+    async readPanelCobroTarjeta() {
       this.loadingRTableroProduccionCobranzas = true;
-      this.tableDataPanelControlProduccion = [];
+      try {
+        this.tableDataPanelControlProduccion = [];
 
       var datos = await this.$axios.post(
-        process.env.baseUrl + "/ProduccionPanelProduccionCobranzaVueltas",
+        process.env.baseUrl + "/ProduccionPanelCobroTarjeta",
         {
           token: this.token,
-          fechaI: this.fechaInicialTableroProduccion,
-          fechaF: this.fechaFinalTableroProduccion,
-          rutas:
-            this.mSelectLineasValueTablero.length <= 0
+          fechaI: getFecha_dd_mm_yyyy(this.fechaInicialTableroProduccion),
+          fechaF: getFecha_dd_mm_yyyy(this.fechaFinalTableroProduccion),
+          grupos:
+            this.mSelectGrupo.length <= 0
               ? "*"
-              : this.mSelectLineasValueTablero,
+              : this.mSelectGrupo,
           unidades:
             this.itemUnidadPanelProduccion.length <= 0
               ? "*"
@@ -437,19 +372,21 @@ export default {
         this.mPendienteRPagosVehiculo = dinero;
         this.tableDataPanelControlProduccion.push(...datos.data.datos);
       }
-
+      } catch (error) {
+        console.log(error)
+      }
       this.loadingRTableroProduccionCobranzas = false;
     },
-    async readLineasTableroProduccion() {
-      this.mListLineasTableroProduccion = [];
+    async readGrupoTableroCobroTarjeta() {
+      this.mListGrupos = [];
       try {
-        var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
+        var datos = await this.$axios.post(process.env.baseUrl + "/grupos", {
           token: this.token,
           tipo: 3,
         });
 
         if (datos.data.status_code == 200) {
-          this.mListLineasTableroProduccion.push(...datos.data.data);
+          this.mListGrupos.push(...datos.data.data);
         }
       } catch (error) {
         console.log(error);
@@ -487,8 +424,7 @@ export default {
 
         var obj = [
           { text: mLista[i].Unidad, alignment: "center" },
-          { text: mLista[i].DescRuta, alignment: "center" },
-          { text: mLista[i].Fecha, alignment: "center" },
+          { text: ("PAGO TARJETA "+mLista[i].Fecha), alignment: "left" },
           { text: mLista[i].DeudaTotal, alignment: "center" },
         ];
         mListaCuerpoRecibo.push(obj);
@@ -497,6 +433,18 @@ export default {
       var empresa = [
         {
           text: this.$cookies.get("nameEmpresa").substring(0, 30),
+          fontSize: 12,
+          bold: true,
+          alignment: "center",
+        },
+      ]
+
+      console.log(mLista)
+
+            
+      var grupo = [
+        {
+          text: mLista.length > 0 ? mLista[0].descripcion : "",
           fontSize: 12,
           bold: true,
           alignment: "center",
@@ -522,10 +470,10 @@ export default {
             layout: "noBorders",
             table: {
               widths: ["*"],
-              body: [empresa],
+              body: [empresa,grupo],
             },
           },
-          { text: "COMPROBANTE DE INGRESO", alignment: "center", fontSize: 10 },
+          { text: "", alignment: "center", fontSize: 10 },
 
           { text: "---------------------------------------------------------" },
           {
@@ -534,12 +482,11 @@ export default {
             table: {
               // 19, 65, 44, 27
               headerRows: 0,
-              widths: [23, 61, 44, 27],
+              widths: [24, 105, 27],
               body: [
                 [
                   { text: "VEHI", alignment: "center", bold: true },
-                  { text: "LINEA", alignment: "center", bold: true },
-                  { text: "FECHA", alignment: "center", bold: true },
+                  { text: "DETALLE", alignment: "center", bold: true },
                   { text: "VALOR", alignment: "center", bold: true },
                 ],
               ],
@@ -553,7 +500,7 @@ export default {
             layout: "noBorders",
             table: {
               headerRows: 0,
-              widths: [23, 61, 44, 27],
+              widths: [24, 105, 27],
               body: mLista.length > 0 ? mListaCuerpoRecibo : [[]],
             },
           },
@@ -603,369 +550,6 @@ export default {
 
       this.banderaMarcoAguaRecibo = true;
     },
-    async crearPreviewReciboIngresoPanelCobroUAmbatena(mLista) {
-      let dineroCobrado = 0.0;
-
-      var mListaCuerpoRecibo = [];
-
-      for (var i = 0; i < mLista.length; i++) {
-        dineroCobrado = dineroCobrado + parseFloat(mLista[i].DeudaTotal);
-
-        var obj = [
-          {
-            text: mLista[i].Unidad,
-            alignment: "center",
-            bold: true,
-            fontSize: 20,
-          },
-          {
-            text: mLista[i].DescRuta,
-            alignment: "left",
-            bold: true,
-            fontSize: 12,
-          },
-        ];
-        mListaCuerpoRecibo.push(obj);
-      }
-
-      var empresa = [
-        {
-          text: this.$cookies.get("nameEmpresa").substring(0, 30),
-          fontSize: 12,
-          bold: true,
-          alignment: "center",
-        },
-      ];
-
-      var dd = {
-        pageSize: { width: 220, height: mLista.length < 4 ? 300 : "auto" },
-        watermark: {
-          text: this.banderaMarcoAguaRecibo ? "NO PAGADO" : "",
-          color: "red",
-          opacity: 0.25,
-          bold: true,
-          fontSize: mLista.length > 50 ? 70 : 27,
-        },
-        pageMargins: [15, 15, 15, 15],
-        compress: true,
-        content: [
-          {
-            headerRows: 0,
-            fontSize: 12,
-            bold: true,
-            layout: "noBorders",
-            table: {
-              widths: ["*"],
-              body: [empresa],
-            },
-          },
-          { text: "COMPROBANTE DE INGRESO", alignment: "center", fontSize: 10 },
-          {
-            fontSize: 8.5,
-            layout: "noBorders",
-            table: {
-              // 19, 65, 44, 27
-              headerRows: 0,
-              widths: [50, 105],
-              body: [
-                [
-                  {
-                    text: "UNIDAD",
-                    alignment: "center",
-                    fontSize: 6,
-                    margin: [0, 10, 0, 0],
-                  },
-                  { text: "", alignment: "left" },
-                ],
-              ],
-            },
-          },
-          {
-            fontSize: 8.5,
-            layout: "noBorders",
-            table: {
-              headerRows: 0,
-              widths: [50, 105],
-              body: mLista.length > 0 ? mListaCuerpoRecibo : [[]],
-            },
-          },
-          {
-            text:
-              "Fecha de Pago : " +
-              (this.banderaMarcoAguaRecibo
-                ? "RECIBO SIN PAGAR"
-                : this.initFechaActualTicket()),
-            pageOrientation: "portrait",
-            fontSize: 8,
-          },
-          {
-            text: "Fecha Impresion : " + this.initFechaActualTicket(),
-            pageOrientation: "portrait",
-            fontSize: 8,
-          },
-          {
-            text: "TOTAL  : $ " + dineroCobrado,
-            pageOrientation: "portrait",
-            fontSize: 19,
-            color: "dark",
-            bold: true,
-            margin: [0, 0, 0, 0],
-          },
-          {
-            text: ".",
-            pageOrientation: "portrait",
-            fontSize: 6,
-            margin: [0, 5, 0, 0],
-          },
-        ],
-      };
-
-      var pdfDocGenerator = pdfMake.createPdf(dd);
-
-      pdfDocGenerator.getDataUrl((dataUrl) => {
-        this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl;
-        this.banderaMarcoAguaRecibo = true;
-      });
-
-      this.banderaMarcoAguaRecibo = true;
-    },
-    async crearPreviewReciboIngresoPanelCobroModelo3(mLista) 
-    {
-      var atrasoFaltaTotal = 0
-      var atrasoJustTotal = 0
-      var dineroTotal = 0
-      var mListaSalidas = []
-
-      var datosSalidas = [];
-      var contentPDF = [];
-      for(var contador = 0;contador<mLista.length;contador++){
-        mListaSalidas.push(mLista[contador].IDSalida)
-      }
-
-
-      try {
-        var datos = await this.$axios.post(
-          process.env.baseUrl +
-            "/ProduccionPreviewDetalleInfoPanelProduccionCobranzaVueltas",
-          {
-            token: this.token,
-            salidas: mListaSalidas,
-          }
-        );
-        datosSalidas.push(...datos.data.datos);
-      } catch (error) {
-        console.log(error);
-        datosSalidas = [];
-      }
-
-      console.log(datosSalidas);
-
-      var empresa = [
-        {
-          text: this.$cookies.get("nameEmpresa").substring(0, 30),
-          fontSize: 12,
-          bold: true,
-          alignment: "center",
-        },
-      ];
-
-      
-      var grupo = [
-        {
-          text: this.$cookies.get("empresa") == "consorcio-r" ? datosSalidas.length > 0 ? datosSalidas[0].detalle.length > 0 ? datosSalidas[0].detalle[0].descripcion : "" : "" : "",
-          fontSize: 12,
-          bold: true,
-          alignment: "center",
-        },
-      ];
-
-      contentPDF.push({
-        headerRows: 0,
-        fontSize: 12,
-        bold: true,
-        layout: "noBorders", // optional
-        table: {
-          widths: ["*"],
-          body: [empresa,grupo],
-        },
-      });
-
-      if (datosSalidas.length > 0) {
-
-        for (var i = 0; i < datosSalidas.length; i++) 
-        {
-          dineroTotal =  dineroTotal + parseFloat(datosSalidas[i].AtrasoPenalidadTotal)
-
-          var resultadoString = [
-            [
-              { text: "RELOJ", fontSize: 8.5, bold: true, alignment: "center" },
-              { text: "PROG", fontSize: 8.5, bold: true, alignment: "center" },
-              { text: "MARC", fontSize: 8.5, bold: true, alignment: "center" },
-              { text: "FALT", fontSize: 8.5, bold: true, alignment: "center" },
-              { text: "PEN", fontSize: 8.5, bold: true, alignment: "center" },
-            ],
-          ];
-
-          contentPDF.push(
-            {
-              bold: true,
-              fontSize: 9,
-              alignment: "center",
-              layout: "noBorders", // optional
-              table: {
-                headerRows: 0,
-                widths: [35, 75, 25, 22],
-                body: [
-                  [
-                    "Unidad",
-                    "Salida # " + datosSalidas[i].idSali_m,
-                    "Ruta",
-                    "Vue",
-                  ],
-                ],
-              },
-            },
-            {
-              fontSize: 9,
-              alignment: "center",
-              layout: "noBorders", // optional
-              table: {
-                headerRows: 0,
-                widths: [35, 75, 25, 22],
-                body: [
-                  [
-                    datosSalidas[i].CodiVehiSali_m,
-                    datosSalidas[i].HoraSaliProgSali_mF.substring(0, 10),
-                    { text: datosSalidas[i].LetraRutaSali_m, bold: true },
-                    datosSalidas[i].NumeVuelSali_m,
-                  ],
-                ],
-              },
-            },
-            {
-              fontSize: 10,
-              layout: "noBorders",
-              table: {
-                widths: ["*"],
-                body: [["FREC : " + datosSalidas[i].DescFrec]],
-              },
-            }
-          );
-          
-          for (var j = 0; j < datosSalidas[i].detalle.length; j++) 
-          {
-            atrasoFaltaTotal = atrasoFaltaTotal + datosSalidas[i].detalle[j].AtrasoFNumeroControl
-            atrasoJustTotal = atrasoJustTotal + datosSalidas[i].detalle[j].AtrasoJNumeroControl
-            
-
-            resultadoString.push([
-              {
-                text: datosSalidas[i].detalle[j].DescCtrl.substring(0,8),
-                fontSize: 8.5,
-              },
-              {
-                text: datosSalidas[i].detalle[j].HoraProgSali_d.substring(
-                  0,
-                  5
-                ),
-                fontSize: 8.5,
-                alignment: "center",
-              },
-              {
-                text:
-                datosSalidas[i].detalle[j].HoraMarcSali_d,
-                fontSize: 8.5,
-                alignment: "center",
-              },
-              {
-                text: datosSalidas[i].detalle[j].AtrasoFNumeroControl,
-                fontSize: 8.5,
-                alignment: "center",
-              },
-              {
-                text: datosSalidas[i].detalle[j].AtrasoFPenalidadControl,
-                fontSize: 8.5,
-                alignment: "center",
-              },
-            ]);
-          }
-
-          contentPDF.push({
-            fontSize: 8.5,
-            layout: "noBorders",
-            table: {
-              headerRows: 0,
-              widths: [45, 23, 33, 19, 27],
-
-              body: resultadoString,
-            },
-          },{
-            fontSize: 6,
-            layout: "noBorders", // optional
-            table: {
-              body: [
-                ["."]
-              ],
-            },
-          })
-          
-        }
-      }
-
-      contentPDF.push( { text: "---------------------------------------------------------" },{
-            text:
-              "Fecha de Pago : " +
-              (this.banderaMarcoAguaRecibo
-                ? "RECIBO SIN PAGAR"
-                : this.initFechaActualTicket()),
-            pageOrientation: "portrait",
-            fontSize: 8,
-          },
-          {
-            text: "Fecha Impresion : " + this.initFechaActualTicket(),
-            pageOrientation: "portrait",
-            fontSize: 8,
-          },{
-            text:
-              "Atraso Falta: "+atrasoFaltaTotal,
-            fontSize: 7.5,
-          },
-          {
-            text:
-              "Atraso Just: "+atrasoJustTotal,
-            fontSize: 7.5,
-          },{
-            text:
-              "DINERO TOTAL: "+Number(dineroTotal).toFixed(2),
-            fontSize: 10,
-            bold: true,
-          })
-
-      var docDefinition = {
-        // a string or { width: 190, height: number }
-        pageSize: { width: 220, height: mLista.length < 4 ? 300 : "auto" },
-        watermark: {
-          text: this.banderaMarcoAguaRecibo ? "NO PAGADO" : "",
-          color: "red",
-          opacity: 0.30,
-          bold: true,
-          fontSize: mLista.length > 50 ? 120 : 27,
-        },
-        pageMargins: [15, 15, 15, 15],
-        compress: true,
-        // header: [empresa],
-        content: contentPDF,
-      };
-
-      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
-
-      pdfDocGenerator.getDataUrl((dataUrl) => {
-        this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl;
-        this.banderaMarcoAguaRecibo = true;
-      });
-
-      this.banderaMarcoAguaRecibo = true;
-    },
     async realizarCobro() {
       var mListaCobrosAuxiliar = [];
       mListaCobrosAuxiliar.push(...this.multipleSelectionProduccionCobros);
@@ -973,30 +557,26 @@ export default {
       var unidades = [];
       var codigos = [];
       var totalC = 0;
-      for (var i = 0; i < this.multipleSelectionProduccionCobros.length; i++) 
-      {
-        unidades.push(this.multipleSelectionProduccionCobros[i].Unidad)
-        codigos.push(this.multipleSelectionProduccionCobros[i].CodigoDeuda);
+      for (var i = 0; i < this.multipleSelectionProduccionCobros.length; i++) {
+        console.log(this.multipleSelectionProduccionCobros[i])
+        codigos.push(this.multipleSelectionProduccionCobros[i].Codigo);
         totalC =
           totalC +
           parseFloat(this.multipleSelectionProduccionCobros[i].DeudaTotal);
       }
 
       try {
-
-        var datos = await this.$axios.post(
-          process.env.baseUrl + "/RegistrarProduccionPagosVueltas",
+        var datos = await this.$axios.put(
+          process.env.baseUrl + "/InsertProduccionPanelCobroTarjeta",
           {
             token: this.token,
-            unidades: unidades,
-            total: totalC,
-            codigos: codigos,
+            code_tarjeta: codigos,
           }
-        )
+        );
 
-        if (datos.data.status_code == 200) {
-          if (datos.data.code == 200) {
-            this.banderaMarcoAguaRecibo = false;
+        if (datos.data.status_code == 200) 
+        {
+          this.banderaMarcoAguaRecibo = false;
 
             this.notifyVue(
               "default",
@@ -1005,26 +585,11 @@ export default {
               3000
             );
 
-            if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
-              this.crearPreviewReciboIngresoPanelCobroUAmbatena(
+            this.crearPreviewReciboIngresoPanelCobro(
                 this.multipleSelectionProduccionCobros
-              );
-            } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r"){
-  
-              this.crearPreviewReciboIngresoPanelCobroModelo3(
-                this.multipleSelectionProduccionCobros
-              );
-            }else{
-              
-              this.crearPreviewReciboIngresoPanelCobro(
-                this.multipleSelectionProduccionCobros
-              );
-            }
+              )
 
             this.reloadStoreTableCobros(mListaCobrosAuxiliar);
-          } else {
-            this.notifyVue("warning", datos.data.msm, "ni ni-fat-remove", 4500);
-          }
         } else {
           this.notifyVue("danger", datos.data.msm, "ni ni-settings", 4500);
         }
@@ -1056,7 +621,7 @@ export default {
             mListaCobrosAuxiliar[contadorListaAux].Codigo ==
             this.tableDataPanelControlProduccion[contadorListaTable].Codigo
           ) {
-            console.log("DELETE : " + contadorListaTable);
+            //console.log("DELETE : " + contadorListaTable);
             this.tableDataPanelControlProduccion.splice(contadorListaTable, 1);
           }
         }
@@ -1092,20 +657,12 @@ export default {
     this.codigoEmpresaTableroCobrosProduccion = this.$cookies.get("empresa");
 
     this.dowloadImage();
-    //this.crearPreviewReciboIngresoPanelCobro([]);
-
-    if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
-      this.crearPreviewReciboIngresoPanelCobroUAmbatena([]);
-    } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r") {
-      this.crearPreviewReciboIngresoPanelCobroModelo3([]);
-    } else {
-      this.crearPreviewReciboIngresoPanelCobro([]);
-    }
+    this.crearPreviewReciboIngresoPanelCobro([]);
 
     this.readUnidadesTableroProduccion();
-    this.readLineasTableroProduccion();
+    this.readGrupoTableroCobroTarjeta();
     this.initFechaActualProduccionPanelControl();
-    this.readlPanelTableroProduccion();
+    this.readPanelCobroTarjeta();
   },
 };
 </script>
@@ -1148,6 +705,14 @@ export default {
 .cardTextoRPagosVehiculoProduccion {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.cardOpcionesRPagosVehiculoProduccion {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: 90%;
 }
 
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
@@ -1161,7 +726,7 @@ export default {
 
 .card-bodyRCobrosVehiculoProduccionPC {
   padding: 0rem !important;
-  height: calc(100vh - 13em);
+  height: calc(100vh - 13rem);
   overflow: none;
 }
 

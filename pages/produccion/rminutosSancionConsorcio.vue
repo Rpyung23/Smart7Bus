@@ -139,6 +139,11 @@
   </div>
 </template>
 <script>
+import pdfMake from "pdfmake/build/pdfmake.js";
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import pdfMake from "pdfmake/build/pdfmake.js";
@@ -219,6 +224,7 @@ export default {
       RecibosWorksheetExcelRPagosVehiculoProduccion: "",
       RecibosFileNameExcelRPagosVehiculoProduccion: "",
       mListaGruposPenalidadesSemanales: [],
+      nameUsuario:"S/N"
     };
   },
   methods: {
@@ -242,12 +248,18 @@ export default {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
       var day = fecha.getDate();
+      var hora =
+        fecha.getHours() < 10 ? "0" + fecha.getHours() : fecha.getHours();
+      var minutes =
+        fecha.getMinutes() < 10 ? "0" + fecha.getMinutes() : fecha.getMinutes();
       var format =
         fecha.getFullYear() +
         "-" +
         (mes < 10 ? "0" + mes : mes) +
         "-" +
         (day < 10 ? "0" + day : day);
+
+      console.log(format);
 
       this.fechaInicialRPagosVehiculoProduccionRecibo = format;
       this.fechaFinalRPagosVehiculoProduccionRecibo = format;
@@ -281,7 +293,6 @@ export default {
     },
 
     async generatePdf() {
-
       swal.fire({
         title: "Generando Reporte ...",
         width: 600,
@@ -299,41 +310,38 @@ export default {
                   `,
       });
 
-      var DatoApi = []
-      var oMultas = "0.00"
-      var oTarjeta = "0.00"
-      var oSuspension = "0.00"
-      var oTotal = "0.00"
+      var DatoApi = [];
+      var oMultas = "0.00";
+      var oTarjeta = "0.00";
+      var oSuspension = "0.00";
+      var oTotal = "0.00";
 
-      document.getElementById("iframeContainerrMinutosTarjetas").src = ""
-
+      document.getElementById("iframeContainerrMinutosTarjetas").src = "";
 
       try {
         var response = await this.$axios.post(
           process.env.baseUrl + "/MinutoSancionConsorcio",
           {
             token: this.token,
-            fechaI: getFecha_dd_mm_yyyy(
-              this.fechaInicialRPagosVehiculoProduccionRecibo
-            ),
-            fechaF: getFecha_dd_mm_yyyy(
-              this.fechaFinalRPagosVehiculoProduccionRecibo
-            ),
+            fechaI: this.fechaInicialRPagosVehiculoProduccionRecibo,
+            fechaF: this.fechaFinalRPagosVehiculoProduccionRecibo
           }
         );
 
-        DatoApi.push(...response.data.datos)
-        
-        
-        for(var i = 0;i<DatoApi.length;i++)
+        DatoApi.push(...response.data.datos);
+        console.log(response.data.datos)
+
+        for (var i = 0; i < DatoApi.length; i++) 
         {
-          oMultas = parseFloat(DatoApi[i].AtrasoPenalidad) + parseFloat(oMultas) 
-          oTarjeta = parseFloat(DatoApi[i].TarjetaDiaria) + parseFloat(oTarjeta)
-          oSuspension = parseFloat(DatoApi[i].RubroPenalidad) + parseFloat(oSuspension)
-          oTotal = oSuspension + oTarjeta + oMultas 
+          console.log(DatoApi[i].AtrasoPenalidad)
+          oMultas =
+            parseFloat(DatoApi[i].AtrasoPenalidad) + parseFloat(oMultas);
+          oTarjeta =
+            parseFloat(DatoApi[i].TarjetaDiaria) + parseFloat(oTarjeta);
+          oSuspension =
+            parseFloat(DatoApi[i].RubroPenalidad) + parseFloat(oSuspension);
+          oTotal = oSuspension + oTarjeta + oMultas;
         }
-
-
       } catch (error) {
         console.log(error);
       }
@@ -345,10 +353,10 @@ export default {
           body: [
             [{ text: titulo, colSpan: 4, alignment: "center" }, {}, {}, {}],
             [
-              { text: "Unidad",bold:true },
-              { text: "Multas", alignment: "center",bold:true },
-              { text: "Tarjetas", alignment: "center",bold:true },
-              { text: "Suspensión", alignment: "center",bold:true },
+              { text: "Unidad", bold: true },
+              { text: "Multas", alignment: "center", bold: true },
+              { text: "Tarjetas", alignment: "center", bold: true },
+              { text: "Suspensión", alignment: "center", bold: true },
             ],
           ],
         };
@@ -389,15 +397,25 @@ export default {
             ],
             [
               { text: "Tarjetas", border: [false, false, false, false] },
-              { text: Number(oTarjeta).toFixed(2), border: [false, false, false, false] },
+              {
+                text: Number(oTarjeta).toFixed(2),
+                border: [false, false, false, false],
+              },
             ],
             [
               { text: "Suspensión", border: [false, false, false, false] },
-              { text: Number(oSuspension).toFixed(2), border: [false, false, false, true] },
+              {
+                text: Number(oSuspension).toFixed(2),
+                border: [false, false, false, true],
+              },
             ],
             [
               { text: "Total", border: [false, false, false, false] },
-              { text: Number(oTotal).toFixed(2),bold:true, border: [false, false, false, false] },
+              {
+                text: Number(oTotal).toFixed(2),
+                bold: true,
+                border: [false, false, false, false],
+              },
             ],
           ],
         };
@@ -407,9 +425,17 @@ export default {
       const componentePdf = (datos) => {
         const contenido = [];
         const columns = [];
-        columns.push(componenteTabla("Expreso Milagro", 0));
+        contenido.push({
+                      text: ("USUARIO : "+this.nameUsuario ),
+                      fontSize: 12,
+                    },{
+                      text: ".",
+                      color:"#FFFFFF",
+                      fontSize: 6,
+                    })
+        columns.push(componenteTabla("Expreso Milagro", 3));
         columns.push(componenteTabla("Ruta Milagreña", 1));
-        columns.push(componenteTabla("Ejecutivo Expres", 2));
+        columns.push(componenteTabla("Ejecutivo Express", 2));
         contenido.push({ columns });
         contenido.push(componenteTotal());
         return contenido;
@@ -460,7 +486,7 @@ export default {
                       alignment: "center",
                       fontSize: 12,
                     },
-                  ],
+                  ]
                 ],
               },
             },
@@ -474,10 +500,9 @@ export default {
         var pdfUrl = URL.createObjectURL(blob);
         let iframe = document.getElementById("iframeContainerrMinutosTarjetas");
         iframe.src = pdfUrl;
-      })
+      });
 
-      swal.close()
-
+      swal.close();
     },
 
     async readGruposActivosPenalidadesSemanales() {
@@ -496,6 +521,7 @@ export default {
     },
   },
   mounted() {
+    this.nameUsuario = this.$cookies.get("namesUsuario")
     this.readGruposActivosPenalidadesSemanales();
     this.readAllLineasActivosCobrosRubros();
     this.readAllUnidadesPagosVehiculoProduccionRecibo();
@@ -504,12 +530,15 @@ export default {
 };
 </script>
 <style>
+.form-group {
+  margin-bottom: 0rem;
+}
+
 .body0 {
   padding-right: 0.2rem;
   padding-left: 0.2rem;
   padding-top: 0.2rem;
 }
-
 
 .form-controlPersonal {
   display: block;

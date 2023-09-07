@@ -11,19 +11,19 @@
           <base-button
             icon
             type="danger"
-            title="Ver Salidas Anuladas"
+            title="SALIDAS ANULADAS"
             size="sm"
             @click="showModalDespachoSalidasAnuladas()"
           >
             <span class="btn-inner--icon"
-              ><i class="ni ni-fat-remove"></i
+              ><i class="ni ni-single-copy-04"></i
             ></span>
           </base-button>
 
           <el-date-picker
             type="date"
             placeholder="Select date and time"
-            style="margin-right: 0.5rem"
+            style="margin-right: 0.5rem; width: 10rem"
             v-model="fechaActualSalidasPanelDespacho"
           >
           </el-date-picker>
@@ -55,6 +55,174 @@
         </div>
 
         <div class="buttonsAdicionalesDespacho">
+          <base-button
+            icon
+            type="danger"
+            size="sm"
+            @click="showModalAnularTodo()"
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-fat-remove"></i> ANULAR TODO</span
+            >
+          </base-button>
+
+          <base-button
+            icon
+            type="warning"
+            size="sm"
+            @click="showModalFinalizarTodo()"
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-fat-delete"></i> FINALIZAR TODO</span
+            >
+          </base-button>
+
+          <base-button icon type="info" size="sm" @click="">
+            <span class="btn-inner--icon"
+              ><i class="ni ni-watch-time"></i> RECALIFICAR TODO</span
+            >
+          </base-button>
+
+          <base-button
+            icon
+            type="success"
+            title="Despachar"
+            size="sm"
+            @click="showEnviarDespachoPanel()"
+          >
+            <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
+          </base-button>
+
+          <!--<base-button
+            icon
+            type="info"
+            @click="showModalDespachoRecalificarSalida()"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.selectRowEstado != 'DIFERIDO'
+            "
+            size="sm"
+            title="Recalificar Salida"
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-watch-time"></i
+            ></span>
+          </base-button>
+
+          <base-button
+            icon
+            type="danger"
+            @click="showModalAnularFinalizarDespacho(4)"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.selectRowEstado != 'FINALIZADO'
+            "
+            size="sm"
+            title="Anular Salida"
+          >
+            <span class="btn-inner--icon"><i class="ni ni-scissors"></i></span>
+          </base-button>
+
+          <base-button
+            icon
+            type="warning"
+            @click="showModalAnularFinalizarDespacho(3)"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.selectRowEstado != 'FINALIZADO' &&
+              this.selectRowEstado != 'DIFERIDO'
+            "
+            size="sm"
+            title="Finalizar Salida"
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-fat-delete"></i
+            ></span>
+          </base-button>
+
+          <base-button
+            icon
+            type="default"
+            @click="showRecorridoSalidaPanelDespacho()"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.selectRowEstado != 'DIFERIDO'
+            "
+            size="sm"
+            title="Recorrido"
+          >
+            <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
+          </base-button>
+
+          <base-button
+            icon
+            type="primary"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != ''
+            "
+            @click="showReporteLlegadaSAlida()"
+            size="sm"
+            title="Ver Tarjeta"
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-collection"></i
+            ></span>
+          </base-button>
+
+          -->
+        </div>
+      </card>
+
+      <card
+        class="no-border-card col"
+        style="margin-bottom: 0.5rem"
+        body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+        footer-classes="pb-2"
+      >
+        <div class="cardTiposDespachosPanelDespacho2">
+          <el-checkbox-group v-model="radioEstadoRSalidasPanelDespacho">
+            <el-checkbox
+              label="0,1"
+              style="
+                background-color: rgba(140, 248, 126, 0.384);
+                margin-right: 0.5rem;
+              "
+              >SALIDAS DIFERIDAS
+            </el-checkbox>
+            <el-checkbox
+              label="2"
+              style="
+                background-color: hsla(226, 88%, 61%, 0.274);
+                margin-right: 0.5rem;
+              "
+              >EN RUTA</el-checkbox
+            >
+            <el-checkbox label="3" style="margin-right: 0rem"
+              >FINALIZADOS</el-checkbox
+            >
+          </el-checkbox-group>
+
+          <base-button icon type="link" size="sm" disabled>
+            <span class="btn-inner--icon"
+              ><i
+                class="ni ni-collection"
+                style="color: white; cursor: none"
+              ></i
+            ></span>
+          </base-button>
+        </div>
+
+        <div class="buttonsAdicionalesDespacho2">
           <base-button
             icon
             type="info"
@@ -141,7 +309,7 @@
             ></span>
           </base-button>
 
-          <base-button
+          <!--<base-button
             icon
             type="success"
             title="Despachar"
@@ -149,7 +317,7 @@
             @click="showEnviarDespachoPanel()"
           >
             <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
-          </base-button>
+          </base-button>-->
         </div>
       </card>
 
@@ -337,54 +505,41 @@
 
     <!--DESPACHAR modal-->
     <modal :show.sync="modalEnviarDespachoPanel">
-      <base-alert
-        v-if="
-          responseApiDespachoWeb != null &&
-          responseApiDespachoWeb.data.status_code == 200
-        "
-        type="default"
-      >
-        SALIDA
-        <strong>{{ responseApiDespachoWeb.data.salida_id }}</strong> GENERADA
-        CON EXITO
-      </base-alert>
-
-      <base-alert
-        v-if="
-          responseApiDespachoWeb != null &&
-          responseApiDespachoWeb.data.status_code == 400
-        "
-        type="danger"
-      >
-        {{ responseApiDespachoWeb.data.msm }}
-      </base-alert>
-
       <div class="row" style="margin-bottom: 1rem">
         <div class="col-md-12">
           <el-radio-group
             v-model="radioTipoDespacho"
             style="display: flex; justify-content: center"
           >
+            <el-radio :label="2">Salida Diferida</el-radio>
             <el-radio :label="1">Salida Normal.</el-radio>
             <el-radio :label="3">Generar Tarjeta</el-radio>
-            <el-radio :label="2">Salida Diferida</el-radio>
           </el-radio-group>
         </div>
       </div>
 
-      <div class="row" style="margin-bottom: 0.3rem">
-        <div class="col-md-6">
-          <el-date-picker
+      <div class="row" style="margin-bottom: 0.5rem">
+        <div class="col-md-12">
+          <base-input
+            class="inputDatimeDespachoPanel2"
+            type="datetime-local"
+            v-model="fechaActualSalidasPanelDespachoDespachador"
+            format="yyyy-MM-dd HH:mm:00"
+          ></base-input>
+          <!--<el-date-picker
             type="datetime"
+            class="dateTimeDespacho"
             placeholder="Fecha Despacho"
-            style="width: 100%"
+            style="width: 100%;"
             v-model="fechaActualSalidasPanelDespachoDespachador"
             format="yyyy-MM-dd HH:mm:00"
           >
-          </el-date-picker>
+          </el-date-picker>-->
         </div>
+      </div>
 
-        <div class="col-md-6">
+      <div class="row" style="margin-bottom: 0.3rem">
+        <div class="col-md-12">
           <el-select
             v-model="itemUnidadSalidasPanelDespacho"
             filterable
@@ -573,6 +728,214 @@
         >
       </template>
     </modal>
+
+    <!-- MODAL ANULAR DESPACHO TODO -->
+
+    <!--Form modal Despacho Anular Salida-->
+    <modal :show.sync="modalDespachoAnularSalidaTodo" body-classes="p-0">
+      <h6 slot="header" class="modal-title">ANULAR TODAS LAS SALIDAS</h6>
+
+      <div class="row" style="margin-right: 1rem; margin-left: 1rem">
+        <div class="col-md-6">
+          <el-select
+            v-model="itemUnidadSalidaAnularFinalizar"
+            multiple
+            filterable
+            remote
+            placeholder="Ingrese unidad"
+            style="width: 100%; margin-bottom: 0.5rem"
+            :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+            :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
+          >
+            <el-option
+              v-for="item in optionsUnidadesSalidasPanelSalidas"
+              :key="item.CodiVehi"
+              :label="item.CodiVehi"
+              :value="item.CodiVehi"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <div class="col-md-6">
+          <base-input
+            addon-left-icon="ni ni-calendar-grid-58"
+            style="margin-right: 0.5rem"
+            class="input_date_anular_despacho_todo"
+          >
+            <flat-picker
+              slot-scope="{ focus, blur }"
+              :min="{ fechaActualAnularFinalizarTodo }"
+              @on-open="focus"
+              @on-close="blur"
+              :config="config_flatpicker"
+              class="form-controlPersonal datepicker"
+              v-model="fechaActualAnularFinalizarTodo"
+            >
+            </flat-picker>
+          </base-input>
+        </div>
+      </div>
+
+      <div
+        class="row"
+        style="margin-bottom: 1.5rem; margin-right: 1rem; margin-left: 1rem"
+      >
+        <div class="col-md-12">
+          <el-select
+            v-model="mSelectRutaAnularFinalizarTodo"
+            collapse-tags
+            placeholder="Lineas"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in mListRutasDespacho"
+              :key="item.idRuta"
+              :label="item.DescRuta"
+              :value="item.idRuta"
+            >
+            </el-option>
+          </el-select>
+        </div>
+      </div>
+
+      <div
+        class="row"
+        style="margin-bottom: 0.5rem; justify-content: center; width: 100%"
+      >
+        <base-checkbox
+          class="col-md-3"
+          v-model="mCheckDiferidaFinalizarAnulado"
+          style="margin-right: 0.5rem"
+        >
+          DIFERIDAS
+        </base-checkbox>
+        <base-checkbox
+          class="col-md-3"
+          v-model="mCheckEnRutaFinalizarAnulado"
+          style="margin-right: 0.5rem"
+        >
+          EN RUTA
+        </base-checkbox>
+        <base-checkbox
+          class="col-md-3"
+          v-model="mCheckFinalizadaFinalizarAnulado"
+        >
+          FINALIZADAS
+        </base-checkbox>
+      </div>
+
+      <template slot="footer">
+        <base-button
+          type="danger"
+          @click="sendFinalizarAnularAllSalidas(4, 'CANCELAR')"
+          >ANULAR SALIDAS</base-button
+        >
+      </template>
+    </modal>
+
+    <!--Form modal Despacho FINALIZAR TODO Salida-->
+    <modal :show.sync="modalDespachoFinalizarSalidaTodo" body-classes="p-0">
+      <h6 slot="header" class="modal-title">FINALIZAR TODAS LAS SALIDAS</h6>
+
+      <div class="row" style="margin-right: 1rem; margin-left: 1rem">
+        <div class="col-md-6">
+          <el-select
+            v-model="itemUnidadSalidaAnularFinalizar"
+            multiple
+            filterable
+            remote
+            placeholder="Ingrese unidad"
+            style="width: 100%; margin-bottom: 0.5rem"
+            :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+            :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
+          >
+            <el-option
+              v-for="item in optionsUnidadesSalidasPanelSalidas"
+              :key="item.CodiVehi"
+              :label="item.CodiVehi"
+              :value="item.CodiVehi"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <div class="col-md-6">
+          <base-input
+            addon-left-icon="ni ni-calendar-grid-58"
+            style="margin-right: 0.5rem"
+            class="input_date_anular_despacho_todo"
+          >
+            <flat-picker
+              slot-scope="{ focus, blur }"
+              :min="{ fechaActualAnularFinalizarTodo }"
+              @on-open="focus"
+              @on-close="blur"
+              :config="config_flatpicker"
+              class="form-controlPersonal datepicker"
+              v-model="fechaActualAnularFinalizarTodo"
+            >
+            </flat-picker>
+          </base-input>
+        </div>
+      </div>
+
+      <div
+        class="row"
+        style="margin-bottom: 1.5rem; margin-right: 1rem; margin-left: 1rem"
+      >
+        <div class="col-md-12">
+          <el-select
+            v-model="mSelectRutaAnularFinalizarTodo"
+            collapse-tags
+            placeholder="Lineas"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in mListRutasDespacho"
+              :key="item.idRuta"
+              :label="item.DescRuta"
+              :value="item.idRuta"
+            >
+            </el-option>
+          </el-select>
+        </div>
+      </div>
+
+      <div
+        class="row"
+        style="margin-bottom: 0.5rem; justify-content: center; width: 100%"
+      >
+        <base-checkbox
+          class="col-md-3"
+          v-model="mCheckDiferidaFinalizarAnulado"
+          style="margin-right: 0.5rem"
+        >
+          DIFERIDAS
+        </base-checkbox>
+        <base-checkbox
+          class="col-md-3"
+          v-model="mCheckEnRutaFinalizarAnulado"
+          style="margin-right: 0.5rem"
+        >
+          EN RUTA
+        </base-checkbox>
+        <base-checkbox
+          class="col-md-3"
+          v-model="mCheckFinalizadaFinalizarAnulado"
+        >
+          FINALIZADAS
+        </base-checkbox>
+      </div>
+
+      <template slot="footer">
+        <base-button
+          type="warning"
+          @click="sendFinalizarAnularAllSalidas(3, 'FINALIZAR')"
+          >FINALIZAR SALIDAS</base-button
+        >
+      </template>
+    </modal>
   </div>
 </template>
 <script>
@@ -592,6 +955,8 @@ import {
   Button,
   Dropdown,
   Checkbox,
+  CheckboxGroup,
+  MessageBox,
 } from "element-ui";
 import JqxGrid from "jqwidgets-scripts/jqwidgets-vue/vue_jqxgrid.vue";
 import JqxMenu from "jqwidgets-scripts/jqwidgets-vue/vue_jqxmenu.vue";
@@ -602,6 +967,9 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getFecha_dd_mm_yyyy, FechaStringToHour } from "../../util/fechas";
+import flatPicker from "vue-flatpickr-component";
+import "flatpickr/dist/flatpickr.css";
+import { Spanish } from "flatpickr/dist/l10n/es.js";
 
 export default {
   mixins: [clientPaginationMixin],
@@ -610,6 +978,7 @@ export default {
     Tabs,
     JqxGrid,
     JqxMenu,
+    flatPicker,
     TabPane,
     BasePagination,
     RouteBreadCrumb,
@@ -623,12 +992,20 @@ export default {
     [Checkbox.name]: Checkbox,
     [DatePicker.name]: DatePicker,
     [TableColumn.name]: TableColumn,
+    [CheckboxGroup.name]: CheckboxGroup,
+    [MessageBox.name]: MessageBox,
     [Notification.name]: Notification,
     ComponenteRecorrido: recorrido,
     ComponenteTarjeta: tarjeta,
   },
   data() {
     return {
+      config_flatpicker: {
+        allowInput: true,
+        locale: Spanish,
+        minDate: "2020-01-01",
+        maxDate: "2050-01-01",
+      },
       reponseAnularFinalizar: null,
       minutosSalidaDiferida: 0,
       columnsInfo: [],
@@ -662,7 +1039,7 @@ export default {
       selectedRowSalida: null,
       selectRowId: null,
       selectRowEstado: null,
-      radioTipoDespacho: 1,
+      radioTipoDespacho: 2,
       checkboxOrdenamientoDespacho: false,
       checkboxOSalidasAnuladasDespacho: false,
       modalDespachoSalidasAnuladas: false,
@@ -673,6 +1050,17 @@ export default {
       oZoomPanelDespachoControl: 7,
       responseApiDespachoWeb: null,
       ArrowGridSelect: null,
+
+      modalDespachoAnularSalidaTodo: false,
+      modalDespachoFinalizarSalidaTodo: false,
+
+      fechaActualAnularFinalizarTodo: null,
+      itemUnidadSalidaAnularFinalizar: null,
+      mSelectRutaAnularFinalizarTodo: null,
+      mCheckDiferidaFinalizarAnulado: false,
+      mCheckEnRutaFinalizarAnulado: false,
+      mCheckFinalizadaFinalizarAnulado: false,
+      radioEstadoRSalidasPanelDespacho: [],
     };
   },
   methods: {
@@ -734,12 +1122,15 @@ export default {
         : (this.modalEnviarDespachoPanel = true);
     },
     getObjetoFrecuencia(idFreceucnia) {
-      for (var i = 0; this.mListRutasFrecuencias.length; i++) {
-        if (idFreceucnia == this.mListRutasFrecuencias[i].idFrec) {
-          return this.mListRutasFrecuencias[i];
+      try {
+        for (var i = 0; this.mListRutasFrecuencias.length; i++) {
+          if (idFreceucnia == this.mListRutasFrecuencias[i].idFrec) {
+            return this.mListRutasFrecuencias[i];
+          }
         }
+      } catch (e) {
+        console.log(e);
       }
-
       return null;
     },
     showModalDespacho() {
@@ -793,6 +1184,9 @@ export default {
         format + " " + hora + ":" + minutes + ":00";
       this.fechaActualSalidasPanelDespachoDespachador =
         format + " " + hora + ":" + minutes + ":00";
+      this.fechaActualAnularFinalizarTodo =
+        format + " " + hora + ":" + minutes + ":00";
+      this.config_flatpicker.minDate = this.fechaActualAnularFinalizarTodo;
     },
     myGridOnContextMenu: function () {
       return false;
@@ -838,9 +1232,35 @@ export default {
         }
       }
     },
+    getStringUnidad(unidades) {
+      var string_unidad = "";
+      for (var i = 0; i < unidades.length; i++) {
+        console.log("i = " + i);
+        for (
+          var j = 0;
+          j < this.mListaUnidadesSalidasPanelDespacho.length;
+          j++
+        ) {
+          console.log("j = " + j);
+          console.log(
+            unidades[i].CodiVehi +
+              " == " +
+              this.mListaUnidadesSalidasPanelDespacho[j].CodiVehi
+          );
+          if (
+            unidades[i].CodiVehi ==
+            this.mListaUnidadesSalidasPanelDespacho[j].CodiVehi
+          ) {
+            string_unidad = string_unidad + unidades[i].CodiVehi + " , ";
+          }
+        }
+      }
+
+      return string_unidad;
+    },
     async createHeaderTable() {
       //this.selectedRowSalida = null;
-      this.selectRowId  = null
+      this.selectRowId = null;
       //this.$refs.myGridDespachoPanel.clearSelection();
       if (this.ArrowGridSelect != null) {
         this.$refs.myGridDespachoPanel.unselectrow(this.ArrowGridSelect);
@@ -848,6 +1268,8 @@ export default {
 
       var oRuta = this.getRutaPorID(this.mSelectRutaSalidaPanelDespacho);
       this.readDespachoSalidasAnuladas();
+      console.log("*****************************************")
+      console.log(this.radioEstadoRSalidasPanelDespacho)
 
       try {
         this.mListDespachosPanel = [];
@@ -861,11 +1283,13 @@ export default {
             rutas: [oRuta.LetrRuta],
             fechaI: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
             fechaF: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
-            tipo: "*",
+            tipo: this.radioEstadoRSalidasPanelDespacho.length <= 0
+            ? "*"
+            : this.radioEstadoRSalidasPanelDespacho
           }
         );
         this.mListDespachosPanel.push(...datos.data.datos);
-        this.mListDespachosPanelAuxiliar = this.mListDespachosPanel
+        this.mListDespachosPanelAuxiliar = this.mListDespachosPanel;
         this.$refs.myGridDespachoPanel.beginupdate();
         this.columnsInfo = [];
         this.columnsInfo[0] = {
@@ -1014,7 +1438,7 @@ export default {
         if (datos.data.status_code == 200) {
           this.mListRutasDespacho.push(...datos.data.data);
           this.mSelectRutaSalidaPanelDespacho = datos.data.data[0].idRuta;
-          this.mSelectRutaSalidaDespachar = datos.data.data[0].idRuta;
+          //this.mSelectRutaSalidaDespachar = datos.data.data[0].idRuta;
           this.initFechaActualSalidaDespachoPanel();
 
           this.createHeaderTable();
@@ -1047,49 +1471,49 @@ export default {
       var inter = 0;
       for (var hora = 3; hora <= 23; hora++) {
         tiempoString = hora < 10 ? "0" + hora : hora;
-        for (var minuto = 0; minuto <= 59; minuto++) 
-        {
-          minutosString = minuto < 10 ? "0" + minuto : minuto
-            var HS = tiempoString + ":" + minutosString + ":"+secondString
-            var HSa_ = tiempoString + ":" + minutosString + ":"+secondString+ " (A)"
-            var obj = this.getObjetoSalidaDespacho(HS, HSa_)
-            var objD =
-              obj == null
-                ? {
-                    LetraRutaSali_m: "",
-                    CodiVehiSali_m: "",
-                    idSali_m: "",
-                    HoraSaliProgSali_m: HS,
-                    HoraLlegProgSali_m: "",
-                    EstaSali_m: "",
-                    idFrecSali_m: "",
-                    DescFrec: "",
-                    PenaCtrlSali_d: "",
-                    VeloMaxiSali_m: "",
-                    NumeVuelSali_m: "",
-                    atrasoFaltasTime: "",
-                    adelantoFaltasTime: "",
-                    Country23: "",
-                    Intervalo: "",
-                    DescRutaSali_m: "",
-                  }
-                : obj;
-            if (obj == null) {
-              ListaVacia.push(objD);
-              inter++;
-            } else {
-              var estado = obj.EstaSali_mCode == 4 ? HSa_ : HS;
-              obj.HoraSaliProgSali_m = estado;
-              obj.Intervalo = inter;
-              inter = 0;
+        for (var minuto = 0; minuto <= 59; minuto++) {
+          minutosString = minuto < 10 ? "0" + minuto : minuto;
+          var HS = tiempoString + ":" + minutosString + ":" + secondString;
+          var HSa_ =
+            tiempoString + ":" + minutosString + ":" + secondString + " (A)";
+          var obj = this.getObjetoSalidaDespacho(HS, HSa_);
+          var objD =
+            obj == null
+              ? {
+                  LetraRutaSali_m: "",
+                  CodiVehiSali_m: "",
+                  idSali_m: "",
+                  HoraSaliProgSali_m: HS,
+                  HoraLlegProgSali_m: "",
+                  EstaSali_m: "",
+                  idFrecSali_m: "",
+                  DescFrec: "",
+                  PenaCtrlSali_d: "",
+                  VeloMaxiSali_m: "",
+                  NumeVuelSali_m: "",
+                  atrasoFaltasTime: "",
+                  adelantoFaltasTime: "",
+                  Country23: "",
+                  Intervalo: "",
+                  DescRutaSali_m: "",
+                }
+              : obj;
+          if (obj == null) {
+            ListaVacia.push(objD);
+            inter++;
+          } else {
+            var estado = obj.EstaSali_mCode == 4 ? HSa_ : HS;
+            obj.HoraSaliProgSali_m = estado;
+            obj.Intervalo = inter;
+            inter = 0;
 
-              ListaLlena.push(obj);
-            }
+            ListaLlena.push(obj);
+          }
         }
       }
       ListaCompleta = ListaLlena.concat(ListaVacia);
-      console.log("LISTA CCCCCCC");
-      console.log(ListaCompleta);
+      /*console.log("LISTA CCCCCCC");
+      console.log(ListaCompleta);*/
       return {
         localdata: ListaCompleta,
         datatype: "array",
@@ -1114,11 +1538,10 @@ export default {
       };
     },
     getObjetoSalidaDespacho(tiempo, tiempoA) {
-      console.log("TAMANIO : "+this.mListDespachosPanelAuxiliar.length )
+      //console.log("TAMANIO : "+this.mListDespachosPanelAuxiliar.length )
       if (this.mListDespachosPanelAuxiliar.length > 0) {
-        for (var i = 0; i < this.mListDespachosPanelAuxiliar.length; i++) 
-        {
-          console.log(tiempo +" == "+ this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m)
+        for (var i = 0; i < this.mListDespachosPanelAuxiliar.length; i++) {
+          //console.log(tiempo +" == "+ this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m)
           if (
             tiempo == this.mListDespachosPanelAuxiliar[i].HoraSaliProgSali_m
           ) {
@@ -1260,24 +1683,41 @@ export default {
         return false;
       }
     },
+    clearModalDespacho() {
+      this.itemUnidadSalidasPanelDespacho = null;
+      this.mSelectRutaSalidaDespachar = null;
+      this.mSelectRutaFrecuenciaPanelDespacho = null;
+    },
     async EnviarDespachoUnidad() {
       try {
         var objFrecuencia = this.getObjetoFrecuencia(
           this.mSelectRutaFrecuenciaPanelDespacho
         );
-        console.log(objFrecuencia);
-        this.responseApiDespachoWeb = null;
-        console.log(this.radioTipoDespacho);
-        console.log(this.itemUnidadSalidasPanelDespacho);
-        console.log("ENVIANDO DESPACHO ............");
-        console.log(`UNIDAD : ${this.itemUnidadSalidasPanelDespacho.CodiVehi}`);
+
         console.log(
-          `API : ${this.itemUnidadSalidasPanelDespacho.api_despacho}`
+          "itemUnidadSalidasPanelDespacho : " +
+            this.itemUnidadSalidasPanelDespacho
         );
-        console.log(this.fechaActualSalidasPanelDespachoDespachador);
-        console.log(`FRECUENCIA : ${this.mSelectRutaFrecuenciaPanelDespacho}`);
-        console.log(objFrecuencia);
-        console.log(`RUTA ${this.mSelectRutaSalidaDespachar}`);
+        console.log(
+          "mSelectRutaSalidaDespachar : " + this.mSelectRutaSalidaDespachar
+        );
+        console.log(
+          "mSelectRutaFrecuenciaPanelDespacho : " +
+            this.mSelectRutaFrecuenciaPanelDespacho
+        );
+
+        if (
+          this.itemUnidadSalidasPanelDespacho == null ||
+          this.mSelectRutaSalidaDespachar == null ||
+          this.mSelectRutaFrecuenciaPanelDespacho == null
+        ) {
+          Notification.warning({
+            title: "PANEL DESPACHO",
+            message: "PORFAVOR LLENAR LOS DATOS VACIOS",
+            duration: 1500,
+          });
+          return;
+        }
 
         this.responseApiDespachoWeb = await this.$axios.post(
           process.env.baseUrl + "/generarDespacho",
@@ -1303,9 +1743,30 @@ export default {
           }
         );
 
-        console.log(this.responseApiDespachoWeb.data);
+        if (this.responseApiDespachoWeb.data.status_code == 200) {
+          this.clearModalDespacho();
+
+          Notification.success({
+            title: "SALIDA GENERADA CON EXITO",
+            message: "CODIGO : " + this.responseApiDespachoWeb.data.salida_id,
+            duration: 1500,
+          });
+        } else {
+          Notification.error({
+            title: "ERROR DESPACHO API",
+            message: this.responseApiDespachoWeb.data.msm,
+            duration: 1500,
+          });
+        }
+
+        //console.log(this.responseApiDespachoWeb.data);
       } catch (error) {
         console.log(error);
+        Notification.error({
+          title: "ERROR DESPACHO TRY",
+          message: error.toString(),
+          duration: 1500,
+        });
       }
       this.createHeaderTable();
     },
@@ -1338,9 +1799,9 @@ export default {
         );
 
         console.log(response.data);
-        this.reponseAnularFinalizar = response.data
-        this.modalDespachoAnularSalida = false
-        this.modalDespachoFinalizarSalida = false
+        this.reponseAnularFinalizar = response.data;
+        this.modalDespachoAnularSalida = false;
+        this.modalDespachoFinalizarSalida = false;
       } catch (e) {
         alert("ERROR TRYCATCH");
         console.log(e);
@@ -1357,6 +1818,119 @@ export default {
       }
 
       return objUnidad;
+    },
+    showModalAnularTodo() {
+      this.clearModalFinalizarAnularToda();
+      this.modalDespachoAnularSalidaTodo = true;
+    },
+    showModalFinalizarTodo() {
+      this.clearModalFinalizarAnularToda();
+      this.modalDespachoFinalizarSalidaTodo = true;
+    },
+    clearModalFinalizarAnularToda() {
+      this.mSelectRutaAnularFinalizarTodo = null;
+      this.itemUnidadSalidaAnularFinalizar = null;
+      this.mCheckDiferidaFinalizarAnulado = false;
+      this.mCheckEnRutaFinalizarAnulado = false;
+      this.mCheckFinalizadaFinalizarAnulado = false;
+    },
+    sendFinalizarAnularAllSalidas(estado_, title) {
+      if (this.mSelectRutaAnularFinalizarTodo == null) {
+        Notification.warning({
+          title: "PANEL DESPACHO",
+          message: "PORFAVOR SELECCIONE UNA RUTA",
+          duration: 2000,
+        });
+
+        return;
+      }
+
+      MessageBox.confirm(
+        "Esta seguro que desea " +
+          title +
+          " LAS SALIDAS para las unidades : " +
+          (this.itemUnidadSalidaAnularFinalizar == null ||
+          this.itemUnidadSalidaAnularFinalizar.length <= 0
+            ? "TODAS LAS UNIDADES"
+            : this.itemUnidadSalidaAnularFinalizar.toString()) +
+          " en la RUTA : " +
+          (this.mSelectRutaAnularFinalizarTodo == null ||
+          this.mSelectRutaAnularFinalizarTodo.length <= 0
+            ? "TODAS LAS RUTAS"
+            : this.getRutaPorID(this.mSelectRutaAnularFinalizarTodo).DescRuta) +
+          " para la FECHA " +
+          this.fechaActualAnularFinalizarTodo +
+          " (" +
+          (this.mCheckDiferidaFinalizarAnulado == false &&
+          this.mCheckEnRutaFinalizarAnulado == false &&
+          this.mCheckFinalizadaFinalizarAnulado == false
+            ? " DIFERIDA,EN RUTA,FINALIZADA"
+            : (this.mCheckDiferidaFinalizarAnulado == true ? "DIFERIDA," : "") +
+              (this.mCheckFinalizadaFinalizarAnulado == true
+                ? "FINALIZADAS,"
+                : "") +
+              (this.mCheckEnRutaFinalizarAnulado == true ? "EN RUTA" : "")) +
+          ") ",
+        "Advertencia",
+        {
+          confirmButtonText: "Confirmar",
+          cancelButtonText: "Cancelar",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          this.apiAnularFinalizarAllSalida(estado_);
+        })
+        .catch((error) => {
+          this.createHeaderTable();
+          console.log(error);
+        });
+    },
+    async apiAnularFinalizarAllSalida(estado_) {
+      try {
+        var data = await this.$axios.post(
+          process.env.baseUrl + "/AnularFinalizarAllDespacho",
+          {
+            token: this.token,
+            fecha: this.fechaActualAnularFinalizarTodo,
+            ruta: this.mSelectRutaAnularFinalizarTodo,
+            unidades:
+              this.itemUnidadSalidaAnularFinalizar == null ||
+              this.itemUnidadSalidaAnularFinalizar.length <= 0
+                ? "*"
+                : this.itemUnidadSalidaAnularFinalizar,
+            isFinalizada: this.mCheckFinalizadaFinalizarAnulado == true ? 1 : 0,
+            isRuta: this.mCheckEnRutaFinalizarAnulado == true ? 1 : 0,
+            isDiferida: this.mCheckDiferidaFinalizarAnulado == true ? 1 : 0,
+            estado: estado_,
+          }
+        );
+
+        if (data.data.status_code == 200) {
+          this.clearModalFinalizarAnularToda();
+          Notification.success({
+            title: "PANEL DESPACHO",
+            message:
+              "DESPACHOS " +
+              (estado_ == 3 ? "FINALIZADOS" : "ANULADOS") +
+              " CON EXITO",
+            duration: 1500,
+          });
+        } else {
+          Notification.error({
+            title: "PANEL DESPACHO",
+            message: data.data.msm,
+            duration: 2000,
+          });
+        }
+      } catch (error) {
+        Notification.error({
+          title: "PANEL DESPACHO TRY CATCH",
+          message: error.toString(),
+          duration: 2000,
+        });
+      }
+      this.createHeaderTable();
     },
   },
   mounted() {
@@ -1377,6 +1951,19 @@ export default {
 </script>
 
 <style>
+.inputDatimeDespachoPanel2 .form-group .form-control {
+  margin-bottom: 0rem;
+  font-size: 2rem;
+  color: black;
+}
+.dateTimeDespacho .el-input__inner {
+  font-size: 2.5rem;
+  height: 3rem;
+}
+
+.input_date_anular_despacho_todo .form-group {
+  margin-bottom: 0rem;
+}
 .container_body_modal_despacho {
   margin-right: 1.25rem;
   margin-left: 1.25rem;
@@ -1385,7 +1972,14 @@ export default {
   margin: auto;
   display: flex;
   justify-content: flex-end;
-  width: 40%;
+  width: 50%;
+}
+
+.buttonsAdicionalesDespacho2 {
+  margin: auto;
+  display: flex;
+  justify-content: flex-end;
+  width: 30%;
 }
 
 .container-rutas::-webkit-scrollbar {
@@ -1419,7 +2013,15 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  width: 60%;
+  width: 50%;
+  justify-content: flex-start;
+}
+
+.cardTiposDespachosPanelDespacho2 {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: 70%;
   justify-content: flex-start;
 }
 
@@ -1499,7 +2101,7 @@ export default {
 }
 
 .containerTablero {
-  height: calc(100vh - 9.5rem);
+  height: calc(100vh - 12rem);
   display: flex;
 }
 
