@@ -4,6 +4,7 @@
     <GmapMap
       :center="oCenter"
       :zoom="oZoom"
+      ref="GmapMapMonitoreo"
       :map-type-id="radioMapaMonitoreo"
       class="mapa"
       :options="{
@@ -14,6 +15,7 @@
         rotateControl: false,
         fullscreenControl: false,
         disableDefaultUi: true,
+        trafficControl: true,
       }"
     >
       <GmapMarker
@@ -62,9 +64,8 @@
 
       <!--GEOCIUDAD-->
 
-      
       <GmapPolygon
-      v-if="checkedGeoCercaCiudad"
+        v-if="checkedGeoCercaCiudad"
         :options="{
           strokeColor: '#172b4d',
           fillColor: '#172b4d80',
@@ -75,9 +76,6 @@
         :strokeWeight="1"
         :paths="mListGeociudad"
       />
-
-
-      
 
       <!-- FIN GEOCIUDAD-->
       <GmapMarker
@@ -97,14 +95,15 @@
           },
         }"
       />
-      <GmapPolyline 
+      <GmapPolyline
         :path="mListRutaSubida"
         :options="{
           strokeColor: '#A52714',
           fillColor: '#A52714',
           strokeOpacity: 0.6,
-          strokeWeight: 4
-        }">
+          strokeWeight: 4,
+        }"
+      >
       </GmapPolyline>
       <GmapPolyline
         :path="mListRutaBajada"
@@ -112,8 +111,9 @@
           strokeColor: '#01579B',
           fillColor: '#01579B',
           strokeOpacity: 0.6,
-          strokeWeight: 4
-        }">
+          strokeWeight: 4,
+        }"
+      >
       </GmapPolyline>
       <GmapMarker
         v-if="mListRutaBajada.length > 0"
@@ -122,7 +122,7 @@
           lng: parseFloat(mListRutaBajada[0].lng),
         }"
         :optimized="true"
-        :icon= '"img/monitoreo/start_route.png"'
+        :icon="'img/monitoreo/start_route.png'"
       />
       <GmapMarker
         v-if="mListRutaSubida.length > 0"
@@ -131,7 +131,7 @@
           lng: parseFloat(mListRutaSubida[0].lng),
         }"
         :optimized="true"
-        :icon= '"img/monitoreo/end_route.png"'
+        :icon="'img/monitoreo/end_route.png'"
       />
     </GmapMap>
 
@@ -162,18 +162,20 @@
           v-model="checkedMonitoreoEstado"
           multiple
           collapse-tags
-          style="margin-bottom: 10px; width: 15.5rem;"
+          style="margin-bottom: 10px; width: 15.5rem"
           @change="initRastreo()"
-          placeholder="Opciones Monitoreo">
+          placeholder="Opciones Monitoreo"
+        >
           <el-option
-              v-for="item in opcionesMonitoreo"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+            v-for="item in opcionesMonitoreo"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
           </el-option>
         </el-select>
-       </div>
-       <div></div>
+      </div>
+      <div></div>
       <div class="ListadoUnidades">
         <div
           class="itemMonitoreoUnidad"
@@ -378,10 +380,16 @@
 
     <div id="PanelConfigMapaMonitoreo" class="container_otrosPaneles">
       <div class="RadioTiposMapaMonitoreo">
+        <el-checkbox v-model="checkedGeoCercaCiudad" border
+          >Mostrar GeoCerca</el-checkbox
+        >
 
-        <el-checkbox v-model="checkedGeoCercaCiudad" border>Mostrar GeoCerca</el-checkbox>
-
-
+        <el-checkbox
+          v-model="checkedTraficoCiudad"
+          @change="ActiveTrafico()"
+          border
+          >Trafico</el-checkbox
+        >
 
         <el-radio v-model="radioMapaMonitoreo" label="roadmap" border
           >Mapa Vial</el-radio
@@ -729,7 +737,7 @@
 
 <script>
 import BaseCheckbox from "@/components/argon-core/Inputs/BaseCheckbox";
-import { Radio, RadioButton, Select,Option,Checkbox } from "element-ui";
+import { Radio, RadioButton, Select, Option, Checkbox } from "element-ui";
 export default {
   layout: "DashboardLayout",
   components: {
@@ -738,24 +746,26 @@ export default {
     [RadioButton.name]: RadioButton,
     [Select.name]: Select,
     [Option.name]: Option,
-    [Checkbox.name]:Checkbox
+    [Checkbox.name]: Checkbox,
   },
   data() {
     return {
       token: this.$cookies.get("token"),
+      map: null,
       oCenter: { lat: -1.249546, lng: -78.585376 },
       oZoom: 7,
       unidadInput: "",
       mListRutasMonitoreo: [],
       mListControlesMonitoreo: [],
       mListControlesMonitoreoAux: [],
-      mListGeociudad:[],
+      mListGeociudad: [],
       banderaCenter: true,
-      banderaUnidad : false,
+      banderaUnidad: false,
       mListUnidades: [],
       mListRutas: [],
-      unidadInputRuta:'',
-      checkedGeoCercaCiudad:true,
+      unidadInputRuta: "",
+      checkedGeoCercaCiudad: true,
+      checkedTraficoCiudad: false,
       infoContent: "",
       infoWindowPos: {
         lat: 0,
@@ -773,24 +783,31 @@ export default {
           height: -35,
         },
       },
-      mListRutaSubida:[],
-      mListRutaBajada:[],
+      mListRutaSubida: [],
+      mListRutaBajada: [],
       anchoPanelMonitoreoClickMinMax: "width: 17rem",
-      checkedMonitoreoEstado:[],
-      fechaActual:'',
-      opcionesMonitoreo: [{
-          value: 'HOY',
-          label: 'Hoy'
-        }, {
-          value: 'FR',
-          label: 'Fuera de Línea'
-        }, {
-          value: 'GPS',
-          label: 'GPS'
-        }, {
-          value: 'CR',
-          label: 'Corte Ruta'
-        }],
+      checkedMonitoreoEstado: [],
+      fechaActual: "",
+      opcionesMonitoreo: [
+        {
+          value: "HOY",
+          label: "Hoy",
+        },
+        {
+          value: "FR",
+          label: "Fuera de Línea",
+        },
+        {
+          value: "GPS",
+          label: "GPS",
+        },
+        {
+          value: "CR",
+          label: "Corte Ruta",
+        },
+      ],
+      isTrafico: false,
+      trafficLayer: null,
     };
   },
   methods: {
@@ -804,50 +821,64 @@ export default {
     },
     procedimientoMonitoreo(datos) {
       if (datos.data.status_code == 200) {
-        if (this.checkedMonitoreoEstado == 'GPS') {
-          this.mListUnidades = []
+        if (this.checkedMonitoreoEstado == "GPS") {
+          this.mListUnidades = [];
           if (this.mListUnidades.length == 0) {
             for (var i = 0; i < datos.data.data.length; i++) {
               if (datos.data.data[i].AlarAnteGPSDescMoni == 1) {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
               } else {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = false;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
               }
             }
           } else {
             this.updatemListaUnidades(datos.data.data);
           }
-        }
-        else if (this.checkedMonitoreoEstado == 'FR') {
-          this.mListUnidades = []
+        } else if (this.checkedMonitoreoEstado == "FR") {
+          this.mListUnidades = [];
           if (this.mListUnidades.length == 0) {
             for (var i = 0; i < datos.data.data.length; i++) {
-              if (datos.data.data[i].AlarAnteGPSDescMoni == 0 && datos.data.data[i].SINGPSDAY > 0 ) {
+              if (
+                datos.data.data[i].AlarAnteGPSDescMoni == 0 &&
+                datos.data.data[i].SINGPSDAY > 0
+              ) {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
               } else {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = false;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
               }
             }
           } else {
             this.updatemListaUnidades(datos.data.data);
           }
-        } 
-        else if (this.checkedMonitoreoEstado == 'HOY') {
-          this.mListUnidades = []
+        } else if (this.checkedMonitoreoEstado == "HOY") {
+          this.mListUnidades = [];
           if (this.mListUnidades.length == 0) {
             for (var i = 0; i < datos.data.data.length; i++) {
-              if (datos.data.data[i].UltiFechMoni.substring(0,10) ==  this.fechaActual.substring(0,10)) {
+              if (
+                datos.data.data[i].UltiFechMoni.substring(0, 10) ==
+                this.fechaActual.substring(0, 10)
+              ) {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
                 this.oCenter = {
                   lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
                   lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
@@ -857,38 +888,51 @@ export default {
               } else {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = false;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
               }
             }
           } else {
             this.updatemListaUnidades(datos.data.data);
           }
-        }        
-        else if (this.unidadInput != '' && this.mListRutasMonitoreo.length == 0) {
-          this.banderaUnidad = true
-          this.mListUnidades = []
+        } else if (
+          this.unidadInput != "" &&
+          this.mListRutasMonitoreo.length == 0
+        ) {
+          this.banderaUnidad = true;
+          this.mListUnidades = [];
           if (this.mListUnidades.length == 0) {
             for (var i = 0; i < datos.data.data.length; i++) {
               if (datos.data.data[i].CodiVehiMoni == this.unidadInput) {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
               } else {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = false;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
               }
             }
           } else {
             this.updatemListaUnidades(datos.data.data);
           }
-        } else if(this.unidadInput == '' && this.mListRutasMonitoreo.length == 0){
-          this.mListUnidades = []
+        } else if (
+          this.unidadInput == "" &&
+          this.mListRutasMonitoreo.length == 0
+        ) {
+          this.mListUnidades = [];
           if (this.mListUnidades.length == 0) {
             for (var i = 0; i < datos.data.data.length; i++) {
               this.mListUnidades[i] = datos.data.data[i];
               this.mListUnidades[i].isvisible = true;
-              this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+              this.mListUnidades[i].icono = this.getIcono(
+                this.mListUnidades[i]
+              );
               if (i == 0 && this.banderaCenter) {
                 this.oCenter = {
                   lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
@@ -900,23 +944,34 @@ export default {
             }
           } else {
             this.updatemListaUnidades(datos.data.data);
-          }  
-        }else if(this.unidadInput == '' && this.mListControlesMonitoreo.length > 0 && this.banderaUnidad == true){
-          this.banderaUnidad = false
-        }
-        else if (this.unidadInput == '' && this.mListControlesMonitoreo.length > 0) {
-          this.banderaUnidad = false
+          }
+        } else if (
+          this.unidadInput == "" &&
+          this.mListControlesMonitoreo.length > 0 &&
+          this.banderaUnidad == true
+        ) {
+          this.banderaUnidad = false;
+        } else if (
+          this.unidadInput == "" &&
+          this.mListControlesMonitoreo.length > 0
+        ) {
+          this.banderaUnidad = false;
           //this.selectedRutaMonitoreo()
-        }
-        else if (this.unidadInput != '' && this.mListControlesMonitoreo.length > 0 && this.banderaUnidad == false) {
-          this.banderaUnidad = true
-          this.mListUnidades = []
+        } else if (
+          this.unidadInput != "" &&
+          this.mListControlesMonitoreo.length > 0 &&
+          this.banderaUnidad == false
+        ) {
+          this.banderaUnidad = true;
+          this.mListUnidades = [];
           if (this.mListUnidades.length == 0) {
             for (var i = 0; i < datos.data.data.length; i++) {
               if (datos.data.data[i].CodiVehiMoni == this.unidadInput) {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = true;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
                 this.oCenter = {
                   lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
                   lng: parseFloat(this.mListUnidades[i].UltiLongMoni),
@@ -926,19 +981,22 @@ export default {
               } else {
                 this.mListUnidades[i] = datos.data.data[i];
                 this.mListUnidades[i].isvisible = false;
-                this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+                this.mListUnidades[i].icono = this.getIcono(
+                  this.mListUnidades[i]
+                );
               }
             }
           } else {
             this.updatemListaUnidades(datos.data.data);
           }
-        }  
-        else {
+        } else {
           if (this.mListUnidades.length == 0) {
             for (var i = 0; i < datos.data.data.length; i++) {
               this.mListUnidades[i] = datos.data.data[i];
               this.mListUnidades[i].isvisible = true;
-              this.mListUnidades[i].icono = this.getIcono(this.mListUnidades[i]);
+              this.mListUnidades[i].icono = this.getIcono(
+                this.mListUnidades[i]
+              );
               if (i == 0 && this.banderaCenter) {
                 this.oCenter = {
                   lat: parseFloat(this.mListUnidades[i].UltiLatiMoni),
@@ -950,9 +1008,9 @@ export default {
             }
           } else {
             this.updatemListaUnidades(datos.data.data);
-          }  
+          }
         }
-        this.girarMarcador()
+        this.girarMarcador();
       }
     },
     async initRastreo() {
@@ -966,15 +1024,15 @@ export default {
             process.env.baseUrlPanel + rutaApi,
             bodyApi
           );
-          console.log(datos.data)
+        console.log(datos.data);
         this.procedimientoMonitoreo(datos);
       } catch (error) {
         console.log(error);
       }
     },
-    changeRutaSeleccionada(){
-      this.selectedRutaMonitoreo()
-      this.readRutaByLetraRuta()
+    changeRutaSeleccionada() {
+      this.selectedRutaMonitoreo();
+      this.readRutaByLetraRuta();
     },
     selectedRutaMonitoreo() {
       if (this.mListRutasMonitoreo.length > 0) {
@@ -990,40 +1048,48 @@ export default {
           }
           this.mListUnidades[i].isvisible = bandera ? true : false;
         }
-        this.unidadInputRuta = ''
+        this.unidadInputRuta = "";
         for (var k = 0; k < this.mListUnidades.length; k++) {
           if (this.mListUnidades[k].isvisible == true) {
             if (this.mListUnidades[k].CodiVehiMoni == this.unidadInput) {
-              this.unidadInputRuta = this.mListUnidades[k].CodiVehiMoni
+              this.unidadInputRuta = this.mListUnidades[k].CodiVehiMoni;
             }
           }
         }
-        this.unidadInput = this.unidadInputRuta == '' ? '' : this.unidadInputRuta
+        this.unidadInput =
+          this.unidadInputRuta == "" ? "" : this.unidadInputRuta;
       } else {
-        this.initControles()
-        this.initRastreo()
+        this.initControles();
+        this.initRastreo();
       }
     },
-    async readRutaByLetraRuta(){
-      try{
-        this.mListRutaBajada = []
-        this.mListRutaSubida = []
+    async readRutaByLetraRuta() {
+      try {
+        this.mListRutaBajada = [];
+        this.mListRutaSubida = [];
         var datos = await this.$axios.post(
           process.env.baseUrlPanel + "/readRutasMongoAllByLetraRuta",
           {
             token: this.token,
-            ruta:this.mListRutasMonitoreo[0]
+            ruta: this.mListRutasMonitoreo[0],
           }
         );
         if (datos.data.status_code == 200) {
-          console.log("TRAZANDO RUTA..........")
-          for (var i = 0; i < datos.data.datos.polilineasRutaSubida.length; i++) {
-            this.mListRutaSubida.push(datos.data.datos.polilineasRutaSubida[i])
+          console.log("TRAZANDO RUTA..........");
+          for (
+            var i = 0;
+            i < datos.data.datos.polilineasRutaSubida.length;
+            i++
+          ) {
+            this.mListRutaSubida.push(datos.data.datos.polilineasRutaSubida[i]);
           }
-          for (var j = 0; j < datos.data.datos.polilineasRutaBajada.length; j++) {
-            this.mListRutaBajada.push(datos.data.datos.polilineasRutaBajada[j])
+          for (
+            var j = 0;
+            j < datos.data.datos.polilineasRutaBajada.length;
+            j++
+          ) {
+            this.mListRutaBajada.push(datos.data.datos.polilineasRutaBajada[j]);
           }
-          
         }
       } catch (error) {
         console.log(error);
@@ -1101,10 +1167,9 @@ export default {
       var color = "";
       var detalle = "";
 
-      if (unidad.AlarAnteGPSDescMoni == 1) 
-      {
+      if (unidad.AlarAnteGPSDescMoni == 1) {
         imagen = "img/monitoreo/alerta.png#" + unidad.CodiVehiMoni;
-        
+
         color = "#D50303";
         imagenLista = "img/monitoreo/alerta_lista.png";
         detalle = "ALERTA GPS";
@@ -1177,9 +1242,8 @@ export default {
       );
       var result = dir.data.results;
 
-      if (unidad.SINGPSDAY == 0) 
-      {
-        if(unidad.MINUTESINGPS > 30){
+      if (unidad.SINGPSDAY == 0) {
+        if (unidad.MINUTESINGPS > 30) {
           return `<div style="width:300px;padding:0.50rem">
               <strong class="strongLetrasInfoWindows">UNIDAD N° : </strong> ${
                 unidad.CodiVehiMoni
@@ -1210,13 +1274,12 @@ export default {
               <strong class="strongLetrasInfoWindows">DIR : </strong> ${
                 result.length > 0 ? result[0].formatted_address : "SIN NOMBRES"
               }<br><strong class="strongLetrasInfoWindows">SATELITES : </strong> ${
-          unidad.SateContMoni
-        }
+            unidad.SateContMoni
+          }
             </div>`;
         }
       } else {
-        if(unidad.SINGPSDAY > 0)
-        {
+        if (unidad.SINGPSDAY > 0) {
           return `<div style="width:300px;padding:0.50rem">
               <strong class="strongLetrasInfoWindows">UNIDAD N° : </strong> ${
                 unidad.CodiVehiMoni
@@ -1247,8 +1310,8 @@ export default {
               <strong class="strongLetrasInfoWindows">DIR : </strong> ${
                 result.length > 0 ? result[0].formatted_address : "SIN NOMBRES"
               }<br><strong class="strongLetrasInfoWindows">SATELITES : </strong> ${
-          unidad.SateContMoni
-        }
+            unidad.SateContMoni
+          }
             </div>`;
         }
       }
@@ -1344,7 +1407,7 @@ export default {
         }
       }
     },
-    async initGeociudad(){
+    async initGeociudad() {
       try {
         var datos = await this.$axios.post(
           process.env.baseUrlPanel + "/geoCiudad",
@@ -1353,12 +1416,12 @@ export default {
           }
         );
 
-        if (datos.data.status_code == 200) 
-        {
-          for(var i = 0;i < datos.data.datos.length ;i++)
-          {
-            this.mListGeociudad.push({lat:parseFloat(datos.data.datos[i].latitud),
-              lng:parseFloat(datos.data.datos[i].longitud)});
+        if (datos.data.status_code == 200) {
+          for (var i = 0; i < datos.data.datos.length; i++) {
+            this.mListGeociudad.push({
+              lat: parseFloat(datos.data.datos[i].latitud),
+              lng: parseFloat(datos.data.datos[i].longitud),
+            });
           }
         }
       } catch (error) {
@@ -1393,29 +1456,28 @@ export default {
       this.girarMarcadorUnitario(this.mListUnidades[position]);
     },
     girarMarcador() {
-      for (var i = 0; i < this.mListUnidades.length; i++) 
-      {
-        var rotation = this.mListUnidades[i].UltiRumbMoni + 180
+      for (var i = 0; i < this.mListUnidades.length; i++) {
+        var rotation = this.mListUnidades[i].UltiRumbMoni + 180;
 
         $('img[src*="' + this.mListUnidades[i].icono.imagen + '"]').css({
           transform: "rotate(" + rotation + "deg)",
         });
       }
     },
-    girarMarcadorUnitario(unidad) 
-    {
-
-      var rotation = unidad.UltiRumbMoni + 180
-    *$(`img[src='"${unidad.icono.imagen}"']`).css({
-        "-webkit-transform": "rotate(" + rotation + "deg)",
-        "-moz-transform": "rotate(" + rotation + "deg)",
-        "-ms-transform": "rotate(" + rotation + "deg)",
-        transform: "rotate(" + rotation + "deg)",
-      })
+    girarMarcadorUnitario(unidad) {
+      var rotation =
+        unidad.UltiRumbMoni +
+        180 *
+          $(`img[src='"${unidad.icono.imagen}"']`).css({
+            "-webkit-transform": "rotate(" + rotation + "deg)",
+            "-moz-transform": "rotate(" + rotation + "deg)",
+            "-ms-transform": "rotate(" + rotation + "deg)",
+            transform: "rotate(" + rotation + "deg)",
+          });
 
       $('img[src*="' + unidad.icono.imagen + '"]')
         .parent()
-        .css("transform", "rotate(" +rotation + "deg)");
+        .css("transform", "rotate(" + rotation + "deg)");
     },
     ubicarUnidad(unidad) {
       this.oCenter = {
@@ -1443,20 +1505,37 @@ export default {
       var fecha = new Date();
       var mes = fecha.getMonth() + 1;
       var day = fecha.getDate();
-      var hora = fecha.getHours() < 10 ? '0' + fecha.getHours() : fecha.getHours()
-      var minutes = fecha.getMinutes() < 10 ? '0' + fecha.getMinutes() : fecha.getMinutes()
+      var hora =
+        fecha.getHours() < 10 ? "0" + fecha.getHours() : fecha.getHours();
+      var minutes =
+        fecha.getMinutes() < 10 ? "0" + fecha.getMinutes() : fecha.getMinutes();
       var format =
         fecha.getFullYear() +
         "-" +
         (mes < 10 ? "0" + mes : mes) +
         "-" +
         (day < 10 ? "0" + day : day);
-      console.log(format)
+      console.log(format);
       this.fechaActual = format + " " + hora + ":" + minutes + ":00";
+    },
+    ActiveTrafico() {
+      try {
+        if (this.trafficLayer != null) {
+          this.trafficLayer.setMap(this.checkedTraficoCiudad ? this.map : null);
+        }
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
   mounted() {
-    this.initGeociudad()
+    this.$refs.GmapMapMonitoreo.$mapPromise.then((map) => {
+      this.trafficLayer = new google.maps.TrafficLayer();
+      this.map = map;
+      this.trafficLayer.setMap(this.traffic ? map : null);
+    });
+
+    this.initGeociudad();
     this.initRutas();
     this.initControles();
     this.initRastreo();

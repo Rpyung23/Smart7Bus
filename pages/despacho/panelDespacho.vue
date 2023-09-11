@@ -1015,7 +1015,7 @@ export default {
       token: this.$cookies.get("token"),
       mListRutasDespacho: [],
       mListControlesPorRuta: [],
-      mListDespachosPanel: [],
+      mListDespachosPanelDespacho: [],
       mListDespachosPanelAuxiliar: [],
       mListDespachosSalidasAnuladas: [],
       rowsToColor: [],
@@ -1067,46 +1067,27 @@ export default {
     myGridOnRowSelect: function (event) {
       this.ArrowGridSelect = event.args.rowindex;
       this.selectedRowSalida = event.args.row;
-      this.selectedRowSalida.HoraSaliProgSali_mF = this.getHoraSaliProgSali_mF(
-        this.selectedRowSalida.idSali_m
-      );
-      this.selectedRowSalida.HoraLlegProgSali_mF = this.getHoraLlegProgSali_mF(
-        this.selectedRowSalida.idSali_m
-      );
+      console.log("SALIDA SELECT")
+      console.log(this.selectedRowSalida)
+
       this.selectedRowSalida.idSali_m = this.selectedRowSalida.idSali_m;
       this.selectRowId = this.selectedRowSalida.idSali_m;
       this.selectRowEstado = this.selectedRowSalida.EstaSali_m;
-      console.log("EstaSali_m");
-      console.log(this.selectRowEstado);
-    },
-    getHoraSaliProgSali_mF(id_salida) {
-      for (var i = 0; i < this.mListDespachosPanel.length; i++) {
-        if (this.mListDespachosPanel[i].idSali_m == id_salida) {
-          return this.mListDespachosPanel[i].HoraSaliProgSali_mF;
-        }
-      }
-      return "1998-06-06 11:00:00";
-    },
-    getHoraLlegProgSali_mF(id_salida) {
-      for (var i = 0; i < this.mListDespachosPanel.length; i++) {
-        if (this.mListDespachosPanel[i].idSali_m == id_salida) {
-          return this.mListDespachosPanel[i].HoraLlegProgSali_mF;
-        }
-      }
-      return "1998-06-06 11:00:00";
+      /*console.log("EstaSali_m");
+      console.log(this.selectRowEstado);*/
     },
     showReporteLlegadaSAlida() {
       this.modalSalidasTarjetaPanelDespacho = true;
-      console.log(this.selectedRowSalida);
+      //console.log(this.selectedRowSalida);
       //idSali_m
       this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(
         this.selectedRowSalida
       );
     },
     showRecorridoSalidaPanelDespacho() {
-      console.log("******************************************************");
+      /*console.log("******************************************************");
       console.log(this.selectedRowSalida);
-      console.log("******************************************************");
+      console.log("******************************************************");*/
       this.modalRecorridoPanelDespachoControl = true;
       this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(
         this.selectedRowSalida
@@ -1160,7 +1141,7 @@ export default {
         }
       );
 
-      console.log(datos.data);
+      //console.log(datos.data);
       if (datos.data.status_code != 400) {
         this.mListRutasFrecuencias.push(...datos.data.data);
       }
@@ -1179,7 +1160,7 @@ export default {
         (mes < 10 ? "0" + mes : mes) +
         "-" +
         (day < 10 ? "0" + day : day);
-      console.log(format);
+      //console.log(format);
       this.fechaActualSalidasPanelDespacho =
         format + " " + hora + ":" + minutes + ":00";
       this.fechaActualSalidasPanelDespachoDespachador =
@@ -1235,18 +1216,18 @@ export default {
     getStringUnidad(unidades) {
       var string_unidad = "";
       for (var i = 0; i < unidades.length; i++) {
-        console.log("i = " + i);
+       // console.log("i = " + i);
         for (
           var j = 0;
           j < this.mListaUnidadesSalidasPanelDespacho.length;
           j++
         ) {
-          console.log("j = " + j);
-          console.log(
+          //console.log("j = " + j);
+          /**console.log(
             unidades[i].CodiVehi +
               " == " +
               this.mListaUnidadesSalidasPanelDespacho[j].CodiVehi
-          );
+          );*/
           if (
             unidades[i].CodiVehi ==
             this.mListaUnidadesSalidasPanelDespacho[j].CodiVehi
@@ -1268,11 +1249,11 @@ export default {
 
       var oRuta = this.getRutaPorID(this.mSelectRutaSalidaPanelDespacho);
       this.readDespachoSalidasAnuladas();
-      console.log("*****************************************")
-      console.log(this.radioEstadoRSalidasPanelDespacho)
+      /*console.log("*****************************************")
+      console.log(this.radioEstadoRSalidasPanelDespacho)*/
 
       try {
-        this.mListDespachosPanel = [];
+        this.mListDespachosPanelDespacho = [];
         this.mListDespachosPanelAuxiliar = [];
         this.isLoadingDespachoSalidaPanelBusqueda = true;
         var datos = await this.$axios.post(
@@ -1288,8 +1269,9 @@ export default {
             : this.radioEstadoRSalidasPanelDespacho
           }
         );
-        this.mListDespachosPanel.push(...datos.data.datos);
-        this.mListDespachosPanelAuxiliar = this.mListDespachosPanel;
+        this.mListDespachosPanelDespacho = datos.data.datos;
+        this.mListDespachosPanelAuxiliar = this.mListDespachosPanelDespacho;
+        console.log("mListDespachosPanel (INICIO) : "+this.mListDespachosPanelDespacho.length)
         this.$refs.myGridDespachoPanel.beginupdate();
         this.columnsInfo = [];
         this.columnsInfo[0] = {
@@ -1403,6 +1385,7 @@ export default {
         this.isLoadingDespachoSalidaPanelBusqueda = false;
         this.$refs.myGridDespachoPanel.endupdate();
       } catch (error) {
+        console.log("*********************************** ERROR TRY")
         console.log(error);
       }
     },
@@ -1485,6 +1468,8 @@ export default {
                   idSali_m: "",
                   HoraSaliProgSali_m: HS,
                   HoraLlegProgSali_m: "",
+                  HoraSaliProgSali_mF: "",
+                  HoraLlegProgSali_mF: "",
                   EstaSali_m: "",
                   idFrecSali_m: "",
                   DescFrec: "",
@@ -1506,7 +1491,6 @@ export default {
             obj.HoraSaliProgSali_m = estado;
             obj.Intervalo = inter;
             inter = 0;
-
             ListaLlena.push(obj);
           }
         }
@@ -1534,6 +1518,8 @@ export default {
           { name: "adelantoFaltasTime", type: "string" },
           { name: "DescRutaSali_m", type: "string" },
           { name: "Country23", type: "string" },
+          { name: "HoraSaliProgSali_mF", type: "string" },
+          { name: "HoraLlegProgSali_mF", type: "string" },
         ],
       };
     },
@@ -1582,7 +1568,7 @@ export default {
         for (var i = 0; i < datos.data.data.length; i++) {
           var obj = datos.data.data[i];
           obj.value = obj.CodiVehi;
-          console.log(obj);
+          //console.log(obj);
           this.mListaUnidadesSalidasPanelDespacho.push(obj);
         }
       }
@@ -1664,7 +1650,7 @@ export default {
     },
     cellbeginedit: function (row, column, value, data) {
       if (data == "") {
-        console.log(column);
+        //console.log(column);
         var rowNoEdit = row;
         if (row == rowNoEdit) {
           if (
@@ -1694,7 +1680,7 @@ export default {
           this.mSelectRutaFrecuenciaPanelDespacho
         );
 
-        console.log(
+        /*console.log(
           "itemUnidadSalidasPanelDespacho : " +
             this.itemUnidadSalidasPanelDespacho
         );
@@ -1704,7 +1690,7 @@ export default {
         console.log(
           "mSelectRutaFrecuenciaPanelDespacho : " +
             this.mSelectRutaFrecuenciaPanelDespacho
-        );
+        );*/
 
         if (
           this.itemUnidadSalidasPanelDespacho == null ||
@@ -1782,7 +1768,7 @@ export default {
     async consumirApiAnularFinalizarDespacho(estado) {
       try {
         var unidad = this.getObjUnidad(this.selectedRowSalida.CodiVehiSali_m);
-        console.log(this.getObjUnidad(this.selectedRowSalida.CodiVehiSali_m));
+        /*console.log(this.getObjUnidad(this.selectedRowSalida.CodiVehiSali_m));*/
 
         var response = await this.$axios.post(
           process.env.baseUrl + "/anularFinalizarDespacho",
@@ -1798,7 +1784,7 @@ export default {
           }
         );
 
-        console.log(response.data);
+        /*console.log(response.data);*/
         this.reponseAnularFinalizar = response.data;
         this.modalDespachoAnularSalida = false;
         this.modalDespachoFinalizarSalida = false;
