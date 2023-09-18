@@ -197,7 +197,7 @@
                 background-color: rgba(140, 248, 126, 0.384);
                 margin-right: 0.5rem;
               "
-              >SALIDAS DIFERIDAS
+              >DIFERIDAS
             </el-checkbox>
             <el-checkbox
               label="2"
@@ -351,7 +351,7 @@
             ref="myMenu"
             @itemclick="myMenuOnItemClick($event)"
             :width="200"
-            :height="200"
+            :height="150"
             :mode="'popup'"
             :autoOpenPopup="false"
           >
@@ -361,8 +361,6 @@
               <li>Ingresar unidad</li>
               <li>Modificar Intervalos</li>
               <li>Cambiar frecuencia</li>
-              <li>Anular Salidas</li>
-              <li>Copiar contenido</li>
             </ul>
           </JqxMenu>
 
@@ -1067,8 +1065,8 @@ export default {
     myGridOnRowSelect: function (event) {
       this.ArrowGridSelect = event.args.rowindex;
       this.selectedRowSalida = event.args.row;
-      console.log("SALIDA SELECT")
-      console.log(this.selectedRowSalida)
+      console.log("SALIDA SELECT");
+      console.log(this.selectedRowSalida);
 
       this.selectedRowSalida.idSali_m = this.selectedRowSalida.idSali_m;
       this.selectRowId = this.selectedRowSalida.idSali_m;
@@ -1185,25 +1183,30 @@ export default {
       }
     },
     myMenuOnItemClick: function (event) {
-      let args = event.args;
-      let rowindex = this.$refs.myGridDespachoPanel.getselectedrowindex();
-      if (args.innerHTML == "Edit Selected Row") {
-        this.editrow = rowindex;
-        this.$refs.myWindow.position = { x: 60, y: 60 };
-        // get the clicked row's data and initialize the input fields.
-        let dataRecord = this.$refs.myGridDespachoPanel.getrowdata(
-          this.editrow
-        );
-        this.$refs.firstName.value = dataRecord.firstname;
-        this.$refs.lastName.value = dataRecord.lastname;
-        this.$refs.product.value = dataRecord.productname;
-        this.$refs.quantity.decimal = dataRecord.quantity;
-        this.$refs.price.decimal = dataRecord.price;
-        // show the popup window.
-        this.$refs.myWindow.open();
-      } else {
-        let rowid = this.$refs.myGridDespachoPanel.getrowid(rowindex);
-        this.$refs.myGridDespachoPanel.deleterow(rowid);
+      console.log("myMenuOnItemClick");
+      try {
+        let args = event.args;
+        let rowindex = this.$refs.myGridDespachoPanel.getselectedrowindex();
+        if (args.innerHTML == "Edit Selected Row") {
+          this.editrow = rowindex;
+          this.$refs.myWindow.position = { x: 60, y: 60 };
+          // get the clicked row's data and initialize the input fields.
+          let dataRecord = this.$refs.myGridDespachoPanel.getrowdata(
+            this.editrow
+          );
+          this.$refs.firstName.value = dataRecord.firstname;
+          this.$refs.lastName.value = dataRecord.lastname;
+          this.$refs.product.value = dataRecord.productname;
+          this.$refs.quantity.decimal = dataRecord.quantity;
+          this.$refs.price.decimal = dataRecord.price;
+          // show the popup window.
+          this.$refs.myWindow.open();
+        } else {
+          let rowid = this.$refs.myGridDespachoPanel.getrowid(rowindex);
+          this.$refs.myGridDespachoPanel.deleterow(rowid);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     getRutaPorID(idRuta) {
@@ -1216,7 +1219,7 @@ export default {
     getStringUnidad(unidades) {
       var string_unidad = "";
       for (var i = 0; i < unidades.length; i++) {
-       // console.log("i = " + i);
+        // console.log("i = " + i);
         for (
           var j = 0;
           j < this.mListaUnidadesSalidasPanelDespacho.length;
@@ -1264,14 +1267,18 @@ export default {
             rutas: [oRuta.LetrRuta],
             fechaI: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
             fechaF: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
-            tipo: this.radioEstadoRSalidasPanelDespacho.length <= 0
-            ? "*"
-            : this.radioEstadoRSalidasPanelDespacho
+            tipo:
+              this.radioEstadoRSalidasPanelDespacho.length <= 0
+                ? "*"
+                : this.radioEstadoRSalidasPanelDespacho,
           }
         );
         this.mListDespachosPanelDespacho = datos.data.datos;
         this.mListDespachosPanelAuxiliar = this.mListDespachosPanelDespacho;
-        console.log("mListDespachosPanel (INICIO) : "+this.mListDespachosPanelDespacho.length)
+        console.log(
+          "mListDespachosPanel (INICIO) : " +
+            this.mListDespachosPanelDespacho.length
+        );
         this.$refs.myGridDespachoPanel.beginupdate();
         this.columnsInfo = [];
         this.columnsInfo[0] = {
@@ -1385,7 +1392,7 @@ export default {
         this.isLoadingDespachoSalidaPanelBusqueda = false;
         this.$refs.myGridDespachoPanel.endupdate();
       } catch (error) {
-        console.log("*********************************** ERROR TRY")
+        console.log("*********************************** ERROR TRY");
         console.log(error);
       }
     },
