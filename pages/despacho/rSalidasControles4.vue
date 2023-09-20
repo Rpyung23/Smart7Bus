@@ -723,6 +723,22 @@ export default {
             });
           }
 
+          var diferenciaControl = this.mListControlesCabezera.length - this.mListSalidasFrecuenciasControles[j].controles.length
+
+          if(diferenciaControl != 0)
+          {
+            for(var v = 0 ;v<diferenciaControl;v++)
+            {
+              obj.push({
+              text: "--",
+                bold:true,
+              fontSize: 8,
+              color :  "#000" , 
+              alignment: "center",
+            });
+            }
+          }
+
           resultadoString.push(obj)
         }
       }
