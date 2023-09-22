@@ -622,6 +622,12 @@
     <!--Form modal Despacho Recalificar Salida-->
     <modal :show.sync="modalDespachoRecalificarSalida" body-classes="p-0">
       <h6 slot="header" class="modal-title">Recalificar Salida</h6>
+
+      <div class="row">
+        <el-checkbox  label="USAR POSICIONES" border></el-checkbox>
+        <el-checkbox  label="REESCRIBIR CONTROLES" border></el-checkbox>
+      </div>
+
     </modal>
 
     <!--Form modal Despacho Anular Salida-->

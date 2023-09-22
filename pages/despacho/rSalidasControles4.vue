@@ -409,7 +409,9 @@ export default {
 
       return "TODAS LAS RUTAS";
     },
-    async readReporteSalidasControles() {
+    async readReporteSalidasControles() 
+    {
+
       swal.fire({
         title: "Generando Reporte ...",
         width: 600,
@@ -428,7 +430,8 @@ export default {
       });
 
       this.loadingTableRSalidasFrecuenciasControles = true;
-      this.mListSalidasFrecuenciasControles = [];
+      this.mListSalidasFrecuenciasControles = []
+      this.mListControlesCabezera = []
 
       this.createPDFSalidasControles();
 
@@ -469,6 +472,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
+          this.mListControlesCabezera.push(...datos.data.datosC)
           console.log("-----------------------------------------------------");
           console.log(this.mListSalidasFrecuenciasControles);
           console.log("-----------------------------------------------------");
@@ -670,16 +674,15 @@ export default {
 
       let width_table = [40, 85];
 
-      await this.readControlFrecuenciaCabezera();
+      
+
+      //await this.readControlFrecuenciaCabezera();
 
       for (var i = 0; i < this.mListControlesCabezera.length; i++) {
-        console.log(this.mListControlesCabezera[i]);
+        //console.log(this.mListControlesCabezera[i]);
         resultadoString[0].push({
-          text:
-            this.mListControlesCabezera.length > 10
-              ? this.mListControlesCabezera[i].CodiCtrlSecuCtrl
-              : this.mListControlesCabezera[i].DescCtrl,
-          fontSize: this.mListControlesCabezera.length > 10 ? 8 : 7,
+          text: (this.mListControlesCabezera.length < 12 ? this.mListControlesCabezera[i].DescCtrl : this.mListControlesCabezera[i].CodiCtrlSecuCtrl),
+          fontSize: this.mListControlesCabezera.length < 12 ? 6 : 8,
           bold: true,
           fillColor: "#039BC4",
           color: "white",
@@ -688,62 +691,36 @@ export default {
         width_table.push("auto");
       }
 
-      for (var j = 0; j < this.mListSalidasFrecuenciasControles.length; j++) 
-      {
-        console.log(this.mListSalidasFrecuenciasControles);
-
-        if (this.mListSalidasFrecuenciasControles[j].controles.length > 0) 
-        {
-          var obj = [{
+      for (var j = 0; j < this.mListSalidasFrecuenciasControles.length; j++) {
+        var obj = [
+          {
             text: this.mListSalidasFrecuenciasControles[j].CodiVehiSali_m,
             fontSize: 8.5,
 
             alignment: "center",
-          },{
+          },
+          {
             text: this.mListSalidasFrecuenciasControles[j].HoraSaliProgSali_m,
             fontSize: 8.5,
 
             alignment: "left",
-          },];
+          },
+        ];
 
-          for (
-            var k = 0;
-            k < this.mListSalidasFrecuenciasControles[j].controles.length;
-            k++
-          ) {
-            obj.push({
-              text: this.mListSalidasFrecuenciasControles[j].controles[k]
-                .FaltSali_d,
-                bold:true,
-              fontSize: 8,
-              color : this.mListSalidasFrecuenciasControles[j].controles[k]
-                .FaltSali_d == 0 ? "#000"  : this.mListSalidasFrecuenciasControles[j].controles[k]
-                .FaltSali_d > 0 ? "#FF0000" : "#008000", 
-              alignment: "center",
-            });
-          }
-
-          var diferenciaControl = this.mListControlesCabezera.length - this.mListSalidasFrecuenciasControles[j].controles.length
-
-          if(diferenciaControl != 0)
-          {
-            for(var v = 0 ;v<diferenciaControl;v++)
-            {
-              obj.push({
-              text: "--",
-                bold:true,
-              fontSize: 8,
-              color :  "#000" , 
-              alignment: "center",
-            });
-            }
-          }
-
-          resultadoString.push(obj)
+        for (var k = 0; k < this.mListControlesCabezera.length; k++) {
+          var result = this.getItemPdf(
+            this.mListControlesCabezera[k].idFrec,
+            this.mListControlesCabezera[k].CodiCtrlSecuCtrl,
+            this.mListSalidasFrecuenciasControles[j].idFrecSali_m,
+            this.mListSalidasFrecuenciasControles[j].controles
+          );
+          obj.push(result);
         }
+
+        resultadoString.push(obj);
       }
 
-      console.log("-------------************************************")
+      console.log("-------------************************************");
 
       console.log(resultadoString);
 
@@ -800,6 +777,7 @@ export default {
               body: [empresa, unidad, ruta, desde_hasta],
             },
           },
+          {text:".",color:"#FFF"},
           {
             table: {
               headerRows: 1,
@@ -816,6 +794,35 @@ export default {
         this.base64PDFSALIDACONTROLES = URL.createObjectURL(blob);
         console.log(this.base64PDFSALIDACONTROLES);
       });
+    },
+    getItemPdf(idFrecuencia, idControl, idFrecuenciaSM, controles) {
+      var obj = {
+        text: "--",
+        fontSize: 8.5,
+        alignment: "center",
+      };
+
+      for (var i = 0; i < controles.length; i++) {
+        if (idFrecuencia == idFrecuenciaSM) {
+          if (idControl == controles[i].CodiCtrlSali_d) {
+            obj = {
+              text: (controles[i].FaltSali_d + (controles[i].isCtrlRefeSali_d == 1 ? " (REF)" : "")),
+              bold: true,
+              fontSize: 8,
+              color:
+                controles[i].FaltSali_d == 0
+                  ? "#000"
+                  : controles[i].FaltSali_d > 0
+                  ? "#FF0000"
+                  : "#008000",
+              alignment: "center",
+            };
+            break;
+          }
+        }
+      }
+
+      return obj;
     },
     async readControlFrecuenciaCabezera() {
       this.mListControlesCabezera = [];
