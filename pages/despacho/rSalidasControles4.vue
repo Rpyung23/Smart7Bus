@@ -70,22 +70,26 @@
                   ><i class="el-icon-search"></i
                 ></span>
               </base-button>
-              <!--<download-excel
+              <download-excel
                 class="btn btn-icon btn-fab btn-success btn-sm"
                 title="Excel"
+                type="xls"
                 v-if="
-                  mListSalidasFrecuenciasControles.length > 0 ? true : false
+                  isExportExcel
+                    ? mListSalidasFrecuenciasControles.length > 0
+                      ? true
+                      : false
+                    : false
                 "
                 :header="oHeaderRSalidasFrecuenciasControles"
                 :data="mListSalidasFrecuenciasControlesExcel"
                 :fields="oJSONFieldsRSalidasFrecuenciasControles"
-                :worksheet="oWorkSheetRSalidasFrecuenciasControles"
                 :name="oFileNameRSalidasFrecuenciasControles"
               >
                 <span class="btn-inner--icon"
                   ><i class="ni ni-collection"></i
                 ></span>
-              </download-excel>-->
+              </download-excel>
             </div>
           </div>
         </card>
@@ -313,30 +317,14 @@ export default {
         },
       ],
       mListSalidasFrecuenciasControles: [],
-      mListSalidasFrecuenciasControlesExcel: [],
+
       oHeaderRSalidasFrecuenciasControles: [],
+      mListSalidasFrecuenciasControlesExcel: [],
       oWorkSheetRSalidasFrecuenciasControles: "",
       oFileNameRSalidasFrecuenciasControles: "",
-      oJSONFieldsRSalidasFrecuenciasControles: {
-        Unidad: "CodiVehiSali_m",
-        Placa: "PlacVehi",
-        Salida: "idSali_m",
-        "N° Vuelta": "NumeVuelSali_m",
-        "Detalle Ruta": "DescRuta",
-        "Detalle Frecuecnia": "DescFrec",
-        "Fecha Hora Salida": "HoraSaliProgSali_m",
-        "Hora Llegada": "HoraLlegProgSali_m",
-        "Detalle Control": "DescCtrl",
-        "Hora Programada": "HoraProgSali_d",
-        "Hora Marcación": "HoraMarcSali_d",
-        "Tiempo Atrasos": "atrasoFaltasTime",
-        "Tiempo Adelantos": "adelantoFaltasTime",
-        "Fata Atrasos": "atrasoFaltas",
-        "Falta Adelantos": "adelantoFaltas",
-        "PENALIDAD $": "PenaCtrlSali_d",
-      },
-
+      oJSONFieldsRSalidasFrecuenciasControles: null,
       mListControlesCabezera: [],
+      isExportExcel: false,
     };
   },
   methods: {
@@ -409,8 +397,28 @@ export default {
 
       return "TODAS LAS RUTAS";
     },
-    async readReporteSalidasControles() 
-    {
+    async readReporteSalidasControles() {
+      this.oJSONFieldsRSalidasFrecuenciasControles = null;
+      this.oFileNameRSalidasFrecuenciasControles =
+        "RSFC_4_" + Date.now() + ".xls";
+
+      this.oHeaderRSalidasFrecuenciasControles = [
+        "REPORTE DE CUMPLIMIENTO DE SALIDAS, RUTAS Y FRECUENCIAS ",
+        "Fechas : " +
+          this.fechaInicialSalidasPanelBusqueda +
+          " hasta " +
+          this.fechaFinalSalidasPanelBusqueda,
+        "Unidades : " +
+          (this.itemUnidadSalidasPanelBusqueda.length <= 0
+            ? "TODAS LAS UNIDADES"
+            : this.itemUnidadSalidasPanelBusqueda),
+        "Rutas : " +
+          (this.mSelectRutaSalidaPanelBusqueda == null
+            ? "TODAS LAS RUTAS"
+            : this.getNombresRutasRSalidasFrecuenciasControles(
+                this.mSelectRutaSalidaPanelBusqueda
+              )),
+      ];
 
       swal.fire({
         title: "Generando Reporte ...",
@@ -430,10 +438,10 @@ export default {
       });
 
       this.loadingTableRSalidasFrecuenciasControles = true;
-      this.mListSalidasFrecuenciasControles = []
-      this.mListControlesCabezera = []
+      this.mListSalidasFrecuenciasControles = [];
+      this.mListControlesCabezera = [];
 
-      this.createPDFSalidasControles();
+      //this.createPDFSalidasControles();
 
       if (
         this.mSelectRutaSalidaPanelBusqueda == null ||
@@ -468,11 +476,12 @@ export default {
           }
         );
 
-        console.log(datos.data);
-
         if (datos.data.status_code == 200) {
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
-          this.mListControlesCabezera.push(...datos.data.datosC)
+          this.mListControlesCabezera.push(...datos.data.datosC);
+
+          this.exportExcel();
+
           console.log("-----------------------------------------------------");
           console.log(this.mListSalidasFrecuenciasControles);
           console.log("-----------------------------------------------------");
@@ -592,7 +601,7 @@ export default {
           this.$notify({
             title: "Reporte Salidas Frecuencia Controles",
             message: datos.data.msm,
-            type: "default",
+            type: "warning",
           });
         }
       } catch (error) {
@@ -674,14 +683,15 @@ export default {
 
       let width_table = [40, 85];
 
-      
-
       //await this.readControlFrecuenciaCabezera();
 
       for (var i = 0; i < this.mListControlesCabezera.length; i++) {
         //console.log(this.mListControlesCabezera[i]);
         resultadoString[0].push({
-          text: (this.mListControlesCabezera.length < 12 ? this.mListControlesCabezera[i].DescCtrl : this.mListControlesCabezera[i].CodiCtrlSecuCtrl),
+          text:
+            this.mListControlesCabezera.length < 12
+              ? this.mListControlesCabezera[i].DescCtrl
+              : this.mListControlesCabezera[i].CodiCtrlSecuCtrl,
           fontSize: this.mListControlesCabezera.length < 12 ? 6 : 8,
           bold: true,
           fillColor: "#039BC4",
@@ -777,7 +787,7 @@ export default {
               body: [empresa, unidad, ruta, desde_hasta],
             },
           },
-          {text:".",color:"#FFF"},
+          { text: ".", color: "#FFF" },
           {
             table: {
               headerRows: 1,
@@ -806,7 +816,11 @@ export default {
         if (idFrecuencia == idFrecuenciaSM) {
           if (idControl == controles[i].CodiCtrlSali_d) {
             obj = {
-              text: (controles[i].FaltSali_d + (controles[i].isCtrlRefeSali_d == 1 ? " (REF)" : "")),
+              text:
+                controles[i].FaltSali_d == null
+                  ? ""
+                  : controles[i].FaltSali_d +
+                    (controles[i].isCtrlRefeSali_d == 1 ? " (REF)" : ""),
               bold: true,
               fontSize: 8,
               color:
@@ -824,21 +838,41 @@ export default {
 
       return obj;
     },
-    async readControlFrecuenciaCabezera() {
-      this.mListControlesCabezera = [];
-      console.log(this.mSelectRutaSalidaPanelBusqueda);
-      try {
-        var response = await this.$axios.post(
-          process.env.baseUrl + "/AllControlRutaFrecuencia",
-          {
-            token: this.token,
-            ruta: this.mSelectRutaSalidaPanelBusqueda,
-          }
-        );
-        console.log(response.data.datos);
-        this.mListControlesCabezera.push(...response.data.datos);
-      } catch (error) {
-        console.log(error);
+    exportExcel() {
+      this.oJSONFieldsRSalidasFrecuenciasControles = {
+        Unidad: "CodiVehiSali_m",
+        "Detalle Ruta": "DescRuta",
+        "Fecha Hora Salida": "HoraSaliProgSali_m",
+      };
+
+      this.mListSalidasFrecuenciasControlesExcel = [];
+
+      for (var i = 0; i < this.mListControlesCabezera.length; i++) {
+        this.oJSONFieldsRSalidasFrecuenciasControles[
+          `${this.mListControlesCabezera[i].DescCtrl}`
+        ] = this.mListControlesCabezera[i].CodiCtrlSecuCtrl;
+      }
+
+      for (var j = 0; j < this.mListSalidasFrecuenciasControles.length; j++) {
+        var obj = {};
+
+        obj.CodiVehiSali_m =
+          this.mListSalidasFrecuenciasControles[j].CodiVehiSali_m;
+        obj.DescRuta = this.mListSalidasFrecuenciasControles[j].DescRuta;
+        obj.HoraSaliProgSali_m =
+          this.mListSalidasFrecuenciasControles[j].HoraSaliProgSali_m;
+
+        for (
+          var k = 0;
+          k < this.mListSalidasFrecuenciasControles[j].controles.length;
+          k++
+        ) {
+          obj[
+            this.mListSalidasFrecuenciasControles[j].controles[k].CodiCtrlSali_d
+          ] = this.mListSalidasFrecuenciasControles[j].controles[k].FaltSali_d;
+        }
+
+        this.mListSalidasFrecuenciasControlesExcel.push(obj);
       }
     },
   },
@@ -848,6 +882,21 @@ export default {
     this.readLineasRSalidasFrecuenciasControles();
     //this.readReporteSalidasControles();
     //this.createPDFSalidasControles();
+
+    var permisos = this.$cookies.get("permisos");
+
+    this.isExportExcel =
+      permisos != null &&
+      permisos.despacho != null &&
+      permisos.despacho.active != null &&
+      permisos.despacho.active &&
+      permisos.despacho.reportes != null &&
+      permisos.despacho.reportes.active != null &&
+      permisos.despacho.reportes.active &&
+      permisos.despacho.reportes.ExportExcelRSFC4 != null &&
+      permisos.despacho.reportes.ExportExcelRSFC4
+        ? true
+        : false;
   },
 };
 </script>
