@@ -134,6 +134,11 @@
               >
               </el-option>
             </el-select>
+
+            <el-checkbox v-model="fCobroReciboVuelta" size="medium" label="F. Cobro" border >F. Cobro</el-checkbox>
+
+
+
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
@@ -272,6 +277,7 @@ import {
   Radio,
   Notification,
   Button,
+  Checkbox
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -300,6 +306,7 @@ export default {
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
     [Button.name]: Button,
+    [Checkbox.name]: Checkbox
   },
   data() {
     return {
@@ -334,6 +341,7 @@ export default {
         "FECHA DE COBRO": "fecha_cobro",
         ATENCIÓN: "NombApellUsua",
       },
+      fCobroReciboVuelta:false
     };
   },
   methods: {
@@ -425,6 +433,7 @@ export default {
           this.loadingRPagosVehiculoRecibo = true;
           this.tableDataRPagosVEhiculoProduccionRecibo = [];
           var body = {
+            fCobro:this.fCobroReciboVuelta,
             token: this.token,
             unidades:
               this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0

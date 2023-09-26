@@ -113,26 +113,29 @@
               </el-option>
             </el-select>-->
 
-            <el-radio v-model="radioEstadoRPagosVehiculo" label="*"
-              >TODOS</el-radio
+            <el-radio v-model="radioEstadoRPagosVehiculo" style="margin-right: 5px;" label="*"
+              >TODO</el-radio
             >
-            <el-radio v-model="radioEstadoRPagosVehiculo" label="2"
-              >PAGADOS</el-radio
+            <el-radio v-model="radioEstadoRPagosVehiculo" style="margin-right: 5px;" label="2"
+              >PAGADO</el-radio
             >
-            <el-radio v-model="radioEstadoRPagosVehiculo" label="1"
-              >PENDIENTES</el-radio
+            <el-radio v-model="radioEstadoRPagosVehiculo" style="margin-right: 5px;" label="1"
+              >PENDIENTE</el-radio
             >
+
+            <el-checkbox label="F. Pago" border style="margin-bottom: 0rem;margin-left: 0.5rem;width: auto;">F. Pago</el-checkbox>
+
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
             <strong style="color: green; margin-right: 0.5rem"
-              >Recaudado : {{ mPagadoRPagosVehiculo }} $</strong
+              >Recaudado {{ mPagadoRPagosVehiculo }}</strong
             >
             <strong style="color: blue; margin-right: 0.5rem"
-              >Pendiente : {{ mPendienteRPagosVehiculo }} $</strong
+              >Pendiente {{ mPendienteRPagosVehiculo }}</strong
             >
             <strong style="color: drak"
-              >Total : {{ mTotalRPagosVehiculo }} $</strong
+              >Total {{ mTotalRPagosVehiculo }}</strong
             >
           </div>
         </card>
@@ -152,7 +155,7 @@
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
               :row-class-name="tableRowClassNameRPagosVehiculoProduccion"
-              height="calc(100vh - 12rem)"
+              height="calc(100vh - 13rem)"
               style="width: 100%"
             >
               <el-table-column label="Acciones" minWidth="140">
@@ -284,6 +287,7 @@ import {
   RadioButton,
   Radio,
   Notification,
+  Checkbox
 } from "element-ui";
 
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
@@ -311,6 +315,7 @@ export default {
     [TableColumn.name]: TableColumn,
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
+    [Checkbox.name]: Checkbox
   },
   data() {
     return {
@@ -616,7 +621,7 @@ export default {
 
 .card-bodyResumidoVehiculos {
   padding: 0rem !important;
-  height: calc(100vh - 12rem);
+  height: calc(100vh - 13rem);
   overflow: auto;
 }
 

@@ -5,10 +5,10 @@
         <card
           class="no-border-card col"
           style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectTableroPerjudicadoVuelta"
           footer-classes="pb-2"
         >
-          <div class="cardTextoRPagosVehiculoProduccion">
+          <div class="cardTextoRPagosTableroPerjudicado">
             <!--<el-autocomplete class="inline-input" v-model="itemUnidadPanelProduccion"
               :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo" style="margin-right: 0.5rem"
               placeholder="Unidad" prefix-icon="ni ni-bus-front-12" :trigger-on-focus="false"></el-autocomplete>-->
@@ -61,7 +61,7 @@
             </base-input>
           </div>
 
-          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
+          <div class="cardSelectTableroPerjudicadoVuelta">
             <div class="buttonCenterEndDerecha">
               <base-button
                 icon
@@ -81,7 +81,7 @@
         <card
           class="no-border-card col"
           style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectTableroPerjudicadoVuelta"
           footer-classes="pb-2"
         >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
@@ -107,7 +107,7 @@
             </el-select>
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccion">
+          <div class="cardTextoRPagosTableroPerjudicado">
             <strong style="color: dark; margin-right: 0.5rem"
               >Pendiente : {{ mPendienteRPagosVehiculo }} $</strong
             >
@@ -1090,6 +1090,11 @@ export default {
 };
 </script>
 <style>
+
+
+.cardTextoRPagosTableroPerjudicado{
+  display: flex;
+}
 .container-model {
   display: flex;
 }
@@ -1164,6 +1169,12 @@ export default {
   padding-left: 12px;
   color: black;
   font-weight: bold;
+}
+
+.cardSelectTableroPerjudicadoVuelta{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /*
