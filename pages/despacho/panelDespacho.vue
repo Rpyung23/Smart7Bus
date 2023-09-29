@@ -77,7 +77,12 @@
             >
           </base-button>
 
-          <base-button icon type="info" size="sm" @click="">
+          <base-button
+            icon
+            type="info"
+            size="sm"
+            @click="showModalDespachoRecalificarTodoSalida()"
+          >
             <span class="btn-inner--icon"
               ><i class="ni ni-watch-time"></i> RECALIFICAR TODO</span
             >
@@ -621,13 +626,66 @@
 
     <!--Form modal Despacho Recalificar Salida-->
     <modal :show.sync="modalDespachoRecalificarSalida" body-classes="p-0">
-      <h6 slot="header" class="modal-title">Recalificar Salida</h6>
+      <h6 slot="header" class="modal-title">
+        Recalificar Salida
+        {{
+          selectedRowSalida == null
+            ? ""
+            : selectedRowSalida.HoraLlegProgSali_mF +
+              " (" +
+              selectedRowSalida.CodiVehiSali_m +
+              ")"
+        }}
+      </h6>
 
-      <div class="row">
-        <el-checkbox  label="USAR POSICIONES" border></el-checkbox>
-        <el-checkbox  label="REESCRIBIR CONTROLES" border></el-checkbox>
+      <div class="container-modal-recalifica">
+        <div class="container-div-check-recalifica">
+          <el-checkbox
+            style="width: auto"
+            label="USAR POSICIONES"
+            v-model="RecaTarjUsaPosiLocal"
+            border
+          ></el-checkbox>
+          <el-checkbox
+            style="width: auto"
+            v-model="RecaSobrCtrlMarcClie"
+            label="REESCRIBE CONTROL (MRC)"
+            border
+          ></el-checkbox>
+        </div>
+
+        <div class="container-div-range-minutos">
+          <base-input
+            type="number"
+            v-model="RecaTarjRangInic"
+            label="Min. Antes"
+          ></base-input>
+          <base-input
+            type="number"
+            v-model="RecaTarjRangFin"
+            label="Min. Despues"
+          ></base-input>
+          <div class="btn-update-tiempo-a-d">
+            <base-button
+              icon
+              type="default"
+              title="GUARDAR CAMBIOS"
+              size="sm"
+              @click="updateTiempoRecalTarjeta()"
+            >
+              <span class="btn-inner--icon"
+                ><i class="ni ni-check-bold"></i
+              ></span>
+            </base-button>
+          </div>
+        </div>
       </div>
 
+      <template slot="footer">
+        <base-button type="info" @click="RecaTarjeta()"
+          >RECALIFICAR</base-button
+        >
+      </template>
     </modal>
 
     <!--Form modal Despacho Anular Salida-->
@@ -940,6 +998,120 @@
         >
       </template>
     </modal>
+
+    <!--Form modal Despacho RECALIFICAR TODO Salida-->
+    <modal :show.sync="modalDespachoRecalificarTodoSalida" body-classes="p-0">
+      <h6 slot="header" class="modal-title">RECALIFICAR TODO</h6>
+
+      <div class="container-modal-recalifica">
+        <div class="container-div-check-recalifica">
+          <el-checkbox
+            style="width: auto"
+            label="USAR POSICIONES"
+            v-model="RecaTarjUsaPosiLocal"
+            border
+          ></el-checkbox>
+          <el-checkbox
+            style="width: auto"
+            v-model="RecaSobrCtrlMarcClie"
+            label="REESCRIBE CONTROL (MRC)"
+            border
+          ></el-checkbox>
+        </div>
+
+        <div class="container-div-range-minutos">
+          <base-input
+            type="number"
+            v-model="RecaTarjRangInic"
+            label="Min. Antes"
+          ></base-input>
+          <base-input
+            type="number"
+            v-model="RecaTarjRangFin"
+            label="Min. Despues"
+          ></base-input>
+          <div class="btn-update-tiempo-a-d">
+            <base-button
+              icon
+              type="default"
+              title="GUARDAR CAMBIOS"
+              size="sm"
+              @click="updateTiempoRecalTarjeta()"
+            >
+              <span class="btn-inner--icon"
+                ><i class="ni ni-check-bold"></i
+              ></span>
+            </base-button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <el-select
+              v-model="itemUnidadSalidaAnularFinalizar"
+              multiple
+              filterable
+              remote
+              placeholder="Ingrese unidad"
+              style="width: 100%; margin-bottom: 0.5rem"
+              :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
+            >
+              <el-option
+                v-for="item in optionsUnidadesSalidasPanelSalidas"
+                :key="item.CodiVehi"
+                :label="item.CodiVehi"
+                :value="item.CodiVehi"
+              >
+              </el-option>
+            </el-select>
+          </div>
+
+          <div class="col-md-6">
+            <base-input
+              addon-left-icon="ni ni-calendar-grid-58"
+              style="margin-right: 0.5rem"
+              class="input_date_anular_despacho_todo"
+            >
+              <flat-picker
+                slot-scope="{ focus, blur }"
+                @on-open="focus"
+                @on-close="blur"
+                :config="config_flatpicker"
+                class="form-controlPersonal datepicker"
+                v-model="fechaActualAnularFinalizarTodo"
+              >
+              </flat-picker>
+            </base-input>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 1.5rem">
+          <div class="col-md-12">
+            <el-select
+              v-model="mSelectRutaAnularFinalizarTodo"
+              collapse-tags
+              placeholder="Lineas"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in mListRutasDespacho"
+                :key="item.idRuta"
+                :label="item.DescRuta"
+                :value="item.idRuta"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+      </div>
+
+      <template slot="footer">
+        <base-button type="info" @click="RecaTarjetaTodo()"
+          >RECALIFICAR</base-button
+        >
+      </template>
+    </modal>
   </div>
 </template>
 <script>
@@ -1065,6 +1237,20 @@ export default {
       mCheckEnRutaFinalizarAnulado: false,
       mCheckFinalizadaFinalizarAnulado: false,
       radioEstadoRSalidasPanelDespacho: [],
+
+      objConfigRecalificar: null,
+      RecaTarjRangInic: 0,
+      RecaTarjRangFin: 0,
+
+      RecaTarjUsaPosiLocal: false,
+      RecaSobrCtrlMarcClie: false,
+
+      RecaTarjUsaPosiTodoLocal: false,
+      RecaSobrCtrlMarcTodoClie: false,
+
+      modalDespachoRecalificarTodoSalida: false,
+
+      isBtnTodo: false,
     };
   },
   methods: {
@@ -1124,6 +1310,9 @@ export default {
         : (this.modalEnviarDespachoPanel = true);
     },
     showModalDespachoRecalificarSalida() {
+      this.RecaTarjUsaPosiLocal = false;
+      this.RecaSobrCtrlMarcClie = false;
+
       this.modalDespachoRecalificarSalida
         ? (this.modalDespachoRecalificarSalida = false)
         : (this.modalDespachoRecalificarSalida = true);
@@ -1171,7 +1360,7 @@ export default {
         format + " " + hora + ":" + minutes + ":00";
       this.fechaActualAnularFinalizarTodo =
         format + " " + hora + ":" + minutes + ":00";
-      this.config_flatpicker.minDate = this.fechaActualAnularFinalizarTodo;
+      //this.config_flatpicker.minDate = this.fechaActualAnularFinalizarTodo;
     },
     myGridOnContextMenu: function () {
       return false;
@@ -1249,6 +1438,7 @@ export default {
       return string_unidad;
     },
     async createHeaderTable() {
+      this.isBtnTodo = false;
       //this.selectedRowSalida = null;
       this.selectRowId = null;
       //this.$refs.myGridDespachoPanel.clearSelection();
@@ -1281,6 +1471,9 @@ export default {
         );
         this.mListDespachosPanelDespacho = datos.data.datos;
         this.mListDespachosPanelAuxiliar = this.mListDespachosPanelDespacho;
+        if (this.mListDespachosPanelDespacho.length > 0) {
+          this.isBtnTodo = true;
+        }
         console.log(
           "mListDespachosPanel (INICIO) : " +
             this.mListDespachosPanelDespacho.length
@@ -1931,8 +2124,192 @@ export default {
       }
       this.createHeaderTable();
     },
+    async readConfigRecalTarjeta() {
+      this.objConfigRecalificar = null;
+
+      try {
+        var response = await this.$axios.post(
+          process.env.baseUrl + "/ReadConfigRecalificaSalida",
+          {
+            token: this.token,
+          }
+        );
+
+        if (response.data.status_code == 200) {
+          this.objConfigRecalificar = response.data.datos;
+
+          if (this.objConfigRecalificar != null) {
+            this.RecaTarjRangInic = this.objConfigRecalificar.RecaTarjRangInic;
+            this.RecaTarjRangFin = this.objConfigRecalificar.RecaTarjRang;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async updateTiempoRecalTarjeta() {
+      try {
+        var response = await this.$axios.put(
+          process.env.baseUrl + "/UpdateTiempoRecalificaSalida",
+          {
+            token: this.token,
+            inicio: this.RecaTarjRangInic == null ? 0 : this.RecaTarjRangInic,
+            fin: this.RecaTarjRangFin == null ? 0 : this.RecaTarjRangFin,
+          }
+        );
+
+        if (response.data.status_code == 200) {
+          Notification.success({
+            title: "PANEL DESPACHO",
+            message: "Tiempos actualizados con éxito",
+            duration: 2000,
+          });
+          this.readConfigRecalTarjeta();
+        } else {
+          Notification.error({
+            title: "PANEL DESPACHO",
+            message: data.data.msm,
+            duration: 2000,
+          });
+        }
+      } catch (error) {
+        Notification.error({
+          title: "PANEL DESPACHO",
+          message: error.toString(),
+          duration: 2000,
+        });
+      }
+    },
+    async RecaTarjeta() {
+      try {
+        if (this.objConfigRecalificar == null) {
+          Notification.error({
+            title: "PANEL DESPACHO",
+            message: "CONFIGURACION DE RECALIFICAR VACIO",
+            duration: 2000,
+          });
+          return;
+        }
+
+        if (this.selectedRowSalida == null) {
+          Notification.error({
+            title: "PANEL DESPACHO",
+            message: "SELECCIONE UNA SALIDA",
+            duration: 2000,
+          });
+          return;
+        }
+
+        var response = await this.$axios.put(
+          process.env.baseUrl + "/RecalificarTarjeta",
+          {
+            token: this.token,
+            salida_id: this.selectedRowSalida.idSali_m,
+
+            PosiUse: this.RecaTarjUsaPosiLocal
+              ? this.RecaTarjUsaPosiLocal
+              : this.objConfigRecalificar.RecaTarjUsaPosi == 1
+              ? true
+              : false, //priorizar el local
+
+            CtrlMarcUse:
+              this.objConfigRecalificar.RecaTarjTodoCtrl == 1 ? true : false,
+
+            MarcSobr: this.RecaSobrCtrlMarcClie
+              ? this.RecaSobrCtrlMarcClie
+              : this.objConfigRecalificar.RecaSobrCtrlMarcClie == 1
+              ? true
+              : false, //priorizar el local
+            RecaMinuAnteRang: this.RecaTarjRangInic,
+            RecaMinuDespRang: this.RecaTarjRangFin,
+            ToleCaliClie: this.objConfigRecalificar.ToleCaliClie,
+          }
+        );
+
+        if (response.data.status_code == 200) {
+          this.modalDespachoRecalificarSalida = false;
+          Notification.success({
+            title: "PANEL DESPACHO",
+            message: "TARJETA RECALIFICADA CON EXITO",
+            duration: 2000,
+          });
+        } else {
+          Notification.error({
+            title: "PANEL DESPACHO",
+            message: response.data.msm,
+            duration: 2000,
+          });
+        }
+      } catch (error) {
+        Notification.error({
+          title: "PANEL DESPACHO",
+          message: error.toString(),
+          duration: 2000,
+        });
+      }
+    },
+
+    showModalDespachoRecalificarTodoSalida() {
+      this.RecaTarjUsaPosiTodoLocal = false;
+      this.RecaSobrCtrlMarcTodoClie = false;
+
+      this.modalDespachoRecalificarTodoSalida
+        ? (this.modalDespachoRecalificarTodoSalida = false)
+        : (this.modalDespachoRecalificarTodoSalida = true);
+    },
+
+    async RecaTarjetaTodo() {
+      try {
+        var response = await this.$axios.put(
+          process.env.baseUrl + "/RecalificarTodoTarjeta",
+          {
+            token: this.token,
+            fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
+            ruta: this.mSelectRutaSalidaPanelDespacho,
+
+            PosiUse: this.RecaTarjUsaPosiLocal
+              ? this.RecaTarjUsaPosiLocal
+              : this.objConfigRecalificar.RecaTarjUsaPosi == 1
+              ? true
+              : false, //priorizar el local
+            CtrlMarcUse:
+              this.objConfigRecalificar.RecaTarjTodoCtrl == 1 ? true : false,
+            MarcSobr: this.RecaSobrCtrlMarcClie
+              ? this.RecaSobrCtrlMarcClie
+              : this.objConfigRecalificar.RecaSobrCtrlMarcClie == 1
+              ? true
+              : false, //priorizar el local
+            RecaMinuAnteRang: this.RecaTarjRangInic,
+            RecaMinuDespRang: this.RecaTarjRangFin,
+            ToleCaliClie: this.objConfigRecalificar.ToleCaliClie,
+          }
+        );
+
+        if (response.data.status_code == 200) {
+          this.modalDespachoRecalificarTodoSalida = false;
+          Notification.success({
+            title: "PANEL DESPACHO",
+            message: "TARJETA RECALIFICADA CON EXITO",
+            duration: 2000,
+          });
+        } else {
+          Notification.error({
+            title: "PANEL DESPACHO",
+            message: response.data.msm,
+            duration: 2000,
+          });
+        }
+      } catch (error) {
+        Notification.error({
+          title: "PANEL DESPACHO",
+          message: error.toString(),
+          duration: 2000,
+        });
+      }
+    },
   },
   mounted() {
+    this.readConfigRecalTarjeta();
     this.initFechaActualSalidaDespachoPanel();
     this.readAllUnidadesSalidasPanelBusqueda();
     this.initRutasDespacho();
@@ -1950,6 +2327,24 @@ export default {
 </script>
 
 <style>
+.container-modal-recalifica {
+  margin-right: 1.5rem;
+  margin-left: 1.5rem;
+}
+
+.container-div-range-minutos {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container-div-check-recalifica {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
 .inputDatimeDespachoPanel2 .form-group .form-control {
   margin-bottom: 0rem;
   font-size: 2rem;
