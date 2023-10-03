@@ -62,7 +62,7 @@
             @click="showModalAnularTodo()"
           >
             <span class="btn-inner--icon"
-              ><i class="ni ni-fat-remove"></i> ANULAR TODO</span
+              ><i class="ni ni-fat-remove"></i> ANULA TODO</span
             >
           </base-button>
 
@@ -73,7 +73,7 @@
             @click="showModalFinalizarTodo()"
           >
             <span class="btn-inner--icon"
-              ><i class="ni ni-fat-delete"></i> FINALIZAR TODO</span
+              ><i class="ni ni-fat-delete"></i> FINALIZA TODO</span
             >
           </base-button>
 
@@ -84,7 +84,7 @@
             @click="showModalDespachoRecalificarTodoSalida()"
           >
             <span class="btn-inner--icon"
-              ><i class="ni ni-watch-time"></i> RECALIFICAR TODO</span
+              ><i class="ni ni-watch-time"></i> RECALIFICA TODO</span
             >
           </base-button>
 
@@ -1045,10 +1045,25 @@
           </div>
         </div>
 
+        <!--<div class="container-div-check-recalifica">
+          <el-checkbox
+            style="width: 100%"
+            label="EN RUTA"
+            v-model="EnRutaRecalificaTodo"
+            border
+          ></el-checkbox>
+          <el-checkbox
+            style="width: 100%"
+            v-model="FinalizadaRecalificaTodo"
+            label="FINALIZADAS"
+            border
+          ></el-checkbox>
+        </div>-->
+
         <div class="row">
           <div class="col-md-6">
             <el-select
-              v-model="itemUnidadSalidaAnularFinalizar"
+              v-model="itemUnidadSalidaRecalificarTodo"
               multiple
               filterable
               remote
@@ -1089,7 +1104,7 @@
         <div class="row" style="margin-bottom: 1.5rem">
           <div class="col-md-12">
             <el-select
-              v-model="mSelectRutaAnularFinalizarTodo"
+              v-model="mSelectRutaRecalificarTodo"
               collapse-tags
               placeholder="Lineas"
               style="width: 100%"
@@ -1251,6 +1266,10 @@ export default {
       modalDespachoRecalificarTodoSalida: false,
 
       isBtnTodo: false,
+
+
+      itemUnidadSalidaRecalificarTodo: null,
+      mSelectRutaRecalificarTodo: null,
     };
   },
   methods: {
@@ -1309,9 +1328,10 @@ export default {
         ? (this.modalEnviarDespachoPanel = false)
         : (this.modalEnviarDespachoPanel = true);
     },
-    showModalDespachoRecalificarSalida() {
-      this.RecaTarjUsaPosiLocal = false;
-      this.RecaSobrCtrlMarcClie = false;
+    async showModalDespachoRecalificarSalida() {
+      /*this.RecaTarjUsaPosiLocal = false*/
+      this.RecaSobrCtrlMarcClie = false
+      
 
       this.modalDespachoRecalificarSalida
         ? (this.modalDespachoRecalificarSalida = false)
@@ -2137,10 +2157,17 @@ export default {
 
         if (response.data.status_code == 200) {
           this.objConfigRecalificar = response.data.datos;
+          console.log("------------------------------------------")
+          console.log(this.objConfigRecalificar)
+          console.log("------------------------------------------")
 
-          if (this.objConfigRecalificar != null) {
+          if (this.objConfigRecalificar != null) 
+          {
             this.RecaTarjRangInic = this.objConfigRecalificar.RecaTarjRangInic;
             this.RecaTarjRangFin = this.objConfigRecalificar.RecaTarjRang;
+            this.RecaTarjUsaPosiLocal = this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false
+            this.RecaTarjUsaPosiTodoLocal = this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false
+            //console.log(this.RecaTarjUsaPosiLocal)
           }
         }
       } catch (error) {
@@ -2206,20 +2233,12 @@ export default {
             token: this.token,
             salida_id: this.selectedRowSalida.idSali_m,
 
-            PosiUse: this.RecaTarjUsaPosiLocal
-              ? this.RecaTarjUsaPosiLocal
-              : this.objConfigRecalificar.RecaTarjUsaPosi == 1
-              ? true
-              : false, //priorizar el local
+            PosiUse: this.RecaTarjUsaPosiLocal,
 
-            CtrlMarcUse:
-              this.objConfigRecalificar.RecaTarjTodoCtrl == 1 ? true : false,
+            CtrlMarcUse: this.RecaSobrCtrlMarcClie,
 
-            MarcSobr: this.RecaSobrCtrlMarcClie
-              ? this.RecaSobrCtrlMarcClie
-              : this.objConfigRecalificar.RecaSobrCtrlMarcClie == 1
-              ? true
-              : false, //priorizar el local
+            MarcSobr: true, //priorizar el local
+
             RecaMinuAnteRang: this.RecaTarjRangInic,
             RecaMinuDespRang: this.RecaTarjRangFin,
             ToleCaliClie: this.objConfigRecalificar.ToleCaliClie,
@@ -2227,18 +2246,20 @@ export default {
         );
 
         if (response.data.status_code == 200) {
-          this.modalDespachoRecalificarSalida = false;
+          this.modalDespachoRecalificarSalida = false
+          this.readConfigRecalTarjeta()
+          this.showReporteLlegadaSAlida()
           Notification.success({
             title: "PANEL DESPACHO",
             message: "TARJETA RECALIFICADA CON EXITO",
             duration: 2000,
-          });
+          })
         } else {
           Notification.error({
             title: "PANEL DESPACHO",
             message: response.data.msm,
             duration: 2000,
-          });
+          })
         }
       } catch (error) {
         Notification.error({
@@ -2249,9 +2270,12 @@ export default {
       }
     },
 
-    showModalDespachoRecalificarTodoSalida() {
-      this.RecaTarjUsaPosiTodoLocal = false;
-      this.RecaSobrCtrlMarcTodoClie = false;
+    async showModalDespachoRecalificarTodoSalida() {
+      //this.clearModalRecalificaTodo();
+
+      this.RecaSobrCtrlMarcClie = false
+
+      await this.readConfigRecalTarjeta()
 
       this.modalDespachoRecalificarTodoSalida
         ? (this.modalDespachoRecalificarTodoSalida = false)
@@ -2260,38 +2284,50 @@ export default {
 
     async RecaTarjetaTodo() {
       try {
+        if (this.mSelectRutaRecalificarTodo == null) {
+          Notification.warning({
+            title: "PANEL DESPACHO",
+            message: "PORFAVOR SELECCIONE UNA RUTA",
+            duration: 2000,
+          });
+
+          return;
+        }
+
         var response = await this.$axios.put(
           process.env.baseUrl + "/RecalificarTodoTarjeta",
           {
             token: this.token,
             fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
-            ruta: this.mSelectRutaSalidaPanelDespacho,
-
-            PosiUse: this.RecaTarjUsaPosiLocal
-              ? this.RecaTarjUsaPosiLocal
-              : this.objConfigRecalificar.RecaTarjUsaPosi == 1
-              ? true
-              : false, //priorizar el local
+            ruta: this.mSelectRutaRecalificarTodo,
+            unidad:
+              this.itemUnidadSalidaRecalificarTodo == null ||
+              this.itemUnidadSalidaRecalificarTodo.length <= 0
+                ? "*"
+                : this.itemUnidadSalidaRecalificarTodo,
+            PosiUse: this.RecaTarjUsaPosiLocal, //priorizar el local
             CtrlMarcUse:
               this.objConfigRecalificar.RecaTarjTodoCtrl == 1 ? true : false,
-            MarcSobr: this.RecaSobrCtrlMarcClie
-              ? this.RecaSobrCtrlMarcClie
-              : this.objConfigRecalificar.RecaSobrCtrlMarcClie == 1
-              ? true
-              : false, //priorizar el local
+            MarcSobr: true, 
             RecaMinuAnteRang: this.RecaTarjRangInic,
             RecaMinuDespRang: this.RecaTarjRangFin,
             ToleCaliClie: this.objConfigRecalificar.ToleCaliClie,
+
+            isFin: 1,
+            isRuta: 0,
           }
         );
 
         if (response.data.status_code == 200) {
-          this.modalDespachoRecalificarTodoSalida = false;
+          //this.modalDespachoRecalificarTodoSalida = false;
+          this.clearModalRecalificaTodo();
+          
           Notification.success({
             title: "PANEL DESPACHO",
             message: "TARJETA RECALIFICADA CON EXITO",
             duration: 2000,
-          });
+          })
+
         } else {
           Notification.error({
             title: "PANEL DESPACHO",
@@ -2306,6 +2342,16 @@ export default {
           duration: 2000,
         });
       }
+    },
+    clearModalRecalificaTodo() {
+      //this.RecaSobrCtrlMarcTodoClie = false;
+      //this.RecaTarjUsaPosiLocal = false;
+      
+
+      this.EnRutaRecalificaTodo = false;
+      this.FinalizadaRecalificaTodo = false;
+      this.itemUnidadSalidaRecalificarTodo = null;
+      this.mSelectRutaRecalificarTodo = null;
     },
   },
   mounted() {

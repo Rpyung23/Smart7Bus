@@ -731,7 +731,8 @@ export default {
     },
     async crearPreviewReciboIngresoPanelCobroModelo3(mLista) 
     {
-      var atrasoFaltaTotal = 0
+      try {
+        var atrasoFaltaTotal = 0
       var atrasoJustTotal = 0
       var dineroTotal = 0
       var mListaSalidas = []
@@ -965,6 +966,9 @@ export default {
       });
 
       this.banderaMarcoAguaRecibo = true;
+      } catch (error) {
+        this.notifyVue("danger", error.toString(), "ni ni-settings", 4500);
+      }
     },
     async realizarCobro() {
       var mListaCobrosAuxiliar = [];
@@ -1037,8 +1041,10 @@ export default {
         );
       }
     },
-    async reloadStoreTableCobros(mListaCobrosAuxiliar) {
-      var mListaTablaAuxiliar = [];
+    async reloadStoreTableCobros(mListaCobrosAuxiliar) 
+    {
+      try {
+        var mListaTablaAuxiliar = [];
 
       this.banderaMarcoAguaRecibo = false;
       this.multipleSelectionProduccionCobros = [];
@@ -1073,6 +1079,9 @@ export default {
           parseFloat(this.tableDataPanelControlProduccion[i].DeudaTotal);
       }
       this.mPendienteRPagosVehiculo = Number(dinero).toFixed(2);
+      } catch (error) {
+        this.notifyVue("danger", error.toString(), "ni ni-fat-remove", 4500);
+      }
     },
     notifyVue(type, mensaje, icono, tiempo = 4500) {
       this.$notify({
