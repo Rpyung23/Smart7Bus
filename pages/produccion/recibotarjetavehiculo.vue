@@ -169,7 +169,7 @@
                 :row-class-name="tableRowClassNameRPagosVehiculoProduccionRecibo"
               >
                 <el-table-column
-                  prop="numero_cobro"
+                  prop="Codigo"
                   label="N° Recibo"
                   minWidth="100"
                 >
@@ -177,14 +177,14 @@
 
                 
                 <el-table-column
-                  prop="fecha_tarjeta"
+                  prop="Fecha"
                   label="Fecha de Tarjeta"
                   minWidth="140"
                 >
                 </el-table-column>
   
                 <el-table-column
-                  prop="fecha_cobro"
+                  prop="FechaCobro"
                   label="Fecha de Cobro"
                   minWidth="140"
                 >
@@ -192,23 +192,16 @@
   
                 <el-table-column prop="Unidad" label="Unidad" minWidth="100">
                 </el-table-column>
-  
-              <!--   <el-table-column
-                  prop="NumeVuelSali_m"
-                  label="N° Vuelta"
-                  minWidth="100"
-                >
-                </el-table-column> -->
-  
+
                 <el-table-column
-                  prop="NombApellUsua"
+                  prop="UsuarioCobro"
                   label="Atención"
                   minWidth="200"
                 >
                 </el-table-column>
   
                 <el-table-column
-                  prop="DeudaTotal"
+                  prop="Valor"
                   sortable
                   label="Total ($)"
                   minWidth="100"
@@ -334,9 +327,10 @@
         RecibosFileNameExcelRPagosVehiculoProduccion: "",
         json_fields_excelRecibosPagosVehiculoProduccion: {
           UNIDAD: "Unidad",
-          "DEUDA PAGADA": "DeudaTotal",
-          "FECHA DE COBRO": "fecha_cobro",
-          ATENCIÓN: "NombApellUsua",
+          "FECHA TRAJETA": "Fecha",
+          "FECHA DE COBRO": "FechaCobro",
+          "TOTAL": "Valor",
+          ATENCIÓN: "UsuarioCobro",
         },
         fCobroReciboVuelta:false
       };
@@ -421,7 +415,7 @@
   
         if (this.loadingRPagosVehiculoRecibo) {
           Notification.warning({
-            title: "Reporte Pagos Vehiculo",
+            title: "Reporte Tarjeta Vehiculo",
             message: "Por favor espere un momento.",
             duration: 3500,
           });
@@ -443,9 +437,9 @@
                   ? "*"
                   : this.itemCobradoresProduccionRPagoVehiculorecibo,
             };
-            //console.log(body);
+            console.log(body);
             var datos = await this.$axios.post(
-              process.env.baseUrl + "/ProduccionRecibosPagosVehiculoVueltas",
+              process.env.baseUrl + "/ProduccionRecibosTarjetasVehiculo",
               body
             );
   
@@ -459,7 +453,7 @@
                 ...datos.data.datos
               );
               for (var i = 0; i < datos.data.datos.length; i++) {
-                pagado = pagado + parseFloat(datos.data.datos[i].DeudaTotal);
+                pagado = pagado + parseFloat(datos.data.datos[i].Valor);
               }
   
               this.mPagadoRPagosVehiculoRecibo = Number(pagado).toFixed(2);
