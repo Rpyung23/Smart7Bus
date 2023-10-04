@@ -332,7 +332,8 @@
           "TOTAL": "Valor",
           ATENCIÓN: "NombApellUsua",
         },
-        fCobroReciboVuelta:false
+        fCobroReciboVuelta:false,
+        mListaDetalleReciboTarjetaVehiculo: {},
       };
     },
     methods: {
@@ -437,7 +438,7 @@
                   ? "*"
                   : this.itemCobradoresProduccionRPagoVehiculorecibo,
             };
-            console.log(body);
+            //console.log(body);
             var datos = await this.$axios.post(
               process.env.baseUrl + "/ProduccionRecibosTarjetasVehiculo",
               body
@@ -448,10 +449,15 @@
             if (datos.data.status_code == 200) {
               var anulado = 0;
               var pagado = 0;
+              this.mListaDetalleReciboTarjetaVehiculo = {};
   
               this.tableDataRPagosVEhiculoProduccionRecibo.push(
                 ...datos.data.datos
               );
+
+              this.mListaDetalleReciboTarjetaVehiculo = datos.data.datos;
+
+
               for (var i = 0; i < datos.data.datos.length; i++) {
                 pagado = pagado + parseFloat(datos.data.datos[i].Valor);
               }
@@ -501,38 +507,31 @@
           this.loadingRPagosVehiculoRecibo = false;
         }
       },
-      async readAllDetalleReciboPagosVehiculoProduccion(index, item) {
+      readAllDetalleReciboPagosVehiculoProduccion(index, item) {
+        console.log("Aca index: "+index);
+        console.log("Aca listaDetalle :   "+this.mListaDetalleReciboTarjetaVehiculo);
         this.modalsReciboProduccion = true;
         this.baseURlPDFPanelDetalleRecibo = "";
   
         try {
-          var rsult = await this.$axios.post(
-            process.env.baseUrl + "/ProduccionDetalleRecibosPagosVehiculoVueltas",
-            {
-              token: this.token,
-              salida: item.idSali_m,
-              nameEmpresa: this.$cookies.get("nameEmpresa"),
-            }
-          );
-  
-          var datos = rsult.data.datos;
+          
+          var datos = this.mListaDetalleReciboTarjetaVehiculo;
   
           let dineroCobrado = 0.0;
   
           var mListaCuerpoRecibo = [];
   
-          for (var i = 0; i < datos.length; i++) {
-            dineroCobrado = dineroCobrado + parseFloat(datos[i].total_cobro);
-  
-            var obj = [
-              { text: datos[i].CodiVehiSali_m, alignment: "center" },
-              { text: datos[i].DescRutaSali_m, alignment: "left" },
-              { text: datos[i].NumeVuelSali_m, alignment: "center" },
-              { text: datos[i].fecha_cobro, alignment: "center" },
-              { text: datos[i].total_cobro, alignment: "center" },
+          
+          dineroCobrado = dineroCobrado + parseFloat(datos[index].Valor);
+          
+          var obj = [
+              { text: datos[index].Unidad, alignment: "center" },
+              //{ text: datos[index].DescRutaSali_m, alignment: "left" },
+              //{ text: datos[index].NumeVuelSali_m, alignment: "center" },
+              { text: datos[index].Fecha, alignment: "center" },
+              { text: datos[index].Valor, alignment: "center" },
             ];
             mListaCuerpoRecibo.push(obj);
-          }
   
           var empresa = [
             {
@@ -573,12 +572,12 @@
                 table: {
                   // 19, 65, 44, 27
                   headerRows: 0,
-                  widths: [19, 49,18, 30, 27],
+                  widths: [30 /*,49*//*,18*/, 50, 35],
                   body: [
                     [
                       { text: "VEHI", alignment: "center", bold: true },
-                      { text: "LINEA", alignment: "center", bold: true },
-                      { text: "VUE", alignment: "center", bold: true },
+                      /*{ text: "LINEA", alignment: "center", bold: true },*/
+                      /*{ text: "VUE", alignment: "center", bold: true },*/
                       { text: "FECHA", alignment: "center", bold: true },
                       { text: "VALOR", alignment: "center", bold: true },
                     ],
@@ -595,7 +594,7 @@
                 layout: "noBorders",
                 table: {
                   headerRows: 0,
-                  widths: [19, 49,18, 30, 27],
+                  widths: [30, 50, 35],
                   body: datos.length > 0 ? mListaCuerpoRecibo : [[]],
                 },
               },
@@ -605,7 +604,13 @@
               },
               {
                 text: datos.length > 0 ?
-                  ("Fecha de Pago : " + datos[0].fecha_cobroTime)  : '',
+                  ("Fecha de Pago : " + datos[index].FechaCobro)  : '',
+                pageOrientation: "portrait",
+                fontSize: 9,
+              },
+              {
+                text: datos.length > 0 ?
+                  ("Operador : " + datos[index].NombApellUsua)  : '',
                 pageOrientation: "portrait",
                 fontSize: 9,
               },
@@ -632,7 +637,7 @@
           });
         } catch (error) {
           Notification.error({
-            title: "ERROR CATCH Reporte Pagos Vehiculo",
+            title: "ERROR CATCH Reporte Recibo Tarjetas Vehiculo",
             message: error.toString(),
             duration: 2500,
           });
