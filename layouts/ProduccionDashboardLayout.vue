@@ -80,6 +80,17 @@
 
         <sidebar-item
           translate="no"
+          v-if="RecibopagosvehiculoV"
+          :link="{
+            name: 'Recibos T.V',
+            icon: 'ni ni-single-copy-04 text-info',
+            path: '/produccion/recibotarjetavehiculo',
+          }"
+        >
+        </sidebar-item>
+
+        <sidebar-item
+          translate="no"
           v-if="ReporteProduccion"
           :link="{
             name: 'Reportes',
