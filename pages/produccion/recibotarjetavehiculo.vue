@@ -194,7 +194,7 @@
                 </el-table-column>
 
                 <el-table-column
-                  prop="UsuarioCobro"
+                  prop="NombApellUsua"
                   label="Atención"
                   minWidth="200"
                 >
@@ -330,7 +330,7 @@
           "FECHA TRAJETA": "Fecha",
           "FECHA DE COBRO": "FechaCobro",
           "TOTAL": "Valor",
-          ATENCIÓN: "UsuarioCobro",
+          ATENCIÓN: "NombApellUsua",
         },
         fCobroReciboVuelta:false
       };
