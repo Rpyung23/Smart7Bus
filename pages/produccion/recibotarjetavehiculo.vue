@@ -450,7 +450,7 @@ export default {
           { text: datos[index].Unidad, alignment: "center" },
           //{ text: datos[index].DescRutaSali_m, alignment: "left" },
           //{ text: datos[index].NumeVuelSali_m, alignment: "center" },
-          { text: datos[index].Fecha, alignment: "center" },
+          { text: "PAGO TARJETA "+datos[index].Fecha, alignment: "center" },
           { text: datos[index].Valor, alignment: "center" },
         ];
         mListaCuerpoRecibo.push(obj);
@@ -515,7 +515,7 @@ export default {
               layout: "noBorders",
               table: {
                 headerRows: 0,
-                widths: [30, 100, 35],
+                widths: [25, 110, 25],
                 body: datos.length > 0 ? mListaCuerpoRecibo : [[]],
               },
             },
