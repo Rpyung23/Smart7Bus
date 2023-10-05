@@ -535,6 +535,49 @@ export default {
       }
       this.loadingTableRVelocidadesBusquedaloading = false;
     },
+    async readRPuertaEventosTramos() {
+      
+      
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/RPuertasTramos",
+          {
+            token: this.token,
+            unidades:
+              this.itemUnidadSalidasPanelBusqueda.length > 0
+                ? this.itemUnidadSalidasPanelBusqueda
+                : "*",
+            fechaI: this.fechaInicialSalidasPanelBusqueda,
+            fechaF: this.fechaFinalSalidasPanelBusqueda,
+            rutas:
+              this.modelTiposEvento.length <= 0 ? "*" : this.modelTiposEvento,
+            grupos:
+              this.itemGruposPenalidadesSemanales.length <= 0
+                ? "*"
+                : this.itemGruposPenalidadesSemanales,
+          },
+          {
+            timeout: 600000,
+          }
+        );
+
+        if (datos.data.status_code == 200) {
+          this.mListaREventosDispositivos.push(...datos.data.datos);
+        } else {
+          Notification.info({
+            title: "Reporte Eventos Dispositivos",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({
+          title: "Reporte Eventos Dispositivos",
+          message: error.toString(),
+        });
+        console.log(error);
+      }
+      this.loadingTableRVelocidadesBusquedaloading = false;
+    },
     async readPosicionesFueraRuta(item) {
       console.log(item);
       try {
