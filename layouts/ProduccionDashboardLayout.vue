@@ -71,7 +71,7 @@
           translate="no"
           v-if="RecibopagosvehiculoV"
           :link="{
-            name: 'Recibos',
+            name: 'Recibo Minutos',
             icon: 'ni ni-single-copy-04 text-primary',
             path: '/produccion/recibopagosvehiculoVueltas',
           }"
@@ -80,9 +80,9 @@
 
         <sidebar-item
           translate="no"
-          v-if="RecibopagosvehiculoV"
+          v-if="ReciboTarjetapagosvehiculoV"
           :link="{
-            name: 'Recibos T.V',
+            name: 'Recibo Tarjeta',
             icon: 'ni ni-single-copy-04 text-info',
             path: '/produccion/recibotarjetavehiculo',
           }"
@@ -244,6 +244,7 @@ export default {
       RecibopagosvehiculoV: false,
       rminutosSancionConsorcioGeneral: false,
       rdeudasacumuladas: false,
+      ReciboTarjetapagosvehiculoV:false
     };
   },
   methods: {
@@ -359,6 +360,10 @@ export default {
       permisos.produccion != null &&
       permisos.produccion.Recibopagosvehiculo != null;
     permisos.produccion.Recibopagosvehiculo ? true : false;
+
+    this.ReciboTarjetapagosvehiculoV = permisos.produccion != null &&
+      permisos.produccion.ReciboTarjetapagosvehiculoV != null;
+    permisos.produccion.ReciboTarjetapagosvehiculoV ? true : false;
 
     this.RecibopagosvehiculoV =
       permisos.produccion != null &&

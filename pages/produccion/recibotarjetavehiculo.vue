@@ -465,7 +465,7 @@ export default {
         ];
 
         var dd = {
-          pageSize: { width: 220, height: datos.length < 4 ? 300 : "auto" },
+          pageSize: { width: 220, height: 300 },
           pageMargins: [15, 15, 15, 15],
           compress: true,
           content: [

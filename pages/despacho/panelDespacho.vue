@@ -2232,6 +2232,8 @@ export default {
           {
             token: this.token,
             salida_id: this.selectedRowSalida.idSali_m,
+            fecha_tarjeta: this.selectedRowSalida.HoraSaliProgSali_mF,
+            unidad_tarjeta: this.selectedRowSalida.CodiVehiSali_m,
 
             PosiUse: this.RecaTarjUsaPosiLocal,
 
@@ -2248,6 +2250,7 @@ export default {
         if (response.data.status_code == 200) {
           this.modalDespachoRecalificarSalida = false
           this.readConfigRecalTarjeta()
+          this.createHeaderTable()
           this.showReporteLlegadaSAlida()
           Notification.success({
             title: "PANEL DESPACHO",
@@ -2321,6 +2324,7 @@ export default {
         if (response.data.status_code == 200) {
           //this.modalDespachoRecalificarTodoSalida = false;
           this.clearModalRecalificaTodo();
+          this.createHeaderTable()
           
           Notification.success({
             title: "PANEL DESPACHO",
