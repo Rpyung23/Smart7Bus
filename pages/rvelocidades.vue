@@ -32,9 +32,20 @@
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>
 
-            <base-button outline size="sm" type="danger">
+            <base-button size="sm" title="EXPORTAR PDF" v-if="mListaRVelocidades.length > 0 ? true : false" type="danger"
+              @click="generatePdf()">
               <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
             </base-button>
+
+            <download-excel title="EXCEL" v-if="mListaRVelocidades.length > 0
+              ? true
+              : false
+              " class="btn btn-icon btn-fab btn-success btn-sm" :header="ReporteheaderExcelVelocidades"
+              :data="mListaRVelocidades" :fields="json_fields_excelReporteVelocidades"
+              :worksheet="WorksheetExcelReporteVelocidades" :name="FileNameExcelReporteCelocidades">
+              <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
+            </download-excel>
+
 
           </div>
         </card>
@@ -43,10 +54,8 @@
           footer-classes="pb-2">
           <div>
             <el-table v-loading="loadingTableRVelocidadesBusquedaloading" element-loading-text="Cargando Datos..."
-              :data="mListaRVelocidades" row-key="id"
-              class="tablePanelControlProduccion" 
-              header-row-class-name="thead-dark" height="calc(100vh - 9.5rem)"
-              >
+              :data="mListaRVelocidades" row-key="id" class="tablePanelControlProduccion"
+              header-row-class-name="thead-dark" height="calc(100vh - 9.5rem)">
 
               <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
               </el-table-column>
@@ -84,10 +93,14 @@ import {
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
-
+import { getFecha_dd_mm_yyyy, getformatFechaDateTime } from "../util/fechas";
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
+import { getBase64LogoReportes } from "../util/logoReport";
+import pdfMake from "pdfmake/build/pdfmake.js";
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
   mixins: [clientPaginationMixin],
@@ -118,7 +131,7 @@ export default {
       mListaUnidadesSalidasPanelBusqueda: [],
       mListLineasSalidasPanelBusqueda: [],
       loadingTableRVelocidadesBusquedaloading: false,
-      loadingTableUnidadesSalidasPanelBusquedaloading:false,
+      loadingTableUnidadesSalidasPanelBusquedaloading: false,
       itemUnidadSalidasPanelBusqueda: [],
       token: this.$cookies.get("token"),
       fechaInicialSalidasPanelBusqueda: "",
@@ -177,7 +190,21 @@ export default {
           minWidth: 170,
         }
       ],
-      mListaRVelocidades: []
+      mListaRVelocidades: [],
+      json_fields_excelReporteVelocidades: {
+        UNIDAD: "CodiVehiHistEven",
+        "N.VUELTA": "NumeVuelSali_m",
+        "RUTA": "DescRutaSali_m",
+        "FECHA ": "FechHistEven",
+        "H.SALIDA": "HoraSaliProgSali_m",
+        "H.LLEGADA": "HoraLlegProgSali_m",
+        "V.TOTAL(KM/H)": "total_velocidad",
+        "V.MIN(KM/H)": "min_velocidad",
+        "V.MAX(KM/H)": "max_velocidad",
+        "V.PRO(KM/H)": "prom_velocidad",
+      },
+      WorksheetExcelReporteVelocidades: "",
+      FileNameExcelReporteCelocidades: "",
     };
   },
   methods: {
@@ -224,29 +251,294 @@ export default {
         }
       }
     },
-    async readRVelocidades() 
-    {
+    async readRVelocidades() {
+      this.WorksheetExcelReporteVelocidades =
+        "RV" + Date.now();
+      this.FileNameExcelReporteCelocidades =
+        "RV_" + Date.now() + ".xls";
       this.mListaRVelocidades = []
       this.loadingTableRVelocidadesBusquedaloading = true
       try {
-              var datos = await this.$axios.post(process.env.baseUrl + "/Rvelocidades", {
-        token: this.token,
-        "unidades": this.itemUnidadSalidasPanelBusqueda.length > 0 ? this.itemUnidadSalidasPanelBusqueda : "*",
-        fechaI: this.fechaInicialSalidasPanelBusqueda,
-        fechaF: this.fechaFinalSalidasPanelBusqueda
-      },{
-              timeout: 600000,
-            });
+        var datos = await this.$axios.post(process.env.baseUrl + "/Rvelocidades", {
+          token: this.token,
+          "unidades": this.itemUnidadSalidasPanelBusqueda.length > 0 ? this.itemUnidadSalidasPanelBusqueda : "*",
+          fechaI: this.fechaInicialSalidasPanelBusqueda,
+          fechaF: this.fechaFinalSalidasPanelBusqueda
+        }, {
+          timeout: 600000,
+        });
 
-      if (datos.data.status_code == 200) 
-      {
-        this.mListaRVelocidades.push(...datos.data.datos)
-      }
+        if (datos.data.status_code == 200) {
+          this.ReporteheaderExcelVelocidades = [
+            this.$cookies.get("nameEmpresa"),
+            "Reporte Velocidades",
+            "Unidades : " +
+            (this.itemUnidadSalidasPanelBusqueda.length <= 0
+              ? "TODAS LAS UNIDADES"
+              : this.itemUnidadSalidasPanelBusqueda),
+            "Fechas : " +
+            this.fechaInicialSalidasPanelBusqueda +
+            " hasta " +
+            this.fechaFinalSalidasPanelBusqueda,
+
+          ];
+          console.log(datos.data.datos)
+          this.mListaRVelocidades.push(...datos.data.datos)
+        }
       } catch (error) {
-       console.log(error) 
+        console.log(error)
       }
       this.loadingTableRVelocidadesBusquedaloading = false
+    },
+    generatePdf() {
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 12,
+          alignment: "left",
+          bold: true,
+        },
+      ];
+      var tipoReporte = [
+        {
+          text:
+            "REPORTE DE LA RUTA : TODAS LAS RUTAS",
+          fontSize: 11,
+          alignment: "left",
+          bold: true,
+        },
+      ];
+      var desde_hasta = [
+        {
+          text:
+            "Del : " +
+            (this.fechaInicialSalidasPanelBusqueda) +
+            " Hasta " +
+            (this.fechaFinalSalidasPanelBusqueda),
+          fontSize: 11,
+          alignment: "left",
+          bold: true,
+        },
+      ];
+      var unidades = [
+        {
+          text:
+            "Unidades : " +
+            (this.itemUnidadSalidasPanelBusqueda.length === 0
+              ? "TODAS LAS UNIDADES"
+              : this.itemUnidadSalidasPanelBusqueda.toString()),
+          fontSize: 11,
+          alignment: "left",
+          bold: true,
+        },
+      ];
+      var resultadoString = [
+        [
+          {
+            text: "Unidad",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "N-Vuelta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Ruta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Fecha",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H.Salida",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H.Llegada",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "V.Total(KM/H)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "V.Min(KM/H)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "V.Max(KM/H)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "V.Pro(KM/H)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+        ],
+      ];
+      for (var i = 0; i < this.mListaRVelocidades.length; i++) {
+        var arrys = [
+          {
+            text: this.mListaRVelocidades[i].CodiVehiHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].NumeVuelSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].DescRutaSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].FechHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].HoraSaliProgSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].HoraLlegProgSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].total_velocidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].min_velocidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].max_velocidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].prom_velocidad,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+        ];
+        resultadoString.push(arrys);
+      }
+      var docDefinition = {
+        pageSize: "A4",
+        pageOrientation: "portrait",
+        pageMargins: [30, 80, 40, 30],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE VELOCIDADES DETALLADOS",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450, 450, 450],
+              body: [empresa, tipoReporte, desde_hasta, unidades],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [30, 40, 60, 50, 40, 40, 55, 50, 55, 50],
+              body: resultadoString,
+            },
+          },
+        ],
+      };
+      pdfMake.createPdf(docDefinition).download("RDV_" + Date.now());
     }
+
+
+
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
@@ -303,8 +595,8 @@ export default {
   padding-top: 0.25rem !important;
 }
 
-.buttonsAdicionalesRbuttonsAdicionalesRVelocidadVelocidad{
-    display: flex;
-    align-items: center;
+.buttonsAdicionalesRbuttonsAdicionalesRVelocidadVelocidad {
+  display: flex;
+  align-items: center;
 }
 </style>
