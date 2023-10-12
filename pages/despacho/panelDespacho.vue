@@ -202,7 +202,7 @@
                 background-color: rgba(140, 248, 126, 0.384);
                 margin-right: 0.5rem;
               "
-              >DIFERIDAS
+              >DIFERIDA
             </el-checkbox>
             <el-checkbox
               label="2"
@@ -213,7 +213,7 @@
               >EN RUTA</el-checkbox
             >
             <el-checkbox label="3" style="margin-right: 0rem"
-              >FINALIZADOS</el-checkbox
+              >FINALIZADO</el-checkbox
             >
           </el-checkbox-group>
 
@@ -316,13 +316,20 @@
 
           <!--<base-button
             icon
-            type="success"
-            title="Despachar"
+            type="default"
+            title="Reemplazo"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.selectRowEstado == 'DIFERIDO'
+            "
             size="sm"
-            @click="showEnviarDespachoPanel()"
+            @click=""
           >
-            <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
+            <span class="btn-inner--icon"><i class="ni ni-bus-front-12"></i></span>
           </base-button>-->
+
         </div>
       </card>
 
@@ -337,7 +344,6 @@
         <div class="container-calendario col_personalizado">
           <JqxGrid
             ref="myGridDespachoPanel"
-            @contextmenu="myGridOnContextMenu()"
             @rowclick="myGridOnRowClick($event)"
             @cellbeginedit="cellBeginEditEvent($event)"
             :height="'100%'"
@@ -352,7 +358,7 @@
           >
           </JqxGrid>
 
-          <JqxMenu
+          <!--<JqxMenu
             ref="myMenu"
             @itemclick="myMenuOnItemClick($event)"
             :width="200"
@@ -367,7 +373,7 @@
               <li>Modificar Intervalos</li>
               <li>Cambiar frecuencia</li>
             </ul>
-          </JqxMenu>
+          </JqxMenu>-->
 
           <div
             style="
@@ -1008,12 +1014,12 @@
           <el-checkbox
             style="width: auto"
             label="USAR POSICIONES"
-            v-model="RecaTarjUsaPosiLocal"
+            v-model="RecaTarjUsaPosiLocalTodo"
             border
           ></el-checkbox>
           <el-checkbox
             style="width: auto"
-            v-model="RecaSobrCtrlMarcClie"
+            v-model="RecaSobrCtrlMarcClieTodo"
             label="REESCRIBE CONTROL (MRC)"
             border
           ></el-checkbox>
@@ -1267,9 +1273,12 @@ export default {
 
       isBtnTodo: false,
 
-
       itemUnidadSalidaRecalificarTodo: null,
       mSelectRutaRecalificarTodo: null,
+
+
+      RecaTarjUsaPosiLocalTodo:false,
+      RecaSobrCtrlMarcClieTodo:false
     };
   },
   methods: {
@@ -1330,8 +1339,7 @@ export default {
     },
     async showModalDespachoRecalificarSalida() {
       /*this.RecaTarjUsaPosiLocal = false*/
-      this.RecaSobrCtrlMarcClie = false
-      
+      this.RecaSobrCtrlMarcClie = false;
 
       this.modalDespachoRecalificarSalida
         ? (this.modalDespachoRecalificarSalida = false)
@@ -1386,7 +1394,7 @@ export default {
       return false;
     },
     myGridOnRowClick: function (event) {
-      if (event.args.rightclick) {
+      /*if (event.args.rightclick) {
         this.$refs.myGridDespachoPanel.selectrow(event.args.rowindex);
         let scrollTop = window.scrollY;
         let scrollLeft = window.scrollX;
@@ -1395,31 +1403,24 @@ export default {
           parseInt(event.args.originalEvent.clientY) + 5 + scrollTop
         );
         return false;
-      }
+      }*/
     },
     myMenuOnItemClick: function (event) {
       console.log("myMenuOnItemClick");
       try {
         let args = event.args;
         let rowindex = this.$refs.myGridDespachoPanel.getselectedrowindex();
-        if (args.innerHTML == "Edit Selected Row") {
-          this.editrow = rowindex;
-          this.$refs.myWindow.position = { x: 60, y: 60 };
-          // get the clicked row's data and initialize the input fields.
-          let dataRecord = this.$refs.myGridDespachoPanel.getrowdata(
-            this.editrow
-          );
-          this.$refs.firstName.value = dataRecord.firstname;
-          this.$refs.lastName.value = dataRecord.lastname;
-          this.$refs.product.value = dataRecord.productname;
-          this.$refs.quantity.decimal = dataRecord.quantity;
-          this.$refs.price.decimal = dataRecord.price;
-          // show the popup window.
-          this.$refs.myWindow.open();
-        } else {
-          let rowid = this.$refs.myGridDespachoPanel.getrowid(rowindex);
-          this.$refs.myGridDespachoPanel.deleterow(rowid);
+        let dataRecord = this.$refs.myGridDespachoPanel.getrowdata(rowindex)
+        
+        if (args.innerHTML == 'Reemplazar unidad')
+        {
+          alert("REEMPLAZADO UNIDAD")
+        }else{
+          alert("OPCION AUN EN DESARROLLO.....")
         }
+        
+        console.log(dataRecord)
+
       } catch (error) {
         console.log(error);
       }
@@ -2157,16 +2158,17 @@ export default {
 
         if (response.data.status_code == 200) {
           this.objConfigRecalificar = response.data.datos;
-          console.log("------------------------------------------")
-          console.log(this.objConfigRecalificar)
-          console.log("------------------------------------------")
+          console.log("------------------------------------------");
+          console.log(this.objConfigRecalificar);
+          console.log("------------------------------------------");
 
-          if (this.objConfigRecalificar != null) 
-          {
+          if (this.objConfigRecalificar != null) {
             this.RecaTarjRangInic = this.objConfigRecalificar.RecaTarjRangInic;
             this.RecaTarjRangFin = this.objConfigRecalificar.RecaTarjRang;
-            this.RecaTarjUsaPosiLocal = this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false
-            this.RecaTarjUsaPosiTodoLocal = this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false
+            /*this.RecaTarjUsaPosiLocal =
+              this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false;
+            this.RecaTarjUsaPosiTodoLocal =
+              this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false;*/
             //console.log(this.RecaTarjUsaPosiLocal)
           }
         }
@@ -2234,13 +2236,9 @@ export default {
             salida_id: this.selectedRowSalida.idSali_m,
             fecha_tarjeta: this.selectedRowSalida.HoraSaliProgSali_mF,
             unidad_tarjeta: this.selectedRowSalida.CodiVehiSali_m,
-
             PosiUse: this.RecaTarjUsaPosiLocal,
-
-            CtrlMarcUse: this.RecaSobrCtrlMarcClie,
-
-            MarcSobr: true, //priorizar el local
-
+            CtrlMarcUse: this.RecaSobrCtrlMarcClie,//this.objConfigRecalificar.RecaTarjTodoCtrl == 1 ? true : false,
+            MarcSobr: true, 
             RecaMinuAnteRang: this.RecaTarjRangInic,
             RecaMinuDespRang: this.RecaTarjRangFin,
             ToleCaliClie: this.objConfigRecalificar.ToleCaliClie,
@@ -2248,21 +2246,21 @@ export default {
         );
 
         if (response.data.status_code == 200) {
-          this.modalDespachoRecalificarSalida = false
-          this.readConfigRecalTarjeta()
-          this.createHeaderTable()
-          this.showReporteLlegadaSAlida()
+          this.modalDespachoRecalificarSalida = false;
+          this.readConfigRecalTarjeta();
+          this.createHeaderTable();
+          this.showReporteLlegadaSAlida();
           Notification.success({
             title: "PANEL DESPACHO",
             message: "TARJETA RECALIFICADA CON EXITO",
             duration: 2000,
-          })
+          });
         } else {
           Notification.error({
             title: "PANEL DESPACHO",
             message: response.data.msm,
             duration: 2000,
-          })
+          });
         }
       } catch (error) {
         Notification.error({
@@ -2276,9 +2274,9 @@ export default {
     async showModalDespachoRecalificarTodoSalida() {
       //this.clearModalRecalificaTodo();
 
-      this.RecaSobrCtrlMarcClie = false
+      this.RecaSobrCtrlMarcClie = false;
 
-      await this.readConfigRecalTarjeta()
+      await this.readConfigRecalTarjeta();
 
       this.modalDespachoRecalificarTodoSalida
         ? (this.modalDespachoRecalificarTodoSalida = false)
@@ -2308,14 +2306,12 @@ export default {
               this.itemUnidadSalidaRecalificarTodo.length <= 0
                 ? "*"
                 : this.itemUnidadSalidaRecalificarTodo,
-            PosiUse: this.RecaTarjUsaPosiLocal, //priorizar el local
-            CtrlMarcUse:
-              this.objConfigRecalificar.RecaTarjTodoCtrl == 1 ? true : false,
-            MarcSobr: true, 
+            PosiUse: this.RecaTarjUsaPosiLocalTodo, //priorizar el local
+            CtrlMarcUse: this.RecaSobrCtrlMarcClieTodo,
+            MarcSobr: true,
             RecaMinuAnteRang: this.RecaTarjRangInic,
             RecaMinuDespRang: this.RecaTarjRangFin,
             ToleCaliClie: this.objConfigRecalificar.ToleCaliClie,
-
             isFin: 1,
             isRuta: 0,
           }
@@ -2324,14 +2320,13 @@ export default {
         if (response.data.status_code == 200) {
           //this.modalDespachoRecalificarTodoSalida = false;
           this.clearModalRecalificaTodo();
-          this.createHeaderTable()
-          
+          this.createHeaderTable();
+
           Notification.success({
             title: "PANEL DESPACHO",
             message: "TARJETA RECALIFICADA CON EXITO",
             duration: 2000,
-          })
-
+          });
         } else {
           Notification.error({
             title: "PANEL DESPACHO",
@@ -2350,7 +2345,6 @@ export default {
     clearModalRecalificaTodo() {
       //this.RecaSobrCtrlMarcTodoClie = false;
       //this.RecaTarjUsaPosiLocal = false;
-      
 
       this.EnRutaRecalificaTodo = false;
       this.FinalizadaRecalificaTodo = false;

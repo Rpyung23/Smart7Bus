@@ -319,6 +319,7 @@
             >
           </template>
         </modal>
+
         <modal
           modal-classes="modal-dialog-centered modal-xl"
           :show.sync="oModalAddRolDetalleD"
@@ -788,6 +789,7 @@
             </div>
           </div>
 
+
           <el-table
             v-loading="loadingRolProgramadoD"
             element-loading-text="Cargando Datos..."
@@ -995,15 +997,22 @@
 
       <modal :show.sync="modalEnviarDespachos" body-classes="p-0">
         <h6 slot="header" class="modal-title">
-          <strong>{{objRolSelect == null ? "S/N" : objRolSelect.DescRuta}}</strong>
+          <strong>{{
+            objRolSelect == null ? "S/N" : objRolSelect.DescRuta
+          }}</strong>
         </h6>
-        <div style="margin-left: 1rem;margin-right: 1rem;">
-          Esta seguro de enviar los despachos del ROL <strong>{{objRolSelect == null ? "S/N" :(objRolSelect.detalle_rol_programado_m)}}</strong> para el dia <strong>{{fechaInicialRol ==null ? "S/N" : fechaInicialRol}}</strong>
+        <div style="margin-left: 1rem; margin-right: 1rem">
+          Esta seguro de enviar los despachos del ROL
+          <strong>{{
+            objRolSelect == null ? "S/N" : objRolSelect.detalle_rol_programado_m
+          }}</strong>
+          para el dia
+          <strong>{{
+            fechaInicialRol == null ? "S/N" : fechaInicialRol
+          }}</strong>
         </div>
         <template slot="footer">
-          <base-button
-            type="default"
-            @click="sendDespachoProgramado()"
+          <base-button type="default" @click="sendDespachoProgramado()"
             >AUTORIZAR</base-button
           >
         </template>
@@ -1162,7 +1171,9 @@ export default {
       frecuencia19: null,
       frecuencia20: null,
       isUpdate: false,
-      modalEnviarDespachos:false
+      modalEnviarDespachos: false,
+
+      columns: [],
     };
   },
   methods: {
@@ -1287,7 +1298,11 @@ export default {
             ruta: [ruta],
           }
         );
-        if (datos.data.status_code == 200) {
+        if (datos.data.status_code == 200) 
+        {
+          //console.log(datos.data)
+          this.mListFrecuencia.push({idFrec:null,
+            DescFrec:"Ninguna",idFrec:null})
           this.mListFrecuencia.push(...datos.data.data);
         }
       } catch (error) {
@@ -1324,7 +1339,6 @@ export default {
     },
     async createRolProgramado() {
       try {
-
         if (
           this.nombreRolProgramadoM == null ||
           this.nombreRolProgramadoM == ""
@@ -1380,15 +1394,13 @@ export default {
       }
     },
 
-    showModalSendDespachoProgramado(item)
-    {
+    showModalSendDespachoProgramado(item) {
       this.objRolSelect = item;
-      this.modalEnviarDespachos = true
+      this.modalEnviarDespachos = true;
     },
 
-    async sendDespachoProgramado() 
-    {
-      this.modalEnviarDespachos = false
+    async sendDespachoProgramado() {
+      this.modalEnviarDespachos = false;
       this.isVisibleLoadingSendDespachos = true;
       try {
         var response = await this.$axios.post(
@@ -1427,6 +1439,8 @@ export default {
       this.loadingRolProgramadoD = true;
       this.mListRolProgramadoD = [];
 
+      //await this.readAllLFrecuenciaRutas()
+
       try {
         var data = await this.$axios.post(
           process.env.baseUrl + "/readRolProgrmadoDetalle",
@@ -1438,6 +1452,7 @@ export default {
 
         if (data.data.status_code == 200) {
           this.mListRolProgramadoD.push(...data.data.datos);
+        
         } else {
           //alert(data.data.status_code);
         }
