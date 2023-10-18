@@ -303,11 +303,30 @@
             v-show="
               this.selectRowId != null &&
               this.selectRowId != '' &&
-              this.selectRowEstado != ''
+              this.selectRowEstado != '' &&
+              this.isTarjetaAntActPos == false
             "
             @click="showReporteLlegadaSAlida()"
             size="sm"
             title="Ver Tarjeta"
+          >
+            <span class="btn-inner--icon"
+              ><i class="ni ni-collection"></i
+            ></span>
+          </base-button>
+
+          <base-button
+            icon
+            type="primary"
+            v-show="
+              this.selectRowId != null &&
+              this.selectRowId != '' &&
+              this.selectRowEstado != '' &&
+              this.isTarjetaAntActPos
+            "
+            @click="showReporteLlegadaSAlida()"
+            size="sm"
+            title="VER TARJETAS"
           >
             <span class="btn-inner--icon"
               ><i class="ni ni-collection"></i
@@ -329,7 +348,6 @@
           >
             <span class="btn-inner--icon"><i class="ni ni-bus-front-12"></i></span>
           </base-button>-->
-
         </div>
       </card>
 
@@ -1276,17 +1294,16 @@ export default {
       itemUnidadSalidaRecalificarTodo: null,
       mSelectRutaRecalificarTodo: null,
 
+      RecaTarjUsaPosiLocalTodo: false,
+      RecaSobrCtrlMarcClieTodo: false,
 
-      RecaTarjUsaPosiLocalTodo:false,
-      RecaSobrCtrlMarcClieTodo:false
+      isTarjetaAntActPos: false, // muestra la tarjeta actual anterior y posterior
     };
   },
   methods: {
     myGridOnRowSelect: function (event) {
       this.ArrowGridSelect = event.args.rowindex;
       this.selectedRowSalida = event.args.row;
-      console.log("SALIDA SELECT");
-      console.log(this.selectedRowSalida);
 
       this.selectedRowSalida.idSali_m = this.selectedRowSalida.idSali_m;
       this.selectRowId = this.selectedRowSalida.idSali_m;
@@ -1296,11 +1313,32 @@ export default {
     },
     showReporteLlegadaSAlida() {
       this.modalSalidasTarjetaPanelDespacho = true;
-      //console.log(this.selectedRowSalida);
-      //idSali_m
-      this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(
-        this.selectedRowSalida
-      );
+
+      var idSalidaAnt =
+        this.$refs.myGridDespachoPanel.source.localdata[
+          this.ArrowGridSelect - 1
+        ];
+
+      var idSalidaPost =
+        this.$refs.myGridDespachoPanel.source.localdata[
+          this.ArrowGridSelect + 1
+        ]
+
+        this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(
+          this.selectedRowSalida
+        )
+
+      /*if (this.isTarjetaAntActPos) {
+        this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPos([
+          idSalidaAnt,
+          this.selectedRowSalida,
+          idSalidaPost,
+        ]);
+      } else {
+        this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(
+          this.selectedRowSalida
+        );
+      }*/
     },
     showRecorridoSalidaPanelDespacho() {
       /*console.log("******************************************************");
@@ -1332,7 +1370,11 @@ export default {
       }
       return null;
     },
-    showModalDespacho() {
+    showModalDespacho() 
+    {
+      this.mSelectRutaSalidaDespachar = null
+      this.mSelectRutaFrecuenciaPanelDespacho = null
+
       this.modalEnviarDespachoPanel
         ? (this.modalEnviarDespachoPanel = false)
         : (this.modalEnviarDespachoPanel = true);
@@ -1410,17 +1452,15 @@ export default {
       try {
         let args = event.args;
         let rowindex = this.$refs.myGridDespachoPanel.getselectedrowindex();
-        let dataRecord = this.$refs.myGridDespachoPanel.getrowdata(rowindex)
-        
-        if (args.innerHTML == 'Reemplazar unidad')
-        {
-          alert("REEMPLAZADO UNIDAD")
-        }else{
-          alert("OPCION AUN EN DESARROLLO.....")
-        }
-        
-        console.log(dataRecord)
+        let dataRecord = this.$refs.myGridDespachoPanel.getrowdata(rowindex);
 
+        if (args.innerHTML == "Reemplazar unidad") {
+          alert("REEMPLAZADO UNIDAD");
+        } else {
+          alert("OPCION AUN EN DESARROLLO.....");
+        }
+
+        console.log(dataRecord);
       } catch (error) {
         console.log(error);
       }
@@ -1489,16 +1529,14 @@ export default {
                 ? "*"
                 : this.radioEstadoRSalidasPanelDespacho,
           }
-        );
-        this.mListDespachosPanelDespacho = datos.data.datos;
-        this.mListDespachosPanelAuxiliar = this.mListDespachosPanelDespacho;
+        )
+        console.log("------------------------------")
+        console.log(datos.data.datos)
+        this.mListDespachosPanelDespacho = datos.data.datos
+        this.mListDespachosPanelAuxiliar = this.mListDespachosPanelDespacho
         if (this.mListDespachosPanelDespacho.length > 0) {
           this.isBtnTodo = true;
         }
-        console.log(
-          "mListDespachosPanel (INICIO) : " +
-            this.mListDespachosPanelDespacho.length
-        );
         this.$refs.myGridDespachoPanel.beginupdate();
         this.columnsInfo = [];
         this.columnsInfo[0] = {
@@ -1598,8 +1636,8 @@ export default {
         };
         this.columnsInfo[13] = {
           text: "Chofer",
-          datafield: "Country23",
-          width: 150,
+          datafield: "nombres_chofer",
+          width: 250,
           cellsalign: "left",
           cellclassname: this.cellclassname,
           cellbeginedit: this.cellbeginedit,
@@ -1610,7 +1648,7 @@ export default {
           columns: this.columnsInfo,
         });
         this.isLoadingDespachoSalidaPanelBusqueda = false;
-        this.$refs.myGridDespachoPanel.endupdate();
+        this.$refs.myGridDespachoPanel.endupdate()
       } catch (error) {
         console.log("*********************************** ERROR TRY");
         console.log(error);
@@ -1705,7 +1743,7 @@ export default {
                   NumeVuelSali_m: "",
                   atrasoFaltasTime: "",
                   adelantoFaltasTime: "",
-                  Country23: "",
+                  nombres_chofer: "",
                   Intervalo: "",
                   DescRutaSali_m: "",
                 }
@@ -1744,7 +1782,7 @@ export default {
           { name: "atrasoFaltasTime", type: "string" },
           { name: "adelantoFaltasTime", type: "string" },
           { name: "DescRutaSali_m", type: "string" },
-          { name: "Country23", type: "string" },
+          { name: "nombres_chofer", type: "string" },
           { name: "HoraSaliProgSali_mF", type: "string" },
           { name: "HoraLlegProgSali_mF", type: "string" },
         ],
@@ -1898,8 +1936,8 @@ export default {
     },
     clearModalDespacho() {
       this.itemUnidadSalidasPanelDespacho = null;
-      this.mSelectRutaSalidaDespachar = null;
-      this.mSelectRutaFrecuenciaPanelDespacho = null;
+      /*this.mSelectRutaSalidaDespachar = null;
+      this.mSelectRutaFrecuenciaPanelDespacho = null;*/
     },
     async EnviarDespachoUnidad() {
       try {
@@ -2237,8 +2275,8 @@ export default {
             fecha_tarjeta: this.selectedRowSalida.HoraSaliProgSali_mF,
             unidad_tarjeta: this.selectedRowSalida.CodiVehiSali_m,
             PosiUse: this.RecaTarjUsaPosiLocal,
-            CtrlMarcUse: this.RecaSobrCtrlMarcClie,//this.objConfigRecalificar.RecaTarjTodoCtrl == 1 ? true : false,
-            MarcSobr: true, 
+            CtrlMarcUse: this.RecaSobrCtrlMarcClie, //this.objConfigRecalificar.RecaTarjTodoCtrl == 1 ? true : false,
+            MarcSobr: true,
             RecaMinuAnteRang: this.RecaTarjRangInic,
             RecaMinuDespRang: this.RecaTarjRangFin,
             ToleCaliClie: this.objConfigRecalificar.ToleCaliClie,
@@ -2353,6 +2391,8 @@ export default {
     },
   },
   mounted() {
+    this.isTarjetaAntActPos =
+      this.$cookies.get("empresa") == "glimitada" ? true : false;
     this.readConfigRecalTarjeta();
     this.initFechaActualSalidaDespachoPanel();
     this.readAllUnidadesSalidasPanelBusqueda();

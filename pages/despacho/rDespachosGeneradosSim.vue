@@ -134,6 +134,9 @@
               </el-table-column>
               <el-table-column prop="CodiVehiSali_m" label="UNIDAD" width="150">
               </el-table-column>
+              <el-table-column prop="DescRutaSali_m" label="RUTA" width="260">
+              </el-table-column>
+
               <el-table-column prop="NVueltas" label="N° Vueltas" width="170">
               </el-table-column>
 
@@ -227,6 +230,7 @@ export default {
       json_fields_excelRDespachosGenerados: {
         FECHA: "HoraSaliProgSali_m",
         UNIDAD: "CodiVehiSali_m",
+        "RUTA":"DescRutaSali_m",
         "N° VUELTAS": "NVueltas",
         "FALTA ATRASO": "FaltSali_dAtraso",
         "MINUTOS ATRASO": "MinAtraso",

@@ -133,6 +133,11 @@ export default {
       fechaInicialRAnt: "",
       fechaFinalRAnt: "",
       tableColumnsRAnt: [
+      {
+          prop: "grupo",
+          label: "Operadora",
+          minWidth: 230
+        },
         {
           prop: "CodiVehi",
           label: "Unidad",
@@ -142,12 +147,17 @@ export default {
           prop: "PlacVehi",
           label: "Placa",
           minWidth: 140
-        },
+        },/*
         {
           prop: "AliaObse",
           label: "Propietario/Chofer",
-          minWidth: 200
+          minWidth: 210
         },
+        {
+          prop: "NumeVuelSali_m",
+          label: "Vuelta",
+          minWidth: 120
+        },*/
         {
           prop: "HoraSaliProgSali_m",
           label: "H. Salida",
@@ -156,27 +166,23 @@ export default {
         {
           prop: "HoraLlegProgSali_m",
           label: "H. Llegada",
-          minWidth: 180
+          minWidth: 150
         },
         {
           prop: "DescRuta",
           label: "Ruta",
-          minWidth: 270
+          minWidth: 200
         },
-        {
-          prop: "grupo",
-          label: "Grupo",
-          minWidth: 150
-        },
-        {
-          prop: "NumeVuelSali_m",
-          label: "Vuelta",
-          minWidth: 120
-        },
+        /*
         {
           prop: "SumaMinuPosiSali_m",
           label: "Faltas",
           minWidth: 120
+        },*/
+        {
+          prop: "totSubida",
+          label: "Pasajeros",
+          minWidth: 150
         }
       ],
       mListaRAnt: []
@@ -266,6 +272,14 @@ export default {
 
       var resultadoString = [
         [
+        {
+            text: "Operadora",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
           {
             text: "Unidad",
             fontSize: 8.5,
@@ -281,7 +295,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
+          },/*
           {
             text: "Propietario / Chofer",
             fontSize: 8.5,
@@ -289,7 +303,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
+          },*/
           {
             text: "H. Salida",
             fontSize: 8.5,
@@ -313,15 +327,8 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
-          {
-            text: "Grupo",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },          {
+          },/*
+          ,         {
             text: "Vuelta",
             fontSize: 8.5,
             bold: true,
@@ -336,6 +343,14 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
+          },*/
+          {
+            text: "Pasajeros",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
           }
         ],
       ]
@@ -344,6 +359,11 @@ export default {
       for (var i = 0; i < this.mListaRAnt.length; i++) 
       {
         var arrys = [
+        {
+            text: this.mListaRAnt[i].grupo,
+            fontSize: 8.5,
+            alignment: "center",
+          },
           {
             text: this.mListaRAnt[i].CodiVehi,
             fontSize: 8.5,
@@ -353,12 +373,12 @@ export default {
             text: this.mListaRAnt[i].PlacVehi,
             fontSize: 8.5,
             alignment: "center",
-          },
+          },/*
           {
             text: this.mListaRAnt[i].AliaObse,
             fontSize: 8.5,
             alignment: "center",
-          },
+          },*/
           {
             text: this.mListaRAnt[i].HoraSaliProgSali_m,
             fontSize: 8.5,
@@ -373,18 +393,19 @@ export default {
             text: this.mListaRAnt[i].DescRuta,
             fontSize: 8.5,
             alignment: "center",
-          },
-          {
-            text: this.mListaRAnt[i].grupo,
-            fontSize: 8.5,
-            alignment: "center",
-          },          {
+          },/*
+          ,          {
             text: this.mListaRAnt[i].NumeVuelSali_m,
             fontSize: 8.5,
             alignment: "center",
           },
           {
             text: this.mListaRAnt[i].SumaMinuPosiSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          }*/
+          {
+            text: this.mListaRAnt[i].totSubida,
             fontSize: 8.5,
             alignment: "center",
           }
@@ -394,7 +415,6 @@ export default {
 
       var docDefinition = {
         pageSize: "A4",
-        pageOrientation: 'landscape',
         pageMargins: [30, 80, 40, 30],
         header: {
           margin: 15,
@@ -451,7 +471,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 50, 140, 60, 60, 140,90,40,40],
+              widths: [90,40, 50, 70, 60, 110, 55/*,90,40,40*/],
               body: resultadoString,
               //body: [[]],
             },

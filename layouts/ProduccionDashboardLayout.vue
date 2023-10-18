@@ -60,7 +60,7 @@
           translate="no"
           v-if="Recibopagosvehiculo"
           :link="{
-            name: 'Recibos',
+            name: 'Recibo Minutos',
             icon: 'ni ni-single-copy-04 text-primary',
             path: '/produccion/recibopagosvehiculo',
           }"
