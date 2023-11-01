@@ -355,6 +355,7 @@
                 style="margin-right: 1rem; width: 10rem"
                 remote
                 placeholder="Ingrese unidad"
+                :clearable="true"
                 :remote-method="remoteMethodUnidadRolProgramado"
               >
                 <el-option

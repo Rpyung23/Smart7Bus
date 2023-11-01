@@ -736,6 +736,7 @@ export default {
 
       var docDefinition = {
         pageSize: "A4",
+        pageOrientation: this.mSelectRutaSalidaPanelBusqueda == 'RM' && this.$cookies.get("empresa") == 'tumbaco' ? 'landscape' : 'portrait',
         pageMargins: [30, 80, 40, 30],
         header: {
           margin: 15,

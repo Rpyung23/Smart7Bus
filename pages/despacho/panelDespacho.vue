@@ -1324,11 +1324,7 @@ export default {
           this.ArrowGridSelect + 1
         ]
 
-        this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(
-          this.selectedRowSalida
-        )
-
-      /*if (this.isTarjetaAntActPos) {
+      if (this.isTarjetaAntActPos) {
         this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPos([
           idSalidaAnt,
           this.selectedRowSalida,
@@ -1338,7 +1334,7 @@ export default {
         this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(
           this.selectedRowSalida
         );
-      }*/
+      }
     },
     showRecorridoSalidaPanelDespacho() {
       /*console.log("******************************************************");
