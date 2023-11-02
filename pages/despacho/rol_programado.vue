@@ -368,6 +368,8 @@
               </el-select>
             </div>
 
+            <!---PRIMERO 20 -->
+
             <div class="container_item_rol">
               <base-input
                 type="time"
@@ -788,8 +790,449 @@
                 </el-option>
               </el-select>
             </div>
-          </div>
 
+            <!--ULTIMONS 20-->
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 21"
+                v-model="hora21"
+              ></base-input>
+              <el-select
+                v-model="frecuencia21"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 21"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 22"
+                v-model="hora22"
+              ></base-input>
+              <el-select
+                v-model="frecuencia22"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 22"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 23"
+                v-model="hora23"
+              ></base-input>
+              <el-select
+                v-model="frecuencia23"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 23"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 24"
+                v-model="hora24"
+              ></base-input>
+              <el-select
+                v-model="frecuencia24"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 24"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 25"
+                v-model="hora25"
+              ></base-input>
+              <el-select
+                v-model="frecuencia25"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 25"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 26"
+                v-model="hora26"
+              ></base-input>
+              <el-select
+                v-model="frecuencia26"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 26"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 27"
+                v-model="hora27"
+              ></base-input>
+              <el-select
+                v-model="frecuencia27"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 27"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 28"
+                v-model="hora28"
+              ></base-input>
+              <el-select
+                v-model="frecuencia28"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 28"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 29"
+                v-model="hora29"
+              ></base-input>
+              <el-select
+                v-model="frecuencia29"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 29"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 30"
+                v-model="hora30"
+              ></base-input>
+              <el-select
+                v-model="frecuencia30"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 30"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 31"
+                v-model="hora31"
+              ></base-input>
+              <el-select
+                v-model="frecuencia31"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 31"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 32"
+                v-model="hora32"
+              ></base-input>
+              <el-select
+                v-model="frecuencia32"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 32"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 33"
+                v-model="hora33"
+              ></base-input>
+              <el-select
+                v-model="frecuencia33"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 33"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 34"
+                v-model="hora34"
+              ></base-input>
+              <el-select
+                v-model="frecuencia34"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 34"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 35"
+                v-model="hora35"
+              ></base-input>
+              <el-select
+                v-model="frecuencia35"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 35"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 36"
+                v-model="hora36"
+              ></base-input>
+              <el-select
+                v-model="frecuencia36"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 36"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 37"
+                v-model="hora37"
+              ></base-input>
+              <el-select
+                v-model="frecuencia37"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 37"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 38"
+                v-model="hora38"
+              ></base-input>
+              <el-select
+                v-model="frecuencia38"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 38"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 39"
+                v-model="hora39"
+              ></base-input>
+              <el-select
+                v-model="frecuencia39"
+                collapse-tags
+                style="margin-right: 0.5rem; width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 39"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div class="container_item_rol">
+              <base-input
+                type="time"
+                placeholder="HORA 40"
+                v-model="hora40"
+              ></base-input>
+              <el-select
+                v-model="frecuencia40"
+                collapse-tags
+                style="width: 10rem; height: 100%"
+                placeholder="FRECUENCIA 40"
+              >
+                <el-option
+                  v-for="item in mListFrecuencia"
+                  :key="item.idFrec"
+                  :label="item.DescFrec"
+                  :value="item.idFrec"
+                >
+                </el-option>
+              </el-select>
+            </div>
+          </div>
 
           <el-table
             v-loading="loadingRolProgramadoD"
@@ -830,82 +1273,46 @@
             </el-table-column>
             <el-table-column label="HORA 1" width="90" prop="hora1">
             </el-table-column>
-            <el-table-column
-              label="FRECUENCIA 1"
-              width="150"
-              prop="AutoDespachoDifeFrec1"
-            >
+            <el-table-column label="FRECUENCIA 1" width="150" prop="DescFrec1">
             </el-table-column>
             <el-table-column label="HORA 2" width="90" prop="hora2">
             </el-table-column>
-            <el-table-column
-              label="FRECUENCIA 2"
-              width="150"
-              prop="AutoDespachoDifeFrec2"
-            >
+            <el-table-column label="FRECUENCIA 2" width="150" prop="DescFrec2">
             </el-table-column>
             <el-table-column label="HORA 3" width="90" prop="hora3">
             </el-table-column>
-            <el-table-column
-              label="FRECUENCIA 3"
-              width="150"
-              prop="AutoDespachoDifeFrec3"
-            >
+            <el-table-column label="FRECUENCIA 3" width="150" prop="DescFrec3">
             </el-table-column>
             <el-table-column label="HORA 4" width="90" prop="hora4">
             </el-table-column>
-            <el-table-column
-              label="FRECUENCIA 4"
-              width="150"
-              prop="AutoDespachoDifeFrec4"
-            >
+            <el-table-column label="FRECUENCIA 4" width="150" prop="DescFrec4">
             </el-table-column>
             <el-table-column label="HORA 5" width="90" prop="hora5">
             </el-table-column>
-            <el-table-column
-              label="FRECUENCIA 5"
-              width="150"
-              prop="AutoDespachoDifeFrec5"
-            >
+            <el-table-column label="FRECUENCIA 5" width="150" prop="DescFrec5">
             </el-table-column>
             <el-table-column label="HORA 6" width="90" prop="hora6">
             </el-table-column>
-            <el-table-column
-              label="FRECUENCIA 6"
-              width="150"
-              prop="AutoDespachoDifeFrec6"
-            >
+            <el-table-column label="FRECUENCIA 6" width="150" prop="DescFrec6">
             </el-table-column>
             <el-table-column label="HORA 7" width="90" prop="hora7">
             </el-table-column>
-            <el-table-column
-              label="FRECUENCIA 7"
-              width="150"
-              prop="AutoDespachoDifeFrec7"
-            >
+            <el-table-column label="FRECUENCIA 7" width="150" prop="DescFrec7">
             </el-table-column>
             <el-table-column label="HORA 8" width="90" prop="hora8">
             </el-table-column>
-            <el-table-column
-              label="FRECUENCIA 8"
-              width="150"
-              prop="AutoDespachoDifeFrec8"
-            >
+            <el-table-column label="FRECUENCIA 8" width="150" prop="DescFrec8">
             </el-table-column>
             <el-table-column label="HORA 9" width="90" prop="hora9">
             </el-table-column>
-            <el-table-column
-              label="FRECUENCIA 9"
-              width="150"
-              prop="AutoDespachoDifeFrec9"
-            >
+            <el-table-column label="FRECUENCIA 9" width="150" prop="DescFrec9">
             </el-table-column>
             <el-table-column label="HORA 10" width="90" prop="hora10">
             </el-table-column>
             <el-table-column
               label="FRECUENCIA 10"
               width="150"
-              prop="AutoDespachoDifeFrec10"
+              prop="DescFrec10"
             >
             </el-table-column>
             <el-table-column label="HORA 11" width="90" prop="hora11">
@@ -913,7 +1320,7 @@
             <el-table-column
               label="FRECUENCIA 11"
               width="150"
-              prop="AutoDespachoDifeFrec11"
+              prop="DescFrec11"
             >
             </el-table-column>
             <el-table-column label="HORA 12" width="90" prop="hora12">
@@ -921,7 +1328,7 @@
             <el-table-column
               label="FRECUENCIA 12"
               width="150"
-              prop="AutoDespachoDifeFrec12"
+              prop="DescFrec12"
             >
             </el-table-column>
             <el-table-column label="HORA 13" width="90" prop="hora13">
@@ -929,7 +1336,7 @@
             <el-table-column
               label="FRECUENCIA 13"
               width="150"
-              prop="AutoDespachoDifeFrec13"
+              prop="DescFrec13"
             >
             </el-table-column>
             <el-table-column label="HORA 14" width="90" prop="hora14">
@@ -937,7 +1344,7 @@
             <el-table-column
               label="FRECUENCIA 14"
               width="150"
-              prop="AutoDespachoDifeFrec14"
+              prop="DescFrec14"
             >
             </el-table-column>
             <el-table-column label="HORA 15" width="90" prop="hora15">
@@ -945,7 +1352,7 @@
             <el-table-column
               label="FRECUENCIA 15"
               width="150"
-              prop="AutoDespachoDifeFrec15"
+              prop="DescFrec15"
             >
             </el-table-column>
             <el-table-column label="HORA 16" width="90" prop="hora16">
@@ -953,7 +1360,7 @@
             <el-table-column
               label="FRECUENCIA 16"
               width="150"
-              prop="AutoDespachoDifeFrec16"
+              prop="DescFrec16"
             >
             </el-table-column>
             <el-table-column label="HORA 17" width="90" prop="hora17">
@@ -961,7 +1368,7 @@
             <el-table-column
               label="FRECUENCIA 17"
               width="150"
-              prop="AutoDespachoDifeFrec17"
+              prop="DescFrec17"
             >
             </el-table-column>
             <el-table-column label="HORA 18" width="90" prop="hora18">
@@ -969,7 +1376,7 @@
             <el-table-column
               label="FRECUENCIA 18"
               width="150"
-              prop="AutoDespachoDifeFrec18"
+              prop="DescFrec18"
             >
             </el-table-column>
             <el-table-column label="HORA 19" width="90" prop="hora19">
@@ -977,157 +1384,238 @@
             <el-table-column
               label="FRECUENCIA 19"
               width="150"
-              prop="AutoDespachoDifeFrec19"
+              prop="DescFrec19"
             >
             </el-table-column>
-            <el-table-column label="HORA 20" width="90" prop="hora20"></el-table-column>
+            <el-table-column
+              label="HORA 20"
+              width="90"
+              prop="hora20"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 20"
               width="150"
-              prop="AutoDespachoDifeFrec20"
+              prop="DescFrec20"
             ></el-table-column>
 
-
-            <el-table-column label="HORA 21" width="90" prop="hora21"></el-table-column>
+            <el-table-column
+              label="HORA 21"
+              width="90"
+              prop="hora21"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 21"
               width="150"
-              prop="AutoDespachoDifeFrec21"
+              prop="DescFrec21"
             ></el-table-column>
 
-
-            <el-table-column label="HORA 22" width="90" prop="hora22"></el-table-column>
+            <el-table-column
+              label="HORA 22"
+              width="90"
+              prop="hora22"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 22"
               width="150"
-              prop="AutoDespachoDifeFrec22"
+              prop="DescFrec22"
             ></el-table-column>
 
-
-            <el-table-column label="HORA 23" width="90" prop="hora23"></el-table-column>
+            <el-table-column
+              label="HORA 23"
+              width="90"
+              prop="hora23"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 23"
               width="150"
-              prop="AutoDespachoDifeFrec23"
+              prop="DescFrec23"
             ></el-table-column>
 
-            <el-table-column label="HORA 24" width="90" prop="hora24"></el-table-column>
+            <el-table-column
+              label="HORA 24"
+              width="90"
+              prop="hora24"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 24"
               width="150"
-              prop="AutoDespachoDifeFrec24"
+              prop="DescFrec24"
             ></el-table-column>
 
-            <el-table-column label="HORA 25" width="90" prop="hora25"></el-table-column>
+            <el-table-column
+              label="HORA 25"
+              width="90"
+              prop="hora25"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 25"
               width="150"
-              prop="AutoDespachoDifeFrec25"
+              prop="DescFrec25"
             ></el-table-column>
 
-            <el-table-column label="HORA 26" width="90" prop="hora26"></el-table-column>
+            <el-table-column
+              label="HORA 26"
+              width="90"
+              prop="hora26"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 26"
               width="150"
-              prop="AutoDespachoDifeFrec26"
+              prop="DescFrec26"
             ></el-table-column>
 
-            <el-table-column label="HORA 27" width="90" prop="hora27"></el-table-column>
+            <el-table-column
+              label="HORA 27"
+              width="90"
+              prop="hora27"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 27"
               width="150"
-              prop="AutoDespachoDifeFrec27"
+              prop="DescFrec27"
             ></el-table-column>
 
-            <el-table-column label="HORA 28" width="90" prop="hora28"></el-table-column>
+            <el-table-column
+              label="HORA 28"
+              width="90"
+              prop="hora28"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 28"
               width="150"
-              prop="AutoDespachoDifeFrec28"
+              prop="DescFrec28"
             ></el-table-column>
 
-            <el-table-column label="HORA 29" width="90" prop="hora29"></el-table-column>
+            <el-table-column
+              label="HORA 29"
+              width="90"
+              prop="hora29"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 29"
               width="150"
-              prop="AutoDespachoDifeFrec29"
+              prop="DescFrec29"
             ></el-table-column>
 
-            <el-table-column label="HORA 30" width="90" prop="hora30"></el-table-column>
+            <el-table-column
+              label="HORA 30"
+              width="90"
+              prop="hora30"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 30"
               width="150"
-              prop="AutoDespachoDifeFrec30"
+              prop="DescFrec30"
             ></el-table-column>
 
-            <el-table-column label="HORA 31" width="90" prop="hora31"></el-table-column>
+            <el-table-column
+              label="HORA 31"
+              width="90"
+              prop="hora31"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 31"
               width="150"
-              prop="AutoDespachoDifeFrec31"
+              prop="DescFrec31"
             ></el-table-column>
 
-            <el-table-column label="HORA 32" width="90" prop="hora32"></el-table-column>
+            <el-table-column
+              label="HORA 32"
+              width="90"
+              prop="hora32"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 32"
               width="150"
-              prop="AutoDespachoDifeFrec32"
+              prop="DescFrec32"
             ></el-table-column>
 
-            <el-table-column label="HORA 33" width="90" prop="hora33"></el-table-column>
+            <el-table-column
+              label="HORA 33"
+              width="90"
+              prop="hora33"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 33"
               width="150"
-              prop="AutoDespachoDifeFrec33"
+              prop="DescFrec33"
             ></el-table-column>
 
-            <el-table-column label="HORA 34" width="90" prop="hora34"></el-table-column>
+            <el-table-column
+              label="HORA 34"
+              width="90"
+              prop="hora34"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 34"
               width="150"
-              prop="AutoDespachoDifeFrec34"
+              prop="DescFrec34"
             ></el-table-column>
 
-            <el-table-column label="HORA 35" width="90" prop="hora35"></el-table-column>
+            <el-table-column
+              label="HORA 35"
+              width="90"
+              prop="hora35"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 35"
               width="150"
-              prop="AutoDespachoDifeFrec35"
+              prop="DescFrec35"
             ></el-table-column>
 
-            <el-table-column label="HORA 36" width="90" prop="hora36"></el-table-column>
+            <el-table-column
+              label="HORA 36"
+              width="90"
+              prop="hora36"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 36"
               width="150"
-              prop="AutoDespachoDifeFrec36"
+              prop="DescFrec36"
             ></el-table-column>
 
-            <el-table-column label="HORA 37" width="90" prop="hora37"></el-table-column>
+            <el-table-column
+              label="HORA 37"
+              width="90"
+              prop="hora37"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 37"
               width="150"
-              prop="AutoDespachoDifeFrec37"
+              prop="DescFrec37"
             ></el-table-column>
 
-            <el-table-column label="HORA 38" width="90" prop="hora38"></el-table-column>
+            <el-table-column
+              label="HORA 38"
+              width="90"
+              prop="hora38"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 38"
               width="150"
-              prop="AutoDespachoDifeFrec38"
+              prop="DescFrec38"
             ></el-table-column>
 
-            <el-table-column label="HORA 39" width="90" prop="hora39"></el-table-column>
+            <el-table-column
+              label="HORA 39"
+              width="90"
+              prop="hora39"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 39"
               width="150"
-              prop="AutoDespachoDifeFrec39"
+              prop="DescFrec39"
             ></el-table-column>
 
-            <el-table-column label="HORA 40" width="90" prop="hora40"></el-table-column>
+            <el-table-column
+              label="HORA 40"
+              width="90"
+              prop="hora40"
+            ></el-table-column>
             <el-table-column
               label="FRECUENCIA 40"
               width="150"
-              prop="AutoDespachoDifeFrec40"
+              prop="DescFrec40"
             ></el-table-column>
 
             <div slot="empty"></div>
@@ -1159,7 +1647,6 @@
           >
         </template>
       </modal>
-
     </base-header>
   </div>
 </template>
@@ -1315,8 +1802,6 @@ export default {
       hora39: null,
       hora40: null,
 
-
-
       frecuencia1: null,
       frecuencia2: null,
       frecuencia3: null,
@@ -1358,9 +1843,6 @@ export default {
       frecuencia38: null,
       frecuencia39: null,
       frecuencia40: null,
-
-
-
 
       isUpdate: false,
       modalEnviarDespachos: false,
@@ -1490,11 +1972,13 @@ export default {
             ruta: [ruta],
           }
         );
-        if (datos.data.status_code == 200) 
-        {
+        if (datos.data.status_code == 200) {
           //console.log(datos.data)
-          this.mListFrecuencia.push({idFrec:null,
-            DescFrec:"Ninguna",idFrec:null})
+          this.mListFrecuencia.push({
+            idFrec: null,
+            DescFrec: "Ninguna",
+            idFrec: null,
+          });
           this.mListFrecuencia.push(...datos.data.data);
         }
       } catch (error) {
@@ -1644,7 +2128,6 @@ export default {
 
         if (data.data.status_code == 200) {
           this.mListRolProgramadoD.push(...data.data.datos);
-        
         } else {
           //alert(data.data.status_code);
         }
@@ -1678,6 +2161,26 @@ export default {
           this.hora18 == null &&
           this.hora19 == null &&
           this.hora20 == null &&
+          this.hora21 == null &&
+          this.hora22 == null &&
+          this.hora23 == null &&
+          this.hora24 == null &&
+          this.hora25 == null &&
+          this.hora26 == null &&
+          this.hora27 == null &&
+          this.hora28 == null &&
+          this.hora29 == null &&
+          this.hora30 == null &&
+          this.hora31 == null &&
+          this.hora32 == null &&
+          this.hora33 == null &&
+          this.hora34 == null &&
+          this.hora35 == null &&
+          this.hora36 == null &&
+          this.hora37 == null &&
+          this.hora38 == null &&
+          this.hora39 == null &&
+          this.hora40 == null &&
           this.frecuencia1 == null &&
           this.frecuencia2 == null &&
           this.frecuencia3 == null &&
@@ -1697,7 +2200,27 @@ export default {
           this.frecuencia17 == null &&
           this.frecuencia18 == null &&
           this.frecuencia19 == null &&
-          this.frecuencia20 == null
+          this.frecuencia20 == null &&
+          this.frecuencia21 == null &&
+          this.frecuencia22 == null &&
+          this.frecuencia23 == null &&
+          this.frecuencia24 == null &&
+          this.frecuencia25 == null &&
+          this.frecuencia26 == null &&
+          this.frecuencia27 == null &&
+          this.frecuencia28 == null &&
+          this.frecuencia29 == null &&
+          this.frecuencia30 == null &&
+          this.frecuencia31 == null &&
+          this.frecuencia32 == null &&
+          this.frecuencia33 == null &&
+          this.frecuencia34 == null &&
+          this.frecuencia35 == null &&
+          this.frecuencia36 == null &&
+          this.frecuencia37 == null &&
+          this.frecuencia38 == null &&
+          this.frecuencia39 == null &&
+          this.frecuencia40 == null
         ) {
           this.$notify({
             title: "ROL PROGRAMADO",
@@ -1755,6 +2278,66 @@ export default {
               frecuencia19: this.frecuencia19,
               hora20: this.hora20,
               frecuencia20: this.frecuencia20,
+
+              hora21: this.hora21,
+              frecuencia21: this.frecuencia21,
+
+              hora22: this.hora22,
+              frecuencia22: this.frecuencia22,
+
+              hora23: this.hora23,
+              frecuencia23: this.frecuencia23,
+
+              hora24: this.hora24,
+              frecuencia24: this.frecuencia24,
+
+              hora25: this.hora25,
+              frecuencia25: this.frecuencia25,
+
+              hora26: this.hora26,
+              frecuencia26: this.frecuencia26,
+
+              hora27: this.hora27,
+              frecuencia27: this.frecuencia27,
+
+              hora28: this.hora28,
+              frecuencia28: this.frecuencia28,
+
+              hora29: this.hora29,
+              frecuencia29: this.frecuencia29,
+
+              hora30: this.hora30,
+              frecuencia30: this.frecuencia30,
+
+              hora31: this.hora31,
+              frecuencia31: this.frecuencia31,
+
+              hora32: this.hora32,
+              frecuencia32: this.frecuencia32,
+
+              hora33: this.hora33,
+              frecuencia33: this.frecuencia33,
+
+              hora34: this.hora34,
+              frecuencia34: this.frecuencia34,
+
+              hora35: this.hora35,
+              frecuencia35: this.frecuencia35,
+
+              hora36: this.hora36,
+              frecuencia36: this.frecuencia36,
+
+              hora37: this.hora37,
+              frecuencia37: this.frecuencia37,
+
+              hora38: this.hora38,
+              frecuencia38: this.frecuencia38,
+
+              hora39: this.hora39,
+              frecuencia39: this.frecuencia39,
+
+              hora40: this.hora40,
+              frecuencia40: this.frecuencia40,
             }
           );
         } else {
@@ -1807,6 +2390,67 @@ export default {
               frecuencia19: this.frecuencia19,
               hora20: this.hora20,
               frecuencia20: this.frecuencia20,
+
+
+              hora21: this.hora21,
+              frecuencia21: this.frecuencia21,
+
+              hora22: this.hora22,
+              frecuencia22: this.frecuencia22,
+
+              hora23: this.hora23,
+              frecuencia23: this.frecuencia23,
+
+              hora24: this.hora24,
+              frecuencia24: this.frecuencia24,
+
+              hora25: this.hora25,
+              frecuencia25: this.frecuencia25,
+
+              hora26: this.hora26,
+              frecuencia26: this.frecuencia26,
+
+              hora27: this.hora27,
+              frecuencia27: this.frecuencia27,
+
+              hora28: this.hora28,
+              frecuencia28: this.frecuencia28,
+
+              hora29: this.hora29,
+              frecuencia29: this.frecuencia29,
+
+              hora30: this.hora30,
+              frecuencia30: this.frecuencia30,
+
+              hora31: this.hora31,
+              frecuencia31: this.frecuencia31,
+
+              hora32: this.hora32,
+              frecuencia32: this.frecuencia32,
+
+              hora33: this.hora33,
+              frecuencia33: this.frecuencia33,
+
+              hora34: this.hora34,
+              frecuencia34: this.frecuencia34,
+
+              hora35: this.hora35,
+              frecuencia35: this.frecuencia35,
+
+              hora36: this.hora36,
+              frecuencia36: this.frecuencia36,
+
+              hora37: this.hora37,
+              frecuencia37: this.frecuencia37,
+
+              hora38: this.hora38,
+              frecuencia38: this.frecuencia38,
+
+              hora39: this.hora39,
+              frecuencia39: this.frecuencia39,
+
+              hora40: this.hora40,
+              frecuencia40: this.frecuencia40,
             }
           );
         }
@@ -1929,6 +2573,28 @@ export default {
       this.hora18 = item.hora18;
       this.hora19 = item.hora19;
       this.hora20 = item.hora20;
+
+      this.hora21 = item.hora21;
+      this.hora22 = item.hora22;
+      this.hora23 = item.hora23;
+      this.hora24 = item.hora24;
+      this.hora25 = item.hora25;
+      this.hora26 = item.hora26;
+      this.hora27 = item.hora27;
+      this.hora28 = item.hora28;
+      this.hora29 = item.hora29;
+      this.hora30 = item.hora30;
+      this.hora31 = item.hora31;
+      this.hora32 = item.hora32;
+      this.hora33 = item.hora33;
+      this.hora34 = item.hora34;
+      this.hora35 = item.hora35;
+      this.hora36 = item.hora36;
+      this.hora37 = item.hora37;
+      this.hora38 = item.hora38;
+      this.hora39 = item.hora39;
+      this.hora40 = item.hora40;
+
       this.frecuencia1 = item.frecuencia1;
       this.frecuencia2 = item.frecuencia2;
       this.frecuencia3 = item.frecuencia3;
@@ -1949,6 +2615,27 @@ export default {
       this.frecuencia18 = item.frecuencia18;
       this.frecuencia19 = item.frecuencia19;
       this.frecuencia20 = item.frecuencia20;
+
+      this.frecuencia21 = item.frecuencia21;
+      this.frecuencia22 = item.frecuencia22;
+      this.frecuencia23 = item.frecuencia23;
+      this.frecuencia24 = item.frecuencia24;
+      this.frecuencia25 = item.frecuencia25;
+      this.frecuencia26 = item.frecuencia26;
+      this.frecuencia27 = item.frecuencia27;
+      this.frecuencia28 = item.frecuencia28;
+      this.frecuencia29 = item.frecuencia29;
+      this.frecuencia30 = item.frecuencia30;
+      this.frecuencia31 = item.frecuencia31;
+      this.frecuencia32 = item.frecuencia32;
+      this.frecuencia33 = item.frecuencia33;
+      this.frecuencia34 = item.frecuencia34;
+      this.frecuencia35 = item.frecuencia35;
+      this.frecuencia36 = item.frecuencia36;
+      this.frecuencia37 = item.frecuencia37;
+      this.frecuencia38 = item.frecuencia38;
+      this.frecuencia39 = item.frecuencia39;
+      this.frecuencia40 = item.frecuencia40;
     },
   },
   mounted() {
@@ -2011,38 +2698,6 @@ export default {
   padding: 0.5rem;
   margin-bottom: 1rem;
 }
-.container-fecha {
-  margin-top: 1rem;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-}
-.container-add-rubro {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.containerModalRecorridoPanelDespacho {
-  display: flex;
-}
-.cardControlesMarc {
-  height: calc(80vh);
-  width: 18rem;
-}
-.current-row {
-  background-color: rgba(0, 0, 0, 0.178);
-}
-
-.el-table__body tr.current-row > td.el-table__cell {
-  background-color: rgba(0, 0, 0, 0.178) !important;
-}
-
-.mapa {
-  width: 100%;
-  height: calc(80vh);
-}
 
 .form-group {
   margin-bottom: 0rem;
@@ -2089,22 +2744,6 @@ export default {
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda {
   display: flex;
   justify-content: space-between;
-}
-
-.el-table .warning-row-panelControlProduccion {
-  background: rgba(255, 0, 0, 0.342) !important;
-}
-
-.el-table .success-row-panelControlProduccion {
-  background: hsla(34, 88%, 61%, 0.384) !important;
-}
-
-.el-table .finalizado-row-panelControlProduccion {
-  background: rgba(140, 248, 126, 0.384) !important;
-}
-
-.el-table .diferido-row-panelControlProduccion {
-  background: hsla(226, 88%, 61%, 0.274) !important;
 }
 
 .no-border-card .card-footer {
