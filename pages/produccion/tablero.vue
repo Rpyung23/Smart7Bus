@@ -545,8 +545,6 @@
             height="25rem"
             style="width: 100%"
           >
-            <el-table-column prop="Numero" label="Número" minWidth="100">
-            </el-table-column>
 
             <el-table-column
               prop="DescripcionControl"

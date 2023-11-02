@@ -980,14 +980,155 @@
               prop="AutoDespachoDifeFrec19"
             >
             </el-table-column>
-            <el-table-column label="HORA 20" width="90" prop="hora20">
-            </el-table-column>
+            <el-table-column label="HORA 20" width="90" prop="hora20"></el-table-column>
             <el-table-column
               label="FRECUENCIA 20"
               width="150"
               prop="AutoDespachoDifeFrec20"
-            >
-            </el-table-column>
+            ></el-table-column>
+
+
+            <el-table-column label="HORA 21" width="90" prop="hora21"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 21"
+              width="150"
+              prop="AutoDespachoDifeFrec21"
+            ></el-table-column>
+
+
+            <el-table-column label="HORA 22" width="90" prop="hora22"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 22"
+              width="150"
+              prop="AutoDespachoDifeFrec22"
+            ></el-table-column>
+
+
+            <el-table-column label="HORA 23" width="90" prop="hora23"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 23"
+              width="150"
+              prop="AutoDespachoDifeFrec23"
+            ></el-table-column>
+
+            <el-table-column label="HORA 24" width="90" prop="hora24"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 24"
+              width="150"
+              prop="AutoDespachoDifeFrec24"
+            ></el-table-column>
+
+            <el-table-column label="HORA 25" width="90" prop="hora25"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 25"
+              width="150"
+              prop="AutoDespachoDifeFrec25"
+            ></el-table-column>
+
+            <el-table-column label="HORA 26" width="90" prop="hora26"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 26"
+              width="150"
+              prop="AutoDespachoDifeFrec26"
+            ></el-table-column>
+
+            <el-table-column label="HORA 27" width="90" prop="hora27"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 27"
+              width="150"
+              prop="AutoDespachoDifeFrec27"
+            ></el-table-column>
+
+            <el-table-column label="HORA 28" width="90" prop="hora28"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 28"
+              width="150"
+              prop="AutoDespachoDifeFrec28"
+            ></el-table-column>
+
+            <el-table-column label="HORA 29" width="90" prop="hora29"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 29"
+              width="150"
+              prop="AutoDespachoDifeFrec29"
+            ></el-table-column>
+
+            <el-table-column label="HORA 30" width="90" prop="hora30"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 30"
+              width="150"
+              prop="AutoDespachoDifeFrec30"
+            ></el-table-column>
+
+            <el-table-column label="HORA 31" width="90" prop="hora31"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 31"
+              width="150"
+              prop="AutoDespachoDifeFrec31"
+            ></el-table-column>
+
+            <el-table-column label="HORA 32" width="90" prop="hora32"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 32"
+              width="150"
+              prop="AutoDespachoDifeFrec32"
+            ></el-table-column>
+
+            <el-table-column label="HORA 33" width="90" prop="hora33"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 33"
+              width="150"
+              prop="AutoDespachoDifeFrec33"
+            ></el-table-column>
+
+            <el-table-column label="HORA 34" width="90" prop="hora34"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 34"
+              width="150"
+              prop="AutoDespachoDifeFrec34"
+            ></el-table-column>
+
+            <el-table-column label="HORA 35" width="90" prop="hora35"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 35"
+              width="150"
+              prop="AutoDespachoDifeFrec35"
+            ></el-table-column>
+
+            <el-table-column label="HORA 36" width="90" prop="hora36"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 36"
+              width="150"
+              prop="AutoDespachoDifeFrec36"
+            ></el-table-column>
+
+            <el-table-column label="HORA 37" width="90" prop="hora37"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 37"
+              width="150"
+              prop="AutoDespachoDifeFrec37"
+            ></el-table-column>
+
+            <el-table-column label="HORA 38" width="90" prop="hora38"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 38"
+              width="150"
+              prop="AutoDespachoDifeFrec38"
+            ></el-table-column>
+
+            <el-table-column label="HORA 39" width="90" prop="hora39"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 39"
+              width="150"
+              prop="AutoDespachoDifeFrec39"
+            ></el-table-column>
+
+            <el-table-column label="HORA 40" width="90" prop="hora40"></el-table-column>
+            <el-table-column
+              label="FRECUENCIA 40"
+              width="150"
+              prop="AutoDespachoDifeFrec40"
+            ></el-table-column>
 
             <div slot="empty"></div>
           </el-table>
@@ -1018,6 +1159,7 @@
           >
         </template>
       </modal>
+
     </base-header>
   </div>
 </template>
@@ -1151,6 +1293,30 @@ export default {
       hora18: null,
       hora19: null,
       hora20: null,
+
+      hora21: null,
+      hora22: null,
+      hora23: null,
+      hora24: null,
+      hora25: null,
+      hora26: null,
+      hora27: null,
+      hora28: null,
+      hora29: null,
+      hora30: null,
+      hora31: null,
+      hora32: null,
+      hora33: null,
+      hora34: null,
+      hora35: null,
+      hora36: null,
+      hora37: null,
+      hora38: null,
+      hora39: null,
+      hora40: null,
+
+
+
       frecuencia1: null,
       frecuencia2: null,
       frecuencia3: null,
@@ -1171,6 +1337,31 @@ export default {
       frecuencia18: null,
       frecuencia19: null,
       frecuencia20: null,
+
+      frecuencia21: null,
+      frecuencia22: null,
+      frecuencia23: null,
+      frecuencia24: null,
+      frecuencia25: null,
+      frecuencia26: null,
+      frecuencia27: null,
+      frecuencia28: null,
+      frecuencia29: null,
+      frecuencia30: null,
+      frecuencia31: null,
+      frecuencia32: null,
+      frecuencia33: null,
+      frecuencia34: null,
+      frecuencia35: null,
+      frecuencia36: null,
+      frecuencia37: null,
+      frecuencia38: null,
+      frecuencia39: null,
+      frecuencia40: null,
+
+
+
+
       isUpdate: false,
       modalEnviarDespachos: false,
 

@@ -736,7 +736,10 @@ export default {
 
       var docDefinition = {
         pageSize: "A4",
-        pageOrientation: this.mSelectRutaSalidaPanelBusqueda == 'RM' && this.$cookies.get("empresa") == 'tumbaco' ? 'landscape' : 'portrait',
+        pageOrientation:  this.$cookies.get("empresa") == 'tumbaco' ?  
+                          this.mSelectRutaSalidaPanelBusqueda == 'RM' || 
+                          this.mSelectRutaSalidaPanelBusqueda == 'EQ' ||
+                          this.mSelectRutaSalidaPanelBusqueda == 'QA' ? 'landscape' : 'portrait' : 'portrait',
         pageMargins: [30, 80, 40, 30],
         header: {
           margin: 15,
