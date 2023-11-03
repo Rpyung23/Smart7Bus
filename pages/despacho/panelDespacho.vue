@@ -62,7 +62,7 @@
             @click="showModalAnularTodo()"
           >
             <span class="btn-inner--icon"
-              ><i class="ni ni-fat-remove"></i> ANULA TODO</span
+              ><i class="ni ni-scissors"></i> ANULA TODO</span
             >
           </base-button>
 
@@ -253,9 +253,8 @@
             v-show="
               this.selectRowId != null &&
               this.selectRowId != '' &&
-              this.selectRowEstado != '' &&
-              this.selectRowEstado != 'FINALIZADO'
-            "
+              this.selectRowEstado != '' "
+              
             size="sm"
             title="Anular Salida"
           >
@@ -667,7 +666,7 @@
           <el-checkbox
             style="width: auto"
             label="USAR POSICIONES"
-            v-model="RecaTarjUsaPosiLocal"
+            v-model="RecaTarjUsaPosi"
             border
           ></el-checkbox>
           <el-checkbox
@@ -1032,12 +1031,12 @@
           <el-checkbox
             style="width: auto"
             label="USAR POSICIONES"
-            v-model="RecaTarjUsaPosiLocalTodo"
+            v-model="RecaTarjUsaPosi"
             border
           ></el-checkbox>
           <el-checkbox
             style="width: auto"
-            v-model="RecaSobrCtrlMarcClieTodo"
+            v-model="RecaSobrCtrlMarcClie"
             label="REESCRIBE CONTROL (MRC)"
             border
           ></el-checkbox>
@@ -1281,11 +1280,8 @@ export default {
       RecaTarjRangInic: 0,
       RecaTarjRangFin: 0,
 
-      RecaTarjUsaPosiLocal: false,
+      RecaTarjUsaPosi: false,
       RecaSobrCtrlMarcClie: false,
-
-      RecaTarjUsaPosiTodoLocal: false,
-      RecaSobrCtrlMarcTodoClie: false,
 
       modalDespachoRecalificarTodoSalida: false,
 
@@ -1294,10 +1290,7 @@ export default {
       itemUnidadSalidaRecalificarTodo: null,
       mSelectRutaRecalificarTodo: null,
 
-      RecaTarjUsaPosiLocalTodo: false,
-      RecaSobrCtrlMarcClieTodo: false,
-
-      isTarjetaAntActPos: false, // muestra la tarjeta actual anterior y posterior
+      isTarjetaAntActPos: false, 
     };
   },
   methods: {
@@ -1376,8 +1369,7 @@ export default {
         : (this.modalEnviarDespachoPanel = true);
     },
     async showModalDespachoRecalificarSalida() {
-      /*this.RecaTarjUsaPosiLocal = false*/
-      this.RecaSobrCtrlMarcClie = false;
+      
 
       this.modalDespachoRecalificarSalida
         ? (this.modalDespachoRecalificarSalida = false)
@@ -1467,6 +1459,8 @@ export default {
           return this.mListRutasDespacho[i];
         }
       }
+
+      return null
     },
     getStringUnidad(unidades) {
       var string_unidad = "";
@@ -1939,19 +1933,7 @@ export default {
       try {
         var objFrecuencia = this.getObjetoFrecuencia(
           this.mSelectRutaFrecuenciaPanelDespacho
-        );
-
-        /*console.log(
-          "itemUnidadSalidasPanelDespacho : " +
-            this.itemUnidadSalidasPanelDespacho
-        );
-        console.log(
-          "mSelectRutaSalidaDespachar : " + this.mSelectRutaSalidaDespachar
-        );
-        console.log(
-          "mSelectRutaFrecuenciaPanelDespacho : " +
-            this.mSelectRutaFrecuenciaPanelDespacho
-        );*/
+        )
 
         if (
           this.itemUnidadSalidasPanelDespacho == null ||
@@ -1966,9 +1948,29 @@ export default {
           return;
         }
 
-        this.responseApiDespachoWeb = await this.$axios.post(
-          process.env.baseUrl + "/generarDespacho",
-          {
+        var objDespacho = null
+
+        if(this.radioTipoDespacho==3)
+        {
+          objDespacho = {
+            token: this.token,
+            unidad: this.itemUnidadSalidasPanelDespacho.CodiVehi,
+            empresa_codigo: this.itemUnidadSalidasPanelDespacho.CodiClie,
+            dispositivo_imei: this.itemUnidadSalidasPanelDespacho.CodiDispVehi,
+            channel_port: this.itemUnidadSalidasPanelDespacho.PuerCHNClie,
+            ruta_letra: this.getRutaPorID(this.mSelectRutaSalidaDespachar).LetrRuta,
+            dispositivo_tipo:
+              this.itemUnidadSalidasPanelDespacho.idTipoDispVehi,
+            ruta: this.mSelectRutaSalidaDespachar,
+            frecuencia: objFrecuencia.idFrec,
+            fecha_hora: this.fechaActualSalidasPanelDespachoDespachador,
+            recalificar_usar_posiciones: this.RecaTarjUsaPosi,
+            recalifica_minutos_antes: this.RecaTarjRangInic,
+            recalifica_minutos_despues: this.RecaTarjRangFin,
+            recalifica_sobreescribir_si_tiene_marcacion: this.RecaSobrCtrlMarcClie,
+          }
+        }else{
+          objDespacho = {
             token: this.token,
             unidad: this.itemUnidadSalidasPanelDespacho.CodiVehi,
             empresa_codigo: this.itemUnidadSalidasPanelDespacho.CodiClie,
@@ -1988,16 +1990,21 @@ export default {
                 ? objFrecuencia.AutoDespachoDifeFrec
                 : 0,
           }
-        );
+        }
+
+        this.responseApiDespachoWeb = await this.$axios.post(
+          process.env.baseUrl + (this.radioTipoDespacho == 3 ? "/GeneraTarjeta" : "/generarDespacho"),
+          objDespacho
+        )
 
         if (this.responseApiDespachoWeb.data.status_code == 200) {
           this.clearModalDespacho();
 
           Notification.success({
             title: "SALIDA GENERADA CON EXITO",
-            message: "CODIGO : " + this.responseApiDespachoWeb.data.salida_id,
+            message: (this.radioTipoDespacho == 3 ? "TARJETA GENERADA CON EXITO" : ("CODIGO SALIDA : " + this.responseApiDespachoWeb.data.salida_id)),
             duration: 1500,
-          });
+          })
         } else {
           Notification.error({
             title: "ERROR DESPACHO API",
@@ -2196,14 +2203,14 @@ export default {
           console.log(this.objConfigRecalificar);
           console.log("------------------------------------------");
 
-          if (this.objConfigRecalificar != null) {
+          if (this.objConfigRecalificar != null) 
+          {
             this.RecaTarjRangInic = this.objConfigRecalificar.RecaTarjRangInic;
             this.RecaTarjRangFin = this.objConfigRecalificar.RecaTarjRang;
-            /*this.RecaTarjUsaPosiLocal =
-              this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false;
-            this.RecaTarjUsaPosiTodoLocal =
-              this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false;*/
-            //console.log(this.RecaTarjUsaPosiLocal)
+            
+            this.RecaTarjUsaPosi = this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false
+            this.RecaSobrCtrlMarcClie = this.objConfigRecalificar.RecaSobrCtrlMarcClie == 1 ? true : false
+
           }
         }
       } catch (error) {
@@ -2218,6 +2225,8 @@ export default {
             token: this.token,
             inicio: this.RecaTarjRangInic == null ? 0 : this.RecaTarjRangInic,
             fin: this.RecaTarjRangFin == null ? 0 : this.RecaTarjRangFin,
+            RecaSobrCtrlMarcClie: this.RecaSobrCtrlMarcClie,
+            RecaTarjUsaPosi: this.RecaTarjUsaPosi
           }
         );
 
@@ -2270,7 +2279,7 @@ export default {
             salida_id: this.selectedRowSalida.idSali_m,
             fecha_tarjeta: this.selectedRowSalida.HoraSaliProgSali_mF,
             unidad_tarjeta: this.selectedRowSalida.CodiVehiSali_m,
-            PosiUse: this.RecaTarjUsaPosiLocal,
+            PosiUse: this.RecaTarjUsaPosi,
             CtrlMarcUse: this.RecaSobrCtrlMarcClie, //this.objConfigRecalificar.RecaTarjTodoCtrl == 1 ? true : false,
             MarcSobr: true,
             RecaMinuAnteRang: this.RecaTarjRangInic,
@@ -2304,11 +2313,10 @@ export default {
         });
       }
     },
-
     async showModalDespachoRecalificarTodoSalida() {
       //this.clearModalRecalificaTodo();
 
-      this.RecaSobrCtrlMarcClie = false;
+      //this.RecaSobrCtrlMarcClie = false;
 
       await this.readConfigRecalTarjeta();
 
@@ -2316,7 +2324,6 @@ export default {
         ? (this.modalDespachoRecalificarTodoSalida = false)
         : (this.modalDespachoRecalificarTodoSalida = true);
     },
-
     async RecaTarjetaTodo() {
       try {
         if (this.mSelectRutaRecalificarTodo == null) {
@@ -2340,8 +2347,8 @@ export default {
               this.itemUnidadSalidaRecalificarTodo.length <= 0
                 ? "*"
                 : this.itemUnidadSalidaRecalificarTodo,
-            PosiUse: this.RecaTarjUsaPosiLocalTodo, //priorizar el local
-            CtrlMarcUse: this.RecaSobrCtrlMarcClieTodo,
+            PosiUse: this.RecaTarjUsaPosi, //priorizar el local
+            CtrlMarcUse: this.RecaSobrCtrlMarcClie,
             MarcSobr: true,
             RecaMinuAnteRang: this.RecaTarjRangInic,
             RecaMinuDespRang: this.RecaTarjRangFin,
@@ -2417,6 +2424,7 @@ export default {
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  margin-bottom:1rem;
 }
 
 .container-div-check-recalifica {
