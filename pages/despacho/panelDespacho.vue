@@ -2340,7 +2340,7 @@ export default {
           process.env.baseUrl + "/RecalificarTodoTarjeta",
           {
             token: this.token,
-            fecha: getFecha_dd_mm_yyyy(this.fechaActualSalidasPanelDespacho),
+            fecha: (this.fechaActualAnularFinalizarTodo),
             ruta: this.mSelectRutaRecalificarTodo,
             unidad:
               this.itemUnidadSalidaRecalificarTodo == null ||
