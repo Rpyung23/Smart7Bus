@@ -142,8 +142,6 @@
                 </template>
               </el-table-column>
 
-              
-
               <el-table-column
                 prop="observacion"
                 label="OBSERVACIONES"
@@ -530,7 +528,7 @@ export default {
       observacion_liq: "",
 
       baseURlPDFPanelLiquidacionTarjeta: "",
-      mListaDetalleTableroLiq : []
+      mListaDetalleTableroLiq: [],
     };
   },
   methods: {
@@ -619,7 +617,7 @@ export default {
           this.$notify({
             title: "TABLERO LIQUIDACION",
             message: "NO EXISTEN DATOS DISPONIBLES",
-            type: "danger",
+            type: "warning",
           });
         }
       } catch (error) {
@@ -710,48 +708,64 @@ export default {
       ).toFixed(2);
     },
     resetValoresLiquidacion() {
-      this.v_conteo_pasaje_liq =
+      if (
+        this.v_total_recibir == "" ||
+        this.v_total_recibir == undefined ||
+        this.v_total_recibir == null || isNaN(this.v_total_recibir)
+      ) {
+        return true;
+      }
+
+      return false;
+      /*this.v_conteo_pasaje_liq =
         this.v_conteo_pasaje_liq == "" ||
         this.v_conteo_pasaje_liq == undefined ||
         this.v_conteo_pasaje_liq == null
           ? 0
           : this.v_conteo_pasaje_liq;
+
       this.v_desvio_cobrado_liq =
         this.v_desvio_cobrado_liq == "" ||
         this.v_desvio_cobrado_liq == undefined ||
         this.v_desvio_cobrado_liq == null
           ? 0
           : this.v_desvio_cobrado_liq;
+
       this.v_desvio_pagado_liq =
         this.v_desvio_pagado_liq == "" ||
         this.v_desvio_pagado_liq == undefined ||
         this.v_desvio_pagado_liq == null
           ? 0
           : this.v_desvio_pagado_liq;
+
       this.v_compensacion_liq =
         this.v_compensacion_liq == "" ||
         this.v_compensacion_liq == undefined ||
         this.v_compensacion_liq == null
           ? 0
           : this.v_compensacion_liq;
+
       this.v_pasaje_compensacion_liq =
         this.v_pasaje_compensacion_liq == "" ||
         this.v_pasaje_compensacion_liq == undefined ||
         this.v_pasaje_compensacion_liq == null
           ? 0
           : this.v_pasaje_compensacion_liq;
+
       this.v_pasaje_compensacion_desvio_liq =
         this.v_pasaje_compensacion_desvio_liq == "" ||
         this.v_pasaje_compensacion_desvio_liq == undefined ||
         this.v_pasaje_compensacion_desvio_liq == null
           ? 0
           : this.v_pasaje_compensacion_desvio_liq;
+
       this.v_desvios_liq =
         this.v_desvios_liq == "" ||
         this.v_desvios_liq == undefined ||
         this.v_desvios_liq == null
           ? 0
           : this.v_desvios_liq;
+
       this.v_gastos_totales =
         this.v_gastos_totales == "" ||
         this.v_gastos_totales == undefined ||
@@ -765,107 +779,125 @@ export default {
         this.v_chofer_liq == null
           ? 0
           : this.v_chofer_liq;
+
       this.v_otros_liq =
         this.v_otros_liq == "" ||
         this.v_otros_liq == undefined ||
         this.v_otros_liq == null
           ? 0
           : this.v_otros_liq;
+
       this.v_garaje_liq =
         this.v_garaje_liq == "" ||
         this.v_garaje_liq == undefined ||
         this.v_garaje_liq == null
           ? 0
           : this.v_garaje_liq;
+
       this.v_deuda_liq =
         this.v_deuda_liq == "" ||
         this.v_deuda_liq == undefined ||
         this.v_deuda_liq == null
           ? 0
           : this.v_deuda_liq;
+
       this.v_alimentacion_liq =
         this.v_alimentacion_liq == "" ||
         this.v_alimentacion_liq == undefined ||
         this.v_alimentacion_liq == null
           ? 0
           : this.v_alimentacion_liq;
+
       this.v_peaje_liq =
         this.v_peaje_liq == "" ||
         this.v_peaje_liq == undefined ||
         this.v_peaje_liq == null
           ? 0
           : this.v_peaje_liq;
+
       this.v_combustible_liq =
         this.v_combustible_liq == "" ||
         this.v_combustible_liq == undefined ||
         this.v_combustible_liq == null
           ? 0
           : this.v_combustible_liq;
+
       this.v_cooperativa_liq =
         this.v_cooperativa_liq == "" ||
         this.v_cooperativa_liq == undefined ||
         this.v_cooperativa_liq == null
           ? 0
           : this.v_cooperativa_liq;
+
       this.v_total_recibir =
         this.v_total_recibir == "" ||
         this.v_total_recibir == undefined ||
         this.v_total_recibir == null
           ? 0
-          : this.v_total_recibir;
+          : this.v_total_recibir;*/
     },
-    async insertDetalleLiquidacion() 
-    {
-      this.resetValoresLiquidacion()
-      try {
-        var response = await this.$axios.post(
-          process.env.baseUrl + "/insertLiquidacionD",
-          {
-            token: this.token,
-            liquidacion_m: parseFloat(this.objSelectLiq.id_liquidacion_m),
-            alimentacion_: parseFloat(this.v_alimentacion_liq),
-            conbustible_: parseFloat(this.v_combustible_liq),
-            garaje_: parseFloat(this.v_garaje_liq),
-            cooperativa_: parseFloat(this.v_cooperativa_liq),
-            deuda_: parseFloat(this.v_deuda_liq),
-            chofer_: parseFloat(this.v_chofer_liq),
-            compensacion_: parseFloat(this.v_compensacion_liq),
-            desvio_cobrado_: parseFloat(this.v_desvio_cobrado_liq),
-            desvio_pagado_: parseFloat(this.v_desvio_pagado_liq),
-            peaje_: parseFloat(this.v_peaje_liq),
-            otros_gastos_: parseFloat(this.v_otros_liq),
-            detalle_ : this.observacion_liq == null || this.observacion_liq == undefined ? "" : this.observacion_liq
+    async insertDetalleLiquidacion() {
+      if (this.resetValoresLiquidacion()) 
+      {
+        this.$notify({
+              title: "ESPACIOS VACIOS",
+              message: "PORFAVOR LLENAR LOS ESPACIOS EN BLANCOS CON 0 (CERO)",
+              type: "warning",
+            });
+      } else {
+        try {
+          var response = await this.$axios.post(
+            process.env.baseUrl + "/insertLiquidacionD",
+            {
+              token: this.token,
+              liquidacion_m: parseFloat(this.objSelectLiq.id_liquidacion_m),
+              alimentacion_: parseFloat(this.v_alimentacion_liq),
+              conbustible_: parseFloat(this.v_combustible_liq),
+              garaje_: parseFloat(this.v_garaje_liq),
+              cooperativa_: parseFloat(this.v_cooperativa_liq),
+              deuda_: parseFloat(this.v_deuda_liq),
+              chofer_: parseFloat(this.v_chofer_liq),
+              compensacion_: parseFloat(this.v_compensacion_liq),
+              desvio_cobrado_: parseFloat(this.v_desvio_cobrado_liq),
+              desvio_pagado_: parseFloat(this.v_desvio_pagado_liq),
+              peaje_: parseFloat(this.v_peaje_liq),
+              otros_gastos_: parseFloat(this.v_otros_liq),
+              detalle_:
+                this.observacion_liq == null ||
+                this.observacion_liq == undefined
+                  ? ""
+                  : this.observacion_liq,
+            }
+          );
+
+          if (response.data.status_code == 200) {
+            this.isShowModalLiquidar = false;
+            this.$notify({
+              title: "LIQUIDACION CREADA CON EXITO",
+              message: response.data.msm,
+              type: "success",
+            });
+
+            this.readLiquidacion();
+          } else {
+            this.$notify({
+              title: "LIQUIDACION ERROR SERVER",
+              message: response.data.msm,
+              type: "danger",
+            });
           }
-        );
-
-        if (response.data.status_code == 200) 
-        {
-          this.isShowModalLiquidar = false;
+        } catch (error) {
           this.$notify({
-            title: "LIQUIDACION CREADA CON EXITO",
-            message: response.data.msm,
-            type: "success",
-          });
-
-          this.readLiquidacion();
-        } else {
-          this.$notify({
-            title: "LIQUIDACION ERROR SERVER",
-            message: response.data.msm,
+            title: "TRY CATCH",
+            message: error.toString(),
             type: "danger",
           });
         }
-      } catch (error) {
-        this.$notify({
-          title: "TRY CATCH",
-          message: error.toString(),
-          type: "danger",
-        });
       }
     },
     async showModalReportePDF(item) {
-      this.isShowModalPDFLiquidar = true
-      this.baseURlPDFPanelLiquidacionTarjeta = ""
+      this.isShowModalPDFLiquidar = true;
+      this.baseURlPDFPanelLiquidacionTarjeta = "";
 
       var datos = await this.$axios.post(
         process.env.baseUrl + "/readDetalleLiquidacion",
@@ -873,12 +905,12 @@ export default {
           token: this.token,
           liquidacion_m: item.id_liquidacion_m,
           unidad: item.unidad,
-          estado: item.estado
+          estado: item.estado,
         }
       );
 
-      this.mListaDetalleTableroLiq = []
-      this.mListaDetalleTableroLiq.push(...datos.data.datos)
+      this.mListaDetalleTableroLiq = [];
+      this.mListaDetalleTableroLiq.push(...datos.data.datos);
 
       var empresa = [
         {
@@ -886,24 +918,22 @@ export default {
           fontSize: 9,
           alignment: "left",
         },
-      ]
+      ];
 
       var unidad = [
         {
-          text:
-            "Unidad : " + item.unidad,
+          text: "Unidad : " + item.unidad,
           fontSize: 9,
           alignment: "left",
         },
-      ]
+      ];
       var desde_hasta = [
         {
-          text:
-            "Fecha : " + item.fecha_consulta,
+          text: "Fecha : " + item.fecha_consulta,
           fontSize: 9,
           alignment: "left",
         },
-      ]
+      ];
 
       /*var vueltaSalida = [
         {
@@ -914,7 +944,7 @@ export default {
         },
       ]*/
 
-      var resultadoGasto = []
+      var resultadoGasto = [];
 
       var resultadoString = [
         [
@@ -933,12 +963,13 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          }
+          },
         ],
-      ]
+      ];
 
       var resultadoStringTotales = [
-          [{
+        [
+          {
             text: "TOTAL DE GASTOS",
             fontSize: 8.5,
             bold: true,
@@ -953,194 +984,187 @@ export default {
             fillColor: "#008000",
             color: "white",
             alignment: "center",
-          }]
-      ]
+          },
+        ],
+      ];
 
-      for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) 
-      {
+      for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) {
         var arrys = [
           {
             text: this.mListaDetalleTableroLiq[i].conteo_pasajero,
             fontSize: 9.5,
             alignment: "center",
-            color: '#000000'
+            color: "#000000",
           },
           {
             text: this.mListaDetalleTableroLiq[i].total_conteo,
             fontSize: 9.5,
             alignment: "center",
-            color: '#000000'
-          }
-        ]
-        resultadoString.push(arrys)
-        resultadoStringTotales.push(
-          [
-            {
+            color: "#000000",
+          },
+        ];
+        resultadoString.push(arrys);
+        resultadoStringTotales.push([
+          {
             text: this.mListaDetalleTableroLiq[i].total_gasto,
             fontSize: 11.5,
-            color: '#000000',
+            color: "#000000",
             alignment: "center",
-           },
-           {
+          },
+          {
             text: this.mListaDetalleTableroLiq[i].total_recibir,
             fontSize: 11.5,
-            color: '#000000',
+            color: "#000000",
             alignment: "center",
-           }
-          ])
-
+          },
+        ]);
 
         resultadoGasto = [
           [
             {
-             text: "GASTO CHOFER",
-             fontSize: 8.5,
-             alignment: "center",
-             bold: true,
-             fillColor: "#FF0000",
-             color: "white",
-             alignment: "center",
+              text: "GASTO CHOFER",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
             },
             {
-             text: "DESVIO COBRADO",
-             fontSize: 8.5,
-             alignment: "center",
-             bold: true,
-             fillColor: "#FF0000",
-             color: "white",
-             alignment: "center",
-            }
+              text: "DESVIO COBRADO",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
+            },
           ],
 
           [
             {
-            text: this.mListaDetalleTableroLiq[i].chofer,
-            fontSize: 10,
-            color: '#000000',
-            alignment: "center",
-           },
-           {
-            text: this.mListaDetalleTableroLiq[i].desvio_cobrado,
-            fontSize: 10,
-            color: '#000000',
-            alignment: "center",
-           }
-          ],
-
-          [
-            {
-             text: "GASTO GARAJE",
-             fontSize: 8.5,
-             alignment: "center",
-             bold: true,
-             fillColor: "#FF0000",
-             color: "white",
-             alignment: "center",
+              text: this.mListaDetalleTableroLiq[i].chofer,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
             },
             {
-             text: "GASTO OTROS",
-             fontSize: 8.5,
-             alignment: "center",
-             bold: true,
-             fillColor: "#FF0000",
-             color: "white",
-             alignment: "center",
-            }
+              text: this.mListaDetalleTableroLiq[i].desvio_cobrado,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
           ],
 
           [
             {
-            text: this.mListaDetalleTableroLiq[i].garaje,
-            fontSize: 10,
-            color: '#000000',
-            alignment: "center",
-           },
-           {
-            text: this.mListaDetalleTableroLiq[i].otros_gastos,
-            fontSize: 10,
-            color: '#000000',
-            alignment: "center",
-           }
-          ],
-
-          [
-            {
-             text: "GASTO COMBUSTIBLE",
-             fontSize: 8.5,
-             alignment: "center",
-             bold: true,
-             fillColor: "#FF0000",
-             color: "white",
-             alignment: "center",
+              text: "GASTO GARAJE",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
             },
             {
-             text: "DESVIOS COBRADOS",
-             fontSize: 8.5,
-             alignment: "center",
-             bold: true,
-             fillColor: "#FF0000",
-             color: "white",
-             alignment: "center",
-            }
+              text: "GASTO OTROS",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
+            },
           ],
 
           [
             {
-            text: this.mListaDetalleTableroLiq[i].conbustible,
-            fontSize: 10,
-            color: '#000000',
-            alignment: "center",
-           },
-           {
-            text: this.mListaDetalleTableroLiq[i].desvio_cobrado,
-            fontSize: 10,
-            color: '#000000',
-            alignment: "center",
-           }
-          ],
-
-          [
-            {
-             text: "GASTO COOPERATIVA",
-             fontSize: 8.5,
-             alignment: "center",
-             bold: true,
-             fillColor: "#FF0000",
-             color: "white",
-             alignment: "center",
+              text: this.mListaDetalleTableroLiq[i].garaje,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
             },
             {
-             text: "OBSERVACIONES",
-             fontSize: 8.5,
-             alignment: "center",
-             bold: true,
-             fillColor: "#FF0000",
-             color: "white",
-             alignment: "center",
-            }
+              text: this.mListaDetalleTableroLiq[i].otros_gastos,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
           ],
 
           [
             {
-            text: this.mListaDetalleTableroLiq[i].cooperativa,
-            fontSize: 10,
-            color: '#000000',
-            alignment: "center",
-           },
-           {
-            text: this.mListaDetalleTableroLiq[i].observacion,
-            fontSize: 10,
-            color: '#000000',
-            alignment: "center",
-           }
-          ]
-        ]  
+              text: "GASTO COMBUSTIBLE",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "DESVIOS COBRADOS",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
+            },
+          ],
 
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].conbustible,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: this.mListaDetalleTableroLiq[i].desvio_cobrado,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ],
 
-      
-      
-      
-        }
+          [
+            {
+              text: "GASTO COOPERATIVA",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "OBSERVACIONES",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].cooperativa,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: this.mListaDetalleTableroLiq[i].observacion,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ],
+        ];
+      }
 
       var docDefinition = {
         pageSize: "A4",
@@ -1193,44 +1217,47 @@ export default {
               headerRows: 0,
               /*widths: ['*'],
               body: [empresa]*/
-              widths: [450, 450, 450/*, 450, 450*/],
-              body: [empresa, unidad, desde_hasta/*,vueltaSalida,FrecuenciaSalida*/],
+              widths: [450, 450, 450 /*, 450, 450*/],
+              body: [
+                empresa,
+                unidad,
+                desde_hasta /*,vueltaSalida,FrecuenciaSalida*/,
+              ],
             },
           },
           {
             table: {
               headerRows: 0,
-              widths: ['*','*'],
+              widths: ["*", "*"],
               body: resultadoString,
               //body: [[]],
             },
           },
 
           {
-            text:".",
-            fontSize:6
+            text: ".",
+            fontSize: 6,
           },
 
           {
             table: {
               headerRows: 0,
-              widths: ["*","*"],
-              body: resultadoGasto
+              widths: ["*", "*"],
+              body: resultadoGasto,
               //body: [[]],
             },
           },
 
           {
-            text:".",
-            fontSize:6
+            text: ".",
+            fontSize: 6,
           },
-
 
           {
             table: {
               headerRows: 0,
-              widths: ["*","*"],
-              body: resultadoStringTotales
+              widths: ["*", "*"],
+              body: resultadoStringTotales,
               //body: [[]],
             },
           },
@@ -1241,9 +1268,7 @@ export default {
       var pdfDocGenerator = pdfMake.createPdf(docDefinition);
       pdfDocGenerator.getDataUrl((dataUrl) => {
         this.baseURlPDFPanelLiquidacionTarjeta = dataUrl;
-      })
-
-
+      });
     },
   },
   mounted() {
