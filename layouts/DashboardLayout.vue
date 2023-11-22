@@ -69,7 +69,7 @@
         <sidebar-item translate="no" v-if="permisos != null && permisos.liquidacion != null && permisos.liquidacion.active != null && permisos.liquidacion.active" :link="{
           name: 'Liquidación',
           icon: 'ni ni-money-coins text-green',
-          path: '/produccion/tablero',
+          path: '/tablero_liq',
         }">
         </sidebar-item>
 
