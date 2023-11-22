@@ -814,7 +814,9 @@ export default {
           ? 0
           : this.v_total_recibir;
     },
-    async insertDetalleLiquidacion() {
+    async insertDetalleLiquidacion() 
+    {
+      this.resetValoresLiquidacion()
       try {
         var response = await this.$axios.post(
           process.env.baseUrl + "/insertLiquidacionD",
