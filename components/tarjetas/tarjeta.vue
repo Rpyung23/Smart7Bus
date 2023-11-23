@@ -1,13 +1,6 @@
 <template>
-  <card
-    type="secondary"
-    header-classes="bg-transparent pb-5"
-    class="border-0 mb-0"
-  >
-    <iframe
-      :src="baseURlPDFPanelDespachoTarjeta"
-      style="width: 100%; height: 33rem"
-    ></iframe>
+  <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
+    <iframe :src="baseURlPDFPanelDespachoTarjeta" style="width: 100%; height: 33rem"></iframe>
   </card>
 </template>
 
@@ -91,8 +84,8 @@ export default {
               this.mListSalidasTarjeta[i].HoraMarcSali_d != "00:00:00"
                 ? this.mListSalidasTarjeta[i].FaltSali_d
                 : this.mListSalidasTarjeta[i].FaltSali_d == "0"
-                ? ""
-                : this.mListSalidasTarjeta[i].FaltSali_d,
+                  ? ""
+                  : this.mListSalidasTarjeta[i].FaltSali_d,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -260,7 +253,7 @@ export default {
       this.baseURlPDFPanelDespachoTarjeta = ""
 
       console.log("DETALLE SALIDA")
-      console.log(salida[2])
+      //console.log(salida[2])
 
       var datos = await this.$axios.post(
         process.env.baseUrl + "/detalleSalida",
@@ -277,6 +270,9 @@ export default {
       this.mListSalidasTarjeta = [];
       this.mListSalidasTarjeta.push(...datos.data.data);
       console.log(salida);
+      console.log("DETALLE Tarjeta")
+      console.log(this.mListSalidasTarjeta.length);
+      console.log(this.mListSalidasTarjeta);
 
       var empresa = [
         {
@@ -294,66 +290,95 @@ export default {
             text: salida[0] == undefined ? "" : salida[0].CodiVehiSali_m,
             fontSize: 8.5,
             bold: true,
+            colSpan: 2,
             alignment: "center",
           },
+          { text: "", fontSize: 8.5, bold: true, alignment: "center" },
           {
             text: salida[1].CodiVehiSali_m,
             fontSize: 8.5,
             bold: true,
+            colSpan: 2,
             alignment: "center",
           },
+          { text: "", fontSize: 8.5, bold: true, alignment: "center" },
           {
             text: salida[2] == undefined ? "" : salida[2].CodiVehiSali_m,
             fontSize: 8.5,
             bold: true,
             alignment: "center",
           },
+          { text: "", fontSize: 8.5, bold: true, alignment: "center" },
         ],
       ];
-
+      const datosProcesados = [
+        [], [], []
+      ];
       for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
+        if (Number(salida[0].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
+          datosProcesados[0].push(this.mListSalidasTarjeta[i])
+        }
+        if (Number(salida[1].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
+          datosProcesados[1].push(this.mListSalidasTarjeta[i])
+        }
+        if (Number(salida[2].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
+          datosProcesados[2].push(this.mListSalidasTarjeta[i])
+        }
+      }
+      console.log("Datos Procesados")
+      console.log(datosProcesados)
+
+      for (var i = 0; i < datosProcesados[0].length; i++) {
         var arrys = [
+          //unidad anterior
           {
-            text: this.mListSalidasTarjeta[i].CodiCtrlSali_d,
+            text: datosProcesados[0][i].CodiCtrlSali_d,
             fontSize: 8.5,
           },
           {
-            text: this.mListSalidasTarjeta[i].HoraProgSali_d.substring(0, 5),
+            text: datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "R   " +
+              datosProcesados[0][i].HoraProgSali_d.substring(0, 5) : datosProcesados[0][i].HoraProgSali_d.substring(0, 5),
+            fontSize: 8.5,
+            alignment: datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "left": "center",
+          },
+          {
+            text: datosProcesados[0][i].FaltSali_d,
             fontSize: 8.5,
             alignment: "center",
           },
+          //unidad actual
           {
-            text:
-              this.mListSalidasTarjeta[i].HoraMarcSali_d == "00:00:00"
-                ? ""
-                : this.mListSalidasTarjeta[i].HoraMarcSali_d.substring(0, 5),
+            text: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "R   " +
+              datosProcesados[1][i].HoraProgSali_d.substring(0, 5) : datosProcesados[1][i].HoraProgSali_d.substring(0, 5),
+            fontSize: 8.5,
+            alignment: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "left": "center",
+          },
+          {
+            text: datosProcesados[1][i].FaltSali_d,
             fontSize: 8.5,
             alignment: "center",
           },
+          //unidad posterior
           {
-            text:
-              this.mListSalidasTarjeta[i].HoraMarcSali_d != "00:00:00"
-                ? this.mListSalidasTarjeta[i].FaltSali_d
-                : this.mListSalidasTarjeta[i].FaltSali_d == "0"
-                ? ""
-                : this.mListSalidasTarjeta[i].FaltSali_d,
+            text: datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "R   " +
+              datosProcesados[2][i].HoraProgSali_d.substring(0, 5) : datosProcesados[2][i].HoraProgSali_d.substring(0, 5),
+            fontSize: 8.5,
+            alignment: datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "left": "center",
+          },
+          {
+            text: datosProcesados[2][i].FaltSali_d,
             fontSize: 8.5,
             alignment: "center",
           },
         ]
-
-        if(salida[1].idSali_m == this.mListSalidasTarjeta[i].idSali_mSali_d){
-          resultadoString.push(arrys);
-        }
+        resultadoString.push(arrys);
       }
 
       var heightAux = 9.7;
 
-
-
       var docDefinition = {
         // a string or { width: 190, height: number }
-        pageSize: { width: 220, height: "auto" },
+        pageSize: { width: 280, height: "auto" },
         pageMargins: [15, 15, 15, 15],
         compress: true,
         // header: [empresa],
@@ -378,7 +403,7 @@ export default {
               widths: ["*"],
               body: [
                 ["RUTA : " + salida[1].DescRutaSali_m],
-                ["CHOFER : " + salida[1].nombres_chofer],
+                ["CHOFER : " + (salida[1].nombres_chofer == null ? 'Sin Chofer' : salida[1].nombres_chofer)],
               ],
             },
           },
@@ -392,7 +417,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [25, 43, 43, 43],
+              widths: [25, 43, 10, 43, 10, 43, 10],
 
               body: resultadoString,
             },
@@ -473,6 +498,6 @@ export default {
       });
     },
   },
-  mounted() {},
+  mounted() { },
 };
 </script>
