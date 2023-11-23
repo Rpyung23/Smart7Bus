@@ -772,6 +772,7 @@ export default {
     this.readAllUnidadesContadorPasajeros();
     this.initFechaActualContadorPasajeros();
     this.readAllLineasContadorPasajeros();
+    this.readConteoPasajeros()
   },
 };
 </script>
