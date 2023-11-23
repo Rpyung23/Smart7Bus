@@ -711,7 +711,8 @@ export default {
       if (
         this.v_total_recibir == "" ||
         this.v_total_recibir == undefined ||
-        this.v_total_recibir == null || isNaN(this.v_total_recibir)
+        this.v_total_recibir == null ||
+        isNaN(this.v_total_recibir)
       ) {
         return true;
       }
@@ -837,13 +838,12 @@ export default {
           : this.v_total_recibir;*/
     },
     async insertDetalleLiquidacion() {
-      if (this.resetValoresLiquidacion()) 
-      {
+      if (this.resetValoresLiquidacion()) {
         this.$notify({
-              title: "ESPACIOS VACIOS",
-              message: "PORFAVOR LLENAR LOS ESPACIOS EN BLANCOS CON 0 (CERO)",
-              type: "warning",
-            });
+          title: "ESPACIOS VACIOS",
+          message: "PORFAVOR LLENAR LOS ESPACIOS EN BLANCOS CON 0 (CERO)",
+          type: "warning",
+        });
       } else {
         try {
           var response = await this.$axios.post(
@@ -982,6 +982,19 @@ export default {
             fontSize: 8.5,
             bold: true,
             fillColor: "#008000",
+            color: "white",
+            alignment: "center",
+          },
+        ],
+      ];
+
+      var resultadoObservacionString = [
+        [
+          {
+            text: "OBSERVACIONES",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
             color: "white",
             alignment: "center",
           },
@@ -1139,7 +1152,7 @@ export default {
               alignment: "center",
             },
             {
-              text: "OBSERVACIONES",
+              text: "ALIMENTACION",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
@@ -1157,13 +1170,22 @@ export default {
               alignment: "center",
             },
             {
-              text: this.mListaDetalleTableroLiq[i].observacion,
+              text: this.mListaDetalleTableroLiq[i].alimentacion,
               fontSize: 10,
               color: "#000000",
               alignment: "center",
             },
           ],
         ];
+
+        resultadoObservacionString.push([
+          {
+            text: this.mListaDetalleTableroLiq[i].observacion == "" || this.mListaDetalleTableroLiq[i].observacion == null ? "S/N" : this.mListaDetalleTableroLiq[i].observacion,
+            fontSize: 8.5,
+            color: "#000000",
+            alignment: "left"
+          },
+        ]);
       }
 
       var docDefinition = {
@@ -1256,11 +1278,26 @@ export default {
           {
             table: {
               headerRows: 0,
+              widths: ["*"],
+              body: resultadoObservacionString
+            },
+          },
+
+          {
+            text: ".",
+            fontSize: 6,
+          },
+
+          {
+            table: {
+              headerRows: 0,
               widths: ["*", "*"],
               body: resultadoStringTotales,
               //body: [[]],
             },
           },
+
+
         ],
       };
 
