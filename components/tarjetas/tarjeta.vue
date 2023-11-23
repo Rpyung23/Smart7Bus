@@ -253,7 +253,7 @@ export default {
       this.baseURlPDFPanelDespachoTarjeta = ""
 
       console.log("DETALLE SALIDA")
-      //console.log(salida[2])
+      console.log(salida[2])
 
       var datos = await this.$axios.post(
         process.env.baseUrl + "/detalleSalida",
@@ -306,6 +306,7 @@ export default {
             text: salida[2] == undefined ? "" : salida[2].CodiVehiSali_m,
             fontSize: 8.5,
             bold: true,
+            colSpan: 2,
             alignment: "center",
           },
           { text: "", fontSize: 8.5, bold: true, alignment: "center" },
@@ -315,8 +316,10 @@ export default {
         [], [], []
       ];
       for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
-        if (Number(salida[0].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
-          datosProcesados[0].push(this.mListSalidasTarjeta[i])
+        if (salida[0] !== undefined && Number(salida[0].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
+          datosProcesados[0].push(this.mListSalidasTarjeta[i]);
+        } else {
+          datosProcesados[0].push({});
         }
         if (Number(salida[1].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
           datosProcesados[1].push(this.mListSalidasTarjeta[i])
@@ -324,22 +327,27 @@ export default {
         if (Number(salida[2].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
           datosProcesados[2].push(this.mListSalidasTarjeta[i])
         }
-      }
+      } 
+      
+      
+      
+      
       console.log("Datos Procesados")
       console.log(datosProcesados)
 
-      for (var i = 0; i < datosProcesados[0].length; i++) {
+      for (var i = 0; i < datosProcesados[1].length; i++) {
         var arrys = [
           //unidad anterior
           {
-            text: datosProcesados[0][i].CodiCtrlSali_d,
+            text: datosProcesados[1][i].CodiCtrlSali_d,
             fontSize: 8.5,
           },
           {
-            text: datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "R   " +
+            text:  datosProcesados[0][i].isCtrlRefeSali_d == undefined ? "" :
+            datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "R   " +
               datosProcesados[0][i].HoraProgSali_d.substring(0, 5) : datosProcesados[0][i].HoraProgSali_d.substring(0, 5),
             fontSize: 8.5,
-            alignment: datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "left": "center",
+            alignment: datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "left" : "center",
           },
           {
             text: datosProcesados[0][i].FaltSali_d,
@@ -351,7 +359,7 @@ export default {
             text: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "R   " +
               datosProcesados[1][i].HoraProgSali_d.substring(0, 5) : datosProcesados[1][i].HoraProgSali_d.substring(0, 5),
             fontSize: 8.5,
-            alignment: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "left": "center",
+            alignment: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "left" : "center",
           },
           {
             text: datosProcesados[1][i].FaltSali_d,
@@ -360,10 +368,11 @@ export default {
           },
           //unidad posterior
           {
-            text: datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "R   " +
+            text: datosProcesados[2][i].isCtrlRefeSali_d == undefined ? "" :
+            datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "R   " +
               datosProcesados[2][i].HoraProgSali_d.substring(0, 5) : datosProcesados[2][i].HoraProgSali_d.substring(0, 5),
             fontSize: 8.5,
-            alignment: datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "left": "center",
+            alignment: datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "left" : "center",
           },
           {
             text: datosProcesados[2][i].FaltSali_d,
