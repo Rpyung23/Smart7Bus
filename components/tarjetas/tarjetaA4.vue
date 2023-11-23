@@ -540,6 +540,288 @@ export default {
       })
 
     },
+    async readDetalleSalidaDPanelBusquedaAntActPos(salida) 
+    {
+      this.baseURlPDFPanelDespachoTarjeta = ""
+
+
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/detalleSalida",
+        {
+          token: this.token,
+          idsalida: [
+            salida[0] == undefined ? 0 : parseInt(salida[0].idSali_m),
+            salida[1] == undefined ? 0 : parseInt(salida[1].idSali_m),
+            salida[2] == undefined ? 0 : salida[2].idSali_m == "" ? 0 : parseInt(salida[2].idSali_m),
+          ]
+        }
+      );
+
+      this.mListSalidasTarjeta = [];
+      this.mListSalidasTarjeta.push(...datos.data.data);
+
+ 
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var unidad = [
+        {
+          text:
+            "Unidad : " + salida.CodiVehiSali_m,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var ruta = [
+        {
+          text:
+            "Ruta : " + salida.DescRutaSali_m,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+
+
+      var resultadoString = [
+        [
+          {
+            text: "Control",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. PROG",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. MARC",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Faltas",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "V. Max",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "PEN ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Sanción",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }
+        ],
+      ]
+
+      var resultadoStringTotales = [
+      {
+            text: "Total Faltas Adelantos",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Total Faltas Atrasos",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Total Multas ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+      ]
+
+      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) 
+      {
+        var arrys = [
+          {
+            text: this.mListSalidasTarjeta[i].DescCtrlSali_d,
+            fontSize: 8.5,
+            alignment: "left",
+            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+          },
+          {
+            text: this.mListSalidasTarjeta[i].HoraProgSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+          },
+          {
+            text: this.mListSalidasTarjeta[i].HoraMarcSali_d == '00:00:00' ? '' : this.mListSalidasTarjeta[i].HoraMarcSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+          },
+          {
+            text: this.mListSalidasTarjeta[i].FaltSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+          },
+          {
+            text: '',
+            fontSize: 8.5,
+            alignment: "center",
+            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+          },
+          {
+            text: this.mListSalidasTarjeta[i].PenaCtrlSali_d == '0.00' ? '' : this.mListSalidasTarjeta[i].PenaCtrlSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+          },
+          {
+            text: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ? 'REFERENCIAL' : 'SANCIONABLE',
+            fontSize: 8.5,
+            alignment: "center",
+            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ?  '#FF0000' : '#008019'
+          } ,
+        ];
+        resultadoString.push(arrys);
+      }
+
+      var docDefinition = {
+        pageSize: "A4",
+        pageMargins: [40, 80, 40, 60],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE SALIDAS DETALLADAS",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              /*widths: ['*'],
+              body: [empresa]*/
+              widths: [450, 450, 450],
+              body: [empresa, unidad, ruta,],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [170, 35, 40, 35, 35, 40,90],
+              body: resultadoString,
+              //body: [[]],
+            },
+          },
+          {
+            text:'.',
+            fontSize:6
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [90, 90, 90],
+              body: [resultadoStringTotales,[{
+            text: salida.adelantoFaltasTime,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: salida.atrasoFaltasTime,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: salida.PenaCtrlSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+          }]]
+              //body: [[]],
+            },
+          },
+        ],
+      };
+
+      //pdfMake.createPdf(docDefinition).download("RSD_" + Date.now());
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        this.baseURlPDFPanelDespachoTarjeta = dataUrl;
+      })
+
+    }
   },
   mounted() {},
 };

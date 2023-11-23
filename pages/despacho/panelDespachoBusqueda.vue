@@ -102,10 +102,12 @@
           footer-classes="pb-2"
         >
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
+
             <el-select
               v-model="mSelectRutaSalidaPanelBusqueda"
               multiple
               collapse-tags
+              v-if="isMultipleRutas"
               placeholder="Lineas"
             >
               <el-option
@@ -116,6 +118,23 @@
               >
               </el-option>
             </el-select>
+
+
+            <el-select
+              v-model="mSelectRutaSalidaPanelBusqueda"
+              collapse-tags
+              v-if="!isMultipleRutas"
+              placeholder="Linea"
+            >
+              <el-option
+                v-for="item in mListLineasSalidasPanelBusqueda"
+                :key="item.LetrRuta"
+                :label="item.DescRuta"
+                :value="item.LetrRuta"
+              >
+              </el-option>
+            </el-select>
+
           </div>
 
           <div class="cardOpcinesRPagosVehiculoProduccionPanelDespachoBusqueda">
@@ -181,17 +200,40 @@
                 <base-button
                   size="sm"
                   title="TARJETA PEQUEÑA"
+                  v-show="isTarjetaAntActPos == false"
                   @click="showTarjetaSalidasPanelBusqueda(scope.row)"
                   type="primary"
                   ><i class="ni ni-single-copy-04"></i
                 ></base-button>
+
+                <base-button
+                  size="sm"
+                  title="T. PEQUEÑAS ANT-ACT-POS"
+                  v-show="isTarjetaAntActPos"
+                  @click="showTarjetaSalidasPanelBusqueda(scope.row)"
+                  type="primary"
+                  ><i class="ni ni-single-copy-04"></i
+                ></base-button>
+
                 <base-button
                   size="sm"
                   title="TARJETA GRANDE(A4)"
+                  v-show="isTarjetaAntActPos == false"
                   @click="showTarjetaSalidasPanelBusquedaA4(scope.row)"
                   type="danger"
                   ><i class="ni ni-book-bookmark"></i
                 ></base-button>
+
+
+                <base-button
+                  size="sm"
+                  title="T. A4 ANT-ACT-POS"
+                  v-show="isTarjetaAntActPos"
+                  @click="showTarjetaSalidasPanelBusquedaA4(scope.row)"
+                  type="danger"
+                  ><i class="ni ni-book-bookmark"></i
+                ></base-button>
+
                 <base-button
                   size="sm"
                   title="Recorrido"
@@ -626,6 +668,8 @@ export default {
       oSelectRubro: null,
       oTextAreaAnotacion: "",
       titulo_modal_add_anotacion: null,
+      isTarjetaAntActPos: false, 
+      isMultipleRutas:true
     };
   },
   methods: {
@@ -678,17 +722,29 @@ export default {
         }
       }
     },
-    async readAllLineasContadorSalidasPanelBusqueda() {
+    async readAllLineasContadorSalidasPanelBusqueda() 
+    {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
         tipo: 3,
       });
-      if (datos.data.status_code == 200) {
-        this.mListLineasSalidasPanelBusqueda.push(...datos.data.data);
+      if (datos.data.status_code == 200) 
+      {
+        this.mListLineasSalidasPanelBusqueda.push(...datos.data.data)
+
+        if(!this.isMultipleRutas)
+        {
+          if(this.mListLineasSalidasPanelBusqueda.length > 0){
+            this.mSelectRutaSalidaPanelBusqueda = this.mListLineasSalidasPanelBusqueda[0].LetrRuta
+            this.readSalidasPanelBusqueda()
+          }
+        }
       }
     },
     async readSalidasPanelBusqueda() {
       this.mListaSalidasPanelBusqueda = [];
+
+      //console.log("this.mSelectRutaSalidaPanelBusqueda : "+this.mSelectRutaSalidaPanelBusqueda)
 
       var obj = {
         token: this.token,
@@ -696,7 +752,7 @@ export default {
           this.itemUnidadSalidasPanelBusqueda.length <= 0
             ? "*"
             : this.itemUnidadSalidasPanelBusqueda,
-        rutas:
+        rutas: !this.isMultipleRutas ? [this.mSelectRutaSalidaPanelBusqueda] : 
           this.mSelectRutaSalidaPanelBusqueda.length <= 0
             ? "*"
             : this.mSelectRutaSalidaPanelBusqueda,
@@ -771,14 +827,62 @@ export default {
       this.modalSalidasPanelDespachoBusqueda = true;
       this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(item);
     },
-    showTarjetaSalidasPanelBusqueda(salida) {
+    showTarjetaSalidasPanelBusqueda(salida) 
+    {
       this.modalSalidasTarjetaPanelDespachoBusqueda = true;
-      this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida);
+
+      if (this.isTarjetaAntActPos) 
+      {
+        var idSalidaAnt = this.getObjetoSalida(salida,'a')
+        var idSalidaPost = this.getObjetoSalida(salida,'p')
+
+        this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPos([
+          idSalidaAnt,
+          salida,
+          idSalidaPost,
+        ])
+
+      } else {
+        this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida);
+      }
+
+    },
+    getObjetoSalida(salida,bandera_pos)
+    {
+      for(var i=0;i<this.mListaSalidasPanelBusqueda.length;i++)
+      {
+        if(salida.idSali_m == this.mListaSalidasPanelBusqueda[i].idSali_m)
+        {
+          if(bandera_pos == 'a')
+          {
+            return this.mListaSalidasPanelBusqueda[i-1]
+          }else if (bandera_pos == 'p'){
+            return this.mListaSalidasPanelBusqueda[i+1]
+          }
+        }
+      }
     },
     showTarjetaSalidasPanelBusquedaA4(salida) {
       console.log(salida);
       this.modalSalidasTarjetaPanelDespachoBusquedaA4 = true;
-      this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusqueda(salida);
+      /*this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusqueda(salida);*/
+
+      if (this.isTarjetaAntActPos) 
+      {
+        var idSalidaAnt = this.getObjetoSalida(salida,'a')
+        var idSalidaPost = this.getObjetoSalida(salida,'p')
+
+        this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusquedaAntActPos([
+          idSalidaAnt,
+          salida,
+          idSalidaPost,
+        ])
+
+      } else {
+        this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusqueda(salida);
+      }
+
+
     },
     async exportPdfSalidasPanelBusqueda() {
       let totalPenalidad = 0;
@@ -1505,11 +1609,19 @@ export default {
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
-    this.readTipoRubro();
-    this.readAllUnidadesSalidasPanelBusqueda();
+
+    this.isTarjetaAntActPos =
+      this.$cookies.get("empresa") == "glimitada" ? true : false
+
+    this.isMultipleRutas =  this.$cookies.get("empresa") == "glimitada" ? false : true 
+
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllLineasContadorSalidasPanelBusqueda();
-    this.readSalidasPanelBusqueda();
+    this.readTipoRubro();
+    this.readAllUnidadesSalidasPanelBusqueda();
+    if(this.isMultipleRutas){
+      this.readSalidasPanelBusqueda()
+    }
   },
 };
 </script>
