@@ -1,13 +1,6 @@
 <template>
-  <card
-    type="secondary"
-    header-classes="bg-transparent pb-5"
-    class="border-0 mb-0"
-  >
-    <iframe
-      :src="baseURlPDFPanelDespachoTarjeta"
-      style="width: 100%; height: 33rem"
-    ></iframe>
+  <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
+    <iframe :src="baseURlPDFPanelDespachoTarjeta" style="width: 100%; height: 33rem"></iframe>
   </card>
 </template>
 
@@ -16,7 +9,7 @@
 <script>
 import { Table, TableColumn } from "element-ui";
 import { getBase64LogoReportes } from "../../util/logoReport";
-import  pdfMake from 'pdfmake/build/pdfmake.js';
+import pdfMake from 'pdfmake/build/pdfmake.js';
 import pdfFonts from 'pdfmake/build/vfs_fonts.js';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -30,12 +23,11 @@ export default {
     return {
       baseURlPDFPanelDespachoTarjeta: "",
       token: this.$cookies.get("token"),
-      mListSalidasTarjeta : []
+      mListSalidasTarjeta: []
     };
   },
   methods: {
-    async readDetalleSalidaDPanelBusqueda(salida) 
-    {
+    async readDetalleSalidaDPanelBusqueda(salida) {
       this.baseURlPDFPanelDespachoTarjeta = ""
 
 
@@ -280,7 +272,7 @@ export default {
       var desde_hasta = [
         {
           text:
-            "Fecha Salida : " + salida.HoraSaliProgSali_mF +" Hasta " + salida.HoraLlegProgSali_m,
+            "Fecha Salida : " + salida.HoraSaliProgSali_mF + " Hasta " + salida.HoraLlegProgSali_m,
           fontSize: 9,
           alignment: "left",
         },
@@ -288,7 +280,7 @@ export default {
 
       var vueltaSalida = [
         {
-          text: 
+          text:
             "N° Vuelta : " + salida.NumeVuelSali_m,
           fontSize: 9,
           alignment: "left",
@@ -366,34 +358,33 @@ export default {
       ]
 
       var resultadoStringTotales = [
-      {
-            text: "Total Faltas Adelantos",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Total Faltas Atrasos",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Total Multas ($)",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
+        {
+          text: "Total Faltas Adelantos",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "Total Faltas Atrasos",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "Total Multas ($)",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
       ]
 
-      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) 
-      {
+      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
         var arrys = [
           {
             text: this.mListSalidasTarjeta[i].DescCtrlSali_d,
@@ -435,8 +426,8 @@ export default {
             text: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ? 'REFERENCIAL' : 'SANCIONABLE',
             fontSize: 8.5,
             alignment: "center",
-            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ?  '#FF0000' : '#008019'
-          } ,
+            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ? '#FF0000' : '#008019'
+          },
         ];
         resultadoString.push(arrys);
       }
@@ -493,40 +484,40 @@ export default {
               /*widths: ['*'],
               body: [empresa]*/
               widths: [450, 450, 450, 450, 450, 450],
-              body: [empresa, unidad, ruta, desde_hasta,vueltaSalida,FrecuenciaSalida],
+              body: [empresa, unidad, ruta, desde_hasta, vueltaSalida, FrecuenciaSalida],
             },
           },
           {
             table: {
               headerRows: 0,
-              widths: [170, 35, 40, 35, 35, 40,90],
+              widths: [170, 35, 40, 35, 35, 40, 90],
               body: resultadoString,
               //body: [[]],
             },
           },
           {
-            text:'.',
-            fontSize:6
+            text: '.',
+            fontSize: 6
           },
           {
             table: {
               headerRows: 0,
               widths: [90, 90, 90],
-              body: [resultadoStringTotales,[{
-            text: salida.adelantoFaltasTime,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: salida.atrasoFaltasTime,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: salida.PenaCtrlSali_d,
-            fontSize: 8.5,
-            alignment: "center",
-          }]]
+              body: [resultadoStringTotales, [{
+                text: salida.adelantoFaltasTime,
+                fontSize: 8.5,
+                alignment: "center",
+              },
+              {
+                text: salida.atrasoFaltasTime,
+                fontSize: 8.5,
+                alignment: "center",
+              },
+              {
+                text: salida.PenaCtrlSali_d,
+                fontSize: 8.5,
+                alignment: "center",
+              }]]
               //body: [[]],
             },
           },
@@ -540,8 +531,7 @@ export default {
       })
 
     },
-    async readDetalleSalidaDPanelBusquedaAntActPos(salida) 
-    {
+    async readDetalleSalidaDPanelBusquedaAntActPos(salida) {
       this.baseURlPDFPanelDespachoTarjeta = ""
 
 
@@ -559,8 +549,9 @@ export default {
 
       this.mListSalidasTarjeta = [];
       this.mListSalidasTarjeta.push(...datos.data.data);
+      console.log("Detalle salida")
+      console.log(this.mListSalidasTarjeta)
 
- 
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
@@ -571,7 +562,7 @@ export default {
       var unidad = [
         {
           text:
-            "Unidad : " + salida.CodiVehiSali_m,
+            "Unidad : " + salida[1].CodiVehiSali_m,
           fontSize: 9,
           alignment: "left",
         },
@@ -579,7 +570,7 @@ export default {
       var ruta = [
         {
           text:
-            "Ruta : " + salida.DescRutaSali_m,
+            "Ruta : " + salida[1].DescRutaSali_m,
           fontSize: 9,
           alignment: "left",
         },
@@ -589,7 +580,7 @@ export default {
       var resultadoString = [
         [
           {
-            text: "Control",
+            text: "CONTROL",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
@@ -597,45 +588,35 @@ export default {
             alignment: "center",
           },
           {
-            text: "H. PROG",
+            text: salida[0] == undefined ? "" : salida[0].CodiVehiSali_m,
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
+            colSpan: 2,
             alignment: "center",
           },
+          { text: "", fontSize: 8.5, bold: true, alignment: "center" },
           {
-            text: "H. MARC",
+            text: salida[1].CodiVehiSali_m,
             fontSize: 8.5,
             bold: true,
+            colSpan: 2,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
           },
+          { text: "", fontSize: 8.5, bold: true, alignment: "center" },
           {
-            text: "Faltas",
+            text: salida[2] == undefined ? "" : salida[2].CodiVehiSali_m,
             fontSize: 8.5,
-            bold: true,
             fillColor: "#039BC4",
             color: "white",
-            alignment: "center",
-          },
-          {
-            text: "V. Max",
-            fontSize: 8.5,
             bold: true,
-            fillColor: "#039BC4",
-            color: "white",
+            colSpan: 2,
             alignment: "center",
           },
-          {
-            text: "PEN ($)",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
+          { text: "", fontSize: 8.5, bold: true, alignment: "center" },
           {
             text: "Sanción",
             fontSize: 8.5,
@@ -648,34 +629,102 @@ export default {
       ]
 
       var resultadoStringTotales = [
-      {
-            text: "Total Faltas Adelantos",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Total Faltas Atrasos",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
-          {
-            text: "Total Multas ($)",
-            fontSize: 8.5,
-            bold: true,
-            fillColor: "#039BC4",
-            color: "white",
-            alignment: "center",
-          },
+        {
+          text: "Total Faltas Adelantos",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "Total Faltas Atrasos",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+
       ]
 
-      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) 
-      {
+      const datosProcesados = [
+        [], [], []
+      ];
+
+      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
+        if ((salida[0] !== undefined) && (Number(salida[0].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d)) {
+          datosProcesados[0].push(this.mListSalidasTarjeta[i]);
+        }
+        if (Number(salida[1].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
+          datosProcesados[1].push(this.mListSalidasTarjeta[i])
+        }
+        if ((salida[2] !== undefined) && (Number(salida[2].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d)) {
+          datosProcesados[2].push(this.mListSalidasTarjeta[i]);
+        }
+      }
+
+
+      for (var i = 0; i < datosProcesados[1].length; i++) {
+        var arrys = [
+          //unidad anterior
+          {
+            text: datosProcesados[1][i].DescCtrlSali_d,
+            fontSize: 8,
+          },
+          {
+            text: datosProcesados[0].length > 0 ?
+              datosProcesados[0][i].HoraProgSali_d.substring(0, 5)
+              : " ",
+            fontSize: 8,
+            alignment: "center",
+          },
+          {
+            text: datosProcesados[0].length > 0 ? datosProcesados[0][i].FaltSali_d : " ",
+            fontSize: 8,
+            alignment: "center",
+          },
+          //unidad actual
+          {
+            text: datosProcesados[1][i].HoraProgSali_d.substring(0, 5),
+            fontSize: 8,
+            alignment: "center",
+          },
+          {
+            text: datosProcesados[1][i].FaltSali_d,
+            fontSize: 8,
+            alignment: "center",
+          },
+          //unidad posterior
+          {
+            text: datosProcesados[2].length > 0
+              ? datosProcesados[2][i].HoraProgSali_d.substring(0, 5)
+              : " ",
+            fontSize: 8,
+            alignment: datosProcesados[2].length > 0 ? "center" : "center",
+          },
+          {
+            text: datosProcesados[2].length > 0 ? datosProcesados[2][i].FaltSali_d : " ",
+            fontSize: 8,
+            alignment: "center",
+          },
+          //Sancion
+          {
+            text: datosProcesados[1].length > 0 ?
+              datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "REFERENCIAL "
+                : " SANCIONABLE"
+              : " ",
+            fontSize: 8.5,
+            alignment: "center",
+            color: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? '#61EC3F' : '#FF0000'
+          },
+
+
+        ]
+        resultadoString.push(arrys);
+      }
+
+      /* for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
         var arrys = [
           {
             text: this.mListSalidasTarjeta[i].DescCtrlSali_d,
@@ -717,15 +766,15 @@ export default {
             text: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ? 'REFERENCIAL' : 'SANCIONABLE',
             fontSize: 8.5,
             alignment: "center",
-            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ?  '#FF0000' : '#008019'
-          } ,
+            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ? '#FF0000' : '#008019'
+          },
         ];
         resultadoString.push(arrys);
-      }
+      } */
 
       var docDefinition = {
         pageSize: "A4",
-        pageMargins: [40, 80, 40, 60],
+        pageMargins: [40, 80, 40, 80],
         header: {
           margin: 15,
           columns: [
@@ -781,35 +830,41 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [170, 35, 40, 35, 35, 40,90],
+              widths: [100, 35, 12, 35, 12, 35, 12, 90],
               body: resultadoString,
               //body: [[]],
             },
           },
           {
-            text:'.',
-            fontSize:6
+            text: '.',
+            fontSize: 6,
+            margin: [0, 32, 0, 0], // [left, top, right, bottom]
           },
           {
             table: {
               headerRows: 0,
               widths: [90, 90, 90],
-              body: [resultadoStringTotales,[{
-            text: salida.adelantoFaltasTime,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: salida.atrasoFaltasTime,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: salida.PenaCtrlSali_d,
-            fontSize: 8.5,
-            alignment: "center",
-          }]]
-              //body: [[]],
+              body: [resultadoStringTotales, [{
+                text: (salida[0] == undefined ? "" : "ANT (" + salida[0].CodiVehiSali_m + ") ")
+                  + (salida[0] == undefined ? " " : ": " + salida[0].adelantoFaltasTime) + "\n" +
+                  ("ACT (" + salida[1].CodiVehiSali_m) + ") : " + (salida[1].adelantoFaltasTime) + "\n" +
+                  (salida[2] == undefined ? "" : "POST (" + salida[2].CodiVehiSali_m + ") ")
+                  +
+                  (salida[2] == undefined ? " " : ": " + salida[2].adelantoFaltasTime),
+                fontSize: 8.5,
+                alignment: "center",
+              },
+              {
+                text: (salida[0] == undefined ? "" : "ANT (" + salida[0].CodiVehiSali_m + ") ")
+                  + (salida[0] == undefined ? " " : ": " + salida[0].atrasoFaltasTime) + "\n" +
+                  ("ACT (" + salida[1].CodiVehiSali_m) + ") : " + (salida[1].atrasoFaltasTime) + "\n" +
+                  (salida[2] == undefined ? "" : "POST (" + salida[2].CodiVehiSali_m + ") ")
+                  +
+                  (salida[2] == undefined ? " " : ": " + salida[2].atrasoFaltasTime),
+                fontSize: 8.5,
+                alignment: "center",
+              },
+              ]]
             },
           },
         ],
@@ -823,6 +878,6 @@ export default {
 
     }
   },
-  mounted() {},
+  mounted() { },
 };
 </script>

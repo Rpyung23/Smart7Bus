@@ -253,7 +253,6 @@ export default {
       this.baseURlPDFPanelDespachoTarjeta = ""
 
       console.log("DETALLE SALIDA")
-      console.log(salida[2])
 
       var datos = await this.$axios.post(
         process.env.baseUrl + "/detalleSalida",
@@ -269,10 +268,6 @@ export default {
 
       this.mListSalidasTarjeta = [];
       this.mListSalidasTarjeta.push(...datos.data.data);
-      console.log(salida);
-      console.log("DETALLE Tarjeta")
-      console.log(this.mListSalidasTarjeta.length);
-      console.log(this.mListSalidasTarjeta);
 
       var empresa = [
         {
@@ -316,79 +311,75 @@ export default {
         [], [], []
       ];
       for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
-        if (salida[0] !== undefined && Number(salida[0].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
+        if ((salida[0] !== undefined) && (Number(salida[0].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d)) {
           datosProcesados[0].push(this.mListSalidasTarjeta[i]);
-        } else {
-          datosProcesados[0].push({});
         }
         if (Number(salida[1].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
           datosProcesados[1].push(this.mListSalidasTarjeta[i])
         }
-        if (Number(salida[2].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
-          datosProcesados[2].push(this.mListSalidasTarjeta[i])
+        if ((salida[2] !== undefined) && (Number(salida[2].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d)) {
+          datosProcesados[2].push(this.mListSalidasTarjeta[i]);
         }
-      } 
-      
-      
-      
-      
-      console.log("Datos Procesados")
-      console.log(datosProcesados)
+      }
+
 
       for (var i = 0; i < datosProcesados[1].length; i++) {
         var arrys = [
           //unidad anterior
           {
             text: datosProcesados[1][i].CodiCtrlSali_d,
-            fontSize: 8.5,
+            fontSize: 8,
           },
           {
-            text:  datosProcesados[0][i].isCtrlRefeSali_d == undefined ? "" :
-            datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "R   " +
-              datosProcesados[0][i].HoraProgSali_d.substring(0, 5) : datosProcesados[0][i].HoraProgSali_d.substring(0, 5),
-            fontSize: 8.5,
-            alignment: datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "left" : "center",
+            text: datosProcesados[0].length > 0 ?
+              datosProcesados[0][i].isCtrlRefeSali_d === 1 ?
+                "R " + datosProcesados[0][i].HoraProgSali_d.substring(0, 5)
+                : datosProcesados[0][i].HoraProgSali_d.substring(0, 5)
+              : " ",
+            fontSize: 8,
+            alignment: datosProcesados[0].length > 0 ? datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "left" : "center" : "center",
           },
           {
-            text: datosProcesados[0][i].FaltSali_d,
-            fontSize: 8.5,
+            text: datosProcesados[0].length > 0 ? datosProcesados[0][i].FaltSali_d : " ",
+            fontSize: 8,
             alignment: "center",
           },
           //unidad actual
           {
-            text: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "R   " +
+            text: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "R " +
               datosProcesados[1][i].HoraProgSali_d.substring(0, 5) : datosProcesados[1][i].HoraProgSali_d.substring(0, 5),
-            fontSize: 8.5,
+            fontSize: 8,
             alignment: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "left" : "center",
           },
           {
             text: datosProcesados[1][i].FaltSali_d,
-            fontSize: 8.5,
+            fontSize: 8,
             alignment: "center",
           },
           //unidad posterior
           {
-            text: datosProcesados[2][i].isCtrlRefeSali_d == undefined ? "" :
-            datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "R   " +
-              datosProcesados[2][i].HoraProgSali_d.substring(0, 5) : datosProcesados[2][i].HoraProgSali_d.substring(0, 5),
-            fontSize: 8.5,
-            alignment: datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "left" : "center",
+            text: datosProcesados[2].length > 0 ?
+              datosProcesados[2][i].isCtrlRefeSali_d === 1 ?
+                "R " + datosProcesados[2][i].HoraProgSali_d.substring(0, 5)
+                : datosProcesados[2][i].HoraProgSali_d.substring(0, 5)
+              : " ",
+            fontSize: 8,
+            alignment: datosProcesados[2].length > 0 ? datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "left" : "center" : "center",
           },
           {
-            text: datosProcesados[2][i].FaltSali_d,
-            fontSize: 8.5,
+            text: datosProcesados[2].length > 0 ? datosProcesados[2][i].FaltSali_d : " ",
+            fontSize: 8,
             alignment: "center",
           },
         ]
         resultadoString.push(arrys);
       }
 
-      var heightAux = 9.7;
 
       var docDefinition = {
         // a string or { width: 190, height: number }
-        pageSize: { width: 280, height: "auto" },
-        pageMargins: [15, 15, 15, 15],
+        pageSize: { width: 240, height: "auto" },
+        pageMargins: [5, 10, 5, 10],
         compress: true,
         // header: [empresa],
 
@@ -426,8 +417,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [25, 43, 10, 43, 10, 43, 10],
-
+              widths: [25, 30, 12, 30, 12, 30, 12],
               body: resultadoString,
             },
           },
