@@ -104,6 +104,9 @@
               <el-table-column prop="unidad" label="UNIDAD" minWidth="110">
               </el-table-column>
 
+              <el-table-column prop="num_vuelta" label="N° VUELTA" minWidth="155">
+              </el-table-column>
+
               <el-table-column
                 prop="fecha_consulta"
                 label="FECHA"
@@ -930,6 +933,13 @@ export default {
       var desde_hasta = [
         {
           text: "Fecha : " + item.fecha_consulta,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      var desde_hasta = [
+        {
+          text: "N° Vuelta : " + item.num_vuelta,
           fontSize: 9,
           alignment: "left",
         },
