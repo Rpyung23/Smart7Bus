@@ -94,10 +94,20 @@
                     size="sm"
                     v-if="scope.row.estado == 2"
                     @click="showModalReportePDF(scope.row)"
-                    title="VER RECIBO"
+                    title="VER RECIBO A4"
                     type="default"
+                    ><i class="ni ni-collection"></i
+                  ></base-button>
+
+                  <base-button
+                    size="sm"
+                    v-if="scope.row.estado == 2"
+                    @click="showModalReportePDFTICKET(scope.row)"
+                    title="VER RECIBO TICKET"
+                    type="success"
                     ><i class="ni ni-single-copy-04"></i
                   ></base-button>
+
                 </template>
               </el-table-column>
 
@@ -930,13 +940,7 @@ export default {
           alignment: "left",
         },
       ];
-      var desde_hasta = [
-        {
-          text: "Fecha : " + item.fecha_consulta,
-          fontSize: 9,
-          alignment: "left",
-        },
-      ];
+
       var desde_hasta = [
         {
           text: "N° Vuelta : " + item.num_vuelta,
@@ -1011,7 +1015,16 @@ export default {
         ],
       ];
 
-      for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) {
+      for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) 
+      {
+        var fecha_consulta = [
+        {
+          text: "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_liquidacion,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ]
+
         var arrys = [
           {
             text: this.mListaDetalleTableroLiq[i].conteo_pasajero,
@@ -1249,11 +1262,11 @@ export default {
               headerRows: 0,
               /*widths: ['*'],
               body: [empresa]*/
-              widths: [450, 450, 450 /*, 450, 450*/],
+              widths: [450, 450, 450 , 450/*, 450*/],
               body: [
                 empresa,
                 unidad,
-                desde_hasta /*,vueltaSalida,FrecuenciaSalida*/,
+                desde_hasta,fecha_consulta /*,vueltaSalida,FrecuenciaSalida*/,
               ],
             },
           },
@@ -1304,6 +1317,414 @@ export default {
               widths: ["*", "*"],
               body: resultadoStringTotales,
               //body: [[]],
+            },
+          },
+
+
+        ],
+      };
+
+      //pdfMake.createPdf(docDefinition).download("RSD_" + Date.now());
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        this.baseURlPDFPanelLiquidacionTarjeta = dataUrl;
+      });
+    },
+    async showModalReportePDFTICKET(item) {
+      this.isShowModalPDFLiquidar = true;
+      this.baseURlPDFPanelLiquidacionTarjeta = "";
+
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/readDetalleLiquidacion",
+        {
+          token: this.token,
+          liquidacion_m: item.id_liquidacion_m,
+          unidad: item.unidad,
+          estado: item.estado,
+        }
+      );
+
+      this.mListaDetalleTableroLiq = [];
+      this.mListaDetalleTableroLiq.push(...datos.data.datos);
+
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+
+      var unidad = [
+        {
+          text: "Unidad : " + item.unidad,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+      
+      var desde_hasta = [
+        {
+          text: "N° Vuelta : " + item.num_vuelta,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ];
+
+      /*var vueltaSalida = [
+        {
+          text: 
+            "N° Vuelta : " + salida.NumeVuelSali_m,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ]*/
+
+      var resultadoGasto = [];
+
+      var resultadoString = [
+        [
+          {
+            text: "CONTEO PASAJEROS",
+            fontSize: 8.5,
+            bold: true,
+            alignment: "center",
+          },
+          {
+            text: "INGRESO CONTEO PASAJEROS",
+            fontSize: 8.5,
+            bold: true,
+            alignment: "center",
+          },
+        ],
+      ];
+
+      var resultadoStringTotales = [
+        [
+          {
+            text: "TOTAL DE GASTOS",
+            fontSize: 8.5,
+            bold: true,
+            alignment: "center",
+          },
+          {
+            text: "TOTAL A RECIBIR",
+            fontSize: 8.5,
+            bold: true,
+            alignment: "center",
+          },
+        ],
+      ];
+
+      var resultadoObservacionString = [
+        [
+          {
+            text: "OBSERVACIONES",
+            fontSize: 8.5,
+            bold: true,
+            alignment: "center",
+          },
+        ],
+      ];
+
+      for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) 
+      {
+        var fecha_consulta = [
+        {
+          text: "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_liquidacion,
+          fontSize: 9,
+          alignment: "left",
+        },
+      ]
+      
+        var arrys = [
+          {
+            text: this.mListaDetalleTableroLiq[i].conteo_pasajero,
+            fontSize: 9.5,
+            alignment: "center",
+            color: "#000000",
+          },
+          {
+            text: this.mListaDetalleTableroLiq[i].total_conteo,
+            fontSize: 9.5,
+            alignment: "center",
+            color: "#000000",
+          },
+        ];
+        resultadoString.push(arrys);
+        resultadoStringTotales.push([
+          {
+            text: this.mListaDetalleTableroLiq[i].total_gasto,
+            fontSize: 11.5,
+            color: "#000000",
+            alignment: "center",
+          },
+          {
+            text: this.mListaDetalleTableroLiq[i].total_recibir,
+            fontSize: 11.5,
+            color: "#000000",
+            alignment: "center",
+          },
+        ]);
+
+        resultadoGasto = [
+          [
+            {
+              text: "GASTO CHOFER",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+            {
+              text: "DESVIO COBRADO",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].chofer,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: this.mListaDetalleTableroLiq[i].desvio_cobrado,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: "GASTO GARAJE",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+            {
+              text: "GASTO OTROS",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].garaje,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: this.mListaDetalleTableroLiq[i].otros_gastos,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: "GASTO COMBUSTIBLE",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+            {
+              text: "DESVIOS COBRADOS",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].conbustible,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: this.mListaDetalleTableroLiq[i].desvio_cobrado,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: "GASTO COOPERATIVA",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+            {
+              text: "ALIMENTACION",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].cooperativa,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: this.mListaDetalleTableroLiq[i].alimentacion,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ],
+        ];
+
+        resultadoObservacionString.push([
+          {
+            text: this.mListaDetalleTableroLiq[i].observacion == "" || this.mListaDetalleTableroLiq[i].observacion == null ? "S/N" : this.mListaDetalleTableroLiq[i].observacion,
+            fontSize: 8.5,
+            color: "#000000",
+            alignment: "left"
+          },
+        ]);
+      }
+
+      var docDefinition = {
+        pageSize: { width: 220, height: "auto" },
+        pageMargins: [15, 15, 15, 15],
+        /*header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE DETALLE LIQUIDACIÓN",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+        },*/
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              /*widths: ['*'],
+              body: [empresa]*/
+              widths: [450, 450, 450 , 450/*, 450*/],
+              body: [
+                empresa,
+                unidad,
+                desde_hasta /*,vueltaSalida,FrecuenciaSalida*/,
+                fecha_consulta
+              ],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: ["*", "*"],
+              body: resultadoString,
+              //body: [[]],
+            },
+          },
+
+          {
+            text: ".",
+            fontSize: 6,
+          },
+
+          {
+            table: {
+              headerRows: 0,
+              widths: ["*", "*"],
+              body: resultadoGasto,
+              //body: [[]],
+            },
+          },
+
+          {
+            text: ".",
+            fontSize: 6,
+          },
+
+          {
+            table: {
+              headerRows: 0,
+              widths: ["*"],
+              body: resultadoObservacionString
+            },
+          },
+
+          {
+            text: ".",
+            fontSize: 6,
+          },
+
+          {
+            table: {
+              headerRows: 0,
+              widths: ["*", "*"],
+              body: resultadoStringTotales,
+              //body: [[]],
+            },
+          },
+
+          {
+            fontSize: 6,
+            layout: "noBorders", // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+
+              body: [["."]],
             },
           },
 
