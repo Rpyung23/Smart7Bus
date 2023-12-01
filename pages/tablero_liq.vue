@@ -79,7 +79,7 @@
               height="calc(100vh - 10rem)"
               style="width: 100%"
             >
-              <el-table-column label="Acciones" minWidth="150">
+              <el-table-column label="Acciones" minWidth="185">
                 <template slot-scope="scope">
                   <base-button
                     size="sm"
@@ -88,6 +88,15 @@
                     title="EDITAR"
                     type="danger"
                     ><i class="ni ni-ruler-pencil"></i
+                  ></base-button>
+
+                  <base-button
+                    size="sm"
+                    v-if="scope.row.estado == 2"
+                    @click="eliminarLiquidacion(scope.row)"
+                    title="CANCELAR"
+                    type="danger"
+                    ><i class="ni ni-fat-remove"></i
                   ></base-button>
 
                   <base-button
@@ -107,14 +116,17 @@
                     type="success"
                     ><i class="ni ni-single-copy-04"></i
                   ></base-button>
-
                 </template>
               </el-table-column>
 
               <el-table-column prop="unidad" label="UNIDAD" minWidth="110">
               </el-table-column>
 
-              <el-table-column prop="num_vuelta" label="N° VUELTA" minWidth="155">
+              <el-table-column
+                prop="num_vuelta"
+                label="N° VUELTA"
+                minWidth="140"
+              >
               </el-table-column>
 
               <el-table-column
@@ -127,7 +139,7 @@
               <el-table-column
                 prop="conteo_pasajero"
                 label="PASAJEROS"
-                minWidth="160"
+                minWidth="150"
               ></el-table-column>
 
               <el-table-column
@@ -951,7 +963,7 @@ export default {
 
       /*var vueltaSalida = [
         {
-          text: 
+          text:
             "N° Vuelta : " + salida.NumeVuelSali_m,
           fontSize: 9,
           alignment: "left",
@@ -1015,15 +1027,15 @@ export default {
         ],
       ];
 
-      for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) 
-      {
+      for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) {
         var fecha_consulta = [
-        {
-          text: "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_liquidacion,
-          fontSize: 9,
-          alignment: "left",
-        },
-      ]
+          {
+            text:
+              "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_liquidacion,
+            fontSize: 9,
+            alignment: "left",
+          },
+        ];
 
         var arrys = [
           {
@@ -1203,10 +1215,14 @@ export default {
 
         resultadoObservacionString.push([
           {
-            text: this.mListaDetalleTableroLiq[i].observacion == "" || this.mListaDetalleTableroLiq[i].observacion == null ? "S/N" : this.mListaDetalleTableroLiq[i].observacion,
+            text:
+              this.mListaDetalleTableroLiq[i].observacion == "" ||
+              this.mListaDetalleTableroLiq[i].observacion == null
+                ? "S/N"
+                : this.mListaDetalleTableroLiq[i].observacion,
             fontSize: 8.5,
             color: "#000000",
-            alignment: "left"
+            alignment: "left",
           },
         ]);
       }
@@ -1262,11 +1278,12 @@ export default {
               headerRows: 0,
               /*widths: ['*'],
               body: [empresa]*/
-              widths: [450, 450, 450 , 450/*, 450*/],
+              widths: [450, 450, 450, 450 /*, 450*/],
               body: [
                 empresa,
                 unidad,
-                desde_hasta,fecha_consulta /*,vueltaSalida,FrecuenciaSalida*/,
+                desde_hasta,
+                fecha_consulta /*,vueltaSalida,FrecuenciaSalida*/,
               ],
             },
           },
@@ -1302,7 +1319,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*"],
-              body: resultadoObservacionString
+              body: resultadoObservacionString,
             },
           },
 
@@ -1319,8 +1336,6 @@ export default {
               //body: [[]],
             },
           },
-
-
         ],
       };
 
@@ -1362,7 +1377,7 @@ export default {
           alignment: "left",
         },
       ];
-      
+
       var desde_hasta = [
         {
           text: "N° Vuelta : " + item.num_vuelta,
@@ -1373,7 +1388,7 @@ export default {
 
       /*var vueltaSalida = [
         {
-          text: 
+          text:
             "N° Vuelta : " + salida.NumeVuelSali_m,
           fontSize: 9,
           alignment: "left",
@@ -1427,16 +1442,16 @@ export default {
         ],
       ];
 
-      for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) 
-      {
+      for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) {
         var fecha_consulta = [
-        {
-          text: "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_liquidacion,
-          fontSize: 9,
-          alignment: "left",
-        },
-      ]
-      
+          {
+            text:
+              "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_liquidacion,
+            fontSize: 9,
+            alignment: "left",
+          },
+        ];
+
         var arrys = [
           {
             text: this.mListaDetalleTableroLiq[i].conteo_pasajero,
@@ -1599,10 +1614,14 @@ export default {
 
         resultadoObservacionString.push([
           {
-            text: this.mListaDetalleTableroLiq[i].observacion == "" || this.mListaDetalleTableroLiq[i].observacion == null ? "S/N" : this.mListaDetalleTableroLiq[i].observacion,
+            text:
+              this.mListaDetalleTableroLiq[i].observacion == "" ||
+              this.mListaDetalleTableroLiq[i].observacion == null
+                ? "S/N"
+                : this.mListaDetalleTableroLiq[i].observacion,
             fontSize: 8.5,
             color: "#000000",
-            alignment: "left"
+            alignment: "left",
           },
         ]);
       }
@@ -1658,12 +1677,12 @@ export default {
               headerRows: 0,
               /*widths: ['*'],
               body: [empresa]*/
-              widths: [450, 450, 450 , 450/*, 450*/],
+              widths: [450, 450, 450, 450 /*, 450*/],
               body: [
                 empresa,
                 unidad,
                 desde_hasta /*,vueltaSalida,FrecuenciaSalida*/,
-                fecha_consulta
+                fecha_consulta,
               ],
             },
           },
@@ -1699,7 +1718,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*"],
-              body: resultadoObservacionString
+              body: resultadoObservacionString,
             },
           },
 
@@ -1727,8 +1746,6 @@ export default {
               body: [["."]],
             },
           },
-
-
         ],
       };
 
@@ -1737,6 +1754,46 @@ export default {
       pdfDocGenerator.getDataUrl((dataUrl) => {
         this.baseURlPDFPanelLiquidacionTarjeta = dataUrl;
       });
+    },
+    async eliminarLiquidacion(item) {
+      console.log(item);
+
+      try {
+        var response = await this.$axios.delete(
+          process.env.baseUrl + "/eliminar_liquidacion",
+          {
+            data: {
+              token: this.token,
+              liquidacion: item.id_liquidacion_m,
+              fecha: item.fecha_consulta,
+            },
+          }
+        )
+
+        console.log(response)
+
+        if (response.data.status_code == 200) {
+          this.$notify({
+            title: "LIQUIDACION ELIMINADA",
+            message: "LIQUIDACION ELIMINADA CON ÉXITO",
+            type: "success",
+          })
+
+          this.readLiquidacion()
+        } else {
+          this.$notify({
+            title: "ERROR LIQUIDACION",
+            message: response.data.msm,
+            type: "warning",
+          });
+        }
+      } catch (error) {
+        this.$notify({
+          title: "ERROR LIQUIDACION",
+          message: error.toString(),
+          type: "danger",
+        });
+      }
     },
   },
   mounted() {
