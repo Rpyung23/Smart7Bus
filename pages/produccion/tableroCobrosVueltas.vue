@@ -791,10 +791,12 @@ export default {
         },
       });
 
-      if (datosSalidas.length > 0) {
+      if (datosSalidas.length > 0) 
+      {
 
         for (var i = 0; i < datosSalidas.length; i++) 
         {
+          console.log(datosSalidas[i])
           dineroTotal =  dineroTotal + parseFloat(datosSalidas[i].AtrasoPenalidadTotal)
 
           var resultadoString = [
@@ -848,7 +850,7 @@ export default {
               layout: "noBorders",
               table: {
                 widths: ["*"],
-                body: [["FREC : " + datosSalidas[i].DescFrec]],
+                body: [["FREC : " + datosSalidas[i].DescFrec],["H. SALIDA : "+datosSalidas[i].HoraSaliProgSali_m_]],
               },
             }
           );
