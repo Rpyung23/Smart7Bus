@@ -1211,6 +1211,44 @@ export default {
               alignment: "center",
             },
           ],
+
+
+          
+          [
+            {
+              text: "DEUDA",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              fillColor: "#FF0000",
+              color: "white",
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].deuda,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: "",
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ],
         ];
 
         resultadoObservacionString.push([
@@ -1610,6 +1648,41 @@ export default {
               alignment: "center",
             },
           ],
+
+
+
+
+          [
+            {
+              text: "DEUDA",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+            {
+              text: "",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].deuda,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: "",
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ]
         ];
 
         resultadoObservacionString.push([

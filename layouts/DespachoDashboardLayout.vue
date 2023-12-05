@@ -164,6 +164,8 @@
             }"
           />
 
+          
+
           <sidebar-item
             translate="no"
             v-if="
@@ -175,6 +177,22 @@
             :link="{
               name: 'R. Salidas Controles',
               path: '/despacho/rSalidasControles5',
+            }"
+          />
+
+          <sidebar-item
+            translate="no"
+
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.rSalidasArmenia !=
+                null &&
+              permisos.despacho.reportes.rSalidasArmenia
+            "
+            
+            :link="{
+              name: 'R. Armenia',
+              path: '/despacho/rSalidasArmenia',
             }"
           />
 
