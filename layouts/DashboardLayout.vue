@@ -107,7 +107,7 @@
 
           <sidebar-item :link="{ name: 'R. Kilometros', path: '/rdistancia' }" translate="no"/>
           <sidebar-item :link="{ name: 'Velocidades', path: '/rvelocidades' }" translate="no"/>
-          <sidebar-item :link="{ name: 'R. Velocidad M', path: '/rvelocidadM' }" translate="no"/>
+          <sidebar-item :link="{ name: 'R. Velocidad Mov', path: '/rvelocidadM' }" translate="no"/>
           <sidebar-item :link="{ name: 'R. Velocidades D', path: '/rvelocidadesDetallados' }" translate="no"/>
           <sidebar-item :link="{ name: 'ANT', path: '/rant' }" />
           <sidebar-item :link="{ name: 'R. Gasolineras', path: '/rGasolinera' }" translate="no"/>

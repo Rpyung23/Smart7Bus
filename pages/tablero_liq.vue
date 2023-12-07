@@ -79,7 +79,7 @@
               height="calc(100vh - 10rem)"
               style="width: 100%"
             >
-              <el-table-column label="Acciones" minWidth="185">
+              <el-table-column label="Acciones" minWidth="175">
                 <template slot-scope="scope">
                   <base-button
                     size="sm"
@@ -99,14 +99,14 @@
                     ><i class="ni ni-fat-remove"></i
                   ></base-button>
 
-                  <base-button
+                  <!--<base-button
                     size="sm"
                     v-if="scope.row.estado == 2"
                     @click="showModalReportePDF(scope.row)"
                     title="VER RECIBO A4"
                     type="default"
                     ><i class="ni ni-collection"></i
-                  ></base-button>
+                  ></base-button>-->
 
                   <base-button
                     size="sm"
@@ -666,9 +666,8 @@ export default {
 
       if (this.objSelectLiq != null) {
         this.v_conteo_pasaje_liq = this.objSelectLiq.total_conteo;
-        this.v_compensacion_liq = Math.round(
-          parseFloat(this.objSelectLiq.total_conteo) * 0.07,
-          2
+        this.v_compensacion_liq = (
+          parseFloat(this.objSelectLiq.total_conteo) * 0.07
         ).toFixed(2);
         this.v_pasaje_compensacion_liq = (
           parseFloat(this.v_conteo_pasaje_liq) -
@@ -1484,7 +1483,17 @@ export default {
         var fecha_consulta = [
           {
             text:
-              "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_liquidacion,
+              "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_consulta,
+            fontSize: 9,
+            alignment: "left",
+          }
+        ];
+
+
+        var fecha_liq = [
+          {
+            text:
+              "Fecha Liqui: " + this.mListaDetalleTableroLiq[i].fecha_liquidacion,
             fontSize: 9,
             alignment: "left",
           },
@@ -1521,16 +1530,49 @@ export default {
         ]);
 
         resultadoGasto = [
+
           [
             {
-              text: "GASTO CHOFER",
+              text: "COMPENSACION",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
               alignment: "center",
             },
             {
-              text: "DESVIO COBRADO",
+              text: "DESVIOS PAGADOS",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].compensacion,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: this.mListaDetalleTableroLiq[i].desvio_pagado,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: "PAGO CHOFER",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+            {
+              text: "ALIMENTACIÓN",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
@@ -1546,7 +1588,7 @@ export default {
               alignment: "center",
             },
             {
-              text: this.mListaDetalleTableroLiq[i].desvio_cobrado,
+              text: this.mListaDetalleTableroLiq[i].alimentacion,
               fontSize: 10,
               color: "#000000",
               alignment: "center",
@@ -1555,14 +1597,14 @@ export default {
 
           [
             {
-              text: "GASTO GARAJE",
+              text: "CONTROLES",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
               alignment: "center",
             },
             {
-              text: "GASTO OTROS",
+              text: "GARAJE",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
@@ -1571,30 +1613,30 @@ export default {
           ],
 
           [
+            {
+              text: this.mListaDetalleTableroLiq[i].peaje,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
             {
               text: this.mListaDetalleTableroLiq[i].garaje,
               fontSize: 10,
               color: "#000000",
               alignment: "center",
             },
-            {
-              text: this.mListaDetalleTableroLiq[i].otros_gastos,
-              fontSize: 10,
-              color: "#000000",
-              alignment: "center",
-            },
           ],
 
           [
             {
-              text: "GASTO COMBUSTIBLE",
+              text: "CONBUSTIBLE",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
               alignment: "center",
             },
             {
-              text: "DESVIOS COBRADOS",
+              text: "DEUDA",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
@@ -1610,74 +1652,42 @@ export default {
               alignment: "center",
             },
             {
-              text: this.mListaDetalleTableroLiq[i].desvio_cobrado,
-              fontSize: 10,
-              color: "#000000",
-              alignment: "center",
-            },
-          ],
-
-          [
-            {
-              text: "GASTO COOPERATIVA",
-              fontSize: 8.5,
-              alignment: "center",
-              bold: true,
-              alignment: "center",
-            },
-            {
-              text: "ALIMENTACION",
-              fontSize: 8.5,
-              alignment: "center",
-              bold: true,
-              alignment: "center",
-            },
-          ],
-
-          [
-            {
-              text: this.mListaDetalleTableroLiq[i].cooperativa,
-              fontSize: 10,
-              color: "#000000",
-              alignment: "center",
-            },
-            {
-              text: this.mListaDetalleTableroLiq[i].alimentacion,
-              fontSize: 10,
-              color: "#000000",
-              alignment: "center",
-            },
-          ],
-
-
-
-
-          [
-            {
-              text: "DEUDA",
-              fontSize: 8.5,
-              alignment: "center",
-              bold: true,
-              alignment: "center",
-            },
-            {
-              text: "",
-              fontSize: 8.5,
-              alignment: "center",
-              bold: true,
-              alignment: "center",
-            },
-          ],
-
-          [
-            {
               text: this.mListaDetalleTableroLiq[i].deuda,
               fontSize: 10,
               color: "#000000",
               alignment: "center",
             },
+          ],
+
+
+
+
+          [
             {
-              text: "",
+              text: "OTROS GASTOS",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+            {
+              text: "+ DESVIOS COBRADOS",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+          ],
+
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].otros_gastos,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: this.mListaDetalleTableroLiq[i].desvio_cobrado,
               fontSize: 10,
               color: "#000000",
               alignment: "center",
@@ -1750,12 +1760,13 @@ export default {
               headerRows: 0,
               /*widths: ['*'],
               body: [empresa]*/
-              widths: [450, 450, 450, 450 /*, 450*/],
+              widths: [450, 450, 450, 450 , 450],
               body: [
                 empresa,
                 unidad,
                 desde_hasta /*,vueltaSalida,FrecuenciaSalida*/,
                 fecha_consulta,
+                fecha_liq,
               ],
             },
           },
