@@ -2081,6 +2081,8 @@ export default {
           objBody
         );
         if (result.data.status_code == 200) {
+          console.log("update unidad");
+          console.log(objBody);
           this.initUnidadesFlotaVEhicular();
           this.limpiarRegisterUnidad();
           this.$notify({

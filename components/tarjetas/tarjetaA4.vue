@@ -724,54 +724,6 @@ export default {
         resultadoString.push(arrys);
       }
 
-      /* for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
-        var arrys = [
-          {
-            text: this.mListSalidasTarjeta[i].DescCtrlSali_d,
-            fontSize: 8.5,
-            alignment: "left",
-            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
-          },
-          {
-            text: this.mListSalidasTarjeta[i].HoraProgSali_d,
-            fontSize: 8.5,
-            alignment: "center",
-            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
-          },
-          {
-            text: this.mListSalidasTarjeta[i].HoraMarcSali_d == '00:00:00' ? '' : this.mListSalidasTarjeta[i].HoraMarcSali_d,
-            fontSize: 8.5,
-            alignment: "center",
-            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
-          },
-          {
-            text: this.mListSalidasTarjeta[i].FaltSali_d,
-            fontSize: 8.5,
-            alignment: "center",
-            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
-          },
-          {
-            text: '',
-            fontSize: 8.5,
-            alignment: "center",
-            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
-          },
-          {
-            text: this.mListSalidasTarjeta[i].PenaCtrlSali_d == '0.00' ? '' : this.mListSalidasTarjeta[i].PenaCtrlSali_d,
-            fontSize: 8.5,
-            alignment: "center",
-            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
-          },
-          {
-            text: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ? 'REFERENCIAL' : 'SANCIONABLE',
-            fontSize: 8.5,
-            alignment: "center",
-            color: this.mListSalidasTarjeta[i].isCtrlRefeSali_d == 1 ? '#FF0000' : '#008019'
-          },
-        ];
-        resultadoString.push(arrys);
-      } */
-
       var docDefinition = {
         pageSize: "A4",
         pageMargins: [40, 80, 40, 80],
@@ -824,7 +776,7 @@ export default {
               /*widths: ['*'],
               body: [empresa]*/
               widths: [450, 450, 450],
-              body: [empresa, unidad, ruta,],
+              body: [empresa, unidad, ruta],
             },
           },
           {
