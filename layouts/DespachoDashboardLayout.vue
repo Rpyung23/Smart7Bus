@@ -164,6 +164,38 @@
             }"
           />
 
+          
+
+          <sidebar-item
+            translate="no"
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles5 !=
+                null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles5
+            "
+            :link="{
+              name: 'R. Salidas Controles',
+              path: '/despacho/rSalidasControles5',
+            }"
+          />
+
+          <sidebar-item
+            translate="no"
+
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.rSalidasArmenia !=
+                null &&
+              permisos.despacho.reportes.rSalidasArmenia
+            "
+            
+            :link="{
+              name: 'R. Armenia',
+              path: '/despacho/rSalidasArmenia',
+            }"
+          />
+
         </sidebar-item>
       </template>
     </side-bar>
