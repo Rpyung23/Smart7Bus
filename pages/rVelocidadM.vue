@@ -27,6 +27,10 @@
                             <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
                         </base-button>
 
+                        <base-button size="sm" title="EXPORTAR PDF" v-if="mListaRVelocidades.length > 0 ? true : false"
+                            type="danger" @click="generatePdf()">
+                            <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
+                        </base-button>
 
                         <download-excel title="EXCEL" v-if="mListaRVelocidades.length > 0
                             ? true
@@ -210,9 +214,9 @@ export default {
 
         async readRVelocidadesM() {
             this.WorksheetExcelReporteVelocidades =
-                "RV" + Date.now();
+                "RVM" + Date.now();
             this.FileNameExcelReporteCelocidades =
-                "RV_" + Date.now() + ".xls";
+                "RVM_" + Date.now() + ".xls";
             this.mListaRVelocidades = []
             this.loadingTableRVelocidadesBusquedaloading = true
             try {
@@ -252,6 +256,200 @@ export default {
             }
             this.loadingTableRVelocidadesBusquedaloading = false
         },
+
+        generatePdf() {
+            var empresa = [
+                {
+                    text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+                    fontSize: 12,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var tipoReporte = [
+                {
+                    text:
+                        "REPORTE DE LA RUTA : TODAS LAS RUTAS",
+                    fontSize: 11,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var desde_hasta = [
+                {
+                    text:
+                        "Del : " +
+                        (this.fechaInicialSalidasPanelBusqueda) +
+                        " Hasta " +
+                        (this.fechaFinalSalidasPanelBusqueda),
+                    fontSize: 11,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var unidades = [
+                {
+                    text:
+                        "Unidades : " +
+                        "TODAS LAS UNIDADES",
+                    fontSize: 11,
+                    alignment: "left",
+                    bold: true,
+                },
+            ];
+            var resultadoString = [
+                [
+                    {
+                        text: "Fecha",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Unidad",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Ruta",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "P. Subidos",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "Valor ($)",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
+                        text: "T. Kilómetro",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                ],
+            ];
+            for (var i = 0; i < this.mListaRVelocidades.length; i++) {
+                var arrys = [
+                    {
+                        text: this.mListaRVelocidades[i].fecha,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRVelocidades[i].unidad,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRVelocidades[i].RutaDespacho,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRVelocidades[i].subidas,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRVelocidades[i].valor,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+                    {
+                        text: this.mListaRVelocidades[i].sumaKm,
+                        fontSize: 8.5,
+                        alignment: "center",
+                    },
+
+                ];
+                resultadoString.push(arrys);
+            }
+            var docDefinition = {
+                pageSize: "A4",
+                pageOrientation: "portrait",
+                pageMargins: [30, 80, 40, 30],
+                header: {
+                    margin: 15,
+                    columns: [
+                        {
+                            image: getBase64LogoReportes(this.$cookies.get("empresa")),
+                            width: 100,
+                            height: 50,
+                            margin: [30, 0, 0, 0],
+                        },
+                        {
+                            layout: "noBorders",
+                            table: {
+                                widths: ["*"],
+                                body: [
+                                    [
+                                        {
+                                            text: "REPORTE VELOCIDADES DETALLADOS",
+                                            alignment: "center",
+                                            fontSize: 16,
+                                            bold: true,
+                                        },
+                                    ],
+                                    [
+                                        {
+                                            text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                                            alignment: "center",
+                                            fontSize: 8,
+                                        },
+                                    ],
+                                    [
+                                        {
+                                            text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                                            alignment: "center",
+                                            fontSize: 8,
+                                        },
+                                    ],
+                                ],
+                            },
+                        },
+                    ],
+                },
+                content: [
+                    {
+                        layout: "noBorders",
+                        table: {
+                            headerRows: 0,
+                            widths: [450, 450, 450],
+                            body: [empresa, tipoReporte, desde_hasta, unidades],
+                        },
+                    },
+                    {
+                        table: {
+                            headerRows: 0,
+                            widths: [60, 60, 60, 60, 60, 60],
+                            body: resultadoString,
+                        },
+                    },
+                ],
+            };
+            pdfMake.createPdf(docDefinition).download("RDVM_" + Date.now());
+        }
 
 
     },
