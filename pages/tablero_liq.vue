@@ -894,7 +894,8 @@ export default {
             }
           );
 
-          if (response.data.status_code == 200) {
+          if (response.data.status_code == 200) 
+          {
             this.isShowModalLiquidar = false;
             this.$notify({
               title: "LIQUIDACION CREADA CON EXITO",
@@ -1597,7 +1598,7 @@ export default {
 
           [
             {
-              text: "CONTROLES",
+              text: "PEAJES",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
