@@ -687,7 +687,7 @@ export default {
     async readAllFrecuenciasByRuta() {
       this.mListFrecuenciasByRuta = []
       this.loadingFrecuenciaRutasFrecuencias = true
-      var datos = await this.$axios.post(process.env.baseUrlPanel + "/frecuencias_rutas", {
+      var datos = await this.$axios.post(process.env.baseUrlPanel + "/frecuencias_all", {
         token: this.token,
         ruta:this.mListRutasSeleccionadas
       });

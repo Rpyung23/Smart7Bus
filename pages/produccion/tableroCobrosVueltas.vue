@@ -946,7 +946,7 @@ export default {
 
       var docDefinition = {
         // a string or { width: 190, height: number }
-        pageSize: { width: 220, height: mLista.length < 4 ? 300 : 3000 },
+        pageSize: { width: 220, height: mLista.length < 4 ? 300 : 'auto' },
         watermark: {
           text: this.banderaMarcoAguaRecibo ? "NO PAGADO" : "",
           color: "red",

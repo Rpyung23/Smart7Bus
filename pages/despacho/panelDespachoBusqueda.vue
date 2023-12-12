@@ -764,6 +764,7 @@ export default {
             : this.radioEstadoRSalidasPanelBusqueda,
         orderUnidad:
           this.oSwitchOrdenarSalidasDespachoPanelBusqueda == true ? 1 : 0,
+        frecuencia:"*"
       };
 
       console.log(obj);

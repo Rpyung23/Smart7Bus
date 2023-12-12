@@ -1518,6 +1518,7 @@ export default {
               this.radioEstadoRSalidasPanelDespacho.length <= 0
                 ? "*"
                 : this.radioEstadoRSalidasPanelDespacho,
+            frecuencia: "*"    
           }
         )
         console.log("------------------------------")
@@ -1863,6 +1864,8 @@ export default {
       try {
         this.isLoadingDespachoSalidaPanelBusqueda = true;
         this.mListDespachosSalidasAnuladas = [];
+
+        // SOLO SALIDAS ANULADAS CORREGIR XXQ YA ESTA API DE SALIDAS Q TRAE TODO
         var datos = await this.$axios.post(
           process.env.baseUrl + "/readSalidasPanelDespacho",
           {
