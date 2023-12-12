@@ -340,7 +340,7 @@ export default {
             alignment: datosProcesados[0].length > 0 ? datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "left" : "center" : "center",
           },
           {
-            text: datosProcesados[0].length > 0 ? datosProcesados[0][i].FaltSali_d : " ",
+            text: datosProcesados[0].length > 0 ?  datosProcesados[0][i].HoraMarcSali_d == "00:00:00" ? "" : datosProcesados[0][i].FaltSali_d : " ",
             fontSize: 8,
             alignment: "center",
           },
@@ -352,7 +352,7 @@ export default {
             alignment: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "left" : "center",
           },
           {
-            text: datosProcesados[1][i].FaltSali_d,
+            text: datosProcesados[1][i].HoraMarcSali_d == "00:00:00" ? "" : datosProcesados[1][i].FaltSali_d,
             fontSize: 8,
             alignment: "center",
           },
@@ -367,7 +367,7 @@ export default {
             alignment: datosProcesados[2].length > 0 ? datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "left" : "center" : "center",
           },
           {
-            text: datosProcesados[2].length > 0 ? datosProcesados[2][i].FaltSali_d : " ",
+            text: datosProcesados[2].length > 0 ?   datosProcesados[2][i].HoraMarcSali_d == "00:00:00" ? "" : datosProcesados[2][i].FaltSali_d : " ",
             fontSize: 8,
             alignment: "center",
           },
