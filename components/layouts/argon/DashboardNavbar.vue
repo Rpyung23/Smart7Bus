@@ -28,8 +28,12 @@
         </a>
       </li>-->
 
-      <iframe id="reloj" src="https://free.timeanddate.com/clock/i8cxjbwb/n4622/fn8/fs18/fcfff/tc2a8d62/pa6/th1/ta1"
+      <iframe id="reloj" v-if="code_country_empresa.toUpperCase() == 'EC'"  src="https://free.timeanddate.com/clock/i8cxjbwb/n4622/fn8/fs18/fcfff/tc2a8d62/pa6/th1/ta1"
         frameborder="0" width="142" height="32"></iframe>
+
+        <iframe id="reloj" v-if="code_country_empresa.toUpperCase() == 'VE'" 
+                src="https://free.timeanddate.com/clock/i8cxjbwb/n58/tlve4/fn15/fs18/fcfff/tc2a8d62/bls0/blc2a8d62/brs0/brc2a8d62/bts0/btc2a8d62/bbs0/bbc2a8d62/pa6/th1/ta1" 
+                           frameborder="0" width="142" height="32"></iframe>  
 
 
       <!--<span class="reloj">{{ hora }}</span>-->
@@ -239,7 +243,8 @@ export default {
       permisos: null,
       oEspacio:false,
       nameEmpresa:"Gestión Inteligente de Transporte Urbano",
-      pathProduccionTablero:'/produccion/tablero'
+      pathProduccionTablero:'/produccion/tablero',
+      code_country_empresa:"EC"
     };
   },
   methods: {
@@ -311,6 +316,9 @@ export default {
     decodedPermisosNavBar() {
       /*var decodeBase64 = window.atob(this.$cookies.get("token"))*/
       this.permisos = this.$cookies.get("permisos")
+      this.code_country_empresa = this.$cookies.get("code_country_empresa")
+
+
       this.oEspacio = (this.permisos != null && this.permisos.notification != null && this.permisos.notification.active != null && this.permisos.notification.active) ? false : true
       /*if(this.permisos!=null && this.permisos.notification.active){
             this.readNotificacionesAlertaDipositivos();
