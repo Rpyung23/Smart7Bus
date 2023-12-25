@@ -66,26 +66,26 @@
                   ><i class="el-icon-search"></i
                 ></span>
               </base-button>
-              <!--<download-excel
-              class="btn btn-outline-success"
-              outline
-              :header="headerExcelRPagosVehiculoProduccion"
+
+              <download-excel
+              class="btn btn-icon btn-fab btn-success btn-sm"
+              v-if="mListaSalidasPanelBusqueda.length > 0"
               :data="mListaSalidasPanelBusqueda"
-              :fields="json_fields_excelRPagosVehiculoProduccion"
-              :worksheet="WorksheetExcelRPagosVehiculoProduccion"
-              :name="FileNameExcelRPagosVehiculoProduccion"
+              :fields="json_fields_excelRPanelBusqueda"
+              :name="FileNameExcelRPanelBusqueda"
             >
               <span class="btn-inner--icon"
                 ><i class="ni ni-collection"></i
               ></span>
-              <span class="btn-inner--text"> Excel</span>
-            </download-excel>-->
+              
+            </download-excel>
+            
               <base-button
                 type="danger"
                 size="sm"
                 v-if="mListaSalidasPanelBusqueda.length > 0"
                 @click="exportPdfSalidasPanelBusqueda()"
-                title="Exportar PDF"
+                title="EXPORTAR A PDF"
               >
                 <span class="btn-inner--icon"
                   ><i class="ni ni-single-copy-04"></i
@@ -669,7 +669,20 @@ export default {
       oTextAreaAnotacion: "",
       titulo_modal_add_anotacion: null,
       isTarjetaAntActPos: false, 
-      isMultipleRutas:true
+      isMultipleRutas:true,
+      json_fields_excelRPanelBusqueda:{
+        "UNIDAD":"CodiVehiSali_m",
+        "N° VUELTA":"NumeVuelSali_m",
+        "RUTA":"DescRutaSali_m",
+        "FRECUENCIA":"DescFrec",
+        "H. SALIDA":"HoraSaliProgSali_mF",
+        "H. LLEGADA":"HoraLlegProgSali_m",
+        "F. ATRASO":"atrasoFaltasTime",
+        "F. ADELANTO":"adelantoFaltasTime",
+        "MULTA ($)":"PenaCtrlSali_d",
+        "KM/H":"VeloMaxiSali_m",
+        "CHOFER":"nombres_chofer"
+      }
     };
   },
   methods: {
@@ -741,7 +754,13 @@ export default {
         }
       }
     },
-    async readSalidasPanelBusqueda() {
+    async readSalidasPanelBusqueda() 
+    {
+
+
+      this.FileNameExcelRPanelBusqueda = "RPB_RD_"+Date.now()+".xls"
+
+
       this.mListaSalidasPanelBusqueda = [];
 
       //console.log("this.mSelectRutaSalidaPanelBusqueda : "+this.mSelectRutaSalidaPanelBusqueda)

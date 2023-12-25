@@ -121,7 +121,7 @@
               </span>
               <small>Producción</small>
             </a>
-            <a href="#!" class="col-4 shortcut-item" v-if="permisos != null && permisos.liquidacion != null && permisos.liquidacion.active != null && permisos.liquidacion.active">
+            <a href="/tablero_liq" class="col-4 shortcut-item" v-if="permisos != null && permisos.liquidacion != null && permisos.liquidacion.active != null && permisos.liquidacion.active">
               <span class="shortcut-media avatar rounded-circle bg-gradient-green">
                 <i class="ni ni-money-coins"></i>
               </span>
