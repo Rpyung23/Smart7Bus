@@ -57,34 +57,37 @@
         <div class="buttonsAdicionalesDespacho">
           <base-button
             icon
+            v-if="isPermisoAnularTodo"
             type="danger"
             size="sm"
             @click="showModalAnularTodo()"
           >
             <span class="btn-inner--icon"
-              ><i class="ni ni-scissors"></i> ANULA TODO</span
+              ><i class="ni ni-scissors"></i> AN. TODO</span
             >
           </base-button>
 
           <base-button
             icon
             type="warning"
+            v-if="isPermisoFinalizarTodo"
             size="sm"
             @click="showModalFinalizarTodo()"
           >
             <span class="btn-inner--icon"
-              ><i class="ni ni-fat-delete"></i> FINALIZA TODO</span
+              ><i class="ni ni-fat-delete"></i> FIN. TODO</span
             >
           </base-button>
 
           <base-button
             icon
             type="info"
+            v-if="isPermisoRecalificarTodo"
             size="sm"
             @click="showModalDespachoRecalificarTodoSalida()"
           >
             <span class="btn-inner--icon"
-              ><i class="ni ni-watch-time"></i> RECALIFICA TODO</span
+              ><i class="ni ni-watch-time"></i> REC. TODO</span
             >
           </base-button>
 
@@ -92,6 +95,7 @@
             icon
             type="success"
             title="Despachar"
+            v-if="isPermisoDespachar"
             size="sm"
             @click="showEnviarDespachoPanel()"
           >
@@ -231,12 +235,14 @@
           <base-button
             icon
             type="info"
+
             @click="showModalDespachoRecalificarSalida()"
             v-show="
               this.selectRowId != null &&
               this.selectRowId != '' &&
               this.selectRowEstado != '' &&
-              this.selectRowEstado != 'DIFERIDO'
+              this.selectRowEstado != 'DIFERIDO' &&
+              this.isPermisoRecalificar
             "
             size="sm"
             title="Recalificar Salida"
@@ -253,7 +259,7 @@
             v-show="
               this.selectRowId != null &&
               this.selectRowId != '' &&
-              this.selectRowEstado != '' "
+              this.selectRowEstado != '' && this.isPermisoAnular"
               
             size="sm"
             title="Anular Salida"
@@ -270,7 +276,8 @@
               this.selectRowId != '' &&
               this.selectRowEstado != '' &&
               this.selectRowEstado != 'FINALIZADO' &&
-              this.selectRowEstado != 'DIFERIDO'
+              this.selectRowEstado != 'DIFERIDO' && 
+              this.isPermisoFinalizar
             "
             size="sm"
             title="Finalizar Salida"
@@ -1291,6 +1298,18 @@ export default {
       mSelectRutaRecalificarTodo: null,
 
       isTarjetaAntActPos: false, 
+
+
+      isPermisoDespachar : true,
+      isPermisoAnular : true,
+      isPermisoRecalificar : true,
+      isPermisoFinalizar : true,
+      
+      isPermisoAnularTodo: true,
+      isPermisoFinalizarTodo :true,
+      isPermisoRecalificarTodo : true
+
+
     };
   },
   methods: {
@@ -2396,13 +2415,48 @@ export default {
       this.mSelectRutaRecalificarTodo = null;
     },
   },
-  mounted() {
+  mounted() 
+  {
     this.isTarjetaAntActPos =
       this.$cookies.get("empresa") == "glimitada" ? true : false;
     this.readConfigRecalTarjeta();
     this.initFechaActualSalidaDespachoPanel();
     this.readAllUnidadesSalidasPanelBusqueda();
     this.initRutasDespacho();
+
+
+    var oPermisoDespacho = this.$cookies.get("permisos")
+
+    console.log("++++++++++++++++++++++")
+
+    console.log(oPermisoDespacho)
+
+    console.log("++++++++++++++++++++++")
+
+
+    this.isPermisoDespachar = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
+                           oPermisoDespacho.despacho.panelDespacho.crear_despacho != undefined ? 
+                           oPermisoDespacho.despacho.panelDespacho.crear_despacho : false : false : false
+
+    this.isPermisoAnular = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
+                           oPermisoDespacho.despacho.panelDespacho.anular : false : false
+    this.isPermisoFinalizar = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
+                           oPermisoDespacho.despacho.panelDespacho.finalizar : false : false
+    this.isPermisoRecalificar = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
+                           oPermisoDespacho.despacho.panelDespacho.recalificar : false : false
+
+    this.isPermisoAnularTodo = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
+                           oPermisoDespacho.despacho.panelDespacho.anular_todo != undefined ? 
+                           oPermisoDespacho.despacho.panelDespacho.anular_todo : false : false : false
+    this.isPermisoFinalizarTodo = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
+                           oPermisoDespacho.despacho.panelDespacho.finalizar_todo != undefined ? 
+                           oPermisoDespacho.despacho.panelDespacho.finalizar_todo : false : false : false
+    this.isPermisoRecalificarTodo = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
+                           oPermisoDespacho.despacho.panelDespacho.recalificar_todo != undefined ? 
+                           oPermisoDespacho.despacho.panelDespacho.recalificar_todo : false : false : false
+
+
+
 
     /*document.addEventListener('contextmenu', event => event.preventDefault());
     document.oncontextmenu = function () { return false }*/
