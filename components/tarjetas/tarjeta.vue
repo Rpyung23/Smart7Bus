@@ -405,7 +405,8 @@ export default {
               body: [
                 ["RUTA : " + salida[1].DescRutaSali_m],
                 ["CHOFER : " + (salida[1].nombres_chofer == null ? 'Sin Chofer' : salida[1].nombres_chofer)],
-                ["F. Impresión : " + this.initFechaActualTicket()],
+                ["Fecha Salida : "+salida[1].HoraSaliProgSali_mF,]
+                /*["F. Impresión : " + this.initFechaActualTicket()]*/
               ],
             },
           },
