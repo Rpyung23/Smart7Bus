@@ -409,7 +409,7 @@ export default {
         {
           prop: "RangoPermitido",
           label: "F. Tolerancia",
-          minWidth: 185,
+          minWidth: 200,
         },
         {
           prop: "DescRutaSali_m",
