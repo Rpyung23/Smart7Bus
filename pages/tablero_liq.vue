@@ -898,13 +898,19 @@ export default {
           {
             this.isShowModalLiquidar = false;
             this.$notify({
-              title: "LIQUIDACION CREADA CON EXITO",
+              title: "LIQUIDACION",
               message: response.data.msm,
               type: "success",
             });
 
             this.readLiquidacion();
-          } else {
+          } else if (response.data.status_code == 300) {
+            this.$notify({
+              title: "LIQUIDACION",
+              message: response.data.msm,
+              type: "default",
+            });
+          }else{
             this.$notify({
               title: "LIQUIDACION ERROR SERVER",
               message: response.data.msm,
