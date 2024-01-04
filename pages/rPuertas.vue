@@ -145,7 +145,7 @@
               header-row-class-name="thead-dark"
               height="calc(100vh - 13rem)"
             >
-              <!--<el-table-column label="Actions" width="120">
+              <el-table-column label="Actions" width="150">
                 <template slot-scope="scope">
                   <base-button
                     size="sm"
@@ -155,7 +155,7 @@
                     ><i class="ni ni-world"></i
                   ></base-button>
                 </template>
-              </el-table-column>-->
+              </el-table-column>
 
               <el-table-column
                 v-for="column in tableColumnsUnidadesFlotaVehicular"
@@ -164,15 +164,13 @@
               >
               </el-table-column>
 
-
-              <el-table-column
-      prop="tot"
-      label="TOTAL ($)"
-      width="230">
-      <template slot-scope="scope">
-        <strong style="font-size: 1rem;color:black;">{{scope.row.tot}}</strong>
-      </template>
-    </el-table-column>
+              <el-table-column prop="tot" label="TOTAL ($)" width="230">
+                <template slot-scope="scope">
+                  <strong style="font-size: 1rem; color: black">{{
+                    scope.row.tot
+                  }}</strong>
+                </template>
+              </el-table-column>
 
               <div slot="empty"></div>
             </el-table>
@@ -182,22 +180,11 @@
     </base-header>
 
     <!--Form modal-->
-    <modal
-      :show.sync="modalUbicacionEventoDispositivo"
-      size="xl"
-      body-classes="p-1"
-    >
-      <div class="MapaFueraRutaModal">
-        <div class="switch_RutaActiveFueraRuta">
-          <el-switch
-            v-model="showMostarRuta_FueraRuta"
-            active-text=""
-            inactive-text="Mostrar Ruta"
-            @change="changeMostrarRuta_FueraRuta()"
-          >
-          </el-switch>
-        </div>
+    <modal :show.sync="modaMapaHistoryPuertas" size="xl" body-classes="p-1">
 
+      <div class="containerTitleModalMapaPuerta">{{titleModalMapaPuerta}}</div>
+
+      <div class="MapaFueraRutaModal">
         <GmapMap
           map-type-id="roadmap"
           class="mapaEventosDispositivos"
@@ -213,90 +200,34 @@
             disableDefaultUi: true,
           }"
         >
-          <GmapPolyline
-            :path="mListRutaSubidaFueraRuta"
-            :options="{
-              strokeColor: '#A52714',
-              fillColor: '#A52714',
-              strokeOpacity: 0.6,
-              strokeWeight: 4,
-            }"
-          >
-          </GmapPolyline>
-          <GmapPolyline
-            :path="mListRutaBajadaFueraRuta"
-            :options="{
-              strokeColor: '#01579B',
-              fillColor: '#01579B',
-              strokeOpacity: 0.6,
-              strokeWeight: 4,
-            }"
-          >
-          </GmapPolyline>
+
+        <GmapPolygon :options="{
+            strokeColor: '#F71313',
+            fillColor: '#F7131380',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+          }" :editable="falso" :strokeOpacity="0.5" :strokeWeight="1" :paths="mTrazadoTramaProhibido" />
 
 
-          <GmapMarker
-        v-if="mListRutaBajadaFueraRuta.length > 0"
-        :position="{
-          lat: parseFloat(mListRutaBajadaFueraRuta[0].lat),
-          lng: parseFloat(mListRutaBajadaFueraRuta[0].lng),
-        }"
-        :optimized="true"
-        :icon= '"img/monitoreo/start_route.png"'
-      />
-      <GmapMarker
-        v-if="mListRutaSubidaFueraRuta.length > 0"
-        :position="{
-          lat: parseFloat(mListRutaSubidaFueraRuta[0].lat),
-          lng: parseFloat(mListRutaSubidaFueraRuta[0].lng),
-        }"
-        :optimized="true"
-        :icon= '"img/monitoreo/end_route.png"'
-      />
-
-
-          <GmapMarker
-            v-for="(marker, index) in mListaHistorialEventosMapa"
-            :key="index"
-            :position="{
-              lat: parseFloat(marker.LatiHistEven),
-              lng: parseFloat(marker.LongHistEven),
-            }"
-            :icon="marker.icono"
-            @mouseover="showInfoWindowsRecorrido(marker, index)"
-            @mouseout="closeInfoWindowsRecorrido()"
-            :draggable="false"
-            :optimized="true"
-          />
-
-          <GmapInfoWindow
-            :options="infoOptions"
-            :position="infoWindowPos"
-            :opened="infoWinOpen"
-            @closeclick="infoWinOpen = false"
-          >
-            <div v-html="infoContent"></div>
-          </GmapInfoWindow>
-
-          <!--<GmapMarker v-for="(marker,index) in mListaHistorialEventosMapa" :key="index"
-          :position="{
-            lat: parseFloat(marker.LatiHistEven),
-            lng: parseFloat(marker.LongHistEven),
-          }"
-          icon="static/img/control/control.png"
-          :clickable="false"
-          :draggable="false"
+        <GmapMarker v-for="(marker, index) in mListaHistoryPuertas"
+          :key="marker.id" :icon="marker.puerta1_abierta == 1 ?
+          'img/monitoreo/abierta_puerta.png' :
+          'img/monitoreo/cierre_puerta.png'" 
+          :position="{ lat:parseFloat(marker.latitud), lng: parseFloat(marker.longitud)}"
           :optimized="true"
           :options="{
-            label: {
-              text: marker.DescRutaSali_m +' VELO : '+marker.VeloHistEven +' \n VUE: ' + marker.NumeVuelSali_m+ ' \n ('+ marker.FechHistEven+')',
-              color: 'red',
-              className: 'paddingLabelEventosDispositivos',
-            },
-          }"
-        />-->
+              label: {
+              text: marker.hora,
+              color: marker.puerta1_abierta == 1 ? '#4E7119' : '#D50303',
+              className: 'paddingLabelHistoryPuertas'
+            }
+          }"  
+          
+          />
         </GmapMap>
       </div>
+
+      
     </modal>
   </div>
 </template>
@@ -392,11 +323,13 @@ export default {
           prop: "unidad",
           label: "Unidad",
           minWidth: 110,
-        },{
+        },
+        {
           prop: "descripcion",
           label: "Grupo",
           minWidth: 140,
-        },{
+        },
+        {
           prop: "NumeVuelSali_m",
           label: "N° Vuelta",
           minWidth: 150,
@@ -422,32 +355,96 @@ export default {
           minWidth: 250,
         },
       ],
-      mListaPosicionesFueraRuta: [],
       mListaREventosDispositivos: [],
-      modalUbicacionEventoDispositivo: false,
-      LatiDispEven: 0,
-      LongDispEven: 0,
       oCenter: { lat: -1.249546, lng: -78.585376 },
       oZoom: 7,
-      DescDispEvenList: "",
-      HoraDispEvenTime: "",
       mListaTiposEventos: [],
       modelTiposEvento: [],
-      mListaHistorialEventosMapa: [],
-      showMostarRuta_FueraRuta: false,
-      LetrRutaFueraRuta: "",
-      mListRutaSubidaFueraRuta: [],
-      mListRutaBajadaFueraRuta: [],
+      mListaHistoryPuertas: [],
+      modaMapaHistoryPuertas: false,
+      titleModalMapaPuerta:"",
+      mTrazadoTramaProhibido:[]
     };
   },
 
   methods: {
-    async showMapaFueraRutas(item) {
-      this.showMostarRuta_FueraRuta = false
-      this.modalUbicacionEventoDispositivo = true;
-      console.log(item)
-      this.LetrRutaFueraRuta = item.LetraRutaSali_m;
-      await this.readPosicionesFueraRuta(item);
+    async showMapaFueraRutas(item) 
+    {
+      this.oZoom = 4
+      this.mListaHistoryPuertas = []
+      this.mTrazadoTramaProhibido = []
+      this.modaMapaHistoryPuertas = true
+
+      
+
+      if(item.fk_id_tramo_m != undefined)
+      {
+        this.readHistoryPuertasTramo(item)
+        this.readTramoProhibido(item)
+      }else{
+        this.readHistoryPuertas(item)
+      }
+      console.log("------------------------------------")
+      console.log(item);
+      console.log("------------------------------------")
+
+      this.titleModalMapaPuerta = "UNIDAD : "+item.unidad+" ( F. EVENTO : "+item.HoraDispEven+")"+" - "+item.RangoPermitido+" ($ "+item.tot+")"
+    },
+    async readTramoProhibido(item)
+    {
+      var data = await this.$axios.post(process.env.baseUrl+"/readTramoProhibido",{token:this.token,item:item.fk_id_tramo_m})
+
+      for(var i = 0 ;i<data.data.datos.length;i++)
+      {
+        if(i == 0)
+        {
+          this.oCenter = {
+             lat: parseFloat(data.data.datos[0].latitud),
+             lng: parseFloat(data.data.datos[0].longitud),
+          }
+          this.oZoom = 17
+        }
+        this.mTrazadoTramaProhibido.push({ lat: data.data.datos[i].latitud, lng: data.data.datos[i].longitud })
+      }
+    },
+    async readHistoryPuertas(item) {
+      var response = await this.$axios.post(
+        process.env.baseUrlPanel + "/history_puertas",
+        {
+          token: this.token,
+          fechaI: item.HoraSaliProgSali_m,
+          fechaF: item.HoraLlegProgSali_m,
+          unidad: item.unidad,
+          ruta: "",
+          frecuencia: item.idFrecSali_m,
+        }
+      );
+
+      this.mListaHistoryPuertas.push(...response.data.data);
+      if (response.data.data.length > 0) 
+      {
+        this.oCenter = {
+          lat: parseFloat(this.mListaHistoryPuertas[0].latitud),
+          lng: parseFloat(this.mListaHistoryPuertas[0].longitud),
+        },
+        this.oZoom = 17
+      }
+    },
+    async readHistoryPuertasTramo(item) {
+      var response = await this.$axios.post(
+        process.env.baseUrlPanel + "/history_puertas_tramos",
+        {
+          token: this.token,
+          fechaI: item.HoraSaliProgSali_m,
+          fechaF: item.HoraLlegProgSali_m,
+          unidad: item.unidad,
+          ruta: "",
+          frecuencia: item.idFrecSali_m,
+          salida:item.idSalida
+        }
+      );
+
+      this.mListaHistoryPuertas.push(...response.data.data);
     },
     remoteMethodUnidadesSalidasPanelBusqueda(query) {
       if (query !== "") {
@@ -536,8 +533,6 @@ export default {
       this.loadingTableRVelocidadesBusquedaloading = false;
     },
     async readRPuertaEventosTramos() {
-      
-      
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/RPuertasTramos",
@@ -577,47 +572,6 @@ export default {
         console.log(error);
       }
       this.loadingTableRVelocidadesBusquedaloading = false;
-    },
-    async readPosicionesFueraRuta(item) {
-      console.log(item);
-      try {
-        var datos = await this.$axios.post(
-          process.env.baseUrl + "/historialFueraRutaSalida",
-          {
-            token: this.token,
-            unidad: item.CodiVehiHistEven,
-            fechaI: item.fechaIHE,
-            fechaF: item.fechaFHE,
-            salida: item.idSali_mHistEven,
-          },
-          {
-            timeout: 600000,
-          }
-        );
-
-        for (var i = 0; i < datos.data.datos.length; i++) {
-          var obj = datos.data.datos[i];
-          if (i == 0) {
-            this.oCenter = {
-              lat: parseFloat(obj.LatiHistEven),
-              lng: parseFloat(obj.LongHistEven),
-            };
-            this.oZoom = 17;
-          }
-          obj.icono = {
-            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-            fillColor: "red",
-            fillOpacity: 1,
-            strokeWeight: 0,
-            rotation: obj.RumbHistEven,
-            scale: 3,
-            anchor: new google.maps.Point(0, 0),
-          };
-          this.mListaHistorialEventosMapa.push(obj);
-        }
-      } catch (error) {
-        console.log(error.toString());
-      }
     },
     async exportPdfRDispositivoEventos() {
       var empresa = [
@@ -701,7 +655,8 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },          {
+          },
+          {
             text: "TOTAL ($)",
             fontSize: 8.5,
             bold: true,
@@ -834,7 +789,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [30, 80, 40, 90, 60, 90,60],
+              widths: [30, 80, 40, 90, 60, 90, 60],
               body: resultadoString,
             },
           },
@@ -912,7 +867,7 @@ export default {
       }
     },
     async changeMostrarRuta_FueraRuta() {
-      console.log("MOSTRANDO RUTA........")
+      console.log("MOSTRANDO RUTA........");
       try {
         this.mListRutaBajadaFueraRuta = [];
         this.mListRutaSubidaFueraRuta = [];
@@ -942,9 +897,9 @@ export default {
               datos.data.datos.polilineasRutaBajada[j]
             );
           }
-        }else{
-          console.log("NO POLILINEA")
-          console.log(datos.data.msm)
+        } else {
+          console.log("NO POLILINEA");
+          console.log(datos.data.msm);
         }
       } catch (error) {
         console.log(error);
@@ -960,7 +915,34 @@ export default {
   },
 };
 </script>
+
 <style>
+
+.ContainerLeyendaPuert {
+  position: absolute;
+  z-index:9;
+  height:10rem;
+  width:10rem;
+  background:"#FFFF";
+  margin-right:1rem;
+}
+
+.containerTitleModalMapaPuerta
+{
+  position:absolute;
+  width:100%;
+  z-index:9;
+  background:#2dce89;
+  color:white;
+  font-weight:bold;
+}
+
+
+.paddingLabel {
+  margin-bottom: 2.9rem;
+  font-weight: bold;
+}
+
 .switch_RutaActiveFueraRuta {
   position: absolute;
   z-index: 100000000;
@@ -1027,4 +1009,10 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
+.paddingLabelHistoryPuertas {
+  margin-bottom: 2.9rem;
+  font-weight: bold;
+}
+
 </style>
