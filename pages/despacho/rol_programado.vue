@@ -103,7 +103,7 @@
                 <base-button
                   icon
                   type="danger"
-                  @click="deleteRolProgramadoM(scope.row)"
+                  @click="showModalEliminarDespachoProgramado(scope.row)"
                   size="sm"
                 >
                   <span class="btn-inner--icon"
@@ -1625,6 +1625,25 @@
         </modal>
       </div>
 
+      <modal :show.sync="modalEliminarRolProgrmadoM" body-classes="p-0">
+        <h6 slot="header" class="modal-title">
+          <strong>{{
+            objRolSelect == null ? "S/N" : objRolSelect.DescRuta
+          }}</strong>
+        </h6>
+        <div style="margin-left: 1rem; margin-right: 1rem">
+          Esta seguro de eliminar el ROL
+          <strong>{{
+            objRolSelect == null ? "S/N" : objRolSelect.detalle_rol_programado_m
+          }}</strong>
+        </div>
+        <template slot="footer">
+          <base-button type="danger" @click="deleteRolProgramadoM()"
+            >ELIMINAR</base-button
+          >
+        </template>
+      </modal>
+
       <modal :show.sync="modalEnviarDespachos" body-classes="p-0">
         <h6 slot="header" class="modal-title">
           <strong>{{
@@ -1848,6 +1867,8 @@ export default {
       modalEnviarDespachos: false,
 
       columns: [],
+
+      modalEliminarRolProgrmadoM:false
     };
   },
   methods: {
@@ -1876,19 +1897,22 @@ export default {
       this.readRolProgramadoD();
     },
 
-    async deleteRolProgramadoM(item) {
+    async deleteRolProgramadoM() {
       try {
         var response = await this.$axios.delete(
           process.env.baseUrl + "/eliminarRolProgramadoM",
           {
             data: {
               token: this.token,
-              rol_programado_m: item.id_rol_programado_m,
+              rol_programado_m: this.objRolSelect.id_rol_programado_m,
             },
           }
         );
 
-        if (response.data.status_code == 200) {
+        if (response.data.status_code == 200) 
+        {
+          this.objRolSelect = null
+          this.modalEliminarRolProgrmadoM = false
           this.readRolProgramado();
         } else {
           this.$notify({
@@ -2068,6 +2092,12 @@ export default {
           message: error.toString(),
         });
       }
+    },
+
+    showModalEliminarDespachoProgramado(item)
+    {
+      this.objRolSelect = item
+      this.modalEliminarRolProgrmadoM = true
     },
 
     showModalSendDespachoProgramado(item) {
