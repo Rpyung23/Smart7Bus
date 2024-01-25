@@ -93,7 +93,7 @@
           </div>
         </card> -->
 
-        <card class="no-border-card" body-classes= "card_body_0_01rem"style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
+        <card class="no-border-card" body-classes= "card_body_0_01rem" style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
           <embed id="iframeContainerIndicadoresCalidad" :src="oBase64IndicadoresCalidad" type="application/pdf"
             width="100%" height="100%" />
         </card>
