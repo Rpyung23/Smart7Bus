@@ -442,6 +442,14 @@ export default {
                         alignment: "center",
                     },
                     {
+                        text: "Hora",
+                        fontSize: 8.5,
+                        bold: true,
+                        fillColor: "#039BC4",
+                        color: "white",
+                        alignment: "center",
+                    },
+                    {
                         text: "N-Vuelta",
                         fontSize: 8.5,
                         bold: true,
@@ -495,6 +503,12 @@ export default {
                 var arrys = [
                     {
                         text: this.mListaRVelocidadesDettallados[i].CodiVehiHistEven,
+                        fontSize: 8.5,
+                        alignment: "center",
+                        color: this.mListaRVelocidadesDettallados[i].EvenExceVeloHistEven === 1 ? "red" : "black",
+                    },
+                    {
+                        text: this.mListaRVelocidadesDettallados[i].FechHistEven,
                         fontSize: 8.5,
                         alignment: "center",
                         color: this.mListaRVelocidadesDettallados[i].EvenExceVeloHistEven === 1 ? "red" : "black",
@@ -596,7 +610,7 @@ export default {
                     {
                         table: {
                             headerRows: 0,
-                            widths: [30, 60, 80, 60, 40, 80, 80],
+                            widths: [30,40, 60, 80, 60, 40, 80, 80],
                             body: resultadoString,
                         },
                     },
