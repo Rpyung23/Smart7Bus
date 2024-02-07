@@ -1,6 +1,10 @@
 <template>
   <div class="content">
     <base-header class="py-3">
+
+      
+
+
       <card
         class="no-border-card col"
         style="margin-bottom: 0.5rem"
@@ -416,6 +420,13 @@
           >
             <div class="circleProgress"></div>
           </div>
+
+
+          <div class="loafing_reca_anu_fin_todo" v-if="is_loading_anu_fin_rec">
+            <div class="circleProgress"></div>
+          </div>
+
+
         </div>
       </div>
     </base-header>
@@ -1307,7 +1318,8 @@ export default {
       
       isPermisoAnularTodo: true,
       isPermisoFinalizarTodo :true,
-      isPermisoRecalificarTodo : true
+      isPermisoRecalificarTodo : true,
+      is_loading_anu_fin_rec:false
 
 
     };
@@ -1437,6 +1449,23 @@ export default {
         format + " " + hora + ":" + minutes + ":00";
       this.fechaActualAnularFinalizarTodo =
         format + " " + hora + ":" + minutes + ":00";
+      //this.config_flatpicker.minDate = this.fechaActualAnularFinalizarTodo;
+    },
+    getFechaActual() {
+      var fecha = new Date();
+      var mes = fecha.getMonth() + 1;
+      var day = fecha.getDate();
+      var hora =
+        fecha.getHours() < 10 ? "0" + fecha.getHours() : fecha.getHours();
+      var minutes =
+        fecha.getMinutes() < 10 ? "0" + fecha.getMinutes() : fecha.getMinutes();
+      var format =
+        fecha.getFullYear() +
+        "-" +
+        (mes < 10 ? "0" + mes : mes) +
+        "-" +
+        (day < 10 ? "0" + day : day);
+      return (format + " " + hora + ":" + minutes + ":00")
       //this.config_flatpicker.minDate = this.fechaActualAnularFinalizarTodo;
     },
     myGridOnContextMenu: function () {
@@ -2109,8 +2138,11 @@ export default {
       this.mCheckDiferidaFinalizarAnulado = false;
       this.mCheckEnRutaFinalizarAnulado = false;
       this.mCheckFinalizadaFinalizarAnulado = false;
+      this.fechaActualAnularFinalizarTodo = this.getFechaActual()
     },
-    sendFinalizarAnularAllSalidas(estado_, title) {
+    sendFinalizarAnularAllSalidas(estado_, title) 
+    {
+
       if (this.mSelectRutaAnularFinalizarTodo == null) {
         Notification.warning({
           title: "PANEL DESPACHO",
@@ -2164,6 +2196,7 @@ export default {
     },
     async apiAnularFinalizarAllSalida(estado_) {
       try {
+        this.is_loading_anu_fin_rec = true
         var data = await this.$axios.post(
           process.env.baseUrl + "/AnularFinalizarAllDespacho",
           {
@@ -2206,6 +2239,7 @@ export default {
           duration: 2000,
         });
       }
+      this.is_loading_anu_fin_rec = false
       this.createHeaderTable();
     },
     async readConfigRecalTarjeta() {
@@ -2336,6 +2370,7 @@ export default {
       }
     },
     async showModalDespachoRecalificarTodoSalida() {
+      this.fechaActualAnularFinalizarTodo = this.getFechaActual()
       //this.clearModalRecalificaTodo();
 
       //this.RecaSobrCtrlMarcClie = false;
@@ -2357,6 +2392,8 @@ export default {
 
           return;
         }
+
+        this.is_loading_anu_fin_rec = true
 
         var response = await this.$axios.put(
           process.env.baseUrl + "/RecalificarTodoTarjeta",
@@ -2404,6 +2441,7 @@ export default {
           duration: 2000,
         });
       }
+      this.is_loading_anu_fin_rec = false
     },
     clearModalRecalificaTodo() {
       //this.RecaSobrCtrlMarcTodoClie = false;
@@ -2471,6 +2509,22 @@ export default {
 </script>
 
 <style>
+
+.loafing_reca_anu_fin_todo{
+  height: 98%;
+    width: 98%;
+  z-index:999999999999999;
+  background-color: rgba(0, 0, 0, 0.53);
+  position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border-radius: 1rem;
+}
+
+
 .container-modal-recalifica {
   margin-right: 1.5rem;
   margin-left: 1.5rem;
