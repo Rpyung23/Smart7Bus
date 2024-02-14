@@ -1248,8 +1248,9 @@
               <template slot-scope="scope">
                 <base-button
                   icon
+                  title="Eliminar"
                   type="danger"
-                  @click="eliminarRolD(scope.row)"
+                  @click="showModalEliminar(scope.row)"
                   size="sm"
                 >
                   <span class="btn-inner--icon"
@@ -1258,6 +1259,7 @@
                 </base-button>
                 <base-button
                   icon
+                  title="Actualizar"
                   type="default"
                   @click="updateRolD(scope.row)"
                   size="sm"
@@ -1644,6 +1646,24 @@
         </template>
       </modal>
 
+      <modal :show.sync="modalEliminarRol" body-classes="p-0">
+        <h6 slot="header" class="modal-title">
+          <strong>
+            <div>Eliminar Despacho Automatico </div>
+          </strong>
+        </h6>
+        <div style="margin-left: 1rem; margin-right: 1rem">
+          ¿ Esta seguro de eliminar el despacho de la unidad  {{objDespachoEliminar == null ? "S/N" :objDespachoEliminar.CodiVehi}}?
+        </div>
+        <template slot="footer">
+          <base-button type="danger" @click="eliminarRolD()"
+            >ELIMINAR</base-button
+          >
+        </template>
+      </modal>
+
+
+
       <modal :show.sync="modalEnviarDespachos" body-classes="p-0">
         <h6 slot="header" class="modal-title">
           <strong>{{
@@ -1666,6 +1686,10 @@
           >
         </template>
       </modal>
+
+      
+
+
     </base-header>
   </div>
 </template>
@@ -1776,6 +1800,7 @@ export default {
       isFeriado: false,
       oModalAddRolDetalleD: false,
       objRolSelect: null,
+      objDespachoEliminar: null,
       objRolSelectD: null,
       fechaInicialRol: null,
       mListFrecuencia: [],
@@ -1868,7 +1893,8 @@ export default {
 
       columns: [],
 
-      modalEliminarRolProgrmadoM:false
+      modalEliminarRolProgrmadoM:false,
+      modalEliminarRol:false
     };
   },
   methods: {
@@ -1913,6 +1939,7 @@ export default {
         {
           this.objRolSelect = null
           this.modalEliminarRolProgrmadoM = false
+          this.modalEliminarRol = false
           this.readRolProgramado();
         } else {
           this.$notify({
@@ -2098,6 +2125,12 @@ export default {
     {
       this.objRolSelect = item
       this.modalEliminarRolProgrmadoM = true
+    },
+
+    showModalEliminar(item){
+      console.log(item)
+      this.objDespachoEliminar = item
+      this.modalEliminarRol = true
     },
 
     showModalSendDespachoProgramado(item) {
@@ -2547,37 +2580,40 @@ export default {
       this.frecuencia19 = null;
       this.frecuencia20 = null;
     },
-    async eliminarRolD(item) {
-      try {
+    async eliminarRolD() {
+    try {
         var response = await this.$axios.delete(
-          process.env.baseUrl + "/eliminarRolProgramadoD",
-          {
-            data: {
-              token: this.token,
-              rol_programado_d: item.id_despacho_programado_d,
-            },
-          }
+            process.env.baseUrl + "/eliminarRolProgramadoD",
+            {
+                data: {
+                    token: this.token,
+                    rol_programado_d: this.objDespachoEliminar.id_despacho_programado_d,
+                },
+            }
         );
 
         if (response.data.status_code == 200) {
+          this.modalEliminarRol = false
+          this.objDespachoEliminar = null
           this.readRolProgramadoD();
         } else {
-          this.$notify({
-            title: "ROL PROGRAMADO",
-            message: response.data.msm,
-            type: "danger",
-          });
+            this.$notify({
+                title: "ROL PROGRAMADO",
+                message: response.data.msm,
+                type: "danger",
+            });
         }
-      } catch (error) {
+    } catch (error) {
         this.$notify({
-          title: "ROL PROGRAMADO",
-          message: error.toString(),
-          type: "danger",
+            title: "ROL PROGRAMADO",
+            message: error.toString(),
+            type: "danger",
         });
-      }
+    }
 
-      this.clearNuevoRolD();
-    },
+    this.clearNuevoRolD();
+},
+
     async updateRolD(item) {
       this.objRolSelectD = item;
 
