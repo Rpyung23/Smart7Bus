@@ -479,8 +479,12 @@ export default {
         if (datos.data.status_code == 200) {
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
           this.mListControlesCabezera.push(...datos.data.datosC);
+          console.log('ACa REporteeeee')
+          console.log(datos.data.datos)
+          console.log('ACa REporteeeee Controles')
+          console.log(datos.data.datosC)
 
-          this.exportExcel();
+          this.exportExcel(datos.data.datos);
 
           console.log("-----------------------------------------------------");
           console.log(this.mListSalidasFrecuenciasControles);
@@ -686,6 +690,7 @@ export default {
       //await this.readControlFrecuenciaCabezera();
 
       for (var i = 0; i < this.mListControlesCabezera.length; i++) {
+        //console.log("Aca algo");
         //console.log(this.mListControlesCabezera[i]);
         resultadoString[0].push({
           text:
