@@ -15,25 +15,6 @@
               " style="margin-right: 0.5rem" placeholder="Unidad" prefix-icon="ni ni-bus-front-12"
               :trigger-on-focus="false" @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"></el-autocomplete>-->
 
-            <el-select
-              v-model="itemUnidadProduccionRPagoVehiculorecibo"
-              multiple
-              filterable
-              remote
-              placeholder="Unidades"
-              prefix-icon="ni ni-bus-front-12"
-              style="margin-right: 0.5rem"
-              :remote-method="remoteMethodUnidadesRecibosProduccion"
-              :loading="loadingTableUnidadesRecibosVehiculoProduccion"
-            >
-              <el-option
-                v-for="item in optionsUnidadesProduccionPagosVehiculo"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
-              </el-option>
-            </el-select>
 
             <!--<el-select v-model="itemRutasIndicadoresCalidad" multiple filterable remote
               placeholder="Operador" prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
@@ -77,40 +58,8 @@
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
-          <div class="cardSelectAgrupacionRIcalidad">
-            <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
-              v-model="itemRutasIndicadoresCalidad"
-              multiple
-              placeholder="Rutas"
-            >
-              <el-option
-                v-for="item in mListaRutasIndicadoresCalidad"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
-              >
-              </el-option>
-            </el-select>
 
-          </div>
-        </card>
-
-        <!--  <card class="no-border-card" style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoReciboProduccion px-0 pb-1" footer-classes="pb-2">
-          <div>
-            <iframe :src="oBase64IndicadoresCalidad" style="width: 100%; height: 35.5rem"></iframe>
-          </div>
-        </card> -->
-
-        <card class="no-border-card" body-classes= "card_body_0_01rem" style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
+        <card class="no-border-card" body-classes= "card_body_0_01rem" style="margin-bottom: 0px; width: 100%; height: calc(100vh - 9rem)">
           <embed id="iframeContainerIndicadoresCalidad" :src="oBase64IndicadoresCalidad" type="application/pdf"
             width="100%" height="100%" />
         </card>
@@ -222,33 +171,7 @@ export default {
       this.fechaInicialIndicadorCalidad = format;
       this.fechaFinalIndicadorCalidad = format;
     },
-    async readAllUnidadesPagosVehiculoProduccionRecibo() {
-      var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {
-        token: this.token,
-      });
 
-      console.log(datos.data);
-
-      if (datos.data.status_code == 200) {
-        for (var i = 0; i < datos.data.data.length; i++) {
-          var obj = datos.data.data[i];
-          obj.value = obj.CodiVehi;
-          this.mListaUnidadesPagosVehiculoProduccionRecibo.push(obj);
-        }
-      }
-    },
-    async readAllRutasIndicadoresCalidad() {
-      this.mListaRutasIndicadoresCalidad = [];
-
-      var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
-        token: this.token,
-        tipo: 1,
-      });
-
-      if (datos.data.status_code == 200) {
-        this.mListaRutasIndicadoresCalidad.push(...datos.data.data);
-      }
-    },
     async readAllIndicadoresCalidad() {
       this.mListaRutasIndicadoresCalidad = [];
 
@@ -274,56 +197,22 @@ export default {
       this.oBase64IndicadoresCalidad = "";
 
       try {
-        var rutasString = [];
-        if (this.itemRutasIndicadoresCalidad.length <= 0) {
-          rutasString.push("Todas las rutas");
-        } else {
-          for (var j = 0; j < this.itemRutasIndicadoresCalidad.length; j++) {
-            for (
-              var i = 0;
-              i < this.mListaRutasIndicadoresCalidad.length;
-              i++
-            ) {
-              if (
-                this.mListaRutasIndicadoresCalidad[i].idRuta ==
-                this.itemRutasIndicadoresCalidad[j]
-              ) {
-                rutasString.push(
-                  this.mListaRutasIndicadoresCalidad[i].DescRuta
-                );
-              }
-            }
-          }
-        }
-
+        
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/IndicadoresCalidad",
+          process.env.baseUrl + "/IndicadoresCalidadConsolidado",
           {
             token: this.token,
-            unidades:
-              this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0
-                ? "*"
-                : this.itemUnidadProduccionRPagoVehiculorecibo,
-            rutas:
-              this.itemRutasIndicadoresCalidad.length <= 0
-                ? "*"
-                : this.itemRutasIndicadoresCalidad,
             fechaI: getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
             fechaF: getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
-            rutasString: rutasString,
             nameEmpresa: this.$cookies.get("nameEmpresa"),
             usuarioName: this.$cookies.get("namesUsuario"),
-            agrupacion_dia: this.oAgrupacionDM,
           },
           {
             "Content-Type": "application/json",
           }
         );
 
-        console.log("Datos .==================..", datos);
-
         if (datos.data.status_code == 200) {
-          //this.oBase64IndicadoresCalidad = "data:application/pdf;base64," + datos.data.datos
           console.log("Agrego indicadores Calidad .........");
           this.genratePdf(datos.data.datos);
         }
@@ -339,7 +228,7 @@ export default {
       swal.close();
     },
     genratePdf(datos) {
-      const componenteResultado = (acu, acuNo) => {
+      const componenteResultado = (acu, acuNo, porcentaje) => {
         const porce = (100 * acu) / (acu + acuNo);
         return [
           [
@@ -374,7 +263,7 @@ export default {
             " ",
             {
               text: "Total: " + porce.toFixed(2) + " %",
-              style: [porce.toFixed(2) >= 80 ? "textFond" : "textFondN"],
+              style: [porce.toFixed(2) >= porcentaje ? "textFond" : "textFondN"],
               bold: true,
               alignment: "center",
             },
@@ -385,8 +274,8 @@ export default {
             {},
             " ",
             {
-              text: [porce.toFixed(2) >= 80 ? "CUMPLE" : "NO CUMPLE"],
-              style: [porce.toFixed(2) >= 80 ? "textFond" : "textFondN"],
+              text: [porce.toFixed(2) >= porcentaje ? "CUMPLE" : "NO CUMPLE"],
+              style: [porce.toFixed(2) >= porcentaje ? "textFond" : "textFondN"],
               bold: true,
               alignment: "center",
             },
@@ -434,10 +323,7 @@ export default {
           text: [
             { text: "RUTA : ", fontSize: 12, bold: true },
             {
-              text:
-                this.itemRutasIndicadoresCalidad.length == 0
-                  ? "TODAS LAS RUTAS"
-                  : this.itemRutasIndicadoresCalidad.toString(),
+              text:"TODAS LAS RUTAS"   
             },
           ],
           colSpan: 2,
@@ -466,7 +352,7 @@ export default {
             [tipoInfomer, {}, {}, {}],
             ["", empresa, {}, ""],
             [periodo, {}, impresion, {}],
-            [ruta, {}, " ", " "],
+            [ruta, {}, "", ""],
           ],
           //body: [[ 'First', 'Second', 'Third', 'The last one' ]],
         };
@@ -474,7 +360,7 @@ export default {
       const componenteHeaderTable = (arrayTitulos) => {
         return arrayTitulos.map((titulo) => ({
           text: titulo,
-          fontSize: 8.5,
+          fontSize: 9.5,
           bold: true,
           fillColor: "#039BC4",
           color: "white",
@@ -497,27 +383,17 @@ export default {
         var arrys = [
           {
             text: datos.tvhp[i].Unidad,
-            fontSize: 8.5,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.tvhp[i].Fecha,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.tvhp[i].Programado,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.tvhp[i].Ejecutado,
-            fontSize: 8.5,
+            text: datos.tvhp[i].Placa,
+            fontSize: 9,
             alignment: "center",
           },
           {
             text: datos.tvhp[i].Indicador,
-            fontSize: 8.5,
+            fontSize: 9,
             alignment: "center",
           },
           {
@@ -545,32 +421,22 @@ export default {
         var arrys = [
           {
             text: datos.tvhv[i].Unidad,
-            fontSize: 8.5,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.tvhv[i].Fecha,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.tvhv[i].Programado,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.tvhv[i].Ejecutado,
-            fontSize: 8.5,
+            text: datos.tvhv[i].Placa,
+            fontSize: 9,
             alignment: "center",
           },
           {
             text: datos.tvhv[i].Indicador,
-            fontSize: 8.5,
+            fontSize: 9,
             alignment: "center",
           },
           {
             text: datos.tvhv[i].Estado,
-            fontSize: 8.5,
+            fontSize: 9,
             alignment: "center",
             style: [
               datos.tvhv[i].Estado === "Cumple" ? "textGreen" : "textRed",
@@ -586,134 +452,39 @@ export default {
       }
       // tabla ihp
       var resultadoStringihp = [];
-      var acuCumpleihp = 1;
+      var acuCumpleihp = 0;
       var acuNoCumpleihp = 0;
-      var contEICIHP = 0;
-      var contEI2CIHP = 1;
-      for (var i = 0; i < datos.cihp.length; i++) {
+      for (var i = 0; i < datos.ihp.length; i++) {
         var arrys = [
           {
-            text: datos.cihp[i].Unidad,
-            fontSize: 8.5,
+            text: datos.ihp[i].Unidad,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.cihp[i].NumeroTarjeta,
-            fontSize: 8.5,
+            text: datos.ihp[i].Placa,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.cihp[i].Salida,
-            fontSize: 8.5,
+            text: datos.ihp[i].Indicador,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.cihp[i].Llegada,
-            fontSize: 8.5,
+            text: datos.ihp[i].Estado,
+            fontSize: 9,
             alignment: "center",
+            style: [
+              datos.ihp[i].Estado === "Cumple" ? "textGreen" : "textRed",
+            ],
           },
-          {
-            text: datos.cihp[i].Programado,
-            fontSize: 8.5,
-            alignment: "center",
-          },
+
         ];
-        if (i == 0) {
-          arrys.push({
-            text: "0",
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: "0",
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: "Cumple",
-            fontSize: 8.5,
-            alignment: "center",
-            bold: true,
-            style: ["textGreen"],
-          });
+        if (datos.ihp[i].Estado === "Cumple") {
+          acuCumpleihp = acuCumpleihp + 1;
         } else {
-          console.log(datos.cihp[contEICIHP].Llegada_DATE +" < "+ datos.cihp[contEI2CIHP].Llegada_DATE)
-          if (
-            datos.cihp[contEI2CIHP].Llegada_DATE != undefined && 
-            datos.cihp[contEI2CIHP].Llegada_DATE != null &&
-            (datos.cihp[contEICIHP].Llegada_DATE < datos.cihp[contEI2CIHP].Llegada_DATE)
-          ) {
-            arrys.push({
-              text: "0",
-              fontSize: 8.5,
-              alignment: "center",
-            });
-            arrys.push({
-              text: "0",
-              fontSize: 8.5,
-              alignment: "center",
-            });
-            arrys.push({
-              text: "Cumple",
-              fontSize: 8.5,
-              alignment: "center",
-              bold: true,
-              style: ["textGreen"],
-            });
-
-            if (contEICIHP < datos.cihp.length) {
-            contEICIHP = contEICIHP + 1;
-          }
-          if (contEI2CIHP <= datos.cihp.length) {
-            contEI2CIHP = contEI2CIHP + 1;
-          }
-          
-          } else {
-            var hora1 = datos.cihp[contEICIHP].Llegada.split(":");
-          var hora2 = datos.cihp[contEI2CIHP].Llegada.split(":");
-          var t1 = new Date();
-          var t2 = new Date();
-          t1.setHours(hora1[0], hora1[1], hora1[2]);
-          t2.setHours(hora2[0], hora2[1], hora2[2]);
-          var ejecutado = (t2 - t1) / 60 / 1000;
-          var estado = "";
-          var indicador = 0;
-          if (contEICIHP < datos.cihp.length) {
-            contEICIHP = contEICIHP + 1;
-          }
-          if (contEI2CIHP <= datos.cihp.length) {
-            contEI2CIHP = contEI2CIHP + 1;
-          }
-          if (ejecutado - datos.cihp[i].Programado < 2) {
-            estado = "Cumple";
-            acuCumpleihp = acuCumpleihp + 1;
-          } else {
-            estado = "No Cumple";
-            acuNoCumpleihp = acuNoCumpleihp + 1;
-          }
-          indicador =
-            ((ejecutado - datos.cihp[i].Programado) /
-              datos.cihp[i].Programado) *
-            100;
-
-          arrys.push({
-            text: ejecutado.toFixed(0),
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: indicador.toFixed(2),
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: estado,
-            fontSize: 8.5,
-            alignment: "center",
-            bold: true,
-            style: [estado === "Cumple" ? "textGreen" : "textRed"],
-          });
-          }
+          acuNoCumpleihp = acuNoCumpleihp + 1;
         }
         resultadoStringihp.push(arrys);
       }
@@ -721,99 +492,36 @@ export default {
       var resultadoStringihv = [];
       var acuCumpleihv = 1;
       var acuNoCumpleihv = 0;
-      var contEICIHV = 0;
-      var contEI2CIHV = 1;
-      for (var i = 0; i < datos.cihv.length; i++) {
+      for (var i = 0; i < datos.ihv.length; i++) {
         var arrys = [
           {
-            text: datos.cihv[i].Unidad,
-            fontSize: 8.5,
+            text: datos.ihv[i].Unidad,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.cihv[i].NumeroTarjeta,
-            fontSize: 8.5,
+            text: datos.ihv[i].Placa,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.cihv[i].Salida,
-            fontSize: 8.5,
+            text: datos.ihv[i].Indicador,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.cihv[i].Llegada,
-            fontSize: 8.5,
+            text: datos.ihv[i].Estado,
+            fontSize: 9,
             alignment: "center",
-          },
-          {
-            text: datos.cihv[i].Programado,
-            fontSize: 8.5,
-            alignment: "center",
+            style: [
+              datos.ihv[i].Estado === "Cumple" ? "textGreen" : "textRed",
+            ],
           },
         ];
-        if (i == 0) {
-          arrys.push({
-            text: "0",
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: "0",
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: "Cumple",
-            fontSize: 8.5,
-            alignment: "center",
-            bold: true,
-            style: ["textGreen"],
-          });
+        if (datos.ihv[i].Estado === "Cumple") {
+          acuCumpleihv = acuCumpleihv + 1;
         } else {
-          var hora1 = datos.cihv[contEICIHV].Llegada.split(":");
-          var hora2 = datos.cihv[contEI2CIHV].Llegada.split(":");
-          var t1 = new Date();
-          var t2 = new Date();
-          t1.setHours(hora1[0], hora1[1], hora1[2]);
-          t2.setHours(hora2[0], hora2[1], hora2[2]);
-          var ejecutado = (t2 - t1) / 60 / 1000;
-          var estado = "";
-          var indicador = 0;
-          if (contEICIHV < datos.cihv.length) {
-            contEICIHV = contEICIHV + 1;
-          }
-          if (contEI2CIHV <= datos.cihv.length) {
-            contEI2CIHV = contEI2CIHV + 1;
-          }
-          if (ejecutado - datos.cihv[i].Programado < 2) {
-            estado = "Cumple";
-            acuCumpleihv = acuCumpleihv + 1;
-          } else {
-            estado = "No Cumple";
-            acuNoCumpleihv = acuNoCumpleihv + 1;
-          }
-          indicador =
-            ((ejecutado - datos.cihv[i].Programado) /
-              datos.cihv[i].Programado) *
-            100;
-
-          arrys.push({
-            text: ejecutado.toFixed(0),
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: indicador.toFixed(2),
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: estado,
-            fontSize: 8.5,
-            alignment: "center",
-            bold: true,
-            style: [estado === "Cumple" ? "textGreen" : "textRed"],
-          });
+          acuNoCumpleihv = acuNoCumpleihv + 1;
         }
         resultadoStringihv.push(arrys);
       }
@@ -821,43 +529,33 @@ export default {
       var resultadoStringivp = [];
       var acuCumpleivp = 0;
       var acuNoCumpleivp = 0;
-      for (var i = 0; i < datos.ivhp.length; i++) {
+      for (var i = 0; i < datos.ivp.length; i++) {
         var arrys = [
           {
-            text: datos.ivhp[i].Unidad,
-            fontSize: 8.5,
+            text: datos.ivp[i].Unidad,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.ivhp[i].Fecha,
-            fontSize: 8.5,
+            text: datos.ivp[i].Placa,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.ivhp[i].Programado,
-            fontSize: 8.5,
+            text: datos.ivp[i].Indicador,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.ivhp[i].Promedio,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.ivhp[i].Indicador,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.ivhp[i].Estado,
+            text: datos.ivp[i].Estado,
             fontSize: 10,
             alignment: "center",
             style: [
-              datos.ivhp[i].Estado === "Cumple" ? "textGreen" : "textRed",
+              datos.ivp[i].Estado === "Cumple" ? "textGreen" : "textRed",
             ],
           },
         ];
-        if (datos.ivhp[i].Estado === "Cumple") {
+        if (datos.ivp[i].Estado === "Cumple") {
           acuCumpleivp = acuCumpleivp + 1;
         } else {
           acuNoCumpleivp = acuNoCumpleivp + 1;
@@ -868,43 +566,33 @@ export default {
       var resultadoStringivv = [];
       var acuCumpleivv = 0;
       var acuNoCumpleivv = 0;
-      for (var i = 0; i < datos.ivhv.length; i++) {
+      for (var i = 0; i < datos.ivv.length; i++) {
         var arrys = [
           {
-            text: datos.ivhv[i].Unidad,
-            fontSize: 8.5,
+            text: datos.ivv[i].Unidad,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.ivhv[i].Fecha,
-            fontSize: 8.5,
+            text: datos.ivv[i].Placa,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.ivhv[i].Programado,
-            fontSize: 8.5,
+            text: datos.ivv[i].Indicador,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.ivhv[i].Promedio,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.ivhv[i].Indicador,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.ivhv[i].Estado,
+            text: datos.ivv[i].Estado,
             fontSize: 10,
             alignment: "center",
             style: [
-              datos.ivhv[i].Estado === "Cumple" ? "textGreen" : "textRed",
+              datos.ivv[i].Estado === "Cumple" ? "textGreen" : "textRed",
             ],
           },
         ];
-        if (datos.ivhv[i].Estado === "Cumple") {
+        if (datos.ivv[i].Estado === "Cumple") {
           acuCumpleivv = acuCumpleivv + 1;
         } else {
           acuNoCumpleivv = acuNoCumpleivv + 1;
@@ -915,43 +603,33 @@ export default {
       var resultadoStringtap = [];
       var acuCumpletap = 0;
       var acuNoCumpletap = 0;
-      for (var i = 0; i < datos.pphp.length; i++) {
+      for (var i = 0; i < datos.tap.length; i++) {
         var arrys = [
           {
-            text: datos.pphp[i].Salidas,
-            fontSize: 8.5,
+            text: datos.tap[i].Unidad,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.pphp[i].Fecha,
-            fontSize: 8.5,
+            text: datos.tap[i].Placa,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.pphp[i].Parada,
-            fontSize: 8.5,
-            alignment: "left",
-          },
-          {
-            text: datos.pphp[i].Tiempo,
-            fontSize: 8.5,
+            text: datos.tap[i].Indicador,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.pphp[i].Indicador,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.pphp[i].Estado,
+            text: datos.tap[i].Estado,
             fontSize: 10,
             alignment: "center",
             style: [
-              datos.pphp[i].Estado === "Cumple" ? "textGreen" : "textRed",
+              datos.tap[i].Estado === "Cumple" ? "textGreen" : "textRed",
             ],
           },
         ];
-        if (datos.pphp[i].Estado === "Cumple") {
+        if (datos.tap[i].Estado === "Cumple") {
           acuCumpletap = acuCumpletap + 1;
         } else {
           acuNoCumpletap = acuNoCumpletap + 1;
@@ -962,43 +640,33 @@ export default {
       var resultadoStringtav = [];
       var acuCumpletav = 0;
       var acuNoCumpletav = 0;
-      for (var i = 0; i < datos.pphv.length; i++) {
+      for (var i = 0; i < datos.tav.length; i++) {
         var arrys = [
           {
-            text: datos.pphv[i].Salidas,
-            fontSize: 8.5,
+            text: datos.tav[i].Unidad,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.pphv[i].Fecha,
-            fontSize: 8.5,
+            text: datos.tav[i].Placa,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.pphv[i].Parada,
-            fontSize: 8.5,
-            alignment: "left",
-          },
-          {
-            text: datos.pphv[i].Tiempo,
-            fontSize: 8.5,
+            text: datos.tav[i].Indicador,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.pphv[i].Indicador,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.pphv[i].Estado,
+            text: datos.tav[i].Estado,
             fontSize: 10,
             alignment: "center",
             style: [
-              datos.pphv[i].Estado === "Cumple" ? "textGreen" : "textRed",
+              datos.tav[i].Estado === "Cumple" ? "textGreen" : "textRed",
             ],
           },
         ];
-        if (datos.pphv[i].Estado === "Cumple") {
+        if (datos.tav[i].Estado === "Cumple") {
           acuCumpletav = acuCumpletav + 1;
         } else {
           acuNoCumpletav = acuNoCumpletav + 1;
@@ -1009,36 +677,36 @@ export default {
       var resultadoStringhio = [];
       var acuCumplehio = 0;
       var acuNoCumplehio = 0;
-      for (var i = 0; i < datos.io.length; i++) {
+      for (var i = 0; i < datos.hio.length; i++) {
         var arrys = [
           {
-            text: datos.io[i].Tipo,
-            fontSize: 8.5,
+            text: datos.hio[i].Fecha,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.io[i].Fecha,
-            fontSize: 8.5,
+            text: datos.hio[i].DescripcionRuta,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.io[i].Programado,
-            fontSize: 8.5,
+            text: datos.hio[i].Programado,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.io[i].Ejecutado,
-            fontSize: 8.5,
+            text: datos.hio[i].Ejecutado,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.io[i].Estado,
+            text: datos.hio[i].Estado,
             fontSize: 10,
             alignment: "center",
-            style: [datos.io[i].Estado === "Cumple" ? "textGreen" : "textRed"],
+            style: [datos.hio[i].Estado === "Cumple" ? "textGreen" : "textRed"],
           },
         ];
-        if (datos.io[i].Estado === "Cumple") {
+        if (datos.hio[i].Estado === "Cumple") {
           acuCumplehio = acuCumplehio + 1;
         } else {
           acuNoCumplehio = acuNoCumplehio + 1;
@@ -1049,36 +717,36 @@ export default {
       var resultadoStringhco = [];
       var acuCumplehco = 0;
       var acuNoCumplehco = 0;
-      for (var i = 0; i < datos.co.length; i++) {
+      for (var i = 0; i < datos.hco.length; i++) {
         var arrys = [
           {
-            text: datos.co[i].Tipo,
-            fontSize: 8.5,
+            text: datos.hco[i].Fecha,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.co[i].Fecha,
-            fontSize: 8.5,
+            text: datos.hco[i].DescripcionRuta,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.co[i].Programado,
-            fontSize: 8.5,
+            text: datos.hco[i].Programado,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.co[i].Ejecutado,
-            fontSize: 8.5,
+            text: datos.hco[i].Ejecutado,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.co[i].Estado,
+            text: datos.hco[i].Estado,
             fontSize: 10,
             alignment: "center",
-            style: [datos.co[i].Estado === "Cumple" ? "textGreen" : "textRed"],
+            style: [datos.hco[i].Estado === "Cumple" ? "textGreen" : "textRed"],
           },
         ];
-        if (datos.co[i].Estado === "Cumple") {
+        if (datos.hco[i].Estado === "Cumple") {
           acuCumplehco = acuCumplehco + 1;
         } else {
           acuNoCumplehco = acuNoCumplehco + 1;
@@ -1090,36 +758,31 @@ export default {
       var resultadoStringora = [];
       var acuCumpleora = 0;
       var acuNoCumpleora = 0;
-      for (var i = 0; i < datos.oer.length; i++) {
+      for (var i = 0; i < datos.ora.length; i++) {
         var arrys = [
           {
-            text: datos.oer[i].Unidad,
-            fontSize: 8.5,
+            text: datos.ora[i].Unidad,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.oer[i].Incidencia,
-            fontSize: 8.5,
+            text: datos.ora[i].Placa,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.oer[i].Efectuada,
-            fontSize: 8.5,
+            text: datos.ora[i].Indicador,
+            fontSize: 9,
             alignment: "center",
           },
           {
-            text: datos.oer[i].Indicador,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: datos.oer[i].Estado,
+            text: datos.ora[i].Estado,
             fontSize: 10,
             alignment: "center",
-            style: [datos.oer[i].Estado === "Cumple" ? "textGreen" : "textRed"],
+            style: [datos.ora[i].Estado === "Cumple" ? "textGreen" : "textRed"],
           },
         ];
-        if (datos.oer[i].Estado === "Cumple") {
+        if (datos.ora[i].Estado === "Cumple") {
           acuCumpleora = acuCumpleora + 1;
         } else {
           acuNoCumpleora = acuNoCumpleora + 1;
@@ -1148,7 +811,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE INDICADORES DE CALIDAD",
+                      text: "REPORTE INDICADORES DE CALIDAD CONSOLIDADO",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
@@ -1188,17 +851,14 @@ export default {
             table: componenteHeader("TIEMPO DE VIAJE HORA PICO (TVHP)"),
             margin: [0, 20, 0, 0],
           },
-          ,
           {
             table: {
               headerRows: 0,
-              widths: [80, 80, 80, 80, 80, 80],
+              widths: [95, 95, 95, 95],
               body: [
                 componenteHeaderTable([
                   "Unidad",
-                  "Fecha",
-                  "Programado",
-                  "Ejecutado",
+                  "Placa",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1211,7 +871,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumple, acuNoCumple),
+              body: componenteResultado(acuCumple, acuNoCumple, 80),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1227,13 +887,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [80, 80, 80, 80, 80, 80],
+              widths: [95, 95, 95, 95],
               body: [
-                componenteHeaderTable([
+              componenteHeaderTable([
                   "Unidad",
-                  "Fecha",
-                  "Programado",
-                  "Ejecutado",
+                  "Placa",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1246,7 +904,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpletvhv, acuNoCumpletvhv),
+              body: componenteResultado(acuCumpletvhv, acuNoCumpletvhv, 80),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1263,15 +921,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 60, 60, 60, 60, 60, 60, 60],
+              widths: [95, 95, 95, 95],
               body: [
-                componenteHeaderTable([
+              componenteHeaderTable([
                   "Unidad",
-                  "Tarjeta",
-                  "Salida",
-                  "Llegada",
-                  "Programado",
-                  "Ejecutado",
+                  "Placa",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1284,7 +938,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpleihp, acuNoCumpleihp),
+              body: componenteResultado(acuCumpleihp, acuNoCumpleihp, 80),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1300,15 +954,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 60, 60, 60, 60, 60, 60, 60],
+              widths: [95, 95, 95, 95],
               body: [
-                componenteHeaderTable([
+              componenteHeaderTable([
                   "Unidad",
-                  "Tarjeta",
-                  "Salida",
-                  "Llegada",
-                  "Programado",
-                  "Ejecutado",
+                  "Placa",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1321,7 +971,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpleihv, acuNoCumpleihv),
+              body: componenteResultado(acuCumpleihv, acuNoCumpleihv,80),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1337,13 +987,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [80, 80, 80, 80, 80, 80],
+              widths: [95, 95, 95, 95],
               body: [
-                componenteHeaderTable([
+              componenteHeaderTable([
                   "Unidad",
-                  "Fecha",
-                  "Programado",
-                  "Ejecutado",
+                  "Placa",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1356,7 +1004,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpleivp, acuNoCumpleivp),
+              body: componenteResultado(acuCumpleivp, acuNoCumpleivp,80),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1372,13 +1020,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [80, 80, 80, 80, 80, 80],
+              widths: [95, 95, 95, 95],
               body: [
-                componenteHeaderTable([
+              componenteHeaderTable([
                   "Unidad",
-                  "Fecha",
-                  "Programado",
-                  "Ejecutado",
+                  "Placa",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1391,7 +1037,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpleivv, acuNoCumpleivv),
+              body: componenteResultado(acuCumpleivv, acuNoCumpleivv,80),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1407,13 +1053,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [50, 60, 210, 40, 60, 60],
+              widths: [95, 95, 95, 95],
               body: [
-                componenteHeaderTable([
-                  "Salidas",
-                  "Fecha",
-                  "Parada",
-                  "Tiempo",
+              componenteHeaderTable([
+                  "Unidad",
+                  "Placa",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1426,7 +1070,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpletap, acuNoCumpletap),
+              body: componenteResultado(acuCumpletap, acuNoCumpletap,100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1442,13 +1086,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [50, 60, 210, 40, 60, 60],
+              widths: [95, 95, 95, 95],
               body: [
-                componenteHeaderTable([
-                  "Salidas",
-                  "Fecha",
-                  "Parada",
-                  "Tiempo",
+              componenteHeaderTable([
+                  "Unidad",
+                  "Placa",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1461,7 +1103,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpletav, acuNoCumpletav),
+              body: componenteResultado(acuCumpletav, acuNoCumpletav,100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1477,11 +1119,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [100, 100, 100, 90, 90],
+              widths: [80, 160, 80,  80, 80],
               body: [
                 componenteHeaderTable([
-                  "Dia",
                   "Fecha",
+                  "Ruta",
                   "Programado",
                   "Ejecutado",
                   "Estado",
@@ -1495,7 +1137,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumplehio, acuNoCumplehio),
+              body: componenteResultado(acuCumplehio, acuNoCumplehio,100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1511,11 +1153,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [100, 100, 100, 90, 90],
+              widths: [80, 100, 90, 90, 90],
               body: [
                 componenteHeaderTable([
-                  "Dia",
                   "Fecha",
+                  "Ruta",
                   "Programado",
                   "Ejecutado",
                   "Estado",
@@ -1529,7 +1171,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumplehco, acuNoCumplehco),
+              body: componenteResultado(acuCumplehco, acuNoCumplehco,100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1545,12 +1187,11 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95, 95, 95],
+              widths: [95, 95, 95, 95],
               body: [
-                componenteHeaderTable([
+              componenteHeaderTable([
                   "Unidad",
-                  "Incidencia",
-                  "Efectuada",
+                  "Placa",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1563,7 +1204,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpleora, acuNoCumpleora),
+              body: componenteResultado(acuCumpleora, acuNoCumpleora,100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1595,8 +1236,6 @@ export default {
     },
   },
   mounted() {
-    this.readAllRutasIndicadoresCalidad();
-    this.readAllUnidadesPagosVehiculoProduccionRecibo();
     this.initFechaActualProduccionRPAgosVehiculoRecibo();
   },
 };

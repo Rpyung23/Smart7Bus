@@ -15,9 +15,9 @@
         <sidebar-item
           translate="no"
           :link="{
-            name: 'Incadores de Calidad Resumen',
+            name: 'Incadores de Calidad Consolidado',
             icon: 'ni ni-chart-pie-35 text-default',
-            path: '/movilidad/rIcalidadMovilidadResumen',
+            path: '/movilidad/rIcalidadMovilidadConsolidado',
           }"
         />
 
