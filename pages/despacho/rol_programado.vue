@@ -2039,7 +2039,7 @@ export default {
     async readRolProgramado() {
       this.loadingRolProgramado = true;
       this.mListRolProgramado = [];
-
+ 
       try {
         var data = await this.$axios.post(
           process.env.baseUrl + "/readRolProgrmado",
@@ -2176,11 +2176,12 @@ export default {
 
     async readRolProgramadoD() {
       this.loadingRolProgramadoD = true;
-      this.mListRolProgramadoD = [];
-
+      this.mListRolProgramadoD = [];      
       //await this.readAllLFrecuenciaRutas()
 
       try {
+        console.log("Aca idRolRuta");
+        console.log(this.objRolSelect.id_rol_programado_m);
         var data = await this.$axios.post(
           process.env.baseUrl + "/readRolProgrmadoDetalle",
           {
