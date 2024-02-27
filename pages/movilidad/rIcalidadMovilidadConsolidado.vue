@@ -1153,7 +1153,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [80, 100, 90, 90, 90],
+              widths: [80, 160, 80,  80, 80],
               body: [
                 componenteHeaderTable([
                   "Fecha",

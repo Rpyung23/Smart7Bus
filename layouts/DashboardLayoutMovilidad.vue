@@ -13,13 +13,14 @@
         />
 
         <sidebar-item
-          translate="no"
-          :link="{
-            name: 'Incadores de Calidad Consolidado',
-            icon: 'ni ni-chart-pie-35 text-default',
-            path: '/movilidad/rIcalidadMovilidadConsolidado',
-          }"
-        />
+          v-if="permisos != null && permisos.movilidad.active != null && permisos.movilidad.reportes.active != null && permisos.movilidad.reportes.indicadorConsolidado"
+        translate="no"
+        :link="{
+        name: 'Incadores de Calidad Consolidado',
+        icon: 'ni ni-chart-pie-35 text-default',
+        path: '/movilidad/rIcalidadMovilidadConsolidado',
+        }"/>
+
 
 
 
@@ -103,7 +104,10 @@ export default {
     decodedPermisos() {
       var decodeBase64 = window.atob(this.$cookies.get("token"));
       console.log("PERMISOS");
+      console.log("PERMISOS");
+      console.log("PERMISOS");
       this.permisos = this.$cookies.get("permisos");
+      console.log(this.permisos);
     },
   },
   mounted() {
