@@ -61,6 +61,7 @@
             :link="{ name: 'R. Salidas Semanales (Resumido)', path: '/despacho/rPenalidadesSemanalesResumido' }"
           />
 
+
           <sidebar-item
             translate="no"
             :link="{ name: 'R. Cumplimiento de Salidas', path: '/despacho/rCumplimientoSalidas' }"
@@ -182,21 +183,36 @@
 
           <sidebar-item
             translate="no"
-
             v-if="
               permisos != null &&
               permisos.despacho.reportes.rSalidasArmenia !=
                 null &&
               permisos.despacho.reportes.rSalidasArmenia
             "
-            
             :link="{
               name: 'R. Armenia',
               path: '/despacho/rSalidasArmenia',
             }"
           />
 
+          <sidebar-item
+            translate="no"
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.rOdometro !=
+                null &&
+              permisos.despacho.reportes.rOdometro
+            "
+            :link="{
+              name: 'R. Odómetro',
+              path: '/despacho/rSalidasOdometro',
+            }"
+          />
+
+          
+
         </sidebar-item>
+      
       </template>
     </side-bar>
     <div class="main-content">
