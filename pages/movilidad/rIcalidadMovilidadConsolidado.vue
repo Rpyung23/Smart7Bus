@@ -9,21 +9,6 @@
           footer-classes="pb-2"
         >
           <div class="cardTextoRPagosVehiculoProduccion">
-            <!--<el-autocomplete class="inline-input" v-model="itemUnidadProduccionRPagoVehiculorecibo" []ltiple
-              collapse-tags :fetch-suggestions="
-                querySearchUnidadProduccionRPagoVehiculoRecibo
-              " style="margin-right: 0.5rem" placeholder="Unidad" prefix-icon="ni ni-bus-front-12"
-              :trigger-on-focus="false" @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"></el-autocomplete>-->
-
-
-            <!--<el-select v-model="itemRutasIndicadoresCalidad" multiple filterable remote
-              placeholder="Operador" prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
-              :remote-method="remoteMethodUnidadesRecibosProduccion"
-              :loading="loadingTableUnidadesRecibosVehiculoProduccion">
-              <el-option v-for="item in optionsCobradoresProduccionPagosVehiculo" :key="item.CodiVehi"
-                :label="item.CodiVehi" :value="item.CodiVehi">
-              </el-option>
-            </el-select>-->
 
             <el-date-picker
               type="date"
@@ -55,6 +40,31 @@
                 ><i class="el-icon-search"></i
               ></span>
             </base-button>
+          </div>
+        </card>
+        <card
+          class="no-border-card col"
+          style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          footer-classes="pb-2"
+        >
+          <div class="cardSelectAgrupacionRIcalidad">
+            <el-select
+              style="margin-right: 0.5rem"
+              collapse-tags
+              v-model="itemRutasIndicadoresCalidad"
+              multiple
+              placeholder="Rutas"
+            >
+              <el-option
+                v-for="item in mListaRutasIndicadoresCalidad"
+                :key="item.LetrRuta"
+                :label="item.DescRuta"
+                :value="item.idRuta"
+              >
+              </el-option>
+            </el-select>
+
           </div>
         </card>
 
@@ -172,6 +182,19 @@ export default {
       this.fechaFinalIndicadorCalidad = format;
     },
 
+    async readAllRutasIndicadoresCalidad() {
+      this.mListaRutasIndicadoresCalidad = [];
+
+      var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
+        token: this.token,
+        tipo: 1,
+      });
+
+      if (datos.data.status_code == 200) {
+        this.mListaRutasIndicadoresCalidad.push(...datos.data.data);
+      }
+    },
+
     async readAllIndicadoresCalidad() {
       this.mListaRutasIndicadoresCalidad = [];
 
@@ -197,6 +220,27 @@ export default {
       this.oBase64IndicadoresCalidad = "";
 
       try {
+        var rutasString = [];
+        if (this.itemRutasIndicadoresCalidad.length <= 0) {
+          rutasString.push("Todas las rutas");
+        } else {
+          for (var j = 0; j < this.itemRutasIndicadoresCalidad.length; j++) {
+            for (
+              var i = 0;
+              i < this.mListaRutasIndicadoresCalidad.length;
+              i++
+            ) {
+              if (
+                this.mListaRutasIndicadoresCalidad[i].idRuta ==
+                this.itemRutasIndicadoresCalidad[j]
+              ) {
+                rutasString.push(
+                  this.mListaRutasIndicadoresCalidad[i].DescRuta
+                );
+              }
+            }
+          }
+        }
         
         var datos = await this.$axios.post(
           process.env.baseUrl + "/IndicadoresCalidadConsolidado",
@@ -204,6 +248,10 @@ export default {
             token: this.token,
             fechaI: getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
             fechaF: getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
+            rutas:
+              this.itemRutasIndicadoresCalidad.length <= 0
+                ? "*"
+                : this.itemRutasIndicadoresCalidad,
             nameEmpresa: this.$cookies.get("nameEmpresa"),
             usuarioName: this.$cookies.get("namesUsuario"),
           },
@@ -323,7 +371,10 @@ export default {
           text: [
             { text: "RUTA : ", fontSize: 12, bold: true },
             {
-              text:"TODAS LAS RUTAS"   
+              text:
+                this.itemRutasIndicadoresCalidad.length == 0
+                  ? "TODAS LAS RUTAS"
+                  : this.itemRutasIndicadoresCalidad.toString(),
             },
           ],
           colSpan: 2,
@@ -392,6 +443,11 @@ export default {
             alignment: "center",
           },
           {
+            text: datos.tvhp[i].DescripcionRuta,
+            fontSize: 9,
+            alignment: "center",
+          },
+          {
             text: datos.tvhp[i].Indicador,
             fontSize: 9,
             alignment: "center",
@@ -430,6 +486,11 @@ export default {
             alignment: "center",
           },
           {
+            text: datos.tvhv[i].DescripcionRuta,
+            fontSize: 9,
+            alignment: "center",
+          },
+          {
             text: datos.tvhv[i].Indicador,
             fontSize: 9,
             alignment: "center",
@@ -463,6 +524,11 @@ export default {
           },
           {
             text: datos.ihp[i].Placa,
+            fontSize: 9,
+            alignment: "center",
+          },
+          {
+            text: datos.ihp[i].DescripcionRuta,
             fontSize: 9,
             alignment: "center",
           },
@@ -505,6 +571,11 @@ export default {
             alignment: "center",
           },
           {
+            text: datos.ihv[i].DescripcionRuta,
+            fontSize: 9,
+            alignment: "center",
+          },
+          {
             text: datos.ihv[i].Indicador,
             fontSize: 9,
             alignment: "center",
@@ -538,6 +609,11 @@ export default {
           },
           {
             text: datos.ivp[i].Placa,
+            fontSize: 9,
+            alignment: "center",
+          },
+          {
+            text: datos.ivp[i].DescripcionRuta,
             fontSize: 9,
             alignment: "center",
           },
@@ -579,6 +655,11 @@ export default {
             alignment: "center",
           },
           {
+            text: datos.ivv[i].DescripcionRuta,
+            fontSize: 9,
+            alignment: "center",
+          },
+          {
             text: datos.ivv[i].Indicador,
             fontSize: 9,
             alignment: "center",
@@ -616,6 +697,11 @@ export default {
             alignment: "center",
           },
           {
+            text: datos.tap[i].DescripcionRuta,
+            fontSize: 9,
+            alignment: "center",
+          },
+          {
             text: datos.tap[i].Indicador,
             fontSize: 9,
             alignment: "center",
@@ -649,6 +735,11 @@ export default {
           },
           {
             text: datos.tav[i].Placa,
+            fontSize: 9,
+            alignment: "center",
+          },
+          {
+            text: datos.tav[i].DescripcionRuta,
             fontSize: 9,
             alignment: "center",
           },
@@ -771,6 +862,11 @@ export default {
             alignment: "center",
           },
           {
+            text: datos.ora[i].DescripcionRuta,
+            fontSize: 9,
+            alignment: "center",
+          },
+          {
             text: datos.ora[i].Indicador,
             fontSize: 9,
             alignment: "center",
@@ -854,11 +950,12 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95],
+              widths: [80, 80, 150, 80, 80],
               body: [
                 componenteHeaderTable([
                   "Unidad",
                   "Placa",
+                  "Ruta",
                   "Indicador",
                   "Estado",
                 ]),
@@ -887,11 +984,12 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95],
+              widths: [80, 80, 150, 80, 80],
               body: [
-              componenteHeaderTable([
+                componenteHeaderTable([
                   "Unidad",
                   "Placa",
+                  "Ruta",
                   "Indicador",
                   "Estado",
                 ]),
@@ -921,11 +1019,12 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95],
+              widths: [80, 80, 150, 80, 80],
               body: [
-              componenteHeaderTable([
+                componenteHeaderTable([
                   "Unidad",
                   "Placa",
+                  "Ruta",
                   "Indicador",
                   "Estado",
                 ]),
@@ -954,11 +1053,12 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95],
+              widths: [80, 80, 150, 80, 80],
               body: [
-              componenteHeaderTable([
+                componenteHeaderTable([
                   "Unidad",
                   "Placa",
+                  "Ruta",
                   "Indicador",
                   "Estado",
                 ]),
@@ -987,11 +1087,12 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95],
+              widths: [80, 80, 150, 80, 80],
               body: [
-              componenteHeaderTable([
+                componenteHeaderTable([
                   "Unidad",
                   "Placa",
+                  "Ruta",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1020,11 +1121,12 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95],
+              widths: [80, 80, 150, 80, 80],
               body: [
-              componenteHeaderTable([
+                componenteHeaderTable([
                   "Unidad",
                   "Placa",
+                  "Ruta",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1053,11 +1155,12 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95],
+              widths: [80, 80, 150, 80, 80],
               body: [
-              componenteHeaderTable([
+                componenteHeaderTable([
                   "Unidad",
                   "Placa",
+                  "Ruta",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1086,11 +1189,12 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95],
+              widths: [80, 80, 150, 80, 80],
               body: [
-              componenteHeaderTable([
+                componenteHeaderTable([
                   "Unidad",
                   "Placa",
+                  "Ruta",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1119,7 +1223,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [80, 160, 80,  80, 80],
+              widths: [80, 160, 80, 80, 80],
               body: [
                 componenteHeaderTable([
                   "Fecha",
@@ -1142,7 +1246,7 @@ export default {
             margin: [0, 10, 0, 0],
           },
           { text: "", pageBreak: "before" },
-          //Tabla HIO
+          //Tabla HCO
           {
             layout: "noBorders",
             table: componenteHeader(
@@ -1187,11 +1291,12 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [95, 95, 95, 95],
+              widths: [80, 80, 150, 80, 80],
               body: [
-              componenteHeaderTable([
+                componenteHeaderTable([
                   "Unidad",
                   "Placa",
+                  "Ruta",
                   "Indicador",
                   "Estado",
                 ]),
@@ -1237,6 +1342,7 @@ export default {
   },
   mounted() {
     this.initFechaActualProduccionRPAgosVehiculoRecibo();
+    this.readAllRutasIndicadoresCalidad();
   },
 };
 </script>

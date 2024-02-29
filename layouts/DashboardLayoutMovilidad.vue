@@ -45,6 +45,8 @@
           }"
         />
 
+        <sidebar-item :link="{ name: 'R. Velocidad Mov',icon: 'ni ni-sound-wave text-warning', path: '/movilidad/rvelocidadM' }" translate="no"/>
+
       </template>
     </side-bar>
     <div class="main-content">

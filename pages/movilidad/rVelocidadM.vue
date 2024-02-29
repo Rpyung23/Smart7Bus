@@ -90,18 +90,18 @@ import {
 import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb";
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
-import { getFecha_dd_mm_yyyy, getformatFechaDateTime } from "../util/fechas";
+import { getFecha_dd_mm_yyyy, getformatFechaDateTime } from "../../util/fechas";
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
-import { getBase64LogoReportes } from "../util/logoReport";
+import { getBase64LogoReportes } from "../../util/logoReport";
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
     mixins: [clientPaginationMixin],
-    layout: "DashboardLayout",
+    layout: "DashboardLayoutMovilidad",
     components: {
         Tabs,
         TabPane,

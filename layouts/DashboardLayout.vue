@@ -104,7 +104,7 @@
           name: 'Reportes',
           icon: 'ni ni-ungroup text-orange',
         }">
-          <sidebar-item :link="{ name: 'R. Velocidad Mov', path: '/rvelocidadM' }" translate="no"/>
+          
           <sidebar-item :link="{ name: 'R. Kilometros', path: '/rdistancia' }" translate="no"/>
           <sidebar-item :link="{ name: 'Velocidades', path: '/rvelocidades' }" translate="no"/>
           <sidebar-item :link="{ name: 'R. Velocidades D', path: '/rvelocidadesDetallados' }" translate="no"/>
