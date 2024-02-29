@@ -45,7 +45,7 @@
           }"
         />
 
-        <sidebar-item :link="{ name: 'R. Velocidad Mov',icon: 'ni ni-sound-wave text-warning', path: '/movilidad/rvelocidadM' }" translate="no"/>
+        <sidebar-item :link="{ name: 'R. Velocidad Mov',icon: 'ni ni-collection text-warning', path: '/movilidad/rvelocidadM' }" translate="no"/>
 
       </template>
     </side-bar>

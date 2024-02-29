@@ -2,74 +2,48 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
 
-            <el-date-picker
-              type="date"
-              placeholder="Select date and time"
-              style="margin-right: 0.5rem"
-              v-model="fechaInicialIndicadorCalidad"
-            >
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem"
+              v-model="fechaInicialIndicadorCalidad">
             </el-date-picker>
 
-            <el-date-picker
-              type="date"
-              placeholder="Select date and time"
-              style="margin-right: 0.5rem"
-              v-model="fechaFinalIndicadorCalidad"
-            >
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem"
+              v-model="fechaFinalIndicadorCalidad">
             </el-date-picker>
 
             <!-- DOWNLOAD EXCEL-->
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button
-              icon
-              type="primary"
-              @click="readAllIndicadoresCalidad"
-              size="sm"
-            >
-              <span class="btn-inner--icon"
-                ><i class="el-icon-search"></i
-              ></span>
+            <base-button icon type="primary" @click="readAllIndicadoresCalidad" size="sm">
+              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>
           </div>
         </card>
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectAgrupacionRIcalidad">
-            <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
-              v-model="itemRutasIndicadoresCalidad"
-              multiple
-              placeholder="Rutas"
-            >
-              <el-option
-                v-for="item in mListaRutasIndicadoresCalidad"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
-              >
+
+
+            <el-select v-model="modelTiposEvento" multiple collapse-tags style="margin-right: 0.5rem" placeholder="Rutas"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading" @change="updateSelectedRouteDescriptions">
+              <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.idRuta">
               </el-option>
             </el-select>
+
 
           </div>
         </card>
 
 
-        <card class="no-border-card" body-classes= "card_body_0_01rem" style="margin-bottom: 0px; width: 100%; height: calc(100vh - 9rem)">
+        <card class="no-border-card" body-classes="card_body_0_01rem"
+          style="margin-bottom: 0px; width: 100%; height: calc(100vh - 9rem)">
           <embed id="iframeContainerIndicadoresCalidad" :src="oBase64IndicadoresCalidad" type="application/pdf"
             width="100%" height="100%" />
         </card>
@@ -133,7 +107,9 @@ export default {
       mListaUnidadesPagosVehiculoProduccionRecibo: [],
       tableDataRPagosVEhiculoProduccionRecibo: [],
       itemUnidadProduccionRPagoVehiculorecibo: [],
-      itemRutasIndicadoresCalidad: [],
+      modelTiposEvento: [],
+      selectedRouteDescriptions: [],
+      mListaRutasSalidasSemanales: [],
       token: this.$cookies.get("token"),
       fechaInicialIndicadorCalidad: "",
       fechaFinalIndicadorCalidad: "",
@@ -146,7 +122,6 @@ export default {
       loadingTableCobradoresRecibosVehiculoProduccion: false,
       baseURlPDFPanelDetalleRecibo: "",
       oBase64IndicadoresCalidad: "",
-      mListaRutasIndicadoresCalidad: [],
       oAgrupacionDM: false,
     };
   },
@@ -181,19 +156,43 @@ export default {
       this.fechaInicialIndicadorCalidad = format;
       this.fechaFinalIndicadorCalidad = format;
     },
+    async readEventosListaReporte() {
+      this.mListaRutasSalidasSemanales = [];
 
-    async readAllRutasIndicadoresCalidad() {
-      this.mListaRutasIndicadoresCalidad = [];
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
+          token: this.token,
+          tipo: 1,
+        });
 
-      var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
-        token: this.token,
-        tipo: 1,
-      });
-
-      if (datos.data.status_code == 200) {
-        this.mListaRutasIndicadoresCalidad.push(...datos.data.data);
+        if (datos.data.status_code == 200) {
+          console.log(datos.data.data);
+          this.mListaRutasSalidasSemanales.push(...datos.data.data);
+        } else {
+          Notification.info({
+            title: "Tipos Eventos Dispositivos",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({
+          title: "Tipos Eventos Dispositivos",
+          message: error.toString(),
+        });
       }
     },
+
+
+    updateSelectedRouteDescriptions(selectedRoutes) {
+      // Filtrar las opciones seleccionadas y obtener sus descripciones
+      this.selectedRouteDescriptions = selectedRoutes.map(id => {
+        const route = this.mListaRutasSalidasSemanales.find(route => route.idRuta === id);
+        return route ? route.DescRuta : '';
+      })
+    },
+
+
+
 
     async readAllIndicadoresCalidad() {
       this.mListaRutasIndicadoresCalidad = [];
@@ -220,38 +219,14 @@ export default {
       this.oBase64IndicadoresCalidad = "";
 
       try {
-        var rutasString = [];
-        if (this.itemRutasIndicadoresCalidad.length <= 0) {
-          rutasString.push("Todas las rutas");
-        } else {
-          for (var j = 0; j < this.itemRutasIndicadoresCalidad.length; j++) {
-            for (
-              var i = 0;
-              i < this.mListaRutasIndicadoresCalidad.length;
-              i++
-            ) {
-              if (
-                this.mListaRutasIndicadoresCalidad[i].idRuta ==
-                this.itemRutasIndicadoresCalidad[j]
-              ) {
-                rutasString.push(
-                  this.mListaRutasIndicadoresCalidad[i].DescRuta
-                );
-              }
-            }
-          }
-        }
-        
+
         var datos = await this.$axios.post(
           process.env.baseUrl + "/IndicadoresCalidadConsolidado",
           {
             token: this.token,
             fechaI: getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
             fechaF: getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
-            rutas:
-              this.itemRutasIndicadoresCalidad.length <= 0
-                ? "*"
-                : this.itemRutasIndicadoresCalidad,
+            rutas: this.modelTiposEvento.length <= 0 ? "*" : this.modelTiposEvento,
             nameEmpresa: this.$cookies.get("nameEmpresa"),
             usuarioName: this.$cookies.get("namesUsuario"),
           },
@@ -372,12 +347,15 @@ export default {
             { text: "RUTA : ", fontSize: 12, bold: true },
             {
               text:
-                this.itemRutasIndicadoresCalidad.length == 0
+                (this.modelTiposEvento.length === 0
                   ? "TODAS LAS RUTAS"
-                  : this.itemRutasIndicadoresCalidad.toString(),
+                  : this.selectedRouteDescriptions.toString()),
+              fontSize: 11,
+              alignment: "left",
+              bold: true,
             },
           ],
-          colSpan: 2,
+          colSpan: 3,
         };
         var periodo = {
           text: [
@@ -403,7 +381,7 @@ export default {
             [tipoInfomer, {}, {}, {}],
             ["", empresa, {}, ""],
             [periodo, {}, impresion, {}],
-            [ruta, {}, "", ""],
+            [ruta, {}, {}, ""],
           ],
           //body: [[ 'First', 'Second', 'Third', 'The last one' ]],
         };
@@ -1071,7 +1049,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpleihv, acuNoCumpleihv,80),
+              body: componenteResultado(acuCumpleihv, acuNoCumpleihv, 80),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1105,7 +1083,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpleivp, acuNoCumpleivp,80),
+              body: componenteResultado(acuCumpleivp, acuNoCumpleivp, 80),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1139,7 +1117,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpleivv, acuNoCumpleivv,80),
+              body: componenteResultado(acuCumpleivv, acuNoCumpleivv, 80),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1173,7 +1151,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpletap, acuNoCumpletap,100),
+              body: componenteResultado(acuCumpletap, acuNoCumpletap, 100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1207,7 +1185,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpletav, acuNoCumpletav,100),
+              body: componenteResultado(acuCumpletav, acuNoCumpletav, 100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1241,7 +1219,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumplehio, acuNoCumplehio,100),
+              body: componenteResultado(acuCumplehio, acuNoCumplehio, 100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1257,7 +1235,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [80, 160, 80,  80, 80],
+              widths: [80, 160, 80, 80, 80],
               body: [
                 componenteHeaderTable([
                   "Fecha",
@@ -1275,7 +1253,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumplehco, acuNoCumplehco,100),
+              body: componenteResultado(acuCumplehco, acuNoCumplehco, 100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1309,7 +1287,7 @@ export default {
             table: {
               headerRows: 0,
               widths: ["*", "*", "*", "*", "*"],
-              body: componenteResultado(acuCumpleora, acuNoCumpleora,100),
+              body: componenteResultado(acuCumpleora, acuNoCumpleora, 100),
             },
             margin: [0, 10, 0, 0],
           },
@@ -1342,7 +1320,7 @@ export default {
   },
   mounted() {
     this.initFechaActualProduccionRPAgosVehiculoRecibo();
-    this.readAllRutasIndicadoresCalidad();
+    this.readEventosListaReporte();
   },
 };
 </script>
@@ -1356,6 +1334,7 @@ export default {
 .card_body_0_01rem {
   padding: 0.5rem !important;
 }
+
 .card-bodyRPagosVehiculoReciboProduccion::-webkit-scrollbar {
   display: none;
 }
