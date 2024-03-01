@@ -534,7 +534,7 @@ export default {
       }
       // tabla ihv
       var resultadoStringihv = [];
-      var acuCumpleihv = 1;
+      var acuCumpleihv = 0;
       var acuNoCumpleihv = 0;
       for (var i = 0; i < datos.ihv.length; i++) {
         var arrys = [
