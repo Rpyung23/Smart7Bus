@@ -209,7 +209,19 @@
             }"
           />
 
-          
+          <sidebar-item
+            translate="no"
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.rConsolidoSalidas !=
+                null &&
+              permisos.despacho.reportes.rConsolidoSalidas
+            "
+            :link="{
+              name: 'R. Consolidado Salidas',
+              path: '/despacho/rConsolidadoSalidas',
+            }"
+          />   
 
         </sidebar-item>
       
@@ -271,8 +283,8 @@ export default {
   },
   mounted() {
     this.permisos = this.$cookies.get("permisos");
-
     this.initScrollbar();
+    console.log('Permisos:++++++++++++++++++++++', this.permisos.despacho.reportes.rConsolidadoSalidas);
   },
 };
 </script>

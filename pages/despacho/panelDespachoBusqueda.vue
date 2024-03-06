@@ -2,136 +2,67 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select
-              v-model="itemUnidadSalidasPanelBusqueda"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesSalidasPanelBusqueda"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadSalidasPanelBusqueda" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+              <el-option v-for="item in optionsUnidadesSalidasPanelBusqueda" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
-            <el-date-picker
-              type="date"
-              placeholder="Select date and time"
-              style="margin-right: 0.5rem"
-              v-model="fechaInicialSalidasPanelBusqueda"
-            >
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem"
+              v-model="fechaInicialSalidasPanelBusqueda">
             </el-date-picker>
 
-            <el-date-picker
-              type="date"
-              placeholder="Select date and time"
-              style="margin-right: 0.5rem"
-              v-model="fechaFinalSalidasPanelBusqueda"
-            >
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem"
+              v-model="fechaFinalSalidasPanelBusqueda">
             </el-date-picker>
 
-            <el-switch
-              v-model="oSwitchOrdenarSalidasDespachoPanelBusqueda"
-              active-text="O. UNIDAD"
-              inactive-text=""
-            >
+            <el-switch v-model="oSwitchOrdenarSalidasDespachoPanelBusqueda" active-text="O. UNIDAD" inactive-text="">
             </el-switch>
           </div>
 
-          <div
-            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          >
+          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda">
             <div class="buttonCenterEndDerecha">
-              <base-button
-                icon
-                type="primary"
-                size="sm"
-                @click="readSalidasPanelBusqueda()"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="el-icon-search"></i
-                ></span>
+              <base-button icon type="primary" size="sm" @click="readSalidasPanelBusqueda()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
 
-              <download-excel
-              class="btn btn-icon btn-fab btn-success btn-sm"
-              v-if="mListaSalidasPanelBusqueda.length > 0"
-              :data="mListaSalidasPanelBusqueda"
-              :fields="json_fields_excelRPanelBusqueda"
-              :name="FileNameExcelRPanelBusqueda"
-            >
-              <span class="btn-inner--icon"
-                ><i class="ni ni-collection"></i
-              ></span>
-              
-            </download-excel>
-            
-              <base-button
-                type="danger"
-                size="sm"
-                v-if="mListaSalidasPanelBusqueda.length > 0"
-                @click="exportPdfSalidasPanelBusqueda()"
-                title="EXPORTAR A PDF"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="ni ni-single-copy-04"></i
-                ></span>
+              <download-excel class="btn btn-icon btn-fab btn-success btn-sm" v-if="mListaSalidasPanelBusqueda.length > 0"
+                :data="mListaSalidasPanelBusqueda" :fields="json_fields_excelRPanelBusqueda"
+                :name="FileNameExcelRPanelBusqueda">
+                <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
+
+              </download-excel>
+
+              <base-button type="danger" size="sm" v-if="mListaSalidasPanelBusqueda.length > 0"
+                @click="exportPdfSalidasPanelBusqueda()" title="EXPORTAR A PDF">
+                <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
               </base-button>
             </div>
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
 
-            <el-select
-              v-model="mSelectRutaSalidaPanelBusqueda"
-              multiple
-              collapse-tags
-              v-if="isMultipleRutas"
-              placeholder="Lineas"
-            >
-              <el-option
-                v-for="item in mListLineasSalidasPanelBusqueda"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
+            <el-select v-model="mSelectRutaSalidaPanelBusqueda" multiple collapse-tags v-if="isMultipleRutas"
+              placeholder="Lineas">
+              <el-option v-for="item in mListLineasSalidasPanelBusqueda" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
               </el-option>
             </el-select>
 
 
-            <el-select
-              v-model="mSelectRutaSalidaPanelBusqueda"
-              collapse-tags
-              v-if="!isMultipleRutas"
-              placeholder="Linea"
-            >
-              <el-option
-                v-for="item in mListLineasSalidasPanelBusqueda"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
+            <el-select v-model="mSelectRutaSalidaPanelBusqueda" collapse-tags v-if="!isMultipleRutas" placeholder="Linea">
+              <el-option v-for="item in mListLineasSalidasPanelBusqueda" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
               </el-option>
             </el-select>
 
@@ -139,27 +70,12 @@
 
           <div class="cardOpcinesRPagosVehiculoProduccionPanelDespachoBusqueda">
             <el-checkbox-group v-model="radioEstadoRSalidasPanelBusqueda">
-              <el-checkbox
-                label="2"
-                style="background-color: hsla(226, 88%, 61%, 0.274)"
-                >EN RUTA</el-checkbox
-              >
-              <el-checkbox
-                label="0,1"
-                style="background-color: rgba(140, 248, 126, 0.384)"
-                >SALIDAS DIFERIDAS
+              <el-checkbox label="2" style="background-color: hsla(226, 88%, 61%, 0.274)">EN RUTA</el-checkbox>
+              <el-checkbox label="0,1" style="background-color: rgba(140, 248, 126, 0.384)">SALIDAS DIFERIDAS
               </el-checkbox>
               <el-checkbox label="3">FINALIZADOS</el-checkbox>
-              <el-checkbox
-                label="500"
-                style="background-color: hsla(34, 88%, 61%, 0.384)"
-                >PENALIZADAS</el-checkbox
-              >
-              <el-checkbox
-                label="4"
-                style="background-color: rgba(255, 0, 0, 0.342)"
-                >ANULADOS</el-checkbox
-              >
+              <el-checkbox label="500" style="background-color: hsla(34, 88%, 61%, 0.384)">PENALIZADAS</el-checkbox>
+              <el-checkbox label="4" style="background-color: rgba(255, 0, 0, 0.342)">ANULADOS</el-checkbox>
               <!--<el-checkbox
                 label="31"
                 disabled="false"
@@ -170,77 +86,36 @@
           </div>
         </card>
 
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1"
-          footer-classes="pb-2"
-        >
-          <el-table
-            v-loading="loadingTableUnidadesSalidasPanelBusqueda"
-            element-loading-text="Cargando Datos..."
-            :data="mListaSalidasPanelBusqueda"
-            row-key="id"
-            class="tablePanelControlProduccion"
-            :row-class-name="tableRowClassNameSalidasPanelBusqueda"
-            header-row-class-name="thead-dark"
-            height="calc(100vh - 13rem)"
-            style="width: 100%"
-          >
+        <card class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1" footer-classes="pb-2">
+          <el-table v-loading="loadingTableUnidadesSalidasPanelBusqueda" element-loading-text="Cargando Datos..."
+            :data="mListaSalidasPanelBusqueda" row-key="id" class="tablePanelControlProduccion"
+            :row-class-name="tableRowClassNameSalidasPanelBusqueda" header-row-class-name="thead-dark"
+            height="calc(100vh - 13rem)" style="width: 100%">
             <el-table-column label="Actions" :width="250">
               <template slot-scope="scope">
-                <base-button
-                  size="sm"
-                  title="VER RUBROS"
-                  @click="showModalRubro(scope.row)"
-                  type="default"
-                  ><i class="ni ni-fat-add"></i
-                ></base-button>
+                <base-button size="sm" title="VER RUBROS" @click="showModalRubro(scope.row)" type="default"><i
+                    class="ni ni-fat-add"></i></base-button>
 
-                <base-button
-                  size="sm"
-                  title="TARJETA PEQUEÑA"
-                  v-show="isTarjetaAntActPos == false"
-                  @click="showTarjetaSalidasPanelBusqueda(scope.row)"
-                  type="primary"
-                  ><i class="ni ni-single-copy-04"></i
-                ></base-button>
+                <base-button size="sm" title="TARJETA PEQUEÑA" v-show="isTarjetaAntActPos == false"
+                  @click="showTarjetaSalidasPanelBusqueda(scope.row)" type="primary"><i
+                    class="ni ni-single-copy-04"></i></base-button>
 
-                <base-button
-                  size="sm"
-                  title="T. PEQUEÑAS ANT-ACT-POS"
-                  v-show="isTarjetaAntActPos"
-                  @click="showTarjetaSalidasPanelBusqueda(scope.row)"
-                  type="primary"
-                  ><i class="ni ni-single-copy-04"></i
-                ></base-button>
+                <base-button size="sm" title="T. PEQUEÑAS ANT-ACT-POS" v-show="isTarjetaAntActPos"
+                  @click="showTarjetaSalidasPanelBusqueda(scope.row)" type="primary"><i
+                    class="ni ni-single-copy-04"></i></base-button>
 
-                <base-button
-                  size="sm"
-                  title="TARJETA GRANDE(A4)"
-                  v-show="isTarjetaAntActPos == false"
-                  @click="showTarjetaSalidasPanelBusquedaA4(scope.row)"
-                  type="danger"
-                  ><i class="ni ni-book-bookmark"></i
-                ></base-button>
+                <base-button size="sm" title="TARJETA GRANDE(A4)" v-show="isTarjetaAntActPos == false"
+                  @click="showTarjetaSalidasPanelBusquedaA4(scope.row)" type="danger"><i
+                    class="ni ni-book-bookmark"></i></base-button>
 
 
-                <base-button
-                  size="sm"
-                  title="T. A4 ANT-ACT-POS"
-                  v-show="isTarjetaAntActPos"
-                  @click="showTarjetaSalidasPanelBusquedaA4(scope.row)"
-                  type="danger"
-                  ><i class="ni ni-book-bookmark"></i
-                ></base-button>
+                <base-button size="sm" title="T. A4 ANT-ACT-POS" v-show="isTarjetaAntActPos"
+                  @click="showTarjetaSalidasPanelBusquedaA4(scope.row)" type="danger"><i
+                    class="ni ni-book-bookmark"></i></base-button>
 
-                <base-button
-                  size="sm"
-                  title="Recorrido"
-                  @click="showRecorridoSalidasPanelBusqueda(scope.row)"
-                  type="success"
-                  ><i class="ni ni-world"></i
-                ></base-button>
+                <base-button size="sm" title="Recorrido" @click="showRecorridoSalidasPanelBusqueda(scope.row)"
+                  type="success"><i class="ni ni-world"></i></base-button>
               </template>
             </el-table-column>
 
@@ -250,11 +125,7 @@
             <!--<el-table-column prop="idSali_m" label="Salida" width="140">
               </el-table-column>-->
 
-            <el-table-column
-              v-for="column in tableColumnsUnidadesFlotaVehicular"
-              :key="column.label"
-              v-bind="column"
-            >
+            <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
             </el-table-column>
 
             <el-table-column label="Estado" min-width="270px" prop="EstaSali_m">
@@ -269,20 +140,18 @@
                           : 'success'
                       }`"
                     ></i>-->
-                  <span class="status"
-                    ><strong>{{
-                      row.EstaSali_m == 1 || row.EstaSali_m == 0
-                        ? "DIFERIDA"
-                        : row.EstaSali_m == 4
-                        ? "ANULADO"
-                        : row.EstaSali_m == 2
+                  <span class="status"><strong>{{
+                    row.EstaSali_m == 1 || row.EstaSali_m == 0
+                    ? "DIFERIDA"
+                    : row.EstaSali_m == 4
+                      ? "ANULADO"
+                      : row.EstaSali_m == 2
                         ? "EN RUTA"
                         : row.EstaSali_m == 3 &&
                           row.atrasoFaltasTime != "00:00:00"
-                        ? "FINALIZADO CON PENALIDAD"
-                        : "FINALIZADA SIN PENALIDAD"
-                    }}</strong></span
-                  >
+                          ? "FINALIZADO CON PENALIDAD"
+                          : "FINALIZADA SIN PENALIDAD"
+                  }}</strong></span>
                 </badge>
               </template>
             </el-table-column>
@@ -294,11 +163,7 @@
     </base-header>
 
     <!--Form modal-->
-    <modal
-      :show.sync="modalSalidasPanelDespachoBusqueda"
-      size="xl"
-      body-classes="p-1"
-    >
+    <modal :show.sync="modalSalidasPanelDespachoBusqueda" size="xl" body-classes="p-1">
       <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
       <!--<div class="containerModalRecorridoPanelDespacho">
         <div class="cardControlesMarc">
@@ -414,20 +279,12 @@
     </modal>
 
     <!--Form modal TICKET SALIDA-->
-    <modal
-      :show.sync="modalSalidasTarjetaPanelDespachoBusqueda"
-      size="sm"
-      body-classes="p-0"
-    >
+    <modal :show.sync="modalSalidasTarjetaPanelDespachoBusqueda" size="sm" body-classes="p-0">
       <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta>
     </modal>
 
     <!--Form modal TICKET (A4) SALIDA-->
-    <modal
-      :show.sync="modalSalidasTarjetaPanelDespachoBusquedaA4"
-      size="xl"
-      body-classes="p-1"
-    >
+    <modal :show.sync="modalSalidasTarjetaPanelDespachoBusquedaA4" size="xl" body-classes="p-1">
       <ComponenteTarjetaA4 ref="ComponenteTarjetaA4"></ComponenteTarjetaA4>
     </modal>
 
@@ -435,61 +292,47 @@
       <template slot="header">
         {{
           titulo_modal_add_anotacion == null
-            ? ""
-            : "Unidad N° : " +
-              titulo_modal_add_anotacion.CodiVehiSali_m +
-              " Vuelta N° : " +
-              titulo_modal_add_anotacion.NumeVuelSali_m +
-              " Ruta : " +
-              titulo_modal_add_anotacion.DescRutaSali_m +
-              " (" +
-              titulo_modal_add_anotacion.HoraSaliProgSali_m +
-              " - " +
-              titulo_modal_add_anotacion.HoraLlegProgSali_m +
-              ")"
+          ? ""
+          : "Unidad N° : " +
+          titulo_modal_add_anotacion.CodiVehiSali_m +
+          " Vuelta N° : " +
+          titulo_modal_add_anotacion.NumeVuelSali_m +
+          " Ruta : " +
+          titulo_modal_add_anotacion.DescRutaSali_m +
+          " (" +
+          titulo_modal_add_anotacion.HoraSaliProgSali_m +
+          " - " +
+          titulo_modal_add_anotacion.HoraLlegProgSali_m +
+          ")"
         }}
       </template>
 
       <div class="container-add-rubro">
-        <el-select
-          v-model="oSelectRubro"
-          filterable
-          placeholder="RUBROS"
-          style="width: 30%; margin-right: 0.5rem"
-        >
-          <el-option
-            v-for="item in mListTipoRubro"
-            :key="item.id"
-            :label="'(' + item.precio + ' $) ' + item.descripcion"
-            :value="item.id"
-          >
+        <el-select v-model="oSelectRubro" filterable placeholder="RUBROS" style="width: 30%; margin-right: 0.5rem">
+          <el-option v-for="item in mListTipoRubro" :key="item.id" :label="'(' + item.precio + ' $) ' + item.descripcion"
+            :value="item.id">
           </el-option>
         </el-select>
 
-        <el-input
-          type="textarea"
-          v-model="oTextAreaAnotacion"
-          style="width: 50%; margin-right: 0.5rem"
-        ></el-input>
+        <!-- Input adicional solo para "OTROS" (id 1000) -->
+        <el-input v-if="oSelectRubro === 1000 && this.$cookies.get('empresa') === 'arey'" type="imput"
+          v-model="oTextAreaOtro" placeholder="Ingrese su valor decimal" style="width: 50%; margin-right: 0.5rem">
+        </el-input>
 
-        <base-button
-          size="sm"
-          icon="ni ni-circle-08 pt-1"
-          type="default"
-          @click="insertNuevoRubro()"
-          >AGREGAR</base-button
-        >
+
+        <!-- Input para anotación -->
+        <el-input type="textarea" v-model="oTextAreaAnotacion" style="width: 50%; margin-right: 0.5rem"></el-input>
+
+
+
+        <base-button size="sm" icon="ni ni-circle-08 pt-1" type="default"
+          @click="insertNuevoRubro()">AGREGAR</base-button>
       </div>
 
-      <el-table
-        v-loading="loadingRubrosList"
-        element-loading-text="Cargando Datos..."
-        :data="mListaRubros"
-        row-key="id"
-        header-row-class-name="thead-dark"
-        height="calc(100vh - 18rem)"
-        style="width: 100%"
-      >
+
+
+      <el-table v-loading="loadingRubrosList" element-loading-text="Cargando Datos..." :data="mListaRubros" row-key="id"
+        header-row-class-name="thead-dark" height="calc(100vh - 18rem)" style="width: 100%">
         <el-table-column label="FECHA" min-width="170" prop="fecha_creacion">
         </el-table-column>
 
@@ -667,21 +510,22 @@ export default {
       mListTipoRubro: [],
       oSelectRubro: null,
       oTextAreaAnotacion: "",
+      oTextAreaOtro: "",
       titulo_modal_add_anotacion: null,
-      isTarjetaAntActPos: false, 
-      isMultipleRutas:true,
-      json_fields_excelRPanelBusqueda:{
-        "UNIDAD":"CodiVehiSali_m",
-        "N° VUELTA":"NumeVuelSali_m",
-        "RUTA":"DescRutaSali_m",
-        "FRECUENCIA":"DescFrec",
-        "H. SALIDA":"HoraSaliProgSali_mF",
-        "H. LLEGADA":"HoraLlegProgSali_m",
-        "F. ATRASO":"atrasoFaltasTime",
-        "F. ADELANTO":"adelantoFaltasTime",
-        "MULTA ($)":"PenaCtrlSali_d",
-        "KM/H":"VeloMaxiSali_m",
-        "CHOFER":"nombres_chofer"
+      isTarjetaAntActPos: false,
+      isMultipleRutas: true,
+      json_fields_excelRPanelBusqueda: {
+        "UNIDAD": "CodiVehiSali_m",
+        "N° VUELTA": "NumeVuelSali_m",
+        "RUTA": "DescRutaSali_m",
+        "FRECUENCIA": "DescFrec",
+        "H. SALIDA": "HoraSaliProgSali_mF",
+        "H. LLEGADA": "HoraLlegProgSali_m",
+        "F. ATRASO": "atrasoFaltasTime",
+        "F. ADELANTO": "adelantoFaltasTime",
+        "MULTA ($)": "PenaCtrlSali_d",
+        "KM/H": "VeloMaxiSali_m",
+        "CHOFER": "nombres_chofer"
       }
     };
   },
@@ -735,30 +579,26 @@ export default {
         }
       }
     },
-    async readAllLineasContadorSalidasPanelBusqueda() 
-    {
+    async readAllLineasContadorSalidasPanelBusqueda() {
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
         tipo: 3,
       });
-      if (datos.data.status_code == 200) 
-      {
+      if (datos.data.status_code == 200) {
         this.mListLineasSalidasPanelBusqueda.push(...datos.data.data)
 
-        if(!this.isMultipleRutas)
-        {
-          if(this.mListLineasSalidasPanelBusqueda.length > 0){
+        if (!this.isMultipleRutas) {
+          if (this.mListLineasSalidasPanelBusqueda.length > 0) {
             this.mSelectRutaSalidaPanelBusqueda = this.mListLineasSalidasPanelBusqueda[0].LetrRuta
             this.readSalidasPanelBusqueda()
           }
         }
       }
     },
-    async readSalidasPanelBusqueda() 
-    {
+    async readSalidasPanelBusqueda() {
 
 
-      this.FileNameExcelRPanelBusqueda = "RPB_RD_"+Date.now()+".xls"
+      this.FileNameExcelRPanelBusqueda = "RPB_RD_" + Date.now() + ".xls"
 
 
       this.mListaSalidasPanelBusqueda = [];
@@ -771,7 +611,7 @@ export default {
           this.itemUnidadSalidasPanelBusqueda.length <= 0
             ? "*"
             : this.itemUnidadSalidasPanelBusqueda,
-        rutas: !this.isMultipleRutas ? [this.mSelectRutaSalidaPanelBusqueda] : 
+        rutas: !this.isMultipleRutas ? [this.mSelectRutaSalidaPanelBusqueda] :
           this.mSelectRutaSalidaPanelBusqueda.length <= 0
             ? "*"
             : this.mSelectRutaSalidaPanelBusqueda,
@@ -783,7 +623,7 @@ export default {
             : this.radioEstadoRSalidasPanelBusqueda,
         orderUnidad:
           this.oSwitchOrdenarSalidasDespachoPanelBusqueda == true ? 1 : 0,
-        frecuencia:"*"
+        frecuencia: "*"
       };
 
       console.log(obj);
@@ -847,14 +687,12 @@ export default {
       this.modalSalidasPanelDespachoBusqueda = true;
       this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(item);
     },
-    showTarjetaSalidasPanelBusqueda(salida) 
-    {
+    showTarjetaSalidasPanelBusqueda(salida) {
       this.modalSalidasTarjetaPanelDespachoBusqueda = true;
 
-      if (this.isTarjetaAntActPos) 
-      {
-        var idSalidaAnt = this.getObjetoSalida(salida,'a')
-        var idSalidaPost = this.getObjetoSalida(salida,'p')
+      if (this.isTarjetaAntActPos) {
+        var idSalidaAnt = this.getObjetoSalida(salida, 'a')
+        var idSalidaPost = this.getObjetoSalida(salida, 'p')
 
         this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPos([
           idSalidaAnt,
@@ -867,17 +705,13 @@ export default {
       }
 
     },
-    getObjetoSalida(salida,bandera_pos)
-    {
-      for(var i=0;i<this.mListaSalidasPanelBusqueda.length;i++)
-      {
-        if(salida.idSali_m == this.mListaSalidasPanelBusqueda[i].idSali_m)
-        {
-          if(bandera_pos == 'a')
-          {
-            return this.mListaSalidasPanelBusqueda[i-1]
-          }else if (bandera_pos == 'p'){
-            return this.mListaSalidasPanelBusqueda[i+1]
+    getObjetoSalida(salida, bandera_pos) {
+      for (var i = 0; i < this.mListaSalidasPanelBusqueda.length; i++) {
+        if (salida.idSali_m == this.mListaSalidasPanelBusqueda[i].idSali_m) {
+          if (bandera_pos == 'a') {
+            return this.mListaSalidasPanelBusqueda[i - 1]
+          } else if (bandera_pos == 'p') {
+            return this.mListaSalidasPanelBusqueda[i + 1]
           }
         }
       }
@@ -887,10 +721,9 @@ export default {
       this.modalSalidasTarjetaPanelDespachoBusquedaA4 = true;
       /*this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusqueda(salida);*/
 
-      if (this.isTarjetaAntActPos) 
-      {
-        var idSalidaAnt = this.getObjetoSalida(salida,'a')
-        var idSalidaPost = this.getObjetoSalida(salida,'p')
+      if (this.isTarjetaAntActPos) {
+        var idSalidaAnt = this.getObjetoSalida(salida, 'a')
+        var idSalidaPost = this.getObjetoSalida(salida, 'p')
 
         this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusquedaAntActPos([
           idSalidaAnt,
@@ -1051,14 +884,14 @@ export default {
             this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1
               ? "DIFERIDA"
               : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 4
-              ? "ANULADO"
-              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
-              ? "EN RUTA"
-              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
-                this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime !=
-                  "00:00:00"
-              ? "FINALIZADO CON PENALIDAD"
-              : "FINALIZADA SIN PENALIDAD";
+                ? "ANULADO"
+                : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
+                  ? "EN RUTA"
+                  : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
+                    this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime !=
+                    "00:00:00"
+                    ? "FINALIZADO CON PENALIDAD"
+                    : "FINALIZADA SIN PENALIDAD";
           var arrys = [
             {
               text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
@@ -1289,14 +1122,14 @@ export default {
             this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1
               ? "DIFERIDA"
               : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 4
-              ? "ANULADO"
-              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
-              ? "EN RUTA"
-              : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
-                this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime !=
-                  "00:00:00"
-              ? "FINALIZADO CON PENALIDAD"
-              : "FINALIZADA SIN PENALIDAD";
+                ? "ANULADO"
+                : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 2
+                  ? "EN RUTA"
+                  : this.mListaSalidasPanelBusqueda[i].EstaSali_m == 3 &&
+                    this.mListaSalidasPanelBusqueda[i].atrasoFaltasTime !=
+                    "00:00:00"
+                    ? "FINALIZADO CON PENALIDAD"
+                    : "FINALIZADA SIN PENALIDAD";
           var arrys = [
             {
               text: this.mListaSalidasPanelBusqueda[i].CodiVehiSali_m,
@@ -1504,6 +1337,7 @@ export default {
     showModalRubro(item) {
       this.oSelectRubro = null;
       this.oTextAreaAnotacion = "";
+      this.oTextAreaOtro = "";
       this.mListaRubros = [];
       this.filaSelectionCurrentSalidaPanelBusqueda = item;
       this.titulo_modal_add_anotacion = item;
@@ -1582,13 +1416,15 @@ export default {
                 this.filaSelectionCurrentSalidaPanelBusqueda.CodiVehiSali_m,
               item_id: this.oSelectRubro,
               monto: this.getValorRubro(this.oSelectRubro),
-              anotaciones: this.oTextAreaAnotacion,
+              anotaciones: this.oTextAreaAnotacion
+              /*onotacionOtro: this.oTextAreaOtro,*/
             }
           );
 
           if (datos.data.status_code == 200) {
             this.oSelectRubro = null;
             this.oTextAreaAnotacion = "";
+            this.oTextAreaOtro = "";
             this.readDetalleRubros();
           } else {
             this.$notify({
@@ -1633,13 +1469,13 @@ export default {
     this.isTarjetaAntActPos =
       this.$cookies.get("empresa") == "glimitada" ? true : false
 
-    this.isMultipleRutas =  this.$cookies.get("empresa") == "glimitada" ? false : true 
+    this.isMultipleRutas = this.$cookies.get("empresa") == "glimitada" ? false : true
 
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllLineasContadorSalidasPanelBusqueda();
     this.readTipoRubro();
     this.readAllUnidadesSalidasPanelBusqueda();
-    if(this.isMultipleRutas){
+    if (this.isMultipleRutas) {
       this.readSalidasPanelBusqueda()
     }
   },
@@ -1656,15 +1492,17 @@ export default {
 .containerModalRecorridoPanelDespacho {
   display: flex;
 }
+
 .cardControlesMarc {
   height: calc(80vh);
   width: 18rem;
 }
+
 .current-row {
   background-color: rgba(0, 0, 0, 0.178);
 }
 
-.el-table__body tr.current-row > td.el-table__cell {
+.el-table__body tr.current-row>td.el-table__cell {
   background-color: rgba(0, 0, 0, 0.178) !important;
 }
 
@@ -1749,6 +1587,7 @@ export default {
 .card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda {
   padding-top: 0.25rem !important;
 }
+
 .cardOpcinesRPagosVehiculoProduccionPanelDespachoBusqueda {
   display: flex;
   align-items: center;
