@@ -3,7 +3,7 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-        <sidebar-item translate="no" :link="{
+        <sidebar-item translate="no" v-if="TableroJusti" :link="{
           name: 'Tablero',
           icon: 'ni ni-collection text-default',
           path: pathTableroVueltas,
@@ -290,6 +290,14 @@ export default {
         this.oPermisosWebProduccionPanelJSON.produccionVueltas
         ? "/produccion/tableroVueltas"
         : "/produccion/tablero";
+
+    this.TableroJusti = permisos != null &&
+      permisos.produccion != null &&
+      permisos.produccion.active != null &&
+      permisos.produccion.active &&
+      permisos.produccion.tablero != null &&
+      permisos.produccion.tablero.active != null &&
+      permisos.produccion.tablero.active 
 
 
 
