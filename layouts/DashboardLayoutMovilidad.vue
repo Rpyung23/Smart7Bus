@@ -6,7 +6,7 @@
         <sidebar-item
           translate="no"
           :link="{
-            name: 'Incadores de Calidad',
+            name: 'Indicadores de Calidad',
             icon: 'ni ni-chart-pie-35 text-default',
             path: '/movilidad/rIcanlidadMovilidad',
           }"
@@ -16,13 +16,20 @@
           v-if="permisos != null && permisos.movilidad.active != null && permisos.movilidad.reportes.active != null && permisos.movilidad.reportes.indicadorConsolidado"
         translate="no"
         :link="{
-        name: 'Incadores de Calidad Consolidado',
+        name: 'Indicadores de Calidad Consolidado',
         icon: 'ni ni-chart-pie-35 text-default',
         path: '/movilidad/rIcalidadMovilidadConsolidado',
         }"/>
 
 
-
+      <sidebar-item
+        v-if="permisos != null && permisos.movilidad.active != null && permisos.movilidad.reportes.active != null && permisos.movilidad.reportes.indicadorConsolidadoTotal"
+        translate="no"
+        :link="{
+        name: 'Indicadores Consolidado T',
+        icon: 'ni ni-chart-pie-35 text-default',
+        path: '/movilidad/rIndicadorConsolidado',
+        }"/>
 
 
         <sidebar-item
