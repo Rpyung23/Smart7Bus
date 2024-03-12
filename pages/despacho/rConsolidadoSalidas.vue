@@ -6,11 +6,13 @@
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
           footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-select v-model="itemUnidadSalidasPanelBusqueda" multiple filterable style="margin-right: 0.5rem" remote
-              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
-              <el-option v-for="item in optionsUnidadesSalidasPanelBusqueda" :key="item.CodiVehi" :label="item.CodiVehi"
-                :value="item.CodiVehi">
+
+            <el-select v-model="itemUnidadProduccionRPagoVehiculorecibo" multiple filterable remote
+              placeholder="Unidades" prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
+              :remote-method="remoteMethodUnidadesRecibosProduccion"
+              :loading="loadingTableUnidadesRecibosVehiculoProduccion">
+              <el-option v-for="item in optionsUnidadesProduccionPagosVehiculo" :key="item.CodiVehi"
+                :label="item.CodiVehi" :value="item.CodiVehi">
               </el-option>
             </el-select>
 
@@ -24,11 +26,10 @@
               v-model="fechaFinalIndicadorCalidad">
             </el-date-picker>
 
-            <!-- DOWNLOAD EXCEL-->
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readAllIndicadoresCalidad" size="sm">
+            <base-button icon type="primary" @click="readConsolidadoSalidas" size="sm">
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>
           </div>
@@ -217,7 +218,7 @@ export default {
       })
     },
 
-    async readAllIndicadoresCalidad() {
+    async readConsolidadoSalidas() {
       this.mListaRutasIndicadoresCalidad = [];
 
       let iframe = document.getElementById("iframeContainerIndicadoresCalidad");
