@@ -59,7 +59,7 @@
               :data="mListRSalidas" row-key="id"
               header-row-class-name="thead-dark" height="calc(100vh - 10rem)"
               >
-              <el-table-column v-for="column in tableRSalidasDespachos" :key="column.label" v-bind="column">
+              <el-table-column v-for="column in tableRSalidasReporte" :key="column.label" v-bind="column">
               </el-table-column>
 
               <div slot="empty"></div>
@@ -142,16 +142,21 @@ export default {
       token: this.$cookies.get("token"),
       fechaInicialSalidasPanelBusqueda: "",
       fechaFinalSalidasPanelBusqueda: "",
-      tableRSalidasDespachos: [
-        {
+      tableRSalidasReporte: [
+        /*{
           prop: "idSali_m",
           label: "Salida",
           minWidth: 120,
-        },
+        },*/
         {
           prop: "CodiVehiSali_m",
           label: "Unidad",
           minWidth: 120,
+        },
+        {
+          prop: "HoraCreaTarjSali_m",
+          label: "H. Creación",
+          minWidth: 150,
         },
         {
           prop: "HoraSaliProgSali_m",
@@ -342,6 +347,14 @@ export default {
             alignment: "center",
           },
           {
+            text: "H. CREACIÓN",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
             text: "H. SALIDA",
             fontSize: 8.5,
             bold: true,
@@ -381,7 +394,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
+          }/*,
           {
             text: "RECAUDO ($)",
             fontSize: 8.5,
@@ -389,7 +402,7 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          }
+          }*/
         ],
       ]
 
@@ -408,7 +421,12 @@ export default {
             alignment: "center",
           },
           {
-            text: this.mListRSalidas[i]. HoraSaliProgSali_m,
+            text:this.mListRSalidas[i].HoraCreaTarjSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListRSalidas[i].HoraSaliProgSali_m,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -432,12 +450,12 @@ export default {
             text: this.mListRSalidas[i].MontInfrUnidSali_m,
             fontSize: 8.5,
             alignment: "center",
-          },
+          }/*,
           {
             text: this.mListRSalidas[i].RecaudoDashboardLayoutVue,
             fontSize: 8.5,
             alignment: "center",
-          }
+          }*/
         ]
 
         resultadoString.push(obj)
@@ -500,7 +518,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 50, 50,140, 140, 140, 50, 70],
+            widths: [40, 50,50, 50,140, 140, 140, 50/*, 70*/],
               body: resultadoString,
             },
           },
