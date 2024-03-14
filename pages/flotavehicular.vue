@@ -622,15 +622,38 @@
           class="needs-validation"
           @submit.prevent="handleSubmit(firstFormSubmit)"
         >
-          <div class="form-row">
+          <!--div class="form-row">
             <div class="col-md-6">
               <base-input
                 :disabled="editedIndexChofer == 1"
                 name="Usuario"
-                placeholder="Usuario"
+                placeholder="Nombres y Apellidos"
                 prepend-icon="ni ni-circle-08"
                 rules="required"
                 v-model="usuarioChofer"
+              >
+              </base-input>
+            </div>
+            <div class="col-md-6">
+              <base-input
+                prepend-icon="ni ni-mobile-button"
+                name="Teléfono"
+                type="number"
+                placeholder="Teléfono"
+                rules="required"
+                v-model="telefonoChofer"
+              >
+              </base-input>
+            </div>
+          </div!-->
+          <div class="form-row">
+            <div class="col-md-6">
+              <base-input  :disabled="editedIndexChofer == 1"
+                prepend-icon="ni ni-badge"
+                name="Nombre"
+                placeholder="Nombre Completo"
+                rules="required"
+                v-model="nombreChofer"
               >
               </base-input>
             </div>
@@ -649,38 +672,16 @@
           <div class="form-row">
             <div class="col-md-6">
               <base-input
-                prepend-icon="ni ni-badge"
-                name="Nombre"
-                placeholder="Nombre Completo"
+                prepend-icon="ni ni-circle-08"
+                name="Cedula"
+                placeholder="Cedula"
                 rules="required"
-                v-model="nombreChofer"
-              >
-              </base-input>
-            </div>
-            <div class="col-md-6">
-              <base-input
-                prepend-icon="ni ni-key-25"
-                name="Contraseña"
-                placeholder="Contraseña"
-                rules="required"
-                v-model="passwordChofer"
+                v-model="cedulaChofer"
               >
               </base-input>
             </div>
           </div>
-          <div class="form-row">
-            <div class="col-md-12">
-              <base-input
-                prepend-icon="ni ni-email-83"
-                type="email"
-                name="Email"
-                placeholder="Email"
-                rules="required"
-                v-model="emailChofer"
-              >
-              </base-input>
-            </div>
-          </div>
+         
           <div class="text-right">
             <base-button
               type="danger"
@@ -1141,11 +1142,9 @@ export default {
   data() {
     return {
       token: this.$cookies.get("token"),
-      usuarioChofer: "",
       telefonoChofer: "",
       nombreChofer: "",
-      passwordChofer: "",
-      emailChofer: "",
+      cedulaChofer: "",
       modalTitleAsignarChofer: "",
       usuarioChoferUnidad: "",
       validaChofer: 0,
@@ -1327,35 +1326,25 @@ export default {
       ],
       tableColumnsChoferesFlotaVehicular: [
         {
-          prop: "usuario",
-          label: "Usuario",
+          prop: "Id",
+          label: "Id",
           minWidth: 150,
           sortable: true,
         },
         {
-          prop: "constrasenia",
-          label: "Contraseña",
-          minWidth: 150,
-        },
-        {
-          prop: "nombres",
+          prop: "Nombre",
           label: "Nombres y Apellidos",
-          minWidth: 200,
+          minWidth: 300,
         },
         {
-          prop: "email",
-          label: "Email",
-          minWidth: 200,
-        },
-        {
-          prop: "telefono",
+          prop: "Telefono",
           label: "Teléfono",
-          minWidth: 150,
+          minWidth: 200,
         },
         {
-          prop: "CodiVehi",
-          label: "Unidad",
-          minWidth: 120,
+          prop: "Codigo",
+          label: "Codigo",
+          minWidth: 200,
         },
       ],
       mListUnidadesFlotaVehicular: [],
@@ -1532,7 +1521,7 @@ export default {
       this.mListChoferesFlotaVehicular = [];
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrlPanel + "/read_choferes",
+          process.env.baseUrlPanel + "/read_usuario_vehiculo",
           {
             token: this.token,
           }
@@ -1781,15 +1770,13 @@ export default {
         var objBody = {
           token: this.token,
           datos: {
-            usuario: this.usuarioChofer,
-            constrasenia: this.passwordChofer,
             nombres: this.nombreChofer,
-            email: this.emailChofer,
             telefono: this.telefonoChofer,
+            codigo: this.cedulaChofer,
           },
         };
         var result = await this.$axios.post(
-          process.env.baseUrl + "/register_choferes",
+          process.env.baseUrl + "/register_usuario_vehiculo",
           objBody
         );
         if (result.data.status_code == 200) {
@@ -2152,15 +2139,14 @@ export default {
         var objBody = {
           token: this.token,
           datos: {
-            usuario: this.usuarioChofer,
-            constrasenia: this.passwordChofer,
+            id: this.idChofer,
             nombres: this.nombreChofer,
-            email: this.emailChofer,
             telefono: this.telefonoChofer,
+            codigo: this.cedulaChofer
           },
         };
         var result = await this.$axios.put(
-          process.env.baseUrl + "/update_chofer",
+          process.env.baseUrl + "/update_usuario_vehiculo",
           objBody
         );
         if (result.data.status_code == 200) {
@@ -2230,29 +2216,52 @@ export default {
       }
     },
     async deleteChofer(row) {
+      var estado;
+      if (row.Estado == 1) {
+        estado = 2;
+      } else {
+        estado = 1;
+      }
       try {
-        var usuarioDelete;
-        usuarioDelete = row.usuario;
         var objBody = {
           token: this.token,
-          usuario: usuarioDelete,
+          id: row.Id,
         };
-        //var result = await this.$axios.delete(process.env.baseUrl + "/delete_chofer", {data:objBody})
-        if (result.data.status_code == 200) {
-          this.initChoferesFlotaVehicular();
-          this.$notify({
-            message: result.data.msm,
-            timeout: 1500,
-            type: "default",
-          });
-        } else {
-          this.$notify({
-            title: "Error al eliminar",
-            timeout: 3000,
-            message: result.data.msm,
-            type: "danger",
-          });
-        }
+        Swal.fire({
+          title: row.Estado == 1 ? "Eliminar Chofer" : "Activar Chofer",
+          text: row.Nombre,  
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "Cancelar",
+          confirmButtonText:
+            row.Estado == 1 ? "Si, eliminar." : "Si, activar.",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            var result = await this.$axios.put(
+            process.env.baseUrl + "/delete_usuario_vehiculo", 
+            objBody);
+            console.log(objBody)
+          if (result.data.status_code == 200) {
+            this.initChoferesFlotaVehicular();
+            this.$notify({
+              message: result.data.msm,
+              timeout: 1500,
+              type: "default",
+            });
+          } else {
+            this.$notify({
+              title: "Error al eliminar",
+              timeout: 3000,
+              message: result.data.msm,
+              type: "danger",
+            });
+          }
+          }
+        })
+       
+        
       } catch (error) {
         this.$notify({
           title: "Error TRY Permisos",
@@ -2682,6 +2691,7 @@ export default {
       this.changeEstadoAdministrador(row);
     },
     sendDeleteChofer(row) {
+      console.log("ACACACACA   "+row.Id)
       this.deleteChofer(row);
     },
     editPropietario(row) {
@@ -2715,11 +2725,11 @@ export default {
       this.modalAgregarGrupoFlotaVehicular = true;
     },
     editChofer(row) {
-      this.usuarioChofer = row.usuario;
-      this.telefonoChofer = row.telefono;
-      this.nombreChofer = row.nombres;
-      this.passwordChofer = row.constrasenia;
-      this.emailChofer = row.email;
+      console.log(row)
+      this.idChofer = row.Id;
+      this.telefonoChofer = row.Telefono;
+      this.nombreChofer = row.Nombre;
+      this.cedulaChofer = row.Codigo;
       this.editedIndexChofer = 1;
       this.modalAgregarChoferFlotaVehicular = true;
     },
@@ -2734,36 +2744,29 @@ export default {
     },
     limpiarRegisterChofer() {
       this.nombreChofer = "";
-      this.usuarioChofer = "";
-      this.emailChofer = "";
-      this.passwordChofer = "";
       this.telefonoChofer = "";
+      this.cedulaChofer = "";
       this.editedIndexChofer = -1;
     },
     cancelarRegisterChofer() {
       this.nombreChofer = "";
-      this.usuarioChofer = "";
-      this.emailChofer = "";
-      this.passwordChofer = "";
       this.telefonoChofer = "";
+      this.cedulaChofer = "";
       this.editedIndexChofer = -1;
       this.modalAgregarChoferFlotaVehicular = false;
     },
     validarChofer() {
       this.validaChofer = 0;
-      if (this.usuarioChofer == "") {
-        this.validaChofer = 1;
-      }
       if (this.nombreChofer == "") {
         this.validaChofer = 1;
       }
-      if (this.emailChofer == "") {
-        this.validaChofer = 1;
-      }
-      if (this.passwordChofer == "") {
+      if (this.idChofer == "") {
         this.validaChofer = 1;
       }
       if (this.telefonoChofer == "") {
+        this.validaChofer = 1;
+      }
+      if (this.cedulaChofer == "") {
         this.validaChofer = 1;
       }
       return this.validaChofer;
