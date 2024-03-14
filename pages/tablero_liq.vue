@@ -894,8 +894,7 @@ export default {
             }
           );
 
-          if (response.data.status_code == 200) 
-          {
+          if (response.data.status_code == 200) {
             this.isShowModalLiquidar = false;
             this.$notify({
               title: "LIQUIDACION",
@@ -910,7 +909,7 @@ export default {
               message: response.data.msm,
               type: "default",
             });
-          }else{
+          } else {
             this.$notify({
               title: "LIQUIDACION ERROR SERVER",
               message: response.data.msm,
@@ -1218,8 +1217,6 @@ export default {
             },
           ],
 
-
-          
           [
             {
               text: "DEUDA",
@@ -1489,18 +1486,17 @@ export default {
       for (var i = 0; i < this.mListaDetalleTableroLiq.length; i++) {
         var fecha_consulta = [
           {
-            text:
-              "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_consulta,
+            text: "Fecha : " + this.mListaDetalleTableroLiq[i].fecha_consulta,
             fontSize: 9,
             alignment: "left",
-          }
+          },
         ];
-
 
         var fecha_liq = [
           {
             text:
-              "Fecha Liqui: " + this.mListaDetalleTableroLiq[i].fecha_liquidacion,
+              "Fecha Liqui: " +
+              this.mListaDetalleTableroLiq[i].fecha_liquidacion,
             fontSize: 9,
             alignment: "left",
           },
@@ -1537,17 +1533,16 @@ export default {
         ]);
 
         resultadoGasto = [
-
           [
             {
-              text: "COMPENSACION",
+              text: "- COMPENSACION",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
               alignment: "center",
             },
             {
-              text: "DESVIOS PAGADOS",
+              text: "- DESVIOS PAGADOS",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
@@ -1572,14 +1567,14 @@ export default {
 
           [
             {
-              text: "PAGO CHOFER",
+              text: "- PAGO CHOFER",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
               alignment: "center",
             },
             {
-              text: "ALIMENTACIÓN",
+              text: "- ALIMENTACIÓN",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
@@ -1604,14 +1599,14 @@ export default {
 
           [
             {
-              text: "PEAJES",
+              text: "- PEAJES",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
               alignment: "center",
             },
             {
-              text: "GARAJE",
+              text: "- GARAJE",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
@@ -1636,14 +1631,14 @@ export default {
 
           [
             {
-              text: "CONBUSTIBLE",
+              text: "- CONBUSTIBLE",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
               alignment: "center",
             },
             {
-              text: "DEUDA",
+              text: "- DEUDA",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
@@ -1666,12 +1661,9 @@ export default {
             },
           ],
 
-
-
-
           [
             {
-              text: "OTROS GASTOS",
+              text: "- OTROS GASTOS",
               fontSize: 8.5,
               alignment: "center",
               bold: true,
@@ -1699,7 +1691,37 @@ export default {
               color: "#000000",
               alignment: "center",
             },
-          ]
+          ],
+          [
+            {
+              text: "- COOPERATIVA",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            },
+            {
+              text: "",
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              alignment: "center",
+            }
+          ],
+          [
+            {
+              text: this.mListaDetalleTableroLiq[i].cooperativa,
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+            {
+              text: "",
+              fontSize: 10,
+              color: "#000000",
+              alignment: "center",
+            },
+          ],
         ];
 
         resultadoObservacionString.push([
@@ -1767,7 +1789,7 @@ export default {
               headerRows: 0,
               /*widths: ['*'],
               body: [empresa]*/
-              widths: [450, 450, 450, 450 , 450],
+              widths: [450, 450, 450, 450, 450],
               body: [
                 empresa,
                 unidad,
@@ -1859,18 +1881,18 @@ export default {
               fecha: item.fecha_consulta,
             },
           }
-        )
+        );
 
-        console.log(response)
+        console.log(response);
 
         if (response.data.status_code == 200) {
           this.$notify({
             title: "LIQUIDACION ELIMINADA",
             message: "LIQUIDACION ELIMINADA CON ÉXITO",
             type: "success",
-          })
+          });
 
-          this.readLiquidacion()
+          this.readLiquidacion();
         } else {
           this.$notify({
             title: "ERROR LIQUIDACION",
