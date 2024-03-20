@@ -215,6 +215,12 @@ export default {
         ? true
         : false;
 
+        this.TableroPerjudicado = permisos.produccion != null &&
+        permisos.produccion.TableroPerjudicado != null &&
+        permisos.produccion.TableroPerjudicado
+        ? true
+        : false;
+
     this.rdeudasacumuladas =
       permisos.produccion != null &&
         permisos.produccion.rdeudasacumuladas != null &&
