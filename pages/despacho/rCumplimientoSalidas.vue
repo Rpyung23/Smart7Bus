@@ -382,6 +382,7 @@ export default {
       modalSalidasRecorridoCumplimiento: false,
       token: this.$cookies.get("token"),
       isVueltaCheck: true,
+      isFinalizadas: false,
       fechaDia1CumplimientoSalidas: "",
       fechaDia2CumplimientoSalidas: "",
       modalSalidasTarjetaCumplientoSalida: false,
@@ -574,9 +575,10 @@ export default {
               ? "*"
               : this.itemGruposCumplimientoSalidas,
           isVuelta: this.isVueltaCheck,
+          isFinalizada: this.isFinalizadas == true ? 1 : 0 
         };
-
-        console.log(obj);
+        console.log("*************************** ");
+        console.log("Aca el body de salidas  "+JSON.stringify(obj));
 
         var datos = await this.$axios.post(
           process.env.baseUrl + "/readCumplimientoSalidas",
