@@ -74,20 +74,21 @@
                           ></i>
                         </base-button>
 
-      
                         <base-button
                           class="edit"
                           type="warning"
                           size="sm"
                           icon
-                          @click="editarUnidadChofer(row);initChoferConUnidad(row)"
+                          @click="
+                            editarUnidadChofer(row);
+                            initChoferConUnidad(row);
+                          "
                         >
                           <i class="text-white ni ni-single-02"></i>
                         </base-button>
                       </div>
                     </el-table-column>
 
-                
                     <el-table-column
                       v-for="column in tableColumnsUnidadesFlotaVehicular"
                       :key="column.label"
@@ -534,7 +535,6 @@
                           <i class="text-white ni ni-bus-front-12"></i>
                         </base-button>
                       </div>
-
                     </el-table-column>
 
                     <el-table-column
@@ -662,7 +662,8 @@
           </div!-->
           <div class="form-row">
             <div class="col-md-6">
-              <base-input  :disabled="editedIndexChofer == 1"
+              <base-input
+                :disabled="editedIndexChofer == 1"
                 prepend-icon="ni ni-badge"
                 name="Nombre"
                 placeholder="Nombre Completo"
@@ -695,7 +696,7 @@
               </base-input>
             </div>
           </div>
-         
+
           <div class="text-right">
             <base-button
               type="danger"
@@ -1115,30 +1116,70 @@
         </form>
       </validation-observer>
     </modal>
-  <!--Form modal Agregar  Unidad al Chofer-->
-    <modal :show.sync="modalShow" size="sm" body-classes="p-0" gradient="default" modal-classes="modal-danger modal-dialog-centered">
-    <h6 slot="header" class="modal-title center-title">{{ modalTitle +"( " +filtroChofer+" )"}}</h6> 
-    <card type="secondary" header-classes="bg-transparent pb-5" body-classes="px-lg-5 py-lg-5" class="border-0 mb-0">
-      <div >
-        <el-input v-model="actualChofer" placeholder="Buscar chofer" readonly clearable :style="{ width: '300px !important'}"> </el-input>
-        <el-select v-model="selectedChofer" placeholder="Seleccionar chofer" :style="{ width: '300px !important', marginTop: '16px' }">
-          <el-option
-            v-for="chofer in mListaChoferSinUnidad"
-            :key="chofer.codigo"
-            :label="chofer.nombres"
-            :value="chofer.codigo"
-          ></el-option>
-        </el-select>
-      </div>
-        <div class="text-right" style="margin-top: 24px;">
-          <base-button type="primary" @click="updateUnidadSinChofer">Actualizar</base-button>
+    <!--Form modal Agregar  Unidad al Chofer-->
+    <modal
+      :show.sync="modalShow"
+      size="sm"
+      body-classes="p-0"
+      gradient="default"
+      modal-classes="modal-danger modal-dialog-centered"
+    >
+      <h6 slot="header" class="modal-title center-title">
+        {{ modalTitle + "( " + filtroChofer + " )" }}
+      </h6>
+      <card
+        type="secondary"
+        header-classes="bg-transparent pb-5"
+        body-classes="px-lg-5 py-lg-5"
+        class="border-0 mb-0"
+      >
+        <div>
+          
+          <div style="display:flex;align-items: center;">
+            <el-input
+            v-model="actualChofer"
+            placeholder="Buscar chofer"
+            readonly
+            clearable
+            style="margin-right:0.5rem"
+          >
+          </el-input>
+
+          <base-button
+                          class="remove btn-link"
+                          type= 'danger'
+                          size="sm"
+                          title="ELIMINAR CHOFER ACTUAL"
+                          icon
+                          @click=""
+                        >
+                          <i
+                            class= 'text-white ni ni-fat-remove'
+                          ></i>
+                        </base-button>
+
+          </div>
+
+          <el-select
+            v-model="selectedChofer"
+            placeholder="Seleccionar chofer"
+            :style="{ width: '300px !important', marginTop: '16px' }"
+          >
+            <el-option
+              v-for="chofer in mListaChoferSinUnidad"
+              :key="chofer.id"
+              :label="chofer.nombres"
+              :value="chofer.id"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="text-right" style="margin-top: 24px">
+          <base-button type="primary" @click="updateUnidadSinChofer"
+            >Actualizar</base-button
+          >
         </div>
       </card>
     </modal>
-
-
-
-
   </div>
 </template>
 
@@ -1228,7 +1269,7 @@ export default {
       passAdmin: "",
       mSelectGrupo: "",
       mSelectTerminalAdmin: "",
-      ObservacionesVehiculo:"",
+      ObservacionesVehiculo: "",
       mListTerminalesAdmin: [],
       currentPageUnidadesFlotaVehicular: 1,
       loadingUnidadesFlotaVehicular: false,
@@ -1245,7 +1286,7 @@ export default {
       modalAgregarGrupoFlotaVehicular: false,
       modalAgregarAdministradorFlotaVehicular: false,
       modalShow: false,
-      modalTitle: 'Asignar Chofer ',
+      modalTitle: "Asignar Chofer ",
       selectedChofer: null,
       filtroChofer: "",
       actualChofer: "",
@@ -1260,12 +1301,12 @@ export default {
           prop: "CodiDispVehi",
           label: "Serie",
           minWidth: 170,
-        },
+        } /*
         {
           prop: "EmaiVehi",
           label: "Imei",
           minWidth: 170,
-        },
+        },*/,
 
         {
           prop: "PlacVehi",
@@ -1281,6 +1322,11 @@ export default {
           prop: "descripcion",
           label: "Grupo",
           minWidth: 150,
+        },
+        {
+          prop: "nombre_chofer",
+          label: "Conductor",
+          minWidth: 230,
         },
       ],
       tableColumnsGruposFlotaVehicular: [
@@ -1445,7 +1491,7 @@ export default {
       }
       this.loadingUnidadesFlotaVehicular = false;
     },
-    
+
     initGruposFlotaVehicular: async function () {
       this.mListGruposFlotaVehicular = [];
       this.loadingGruposFlotaVehicular = true;
@@ -1574,7 +1620,9 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListChoferesFlotaVehicular.push(...datos.data.data);
-          console.log("Aca Chofer de unidad "+this.mListChoferesFlotaVehicular)
+          console.log(
+            "Aca Chofer de unidad " + this.mListChoferesFlotaVehicular
+          );
         } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Choferes",
@@ -1591,7 +1639,7 @@ export default {
       }
       this.loadingChoferesFlotaVehicular = false;
     },
-    initChoferSinUnidad: async function (){
+    initChoferSinUnidad: async function () {
       this.mListaChoferSinUnidad = [];
       try {
         var datos = await this.$axios.post(
@@ -1603,7 +1651,7 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListaChoferSinUnidad.push(...datos.data.data);
-          console.log("Aca Chofer de unidad " + JSON.stringify(this.mListaChoferSinUnidad));
+          //console.log("Aca Chofer de unidad " + JSON.stringify(this.mListaChoferSinUnidad));
         } else if (datos.data.status_code == 300) {
           Notification.info({
             title: "Choferes",
@@ -1618,40 +1666,44 @@ export default {
       } catch (error) {
         Notification.error({ title: "Error Catch", msm: error.toString() });
       }
-
     },
     initChoferConUnidad: async function () {
-    this.mListaChoferConUnidad = [];
-    this.actualChofer = "";
-    try {
-      var datos = await this.$axios.post(
-        process.env.baseUrlPanel + "/unidadesConChofer",
-        {
-          token: this.token,
-          unidad: this.filtroChofer
-        }
-      );
+      this.mListaChoferConUnidad = [];
+      this.actualChofer = "";
+      try {
+        var datos = await this.$axios.post(
+          process.env.baseUrlPanel + "/unidadesConChofer",
+          {
+            token: this.token,
+            unidad: this.filtroChofer,
+          }
+        );
 
-      if (datos.data.status_code == 200) {
-        this.mListaChoferConUnidad.push(...datos.data.data);
-        console.log("Aca Chofer Con Unidad de unidad " + JSON.stringify(this.mListaChoferConUnidad));
-        this.actualChofer = this.mListaChoferConUnidad.length > 0 ? this.mListaChoferConUnidad[0].nombres : "Sin Chofer";
-      } else if (datos.data.status_code == 300) {
-        Notification.info({
-          title: "Choferes",
-          message: "No existen Choferes registradas",
-        });
-      } else {
-        Notification.error({
-          title: "Error Api Choferes",
-          message: datos.data.msm,
-        });
+        if (datos.data.status_code == 200) {
+          this.mListaChoferConUnidad.push(...datos.data.data);
+          console.log(
+            "Aca Chofer Con Unidad de unidad " +
+              JSON.stringify(this.mListaChoferConUnidad)
+          );
+          this.actualChofer =
+            this.mListaChoferConUnidad.length > 0
+              ? this.mListaChoferConUnidad[0].nombres
+              : "Sin Chofer";
+        } else if (datos.data.status_code == 300) {
+          Notification.info({
+            title: "Choferes",
+            message: "No existen Choferes registradas",
+          });
+        } else {
+          Notification.error({
+            title: "Error Api Choferes",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({ title: "Error Catch", msm: error.toString() });
       }
-    } catch (error) {
-      Notification.error({ title: "Error Catch", msm: error.toString() });
-    }
-  }
-,
+    },
     initChoferesUnidadSinAsignacionFlotaVehicular: async function (index, row) {
       this.showModalUnidadesChoferFlotavehicular(index, row);
       this.rowSeleccionadoChofer = row;
@@ -1668,6 +1720,10 @@ export default {
             usuario: row.usuario,
           }
         );
+
+        console.log("////////////////////////////////");
+        console.log(datos.data.data);
+        console.log("/////////////////////////////////");
 
         if (datos.data.status_code == 200) {
           this.mListChoferesUnidadesSinAsignacion.push(...datos.data.data);
@@ -1783,60 +1839,60 @@ export default {
       this.modalChoferesFlotaVehicular = true;
     },
 
-  async updateUnidadSinChofer () {
-    if (!this.selectedChofer) {
-      this.$notify({
-        title: "Error",
-        message: "Por favor, selecciona un chofer.",
-        type: "danger",
-      });
-      return; // Detener la ejecución de la función si no hay chofer seleccionado
-    }
-  console.log('Chofer Actual:', this.filtroChofer);
-  console.log('Choferes seleccionados:', this.selectedChofer);
-  console.log('Unidad sin chofer:', this.filtroChofer);
- 
-  try {
-    var objBody = {
-      token: this.token,
-      datos: {
-        codigo_chofer: this.selectedChofer,
-        codiVehi: this.filtroChofer,
-      },
-    };
-    var result = await this.$axios.put(
-      process.env.baseUrl + "/updateUnidadesSinChofer",
-      objBody
-    );
-    if (result.data.status_code == 200) {
-      console.log("update unidad");
-      console.log(objBody);
-      this.initChoferSinUnidad();
-      this.limpiarRegisterUnidadSinChofer();
-      this.selectedChofer = ""
-      this.filtroChofer = ""
-      this.$notify({
-        message: result.data.msm,
-        timeout: 1500,
-        type: "default",
-      });
-    } else {
-      this.$notify({
-        title: "Error al actualizar",
-        timeout: 3000,
-        message: result.data.msm,
-        type: "danger",
-      });
-    }
-  } catch (error) {
-    this.$notify({
-      title: "Error TRY Permisos",
-      message: error.toString(),
-      type: "danger",
-    });
-  } 
-  this.modalShow = false; 
-  },
+    async updateUnidadSinChofer() {
+      if (!this.selectedChofer) {
+        this.$notify({
+          title: "Error",
+          message: "Por favor, selecciona un chofer.",
+          type: "danger",
+        });
+        return; // Detener la ejecución de la función si no hay chofer seleccionado
+      }
+      console.log("Chofer Actual:", this.filtroChofer);
+      console.log("Choferes seleccionados:", this.selectedChofer);
+      console.log("Unidad sin chofer:", this.filtroChofer);
+
+      try {
+        var objBody = {
+          token: this.token,
+          datos: {
+            codigo_chofer: this.selectedChofer,
+            codiVehi: this.filtroChofer,
+          },
+        };
+        var result = await this.$axios.put(
+          process.env.baseUrl + "/updateUnidadesSinChofer",
+          objBody
+        );
+        if (result.data.status_code == 200) {
+          console.log("update unidad");
+          console.log(objBody);
+          this.initChoferSinUnidad();
+          this.limpiarRegisterUnidadSinChofer();
+          this.selectedChofer = "";
+          this.filtroChofer = "";
+          this.$notify({
+            message: result.data.msm,
+            timeout: 1500,
+            type: "default",
+          });
+        } else {
+          this.$notify({
+            title: "Error al actualizar",
+            timeout: 3000,
+            message: result.data.msm,
+            type: "danger",
+          });
+        }
+      } catch (error) {
+        this.$notify({
+          title: "Error TRY Permisos",
+          message: error.toString(),
+          type: "danger",
+        });
+      }
+      this.modalShow = false;
+    },
 
     showModalUnidadesPropietarioFlotavehicular(index, row) {
       this.modalPropietariosFlotaVehicular = true;
@@ -2028,7 +2084,11 @@ export default {
             _oTipoDispo: {
               _iddisptipo: 3,
             },
-            _observacion: this.ObservacionesVehiculo == null || this.ObservacionesVehiculo == undefined ? "" : this.ObservacionesVehiculo
+            _observacion:
+              this.ObservacionesVehiculo == null ||
+              this.ObservacionesVehiculo == undefined
+                ? ""
+                : this.ObservacionesVehiculo,
           },
         };
         var result = await this.$axios.post(
@@ -2223,7 +2283,11 @@ export default {
             _oTipoDispo: {
               _iddisptipo: 3,
             },
-            _observacion: this.ObservacionesVehiculo == null || this.ObservacionesVehiculo == undefined ? "" : this.ObservacionesVehiculo
+            _observacion:
+              this.ObservacionesVehiculo == null ||
+              this.ObservacionesVehiculo == undefined
+                ? ""
+                : this.ObservacionesVehiculo,
           },
         };
         var result = await this.$axios.put(
@@ -2305,7 +2369,7 @@ export default {
             id: this.idChofer,
             nombres: this.nombreChofer,
             telefono: this.telefonoChofer,
-            codigo: this.cedulaChofer
+            codigo: this.cedulaChofer,
           },
         };
         var result = await this.$axios.put(
@@ -2392,39 +2456,37 @@ export default {
         };
         Swal.fire({
           title: row.Estado == 1 ? "Eliminar Chofer" : "Activar Chofer",
-          text: row.Nombre,  
+          text: row.Nombre,
           icon: "question",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           cancelButtonText: "Cancelar",
-          confirmButtonText:
-            row.Estado == 1 ? "Si, eliminar." : "Si, activar.",
+          confirmButtonText: row.Estado == 1 ? "Si, eliminar." : "Si, activar.",
         }).then(async (result) => {
           if (result.isConfirmed) {
             var result = await this.$axios.put(
-            process.env.baseUrl + "/delete_usuario_vehiculo", 
-            objBody);
-            console.log(objBody)
-          if (result.data.status_code == 200) {
-            this.initChoferesFlotaVehicular();
-            this.$notify({
-              message: result.data.msm,
-              timeout: 1500,
-              type: "default",
-            });
-          } else {
-            this.$notify({
-              title: "Error al eliminar",
-              timeout: 3000,
-              message: result.data.msm,
-              type: "danger",
-            });
+              process.env.baseUrl + "/delete_usuario_vehiculo",
+              objBody
+            );
+            console.log(objBody);
+            if (result.data.status_code == 200) {
+              this.initChoferesFlotaVehicular();
+              this.$notify({
+                message: result.data.msm,
+                timeout: 1500,
+                type: "default",
+              });
+            } else {
+              this.$notify({
+                title: "Error al eliminar",
+                timeout: 3000,
+                message: result.data.msm,
+                type: "danger",
+              });
+            }
           }
-          }
-        })
-       
-        
+        });
       } catch (error) {
         this.$notify({
           title: "Error TRY Permisos",
@@ -2677,8 +2739,8 @@ export default {
           objBody
         );
         if (result.data.status_code == 200) {
-          this.initChoferesFlotaVehicular();
-          this.initChoferesUnidadSinAsignacionFlotaVehicular(
+          await this.initChoferesFlotaVehicular();
+          await this.initChoferesUnidadSinAsignacionFlotaVehicular(
             this.indexSeleccionadoChofer,
             this.rowSeleccionadoChofer
           );
@@ -2854,7 +2916,7 @@ export default {
       this.changeEstadoAdministrador(row);
     },
     sendDeleteChofer(row) {
-      console.log("ACACACACA   "+row.Id)
+      console.log("ACACACACA   " + row.Id);
       this.deleteChofer(row);
     },
     editPropietario(row) {
@@ -2888,7 +2950,7 @@ export default {
       this.modalAgregarGrupoFlotaVehicular = true;
     },
     editChofer(row) {
-      console.log(row)
+      console.log(row);
       this.idChofer = row.Id;
       this.telefonoChofer = row.Telefono;
       this.nombreChofer = row.Nombre;
@@ -2896,8 +2958,8 @@ export default {
       this.editedIndexChofer = 1;
       this.modalAgregarChoferFlotaVehicular = true;
     },
-    editarUnidadChofer(row){
-      console.log(row)
+    editarUnidadChofer(row) {
+      console.log(row);
       this.filtroChofer = row.CodiVehi;
       this.modalShow = true;
     },
@@ -2968,31 +3030,30 @@ export default {
       return this.validaPropietario;
     },
     limpiarRegisterUnidad() {
-      this.unidadVehiculo = ""
-      this.auxUnidadVehiculo = ""
-      this.placaVehiculo = ""
-      this.numsimVehiculo = ""
-      this.serieVehiculo = ""
-      this.imeiVehiculo = ""
-      this.mSelectGrupo = ""
-      this.editedIndexUnidad = -1
-      this._observacion = ""
+      this.unidadVehiculo = "";
+      this.auxUnidadVehiculo = "";
+      this.placaVehiculo = "";
+      this.numsimVehiculo = "";
+      this.serieVehiculo = "";
+      this.imeiVehiculo = "";
+      this.mSelectGrupo = "";
+      this.editedIndexUnidad = -1;
+      this._observacion = "";
     },
     limpiarRegisterUnidadSinChofer() {
-      this.selectedChofer = ""
-      this.filtroChofer = ""
-      this.selectedChofer = [];
+      this.filtroChofer = "";
+      this.selectedChofer = null;
     },
     cancelarRegisterUnidad() {
-      this.unidadVehiculo = ""
-      this.auxUnidadVehiculo = ""
-      this.placaVehiculo = ""
-      this.numsimVehiculo = ""
-      this.serieVehiculo = ""
-      this.imeiVehiculo = ""
-      this.mSelectGrupo = ""
-      this.editedIndexUnidad = -1
-      this._observacion = ""
+      this.unidadVehiculo = "";
+      this.auxUnidadVehiculo = "";
+      this.placaVehiculo = "";
+      this.numsimVehiculo = "";
+      this.serieVehiculo = "";
+      this.imeiVehiculo = "";
+      this.mSelectGrupo = "";
+      this.editedIndexUnidad = -1;
+      this._observacion = "";
       this.modalAgregarUnidadFlotaVehicular = false;
     },
     validarUnidad() {
@@ -3081,7 +3142,6 @@ export default {
     this.initUnidadesFlotaVEhicular();
     //this.initChoferesFlotaVehicular();
     this.initChoferSinUnidad();
-
   },
 };
 </script>
@@ -3150,5 +3210,4 @@ body {
 .no-hover:hover {
   background-color: transparent !important;
 }
-
 </style>
