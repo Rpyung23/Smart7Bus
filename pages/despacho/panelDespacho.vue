@@ -2456,7 +2456,7 @@ export default {
   mounted() 
   {
     this.isTarjetaAntActPos =
-      this.$cookies.get("empresa") == "glimitada" ? true : false;
+      (this.$cookies.get("empresa") == "glimitada" || this.$cookies.get("empresa") == "liribamba") ? true : false;
     this.readConfigRecalTarjeta();
     this.initFechaActualSalidaDespachoPanel();
     this.readAllUnidadesSalidasPanelBusqueda();
