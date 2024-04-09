@@ -1228,7 +1228,7 @@ export default {
                       bold: true,
                     },
                   ],
-                  [
+                  /*[
                     {
                       text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
                       alignment: "center",
@@ -1241,7 +1241,7 @@ export default {
                       alignment: "center",
                       fontSize: 8,
                     },
-                  ],
+                  ],*/
                 ],
               },
             },
