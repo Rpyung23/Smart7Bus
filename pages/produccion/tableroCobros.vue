@@ -482,7 +482,7 @@ export default {
           color: "red",
           opacity: 0.25,
           bold: true,
-          fontSize: mLista.length > 50 ? 120 : 27,
+          fontSize: mLista.length > 50 ? 115 : 25,
         },
         pageMargins: [15, 15, 15, 15],
         compress: true,

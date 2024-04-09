@@ -280,55 +280,76 @@ export default {
           alignment: "left",
         },
       ];
+      
+        var resultadoString =  this.$cookies.get("empresa") == 'tjerpazol' ? [
+        [
+          {
+            text: "UNIDAD",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "N° VUELTA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "H. SALIDA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "RUTA - LINEA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
 
-      /**
-       *         {
-          prop: "idSali_m",
-          label: "Salida",
-          minWidth: 120,
-        },
-        {
-          prop: "CodiVehiSali_m",
-          label: "Unidad",
-          minWidth: 120,
-        },
-        {
-          prop: "",
-          label: "H. Salida",
-          minWidth: 130,
-        },
-        {
-          prop: "",
-          label: "Ruta",
-          minWidth: 350,
-        },
-        {
-          prop: "",
-          label: "Vuelta",
-          minWidth: 110,
-        },
-        {
-          prop: "",
-          label: "Frecuencia",
-          minWidth: 350,
-        },
-        {
-          prop: "",
-          label: "Atención",
-          minWidth: 300,
-        },
-        {
-          prop: "",
-          label: "Multa ($)",
-          minWidth: 120,
-        },
-        {
-          prop: "recaudo",
-          label: "Recaudo ($)",
-          minWidth: 150
-        },**/
-
-      var resultadoString = [
+          {
+            text: "FRECUENCIA",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "ATENCION",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "MULTAS ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }/*,
+          {
+            text: "RECAUDO ($)",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          }*/
+        ],
+      ] : [
         [
           {
             text: "UNIDAD",
@@ -409,7 +430,43 @@ export default {
 
       for (let i = 0; i < this.mListRSalidas.length; i++) 
       {
-        var obj =[
+        var obj = this.$cookies.get("empresa") == 'tjerpazol' ? [
+          {
+            text: this.mListRSalidas[i].CodiVehiSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListRSalidas[i].NumeVuelSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListRSalidas[i].HoraSaliProgSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListRSalidas[i].DescRuta,
+            fontSize: 8.5,
+            alignment: "left",
+          },
+          {
+            text: this.mListRSalidas[i].DescFrec,
+            fontSize: 8.5,
+            alignment: "left",
+          },
+          {
+            text: this.mListRSalidas[i].atencion,
+            fontSize: 8.5,
+            alignment: "left",
+          },
+          {
+            text: this.mListRSalidas[i].MontInfrUnidSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          }
+        ] : [
           {
             text: this.mListRSalidas[i].CodiVehiSali_m,
             fontSize: 8.5,
@@ -435,7 +492,6 @@ export default {
             fontSize: 8.5,
             alignment: "left",
           },
-
           {
             text: this.mListRSalidas[i].DescFrec,
             fontSize: 8.5,
@@ -450,12 +506,7 @@ export default {
             text: this.mListRSalidas[i].MontInfrUnidSali_m,
             fontSize: 8.5,
             alignment: "center",
-          }/*,
-          {
-            text: this.mListRSalidas[i].RecaudoDashboardLayoutVue,
-            fontSize: 8.5,
-            alignment: "center",
-          }*/
+          }
         ]
 
         resultadoString.push(obj)
@@ -518,7 +569,7 @@ export default {
           {
             table: {
               headerRows: 0,
-            widths: [40, 50,50, 50,140, 140, 140, 50/*, 70*/],
+            widths: this.$cookies.get("empresa") == 'tjerpazol' ? [40, 50,50,140, 140, 140, 50] : [40, 50,50, 50,140, 140, 140, 50/*, 70*/],
               body: resultadoString,
             },
           },

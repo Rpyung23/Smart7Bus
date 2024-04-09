@@ -1,6 +1,13 @@
 <template>
-  <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
-    <iframe :src="baseURlPDFPanelDespachoTarjeta" style="width: 100%; height: 33rem"></iframe>
+  <card
+    type="secondary"
+    header-classes="bg-transparent pb-5"
+    class="border-0 mb-0"
+  >
+    <iframe
+      :src="baseURlPDFPanelDespachoTarjeta"
+      style="width: 100%; height: 33rem"
+    ></iframe>
   </card>
 </template>
 
@@ -11,6 +18,8 @@ import { Table, TableColumn } from "element-ui";
 
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
+
+import { getBase64LogoReportes } from "../../util/logoReport";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -23,7 +32,7 @@ export default {
     return {
       baseURlPDFPanelDespachoTarjeta: "",
       token: this.$cookies.get("token"),
-      fecha_impresion:"YYYY-mm-dd 00:00:00"
+      fecha_impresion: "YYYY-mm-dd 00:00:00",
     };
   },
   methods: {
@@ -85,8 +94,8 @@ export default {
               this.mListSalidasTarjeta[i].HoraMarcSali_d != "00:00:00"
                 ? this.mListSalidasTarjeta[i].FaltSali_d
                 : this.mListSalidasTarjeta[i].FaltSali_d == "0"
-                  ? ""
-                  : this.mListSalidasTarjeta[i].FaltSali_d,
+                ? ""
+                : this.mListSalidasTarjeta[i].FaltSali_d,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -128,6 +137,27 @@ export default {
         // header: [empresa],
 
         content: [
+          this.$cookies.get("empresa") == "tjerpazol"
+            ? {
+                layout: "noBorders",
+                alignment: "center",
+                table: {
+                  headerRows: 0,
+                  widths: ["*"],
+
+                  body: [
+                    [
+                      {
+                        image: getBase64LogoReportes(
+                          this.$cookies.get("empresa")
+                        ),
+                        fit: [60, 60],
+                      },
+                    ],
+                  ],
+                },
+              }
+            : {},
           {
             headerRows: 0,
             fontSize: 12,
@@ -251,9 +281,9 @@ export default {
       });
     },
     async readDetalleSalidaDPanelBusquedaAntActPos(salida) {
-      this.baseURlPDFPanelDespachoTarjeta = ""
+      this.baseURlPDFPanelDespachoTarjeta = "";
 
-      console.log("DETALLE SALIDA")
+      console.log("DETALLE SALIDA");
 
       var datos = await this.$axios.post(
         process.env.baseUrl + "/detalleSalida",
@@ -262,7 +292,11 @@ export default {
           idsalida: [
             salida[0] == undefined ? 0 : parseInt(salida[0].idSali_m),
             salida[1] == undefined ? 0 : parseInt(salida[1].idSali_m),
-            salida[2] == undefined ? 0 : salida[2].idSali_m == "" ? 0 : parseInt(salida[2].idSali_m),
+            salida[2] == undefined
+              ? 0
+              : salida[2].idSali_m == ""
+              ? 0
+              : parseInt(salida[2].idSali_m),
           ],
         }
       );
@@ -308,21 +342,29 @@ export default {
           { text: "", fontSize: 8.5, bold: true, alignment: "center" },
         ],
       ];
-      const datosProcesados = [
-        [], [], []
-      ];
+      const datosProcesados = [[], [], []];
       for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
-        if ((salida[0] !== undefined) && (Number(salida[0].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d)) {
+        if (
+          salida[0] !== undefined &&
+          Number(salida[0].idSali_m) ===
+            this.mListSalidasTarjeta[i].idSali_mSali_d
+        ) {
           datosProcesados[0].push(this.mListSalidasTarjeta[i]);
         }
-        if (Number(salida[1].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d) {
-          datosProcesados[1].push(this.mListSalidasTarjeta[i])
+        if (
+          Number(salida[1].idSali_m) ===
+          this.mListSalidasTarjeta[i].idSali_mSali_d
+        ) {
+          datosProcesados[1].push(this.mListSalidasTarjeta[i]);
         }
-        if ((salida[2] !== undefined) && (Number(salida[2].idSali_m) === this.mListSalidasTarjeta[i].idSali_mSali_d)) {
+        if (
+          salida[2] !== undefined &&
+          Number(salida[2].idSali_m) ===
+            this.mListSalidasTarjeta[i].idSali_mSali_d
+        ) {
           datosProcesados[2].push(this.mListSalidasTarjeta[i]);
         }
       }
-
 
       for (var i = 0; i < datosProcesados[1].length; i++) {
         var arrys = [
@@ -332,50 +374,77 @@ export default {
             fontSize: 8,
           },
           {
-            text: datosProcesados[0].length > 0 ?
-              datosProcesados[0][i].isCtrlRefeSali_d === 1 ?
-                "R " + datosProcesados[0][i].HoraProgSali_d.substring(0, 5)
-                : datosProcesados[0][i].HoraProgSali_d.substring(0, 5)
-              : " ",
+            text:
+              datosProcesados[0].length > 0
+                ? datosProcesados[0][i].isCtrlRefeSali_d === 1
+                  ? "R " + datosProcesados[0][i].HoraProgSali_d.substring(0, 5)
+                  : datosProcesados[0][i].HoraProgSali_d.substring(0, 5)
+                : " ",
             fontSize: 8,
-            alignment: datosProcesados[0].length > 0 ? datosProcesados[0][i].isCtrlRefeSali_d === 1 ? "left" : "center" : "center",
+            alignment:
+              datosProcesados[0].length > 0
+                ? datosProcesados[0][i].isCtrlRefeSali_d === 1
+                  ? "left"
+                  : "center"
+                : "center",
           },
           {
-            text: datosProcesados[0].length > 0 ?  datosProcesados[0][i].HoraMarcSali_d == "00:00:00" ? "" : datosProcesados[0][i].FaltSali_d : " ",
+            text:
+              datosProcesados[0].length > 0
+                ? datosProcesados[0][i].HoraMarcSali_d == "00:00:00"
+                  ? ""
+                  : datosProcesados[0][i].FaltSali_d
+                : " ",
             fontSize: 8,
             alignment: "center",
           },
           //unidad actual
           {
-            text: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "R " +
-              datosProcesados[1][i].HoraProgSali_d.substring(0, 5) : datosProcesados[1][i].HoraProgSali_d.substring(0, 5),
+            text:
+              datosProcesados[1][i].isCtrlRefeSali_d === 1
+                ? "R " + datosProcesados[1][i].HoraProgSali_d.substring(0, 5)
+                : datosProcesados[1][i].HoraProgSali_d.substring(0, 5),
             fontSize: 8,
-            alignment: datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "left" : "center",
+            alignment:
+              datosProcesados[1][i].isCtrlRefeSali_d === 1 ? "left" : "center",
           },
           {
-            text: datosProcesados[1][i].HoraMarcSali_d == "00:00:00" ? "" : datosProcesados[1][i].FaltSali_d,
+            text:
+              datosProcesados[1][i].HoraMarcSali_d == "00:00:00"
+                ? ""
+                : datosProcesados[1][i].FaltSali_d,
             fontSize: 8,
             alignment: "center",
           },
           //unidad posterior
           {
-            text: datosProcesados[2].length > 0 ?
-              datosProcesados[2][i].isCtrlRefeSali_d === 1 ?
-                "R " + datosProcesados[2][i].HoraProgSali_d.substring(0, 5)
-                : datosProcesados[2][i].HoraProgSali_d.substring(0, 5)
-              : " ",
+            text:
+              datosProcesados[2].length > 0
+                ? datosProcesados[2][i].isCtrlRefeSali_d === 1
+                  ? "R " + datosProcesados[2][i].HoraProgSali_d.substring(0, 5)
+                  : datosProcesados[2][i].HoraProgSali_d.substring(0, 5)
+                : " ",
             fontSize: 8,
-            alignment: datosProcesados[2].length > 0 ? datosProcesados[2][i].isCtrlRefeSali_d === 1 ? "left" : "center" : "center",
+            alignment:
+              datosProcesados[2].length > 0
+                ? datosProcesados[2][i].isCtrlRefeSali_d === 1
+                  ? "left"
+                  : "center"
+                : "center",
           },
           {
-            text: datosProcesados[2].length > 0 ?   datosProcesados[2][i].HoraMarcSali_d == "00:00:00" ? "" : datosProcesados[2][i].FaltSali_d : " ",
+            text:
+              datosProcesados[2].length > 0
+                ? datosProcesados[2][i].HoraMarcSali_d == "00:00:00"
+                  ? ""
+                  : datosProcesados[2][i].FaltSali_d
+                : " ",
             fontSize: 8,
             alignment: "center",
           },
-        ]
+        ];
         resultadoString.push(arrys);
       }
-
 
       var docDefinition = {
         // a string or { width: 190, height: number }
@@ -404,8 +473,13 @@ export default {
               widths: ["*"],
               body: [
                 ["RUTA : " + salida[1].DescRutaSali_m],
-                ["CHOFER : " + (salida[1].nombres_chofer == null ? 'Sin Chofer' : salida[1].nombres_chofer)],
-                ["Fecha Salida : "+salida[1].HoraSaliProgSali_mF,]
+                [
+                  "CHOFER : " +
+                    (salida[1].nombres_chofer == null
+                      ? "Sin Chofer"
+                      : salida[1].nombres_chofer),
+                ],
+                ["Fecha Salida : " + salida[1].HoraSaliProgSali_mF],
                 /*["F. Impresión : " + this.initFechaActualTicket()]*/
               ],
             },
@@ -525,10 +599,7 @@ export default {
 
       return format + " " + formatHora;
     },
-    
   },
-  mounted() { 
-    
-  },
+  mounted() {},
 };
 </script>
