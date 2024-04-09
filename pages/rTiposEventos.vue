@@ -282,19 +282,19 @@ export default {
           minWidth: 110,
         },
         {
+          prop: "HoraDispEven",
+          label: "Hora",
+          minWidth: 150,
+        },
+        {
           prop: "NumeVuelSali_m",
-          label: "N° Vueltas",
+          label: "N° Vuelta",
           minWidth: 140,
         },
         {
           prop: "DescRutaSali_m",
           label: "Ruta - Linea",
           minWidth: 200,
-        },
-        {
-          prop: "cantDispEventos",
-          label: "Cant Eventos",
-          minWidth: 140,
         },
         {
           prop: "DescDispEvenList",
