@@ -118,6 +118,7 @@
           ></div>
         </card>
 
+<<<<<<< HEAD:pages/despacho/rSalidasControles.vue
         <card
           class="no-border-card"
           style="margin-bottom: 0rem"
@@ -166,9 +167,17 @@
               <div slot="empty"></div>
             </el-table>-->
           </div>
+=======
+        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControles px-0 pb-1"
+          footer-classes="pb-2">
+          <embed :src="base64PDFSALIDACONTROLES" type="application/pdf" width="98.7%" height="98.7%" />
+            <!-- <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta> -->
+>>>>>>> 6520f4e3f149d00d506cdcd2a238b9fc84d22c5d:pages/despacho/rSalidasControlesTicket.vue
         </card>
+        
       </div>
     </base-header>
+
   </div>
 </template>
 <script>
@@ -176,6 +185,7 @@ import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
+import tarjeta from "../../components/tarjetas/tarjeta.vue";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import {
   Table,
@@ -225,6 +235,7 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Popover.name]: Popover,
     [Button.name]: Button,
+    ComponenteTarjeta: tarjeta,
   },
   data() {
     return {
@@ -385,6 +396,49 @@ export default {
         }
       }
     },
+<<<<<<< HEAD:pages/despacho/rSalidasControles.vue
+=======
+    async readRutaControles() {
+      console.log("INITI TODO LOS CONTROLES ")
+      console.log("mSelectRutaSalidaPanelBusqueda ", this.mSelectRutaSalidaPanelBusqueda)
+      console.log("mSelectRutasControles ID", this.mSelectRutasControles)
+      console.log("mListLineasFecuenciasControles", this.mListLineasFecuenciasControles)
+      this.mListaRutaControles = []
+
+      var datos = await this.$axios.post(process.env.baseUrl + "/AllControlesPorRuta", {
+        token: this.token,
+        rutas: this.mSelectRutaSalidaPanelBusqueda.length === 0 ? "*" : this.mSelectRutaSalidaPanelBusqueda
+      });
+
+      if (datos.data.status_code == 200) {
+        for (var i = 0; i < datos.data.data.length; i++) {
+          var obj = datos.data.data[i];
+          obj.value = obj.CodiVehi;
+          this.mListaRutaControles.push(obj);
+        }
+      }
+
+      // console.log("--------------------------------")
+      // console.log(this.mSelectRutasControles)
+      // console.log(this.mListaRutaControles)
+    },
+
+    async readGruposActivosPenalidadesSemanales() {
+      this.mListaGruposPenalidadesSemanales = [];
+
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/gruposActivos",
+        {
+          token: this.token,
+        }
+      );
+
+      if (datos.data.status_code == 200) {
+        this.mListaGruposPenalidadesSemanales.push(...datos.data.data);
+      }
+    },
+
+>>>>>>> 6520f4e3f149d00d506cdcd2a238b9fc84d22c5d:pages/despacho/rSalidasControlesTicket.vue
     async readLineasRSalidasFrecuenciasControles() {
       this.mListLineasFecuenciasControles = [];
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
@@ -460,8 +514,9 @@ export default {
         );
 
         if (datos.data.status_code == 200) {
-          //console.log(datos.data.datos);
-
+          //this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaControles(datos.data.datos);
+          //const baseURlPDFPanelDespachoTarjeta = localStorage.getItem('baseURlPDFPanelDespachoTarjeta');
+          //console.log("ACa la url ", this.baseURlPDFPanelDespachoTarjeta)
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
           this.mListSalidasFrecuenciasControlesExcel.push(...datos.data.datos);
           var faltaAtrasos = 0;
