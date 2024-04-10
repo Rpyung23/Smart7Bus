@@ -79,46 +79,13 @@
 
         <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControles px-0 pb-1"
           footer-classes="pb-2">
-
           <embed :src="base64PDFSALIDACONTROLES" type="application/pdf" width="98.7%" height="98.7%" />
-
-          <div>
-
-
-            <!--<el-table
-              v-loading="loadingTableRSalidasFrecuenciasControles"
-              element-loading-text="Cargando Datos..."
-              :data="mListSalidasFrecuenciasControles"
-              row-key="id"
-              class="tablePanelControlProduccion"
-              header-row-class-name="thead-dark"
-              height="calc(100vh - 13rem)"
-            >
-              <el-table-column
-                v-for="column in tableColumnsUnidadesFlotaVehicular"
-                :key="column.label"
-                v-bind="column"
-              >
-              </el-table-column>
-
-              <el-table-column
-                label="PEN ($)"
-                min-width="170"
-                prop="PenaCtrlSali_d"
-              >
-                <template slot-scope="scope">
-                  <strong style="color: black">{{
-                    scope.row.PenaCtrlSali_d
-                  }}</strong>
-                </template>
-</el-table-column>
-
-<div slot="empty"></div>
-</el-table>-->
-          </div>
+            <!-- <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta> -->
         </card>
+        
       </div>
     </base-header>
+
   </div>
 </template>
 <script>
@@ -126,6 +93,7 @@ import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
+import tarjeta from "../../components/tarjetas/tarjeta.vue";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import {
   Table,
@@ -176,6 +144,7 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Popover.name]: Popover,
     [Button.name]: Button,
+    ComponenteTarjeta: tarjeta,
   },
   data() {
     return {
@@ -342,11 +311,11 @@ export default {
     },
     async readRutaControles() {
       console.log("INITI TODO LOS CONTROLES ")
-      console.log("mSelectRutaSalidaPanelBusqueda ",this.mSelectRutaSalidaPanelBusqueda)
-      console.log("mSelectRutasControles ID",this.mSelectRutasControles)
-      console.log("mListLineasFecuenciasControles",this.mListLineasFecuenciasControles)
+      console.log("mSelectRutaSalidaPanelBusqueda ", this.mSelectRutaSalidaPanelBusqueda)
+      console.log("mSelectRutasControles ID", this.mSelectRutasControles)
+      console.log("mListLineasFecuenciasControles", this.mListLineasFecuenciasControles)
       this.mListaRutaControles = []
-     
+
       var datos = await this.$axios.post(process.env.baseUrl + "/AllControlesPorRuta", {
         token: this.token,
         rutas: this.mSelectRutaSalidaPanelBusqueda.length === 0 ? "*" : this.mSelectRutaSalidaPanelBusqueda
@@ -470,8 +439,9 @@ export default {
         console.log("Grupo \n" + this.itemGruposPenalidadesSemanales);
 
         if (datos.data.status_code == 200) {
-          //console.log(datos.data.datos);
-
+          //this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaControles(datos.data.datos);
+          //const baseURlPDFPanelDespachoTarjeta = localStorage.getItem('baseURlPDFPanelDespachoTarjeta');
+          //console.log("ACa la url ", this.baseURlPDFPanelDespachoTarjeta)
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
           this.mListSalidasFrecuenciasControlesExcel.push(...datos.data.datos);
           var faltaAtrasos = 0;
