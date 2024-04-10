@@ -118,61 +118,10 @@
           ></div>
         </card>
 
-<<<<<<< HEAD:pages/despacho/rSalidasControles.vue
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="card-bodyRSalidasControles px-0 pb-1"
-          footer-classes="pb-2"
-        >
-
-        <embed
-            :src="base64PDFSALIDACONTROLES"
-            type="application/pdf"
-            width="98.7%"
-            height="98.7%"
-          />
-
-          <div>
-
-            
-            <!--<el-table
-              v-loading="loadingTableRSalidasFrecuenciasControles"
-              element-loading-text="Cargando Datos..."
-              :data="mListSalidasFrecuenciasControles"
-              row-key="id"
-              class="tablePanelControlProduccion"
-              header-row-class-name="thead-dark"
-              height="calc(100vh - 13rem)"
-            >
-              <el-table-column
-                v-for="column in tableColumnsUnidadesFlotaVehicular"
-                :key="column.label"
-                v-bind="column"
-              >
-              </el-table-column>
-
-              <el-table-column
-                label="PEN ($)"
-                min-width="170"
-                prop="PenaCtrlSali_d"
-              >
-                <template slot-scope="scope">
-                  <strong style="color: black">{{
-                    scope.row.PenaCtrlSali_d
-                  }}</strong>
-                </template>
-              </el-table-column>
-
-              <div slot="empty"></div>
-            </el-table>-->
-          </div>
-=======
         <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControles px-0 pb-1"
           footer-classes="pb-2">
           <embed :src="base64PDFSALIDACONTROLES" type="application/pdf" width="98.7%" height="98.7%" />
             <!-- <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta> -->
->>>>>>> 6520f4e3f149d00d506cdcd2a238b9fc84d22c5d:pages/despacho/rSalidasControlesTicket.vue
         </card>
         
       </div>
@@ -396,8 +345,6 @@ export default {
         }
       }
     },
-<<<<<<< HEAD:pages/despacho/rSalidasControles.vue
-=======
     async readRutaControles() {
       console.log("INITI TODO LOS CONTROLES ")
       console.log("mSelectRutaSalidaPanelBusqueda ", this.mSelectRutaSalidaPanelBusqueda)
@@ -438,7 +385,6 @@ export default {
       }
     },
 
->>>>>>> 6520f4e3f149d00d506cdcd2a238b9fc84d22c5d:pages/despacho/rSalidasControlesTicket.vue
     async readLineasRSalidasFrecuenciasControles() {
       this.mListLineasFecuenciasControles = [];
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
