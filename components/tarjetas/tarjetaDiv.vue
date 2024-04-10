@@ -1,14 +1,8 @@
 <template>
-  <card
-    type="secondary"
-    header-classes="bg-transparent pb-5"
-    class="border-0 mb-0"
-  >
-    <iframe
+<iframe
       :src="baseURlPDFPanelDespachoTarjeta"
       style="width: 100%; height: 33rem"
     ></iframe>
-  </card>
 </template>
 
 <style></style>
