@@ -2,139 +2,89 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select
-              v-model="itemUnidadSalidasPanelBusqueda"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesSalidasControles"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesSalidasPanelBusqueda"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadSalidasPanelBusqueda" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesSalidasControles"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+              <el-option v-for="item in optionsUnidadesSalidasPanelBusqueda" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialSalidasPanelBusqueda"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaInicialSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalSalidasPanelBusqueda"
-              >
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaFinalSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
           </div>
 
-          <div
-            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          >
+          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda">
             <div class="buttonCenterEndDerecha">
-              <base-button
-                icon
-                type="primary"
-                size="sm"
-                @click="readReporteSalidasControles()"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="el-icon-search"></i
-                ></span>
+              <base-button icon type="primary" size="sm" @click="readReporteSalidasControles()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
-              <download-excel
-                class="btn btn-icon btn-fab btn-success btn-sm"
-                title="Excel"
-                v-if="
-                  mListSalidasFrecuenciasControles.length > 0 ? true : false
-                "
-                :header="oHeaderRSalidasFrecuenciasControles"
-                :data="mListSalidasFrecuenciasControlesExcel"
-                :fields="oJSONFieldsRSalidasFrecuenciasControles"
-                :worksheet="oWorkSheetRSalidasFrecuenciasControles"
-                :name="oFileNameRSalidasFrecuenciasControles"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="ni ni-collection"></i
-                ></span>
+              <download-excel class="btn btn-icon btn-fab btn-success btn-sm" title="Excel" v-if="
+                mListSalidasFrecuenciasControles.length > 0 ? true : false
+              " :header="oHeaderRSalidasFrecuenciasControles" :data="mListSalidasFrecuenciasControlesExcel"
+                :fields="oJSONFieldsRSalidasFrecuenciasControles" :worksheet="oWorkSheetRSalidasFrecuenciasControles"
+                :name="oFileNameRSalidasFrecuenciasControles">
+                <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
               </download-excel>
             </div>
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
-          <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
-            <el-select
-              v-model="mSelectRutaSalidaPanelBusqueda"
-              multiple
-              collapse-tags
-              placeholder="Lineas"
-            >
-              <el-option
-                v-for="item in mListLineasFecuenciasControles"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectLineaRutaGrupo"
+          footer-classes="pb-2">
+          <div>
+            <el-select v-model="mSelectRutaSalidaPanelBusqueda" placeholder="Rutas" multiple collapse-tags
+              :multiple-limit=1 @change="readRutaControles">
+              <el-option v-for="item in mListLineasFecuenciasControles" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
+
               </el-option>
             </el-select>
           </div>
 
-          <div
-            class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda"
-          ></div>
+          <div class=" mx-2">
+            <el-select v-model="mSelectRutasControles" multiple collapse-tags placeholder="Controles">
+              <el-option v-for="item in mListaRutaControles" :key="item.CodiCtrl" :label="item.DescCtrl"
+                :value="item.CodiCtrl">
+              </el-option>
+            </el-select>
+          </div>
+
+          <div class="mx-2">
+            <el-select style="margin-right: 0.5rem" collapse-tags
+              v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false" v-model="itemGruposPenalidadesSemanales"
+              multiple placeholder="Grupos">
+              <el-option v-for="item in mListaGruposPenalidadesSemanales" :key="item.id" :label="item.descripcion"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </div>
+
+          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda"></div>
         </card>
 
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="card-bodyRSalidasControles px-0 pb-1"
-          footer-classes="pb-2"
-        >
+        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControles px-0 pb-1"
+          footer-classes="pb-2">
 
-        <embed
-            :src="base64PDFSALIDACONTROLES"
-            type="application/pdf"
-            width="98.7%"
-            height="98.7%"
-          />
+          <embed :src="base64PDFSALIDACONTROLES" type="application/pdf" width="98.7%" height="98.7%" />
 
           <div>
 
-            
+
             <!--<el-table
               v-loading="loadingTableRSalidasFrecuenciasControles"
               element-loading-text="Cargando Datos..."
@@ -161,10 +111,10 @@
                     scope.row.PenaCtrlSali_d
                   }}</strong>
                 </template>
-              </el-table-column>
+</el-table-column>
 
-              <div slot="empty"></div>
-            </el-table>-->
+<div slot="empty"></div>
+</el-table>-->
           </div>
         </card>
       </div>
@@ -202,6 +152,7 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getBase64LogoReportes } from "../../util/logoReport";
+import { text } from "d3";
 export default {
   mixins: [clientPaginationMixin],
   layout: "DespachoDashboardLayout",
@@ -228,12 +179,16 @@ export default {
   },
   data() {
     return {
-      base64PDFSALIDACONTROLES:"",
+      base64PDFSALIDACONTROLES: "",
       mListaUnidadesSalidasPanelBusqueda: [],
       mListLineasFecuenciasControles: [],
+      mListaRutaControles: [],
       loadingTableUnidadesSalidasPanelBusquedaloading: false,
       loadingTableRSalidasFrecuenciasControles: false,
       mSelectRutaSalidaPanelBusqueda: [],
+      mSelectRutasControles: [],
+      mListaGruposPenalidadesSemanales: [],
+      itemGruposPenalidadesSemanales: [],
       itemUnidadSalidasPanelBusqueda: [],
       token: this.$cookies.get("token"),
       fechaInicialSalidasPanelBusqueda: "",
@@ -385,8 +340,49 @@ export default {
         }
       }
     },
+    async readRutaControles() {
+      console.log("INITI TODO LOS CONTROLES ")
+      console.log("mSelectRutaSalidaPanelBusqueda ",this.mSelectRutaSalidaPanelBusqueda)
+      console.log("mSelectRutasControles ID",this.mSelectRutasControles)
+      console.log("mListLineasFecuenciasControles",this.mListLineasFecuenciasControles)
+      this.mListaRutaControles = []
+     
+      var datos = await this.$axios.post(process.env.baseUrl + "/AllControlesPorRuta", {
+        token: this.token,
+        rutas: this.mSelectRutaSalidaPanelBusqueda.length === 0 ? "*" : this.mSelectRutaSalidaPanelBusqueda
+      });
+
+      if (datos.data.status_code == 200) {
+        for (var i = 0; i < datos.data.data.length; i++) {
+          var obj = datos.data.data[i];
+          obj.value = obj.CodiVehi;
+          this.mListaRutaControles.push(obj);
+        }
+      }
+
+      // console.log("--------------------------------")
+      // console.log(this.mSelectRutasControles)
+      // console.log(this.mListaRutaControles)
+    },
+
+    async readGruposActivosPenalidadesSemanales() {
+      this.mListaGruposPenalidadesSemanales = [];
+
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/gruposActivos",
+        {
+          token: this.token,
+        }
+      );
+
+      if (datos.data.status_code == 200) {
+        this.mListaGruposPenalidadesSemanales.push(...datos.data.data);
+      }
+    },
+
     async readLineasRSalidasFrecuenciasControles() {
       this.mListLineasFecuenciasControles = [];
+      this.mListaRutaControles = []
       var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
         token: this.token,
         tipo: 3,
@@ -411,8 +407,7 @@ export default {
       }
       return mlist;
     },
-    async readReporteSalidasControles() 
-    {
+    async readReporteSalidasControles() {
 
       swal.fire({
         title: "Generando Reporte ...",
@@ -438,7 +433,7 @@ export default {
       this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now();
       this.oFileNameRSalidasFrecuenciasControles =
         "RSFC_" + Date.now() + ".xls";
-      
+
       this.createPDFSalidasControles()
 
       try {
@@ -456,8 +451,23 @@ export default {
                 : "*",
             fechaI: this.fechaInicialSalidasPanelBusqueda,
             fechaF: this.fechaFinalSalidasPanelBusqueda,
+            control: this.mSelectRutasControles.length > 0
+              ? this.mSelectRutasControles
+              : "*",
+            grupo: this.itemGruposPenalidadesSemanales.length > 0
+              ? this.itemGruposPenalidadesSemanales
+              : "*",
+
           }
         );
+        console.log("******************************************************************");
+        console.log("Token \n" + this.token);
+        console.log("unidad \n" + this.itemUnidadSalidasPanelBusqueda);
+        console.log("Ruta \n" + this.mSelectRutaSalidaPanelBusqueda);
+        console.log("FechaI \n" + this.fechaInicialSalidasPanelBusqueda);
+        console.log("FechaI \n" + this.fechaFinalSalidasPanelBusqueda);
+        console.log("Control \n" + this.mSelectRutasControles);
+        console.log("Grupo \n" + this.itemGruposPenalidadesSemanales);
 
         if (datos.data.status_code == 200) {
           //console.log(datos.data.datos);
@@ -491,7 +501,7 @@ export default {
                 faltaAdelantos =
                   faltaAdelantos +
                   this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
-                
+
               } else {
 
                 faltaAtrasos =
@@ -502,65 +512,65 @@ export default {
                   this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
                 faltaAtrasosAtrasos =
                   faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
-                  //console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
+                //console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
 
 
 
                 //console.log("IMPRIMIENTO TOTALES")  
                 oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescRuta:"TOTAL MINUTOS ATRASOS",
-                  DescFrec:faltaAtrasos
+                  DescRuta: "TOTAL MINUTOS ATRASOS",
+                  DescFrec: faltaAtrasos
                 })
                 oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescRuta:"TOTAL MINUTOS ADELANTOS",
-                  DescFrec:faltaAdelantos
-                })
-                
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescRuta:"TOTAL MINUTOS",
-                  DescFrec:faltaAtrasosAtrasos
+                  DescRuta: "TOTAL MINUTOS ADELANTOS",
+                  DescFrec: faltaAdelantos
                 })
 
                 oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescRuta:"",
-                  DescFrec:""
+                  DescRuta: "TOTAL MINUTOS",
+                  DescFrec: faltaAtrasosAtrasos
+                })
+
+                oListSalidasFrecuenciasControlesExcelAux.push({
+                  DescRuta: "",
+                  DescFrec: ""
                 })
 
                 faltaAtrasos = 0
                 faltaAdelantos = 0
-                faltaAtrasosAtrasos = 0  
+                faltaAtrasosAtrasos = 0
 
-              
-                }
-            }else{
+
+              }
+            } else {
               faltaAtrasos =
-                  faltaAtrasos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
-                faltaAdelantos =
-                  faltaAdelantos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
-                faltaAtrasosAtrasos =
-                  faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
-                  //console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
+                faltaAtrasos +
+                this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+              faltaAdelantos =
+                faltaAdelantos +
+                this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+              faltaAtrasosAtrasos =
+                faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
+              //console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
 
 
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescRuta:"TOTAL MINUTOS ATRASOS",
-                  DescFrec:faltaAtrasos
-                })
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescRuta:"TOTAL MINUTOS ADELANTOS",
-                  DescFrec:faltaAdelantos
-                })
-                
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescRuta:"TOTAL MINUTOS",
-                  DescFrec:faltaAtrasosAtrasos
-                })
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescRuta:"",
-                  DescFrec:""
-                })
+              oListSalidasFrecuenciasControlesExcelAux.push({
+                DescRuta: "TOTAL MINUTOS ATRASOS",
+                DescFrec: faltaAtrasos
+              })
+              oListSalidasFrecuenciasControlesExcelAux.push({
+                DescRuta: "TOTAL MINUTOS ADELANTOS",
+                DescFrec: faltaAdelantos
+              })
+
+              oListSalidasFrecuenciasControlesExcelAux.push({
+                DescRuta: "TOTAL MINUTOS",
+                DescFrec: faltaAtrasosAtrasos
+              })
+              oListSalidasFrecuenciasControlesExcelAux.push({
+                DescRuta: "",
+                DescFrec: ""
+              })
             }
           }
 
@@ -570,19 +580,19 @@ export default {
           this.oHeaderRSalidasFrecuenciasControles = [
             "REPORTE DE CUMPLIMIENTO DE SALIDAS, RUTAS Y FRECUENCIAS ",
             "Fechas : " +
-              this.fechaInicialSalidasPanelBusqueda +
-              " hasta " +
-              this.fechaFinalSalidasPanelBusqueda,
+            this.fechaInicialSalidasPanelBusqueda +
+            " hasta " +
+            this.fechaFinalSalidasPanelBusqueda,
             "Unidades : " +
-              (this.itemUnidadSalidasPanelBusqueda.length <= 0
-                ? "TODAS LAS UNIDADES"
-                : this.itemUnidadSalidasPanelBusqueda),
+            (this.itemUnidadSalidasPanelBusqueda.length <= 0
+              ? "TODAS LAS UNIDADES"
+              : this.itemUnidadSalidasPanelBusqueda),
             "Rutas : " +
-              (this.mSelectRutaSalidaPanelBusqueda.length <= 0
-                ? "TODAS LAS RUTAS"
-                : this.getNombresRutasRSalidasFrecuenciasControles(
-                    this.mSelectRutaSalidaPanelBusqueda
-                  )),
+            (this.mSelectRutaSalidaPanelBusqueda.length <= 0
+              ? "TODAS LAS RUTAS"
+              : this.getNombresRutasRSalidasFrecuenciasControles(
+                this.mSelectRutaSalidaPanelBusqueda
+              )),
           ];
         } else {
           this.$notify({
@@ -602,7 +612,7 @@ export default {
       this.createPDFSalidasControles()
       swal.close()
     },
-    createPDFSalidasControles(){
+    createPDFSalidasControles() {
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
@@ -627,11 +637,24 @@ export default {
       var desde_hasta = [
         {
           text:
-            "Fecha Salida : " + this.fechaInicialSalidasPanelBusqueda+" Hasta "+this.fechaFinalSalidasPanelBusqueda,
+            "Fecha Salida : " + this.fechaInicialSalidasPanelBusqueda + " Hasta " + this.fechaFinalSalidasPanelBusqueda,
           fontSize: 9,
           alignment: "left",
         },
       ];
+
+      var ruta = [
+        {
+          text: "Rutas : " +
+            (this.mSelectRutaSalidaPanelBusqueda.length <= 0
+              ? "TODAS LAS RUTAS"
+              : this.getNombresRutasRSalidasFrecuenciasControles(
+                this.mSelectRutaSalidaPanelBusqueda
+              )),
+          fontSize: 9,
+          alignment: "left",
+        }
+      ]
 
       var resultadoString = [
         [
@@ -666,56 +689,56 @@ export default {
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },{
+          }, {
             text: "RUTA",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },{
+          }, {
             text: "FRECUENCIA",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },{
+          }, {
             text: "CONTROL",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },{
+          }, {
             text: "H. PROG",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },{
+          }, {
             text: "H. MARC",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },{
+          }, {
             text: "T. ATRASO",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },{
+          }, {
             text: "T. ADELANTO",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },{
+          }, {
             text: "PEN ($)",
             fontSize: 8.5,
             bold: true,
@@ -726,8 +749,7 @@ export default {
         ],
       ]
 
-      for(var i=0;i<this.mListSalidasFrecuenciasControles.length;i++)
-      {
+      for (var i = 0; i < this.mListSalidasFrecuenciasControles.length; i++) {
 
         resultadoString.push([
           {
@@ -753,42 +775,42 @@ export default {
             fontSize: 8.5,
 
             alignment: "center",
-          },{
+          }, {
             text: this.mListSalidasFrecuenciasControles[i].DescRuta,
             fontSize: 8.5,
 
             alignment: "center",
-          },{
+          }, {
             text: this.mListSalidasFrecuenciasControles[i].DescFrec,
             fontSize: 8.5,
 
             alignment: "center",
-          },{
-            text:this.mListSalidasFrecuenciasControles[i].DescCtrl,
+          }, {
+            text: this.mListSalidasFrecuenciasControles[i].DescCtrl,
             fontSize: 8.5,
 
             alignment: "center",
-          },{
+          }, {
             text: this.mListSalidasFrecuenciasControles[i].HoraProgSali_d,
             fontSize: 8.5,
 
             alignment: "center",
-          },{
+          }, {
             text: this.mListSalidasFrecuenciasControles[i].HoraMarcSali_d,
             fontSize: 8.5,
 
             alignment: "center",
-          },{
+          }, {
             text: this.mListSalidasFrecuenciasControles[i].atrasoFaltasTime,
             fontSize: 8.5,
 
             alignment: "center",
-          },{
-            text:this.mListSalidasFrecuenciasControles[i].adelantoFaltasTime,
+          }, {
+            text: this.mListSalidasFrecuenciasControles[i].adelantoFaltasTime,
             fontSize: 8.5,
 
             alignment: "center",
-          },{
+          }, {
             text: parseFloat(this.mListSalidasFrecuenciasControles[i].PenaCtrlSali_d).toFixed(2),
             fontSize: 8.5,
 
@@ -848,13 +870,13 @@ export default {
             table: {
               headerRows: 0,
               widths: [450, 450, 450],
-              body: [empresa, unidad, desde_hasta],
+              body: [empresa, unidad, desde_hasta, ruta],
             },
           },
           {
             table: {
               headerRows: 0,
-              widths: [40,50, 55, 55, 75, 80, 60, 60, 50,60,60,40],
+              widths: [40, 50, 55, 55, 75, 80, 60, 60, 50, 60, 60, 40],
               body: resultadoString,
             },
           },
@@ -871,10 +893,10 @@ export default {
     }
   },
   mounted() {
-    
     this.initFechaActualSalidasControles();
     this.readAllUnidadesSalidasControles();
     this.readLineasRSalidasFrecuenciasControles();
+    this.readRutaControles();
     this.readReporteSalidasControles();
     this.createPDFSalidasControles()
   },
@@ -884,15 +906,17 @@ export default {
 .containerModalRecorridoPanelDespacho {
   display: flex;
 }
+
 .cardControlesMarc {
   height: calc(80vh);
   width: 18rem;
 }
+
 .current-row {
   background-color: rgba(0, 0, 0, 0.178);
 }
 
-.el-table__body tr.current-row > td.el-table__cell {
+.el-table__body tr.current-row>td.el-table__cell {
   background-color: rgba(0, 0, 0, 0.178) !important;
 }
 
@@ -941,11 +965,18 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+
+.cardSelectLineaRutaGrupo {
+  display: flex;
+  justify-content: baseline;
+
+}
+
 .no-border-card .card-footer {
   border-top: 0;
 }
 
-.card-bodyRSalidasControles{
+.card-bodyRSalidasControles {
   padding: 0rem !important;
   height: calc(100vh - 13.2rem);
   overflow: none;
@@ -957,4 +988,9 @@ export default {
 .card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda {
   padding-top: 0.25rem !important;
 }
+
+/*.el-select{
+  display: inline !important;
+  position: relative !important;
+}*/
 </style>
