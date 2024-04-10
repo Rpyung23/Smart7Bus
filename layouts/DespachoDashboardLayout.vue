@@ -103,6 +103,20 @@
               permisos.despacho.reportes.reporteSalidasFrecuenciasControles
             "
             :link="{
+              name: 'R. Salidas F. Controles',
+              path: '/despacho/rSalidasControles',
+            }"
+          />
+
+          <sidebar-item
+            translate="no"
+            v-if="
+              permisos != null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles !=
+                null &&
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControles
+            "
+            :link="{
               name: 'R. Salidas F. Controles Ticket',
               path: '/despacho/rSalidasControlesTicket',
             }"
