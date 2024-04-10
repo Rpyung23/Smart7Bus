@@ -103,8 +103,8 @@
               permisos.despacho.reportes.reporteSalidasFrecuenciasControles
             "
             :link="{
-              name: 'R. Salidas F. Controles',
-              path: '/despacho/rSalidasControles',
+              name: 'R. Salidas F. Controles Ticket',
+              path: '/despacho/rSalidasControlesTicket',
             }"
           />
 
