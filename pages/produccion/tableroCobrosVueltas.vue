@@ -482,7 +482,8 @@ export default {
 
       var mListaCuerpoRecibo = [];
 
-      for (var i = 0; i < mLista.length; i++) {
+      for (var i = 0; i < mLista.length; i++) 
+      {
         dineroCobrado = dineroCobrado + parseFloat(mLista[i].DeudaTotal);
 
         var obj = [
@@ -502,6 +503,9 @@ export default {
           alignment: "center",
         },
       ];
+
+
+      
 
       var dd = {
         pageSize: { width: 220, height: mLista.length < 4 ? 300 : "auto" },
@@ -637,6 +641,8 @@ export default {
         },
       ];
 
+
+
       var dd = {
         pageSize: { width: 220, height: mLista.length < 4 ? 300 : "auto" },
         watermark: {
@@ -739,7 +745,9 @@ export default {
 
       var datosSalidas = [];
       var contentPDF = [];
-      for(var contador = 0;contador<mLista.length;contador++){
+      
+      for(var contador = 0;contador<mLista.length;contador++)
+      {
         mListaSalidas.push(mLista[contador].IDSalida)
       }
 
@@ -771,6 +779,17 @@ export default {
       ];
 
       
+
+      /*var recibo = [
+        {
+          text: ("N° RECIBO : "+(datosSalidas.length == 0 ? "NO PAGADO" : datosSalidas[0].NumeroCobro == 0 || datosSalidas[0].NumeroCobro == undefined ? "NO PAGADO" : datosSalidas[0].NumeroCobro)),
+          fontSize: 9,
+          bold: true,
+          alignment: "left",
+        },
+      ];*/
+
+      
       var grupo = [
         {
           text: this.$cookies.get("empresa") == "consorcio-r" ? datosSalidas.length > 0 ? datosSalidas[0].detalle.length > 0 ? datosSalidas[0].detalle[0].descripcion : "" : "" : "",
@@ -787,7 +806,7 @@ export default {
         layout: "noBorders", // optional
         table: {
           widths: ["*"],
-          body: [empresa,grupo],
+          body: [empresa,grupo/*,recibo*/]
         },
       });
 
@@ -1000,8 +1019,10 @@ export default {
           }
         )
 
-        if (datos.data.status_code == 200) {
-          if (datos.data.code == 200) {
+        if (datos.data.status_code == 200) 
+        {
+          if (datos.data.code == 200) 
+          {
             this.banderaMarcoAguaRecibo = false;
 
             this.notifyVue(
