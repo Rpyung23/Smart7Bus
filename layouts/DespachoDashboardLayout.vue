@@ -112,9 +112,9 @@
             translate="no"
             v-if="
               permisos != null &&
-              permisos.despacho.reportes.reporteSalidasFrecuenciasControles !=
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControlesTicket !=
                 null &&
-              permisos.despacho.reportes.reporteSalidasFrecuenciasControles
+              permisos.despacho.reportes.reporteSalidasFrecuenciasControlesTicket
             "
             :link="{
               name: 'R. Salidas F. Controles Ticket',

@@ -29,13 +29,13 @@
               <base-button icon type="primary" size="sm" @click="readReporteSalidasControles()">
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
-              <download-excel class="btn btn-icon btn-fab btn-success btn-sm" title="Excel" v-if="
+              <!-- <download-excel class="btn btn-icon btn-fab btn-success btn-sm" title="Excel" v-if="
                 mListSalidasFrecuenciasControles.length > 0 ? true : false
               " :header="oHeaderRSalidasFrecuenciasControles" :data="mListSalidasFrecuenciasControlesExcel"
                 :fields="oJSONFieldsRSalidasFrecuenciasControles" :worksheet="oWorkSheetRSalidasFrecuenciasControles"
                 :name="oFileNameRSalidasFrecuenciasControles">
                 <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-              </download-excel>
+              </download-excel> -->
             </div>
           </div>
         </card>
@@ -69,44 +69,12 @@
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda"></div>
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControles px-0 pb-1"
-          footer-classes="pb-2">
+        <card class="" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControles px-0 pb-1">
 
-          <embed :src="base64PDFSALIDACONTROLES" type="application/pdf" width="98.7%" height="98.7%" />
-
-          <div>
+          <!-- <embed :src="base64PDFSALIDACONTROLES" type="application/pdf" width="98.7%" height="98.7%" /> -->
 
 
-            <!--<el-table
-              v-loading="loadingTableRSalidasFrecuenciasControles"
-              element-loading-text="Cargando Datos..."
-              :data="mListSalidasFrecuenciasControles"
-              row-key="id"
-              class="tablePanelControlProduccion"
-              header-row-class-name="thead-dark"
-              height="calc(100vh - 13rem)"
-            >
-              <el-table-column
-                v-for="column in tableColumnsUnidadesFlotaVehicular"
-                :key="column.label"
-                v-bind="column"
-              >
-              </el-table-column>
-              <el-table-column
-                label="PEN ($)"
-                min-width="170"
-                prop="PenaCtrlSali_d"
-              >
-                <template slot-scope="scope">
-                  <strong style="color: black">{{
-                    scope.row.PenaCtrlSali_d
-                  }}</strong>
-                </template>
-</el-table-column>
-<div slot="empty"></div>
-</el-table>-->
-          </div>
-            <!-- <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta> -->
+          <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta>
         </card>
 
       </div>
@@ -146,6 +114,7 @@ import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getBase64LogoReportes } from "../../util/logoReport";
 import { text } from "d3";
+import TarjetaDiv from "../../components/tarjetas/tarjetaDiv.vue";
 export default {
   mixins: [clientPaginationMixin],
   layout: "DespachoDashboardLayout",
@@ -169,7 +138,7 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Popover.name]: Popover,
     [Button.name]: Button,
-    ComponenteTarjeta: tarjeta,
+    ComponenteTarjeta: TarjetaDiv,
   },
   data() {
     return {
@@ -334,14 +303,14 @@ export default {
     },
     async readRutaControles() {
       console.log("INITI TODO LOS CONTROLES ")
-      console.log("mSelectRutaSalidaPanelBusqueda ",this.mSelectRutaSalidaPanelBusqueda)
-      console.log("mSelectRutasControles ID",this.mSelectRutasControles)
-      console.log("mListLineasFecuenciasControles",this.mListLineasFecuenciasControles)
+      console.log("mSelectRutaSalidaPanelBusqueda ", this.mSelectRutaSalidaPanelBusqueda)
+      console.log("mSelectRutasControles ID", this.mSelectRutasControles)
+      console.log("mListLineasFecuenciasControles", this.mListLineasFecuenciasControles)
       console.log("mSelectRutaSalidaPanelBusqueda ", this.mSelectRutaSalidaPanelBusqueda)
       console.log("mSelectRutasControles ID", this.mSelectRutasControles)
       console.log("mListLineasFecuenciasControles", this.mListLineasFecuenciasControles)
       this.mListaRutaControles = []
-     
+
       var datos = await this.$axios.post(process.env.baseUrl + "/AllControlesPorRuta", {
         token: this.token,
         rutas: this.mSelectRutaSalidaPanelBusqueda.length === 0 ? "*" : this.mSelectRutaSalidaPanelBusqueda
@@ -420,7 +389,8 @@ export default {
       this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now();
       this.oFileNameRSalidasFrecuenciasControles =
         "RSFC_" + Date.now() + ".xls";
-      this.createPDFSalidasControles()
+      //this.createPDFSalidasControles()
+
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl + "/rSalidasFrecuenciasControles",
@@ -442,6 +412,7 @@ export default {
             grupo: this.itemGruposPenalidadesSemanales.length > 0
               ? this.itemGruposPenalidadesSemanales
               : "*",
+            isRef: 1,
           }
         );
         console.log("******************************************************************");
@@ -454,9 +425,7 @@ export default {
         console.log("Grupo \n" + this.itemGruposPenalidadesSemanales);
         if (datos.data.status_code == 200) {
           //console.log(datos.data.datos);
-          //this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaControles(datos.data.datos);
-          //const baseURlPDFPanelDespachoTarjeta = localStorage.getItem('baseURlPDFPanelDespachoTarjeta');
-          //console.log("ACa la url ", this.baseURlPDFPanelDespachoTarjeta)
+          this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaControles(datos.data.datos, this.mSelectRutasControles);
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
           this.mListSalidasFrecuenciasControlesExcel.push(...datos.data.datos);
           var faltaAtrasos = 0;
@@ -574,7 +543,7 @@ export default {
         });
       }
       this.loadingTableRSalidasFrecuenciasControles = false;
-      this.createPDFSalidasControles()
+      //this.createPDFSalidasControles()
       swal.close()
     },
     createPDFSalidasControles() {
@@ -840,7 +809,8 @@ export default {
     this.readLineasRSalidasFrecuenciasControles();
     this.readRutaControles();
     this.readReporteSalidasControles();
-    this.createPDFSalidasControles()
+    this.readGruposActivosPenalidadesSemanales();
+    //this.createPDFSalidasControles()
   },
 };
 </script>
@@ -848,23 +818,29 @@ export default {
 .containerModalRecorridoPanelDespacho {
   display: flex;
 }
+
 .cardControlesMarc {
   height: calc(80vh);
   width: 18rem;
 }
+
 .current-row {
   background-color: rgba(0, 0, 0, 0.178);
 }
+
 .el-table__body tr.current-row>td.el-table__cell {
   background-color: rgba(0, 0, 0, 0.178) !important;
 }
+
 .mapa {
   width: 100%;
   height: calc(80vh);
 }
+
 .form-group {
   margin-bottom: 0rem;
 }
+
 .form-controlPersonal {
   display: block;
   width: 100%;
@@ -883,38 +859,47 @@ export default {
   box-shadow: 0 3px 2px rgba(233, 236, 239, 0.05);
   transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
+
 .el-loading-text {
   color: black !important;
 }
+
 .el-icon-loading {
   color: black !important;
 }
+
 .cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda {
   display: flex;
   align-items: center;
 }
+
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda {
   display: flex;
   justify-content: space-between;
 }
+
 .cardSelectLineaRutaGrupo {
   display: flex;
   justify-content: baseline;
 }
+
 .no-border-card .card-footer {
   border-top: 0;
 }
+
 .card-bodyRSalidasControles {
   padding: 0rem !important;
   height: calc(100vh - 13.2rem);
   overflow: none;
-  display: flex;
+
   justify-content: center;
   align-items: center;
 }
+
 .card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda {
   padding-top: 0.25rem !important;
 }
+
 /*.el-select{
   display: inline !important;
   position: relative !important;
