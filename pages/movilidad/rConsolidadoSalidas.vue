@@ -95,7 +95,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
   mixins: [clientPaginationMixin],
-  layout: "DespachoDashboardLayout",
+  layout: "DashboardLayoutMovilidad",
   components: {
     Tabs,
     TabPane,
@@ -157,10 +157,10 @@ export default {
 
     initFechaActualProduccionRPAgosVehiculoRecibo() {
       var fecha = new Date();
-      var mes = fecha.getMonth() + 1;
-      var day = fecha.getDate();
+      var mes = fecha.getUTCMonth() + 1; // Usar getUTCMonth()
+      var day = fecha.getUTCDate(); // Usar getUTCDate()
       var format =
-        fecha.getFullYear() +
+        fecha.getUTCFullYear() +
         "-" +
         (mes < 10 ? "0" + mes : mes) +
         "-" +
@@ -169,6 +169,7 @@ export default {
       this.fechaInicialIndicadorCalidad = format;
       this.fechaFinalIndicadorCalidad = format;
     },
+
 
     async readAllUnidadesPagosVehiculoProduccionRecibo() {
       var datos = await this.$axios.post(process.env.baseUrl + "/unidades", {

@@ -223,19 +223,6 @@
             }"
           />
 
-          <sidebar-item
-            translate="no"
-            v-if="
-              permisos != null &&
-              permisos.despacho.reportes.rConsolidoSalidas !=
-                null &&
-              permisos.despacho.reportes.rConsolidoSalidas
-            "
-            :link="{
-              name: 'R. Consolidado Salidas',
-              path: '/despacho/rConsolidadoSalidas',
-            }"
-          />   
 
         </sidebar-item>
       

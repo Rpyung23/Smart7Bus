@@ -3,63 +3,64 @@
     <notifications></notifications>
     <side-bar>
       <template slot-scope="props" slot="links">
-        <sidebar-item
-          translate="no"
-          :link="{
-            name: 'Indicadores de Calidad',
-            icon: 'ni ni-chart-pie-35 text-default',
-            path: '/movilidad/rIcanlidadMovilidad',
-          }"
-        />
+        <sidebar-item translate="no" :link="{
+          name: 'Indicadores de Calidad',
+          icon: 'ni ni-chart-pie-35 text-default',
+          path: '/movilidad/rIcanlidadMovilidad',
+        }" />
 
         <sidebar-item
           v-if="permisos != null && permisos.movilidad.active != null && permisos.movilidad.reportes.active != null && permisos.movilidad.reportes.indicadorConsolidado"
-        translate="no"
-        :link="{
-        name: 'Indicadores de Calidad Consolidado',
-        icon: 'ni ni-chart-pie-35 text-default',
-        path: '/movilidad/rIcalidadMovilidadConsolidado',
-        }"/>
-
-
-      <sidebar-item
-        v-if="permisos != null && permisos.movilidad.active != null && permisos.movilidad.reportes.active != null && permisos.movilidad.reportes.indicadorConsolidadoTotal"
-        translate="no"
-        :link="{
-        name: 'Indicadores Consolidado T',
-        icon: 'ni ni-chart-pie-35 text-default',
-        path: '/movilidad/rIndicadorConsolidado',
-        }"/>
+          translate="no" :link="{
+            name: 'Indicadores de Calidad Consolidado',
+            icon: 'ni ni-chart-pie-35 text-default',
+            path: '/movilidad/rIcalidadMovilidadConsolidado',
+          }" />
 
 
         <sidebar-item
-          translate="no"
-          :link="{
-            name: 'Tabla Operacional',
-            icon: 'ni ni-bullet-list-67 text-danger',
-            path: '/movilidad/tablaOperacional',
-          }"
-        />
+          v-if="permisos != null && permisos.movilidad.active != null && permisos.movilidad.reportes.active != null && permisos.movilidad.reportes.indicadorConsolidadoTotal"
+          translate="no" :link="{
+            name: 'Indicadores Consolidado T',
+            icon: 'ni ni-chart-pie-35 text-default',
+            path: '/movilidad/rIndicadorConsolidado',
+          }" />
 
-       
+
+        <sidebar-item translate="no" :link="{
+          name: 'Tabla Operacional',
+          icon: 'ni ni-bullet-list-67 text-danger',
+          path: '/movilidad/tablaOperacional',
+        }" />
+
+
+
+        <sidebar-item translate="no" :link="{
+          name: 'H. Recorridos',
+          icon: 'ni ni-sound-wave text-warning',
+          path: '/movilidad/rhrecorrido',
+        }" />
 
         <sidebar-item
+          :link="{ name: 'R. Velocidad Mov', icon: 'ni ni-collection text-warning', path: '/movilidad/rvelocidadM' }"
+          translate="no" />
+          
+          <sidebar-item
           translate="no"
-          :link="{
-            name: 'H. Recorridos',
-            icon: 'ni ni-sound-wave text-warning',
-            path: '/movilidad/rhrecorrido',
-          }"
-        />
+          v-if="
+            permisos != null &&
+            permisos.movilidad.active !=
+            null &&
+            permisos.movilidad.reportes.active != null &&
+            permisos.movilidad.reportes.rConsolidadoSalidas"
+          :link="{ name: 'R. Consolidado Salidas', icon: 'ni ni-bus-front-12 text-warning', path: '/movilidad/rConsolidadoSalidas' }"
+           />
 
-        <sidebar-item :link="{ name: 'R. Velocidad Mov',icon: 'ni ni-collection text-warning', path: '/movilidad/rvelocidadM' }" translate="no"/>
 
       </template>
     </side-bar>
     <div class="main-content">
-      <dashboard-navbar
-        :type="$route.name == 'alternative' ? 'light' : 'default'"
-      ></dashboard-navbar>
+      <dashboard-navbar :type="$route.name == 'alternative' ? 'light' : 'default'"></dashboard-navbar>
 
       <div @click="$sidebar.displaySidebar(false)">
         <nuxt></nuxt>
