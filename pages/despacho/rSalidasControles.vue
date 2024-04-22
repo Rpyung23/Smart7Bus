@@ -875,8 +875,8 @@ export default {
     this.initFechaActualSalidasControles();
     this.readAllUnidadesSalidasControles();
     this.readLineasRSalidasFrecuenciasControles();
-    this.readReporteSalidasControles();
-    this.createPDFSalidasControles()
+    //this.readReporteSalidasControles();
+    //this.createPDFSalidasControles()
   },
 };
 </script>
