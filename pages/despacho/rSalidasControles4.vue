@@ -2,137 +2,67 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select
-              v-model="itemUnidadSalidasPanelBusqueda"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesSalidasControles"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesSalidasPanelBusqueda"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadSalidasPanelBusqueda" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesSalidasControles"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+              <el-option v-for="item in optionsUnidadesSalidasPanelBusqueda" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaInicialSalidasPanelBusqueda"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaInicialSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
 
             <base-input addon-left-icon="ni ni-calendar-grid-58">
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                class="form-controlPersonal datepicker"
-                v-model="fechaFinalSalidasPanelBusqueda"
-              >
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                class="form-controlPersonal datepicker" v-model="fechaFinalSalidasPanelBusqueda">
               </flat-picker>
             </base-input>
           </div>
 
-          <div
-            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          >
+          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda">
             <div class="buttonCenterEndDerecha">
-              <base-button
-                icon
-                type="primary"
-                size="sm"
-                @click="readReporteSalidasControles()"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="el-icon-search"></i
-                ></span>
+              <base-button icon type="primary" size="sm" @click="readReporteSalidasControles()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
-              <download-excel
-                class="btn btn-icon btn-fab btn-success btn-sm"
-                title="Excel"
-                type="xls"
-                v-if="
-                  isExportExcel
-                    ? mListSalidasFrecuenciasControles.length > 0
-                      ? true
-                      : false
+              <download-excel class="btn btn-icon btn-fab btn-success btn-sm" title="Excel" type="xls" v-if="
+                isExportExcel
+                  ? mListSalidasFrecuenciasControles.length > 0
+                    ? true
                     : false
-                "
-                :header="oHeaderRSalidasFrecuenciasControles"
-                :data="mListSalidasFrecuenciasControlesExcel"
-                :fields="oJSONFieldsRSalidasFrecuenciasControles"
-                :name="oFileNameRSalidasFrecuenciasControles"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="ni ni-collection"></i
-                ></span>
+                  : false
+              " :header="oHeaderRSalidasFrecuenciasControles" :data="mListSalidasFrecuenciasControlesExcel"
+                :fields="oJSONFieldsRSalidasFrecuenciasControles" :name="oFileNameRSalidasFrecuenciasControles">
+                <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
               </download-excel>
             </div>
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
-            <el-select
-              v-model="mSelectRutaSalidaPanelBusqueda"
-              collapse-tags
-              placeholder="Lineas"
-            >
-              <el-option
-                v-for="item in mListLineasFecuenciasControles"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
+            <el-select v-model="mSelectRutaSalidaPanelBusqueda" collapse-tags placeholder="Lineas">
+              <el-option v-for="item in mListLineasFecuenciasControles" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
               </el-option>
             </el-select>
           </div>
 
-          <div
-            class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda"
-          ></div>
+          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda"></div>
         </card>
 
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="card-bodyRSalidasControles px-0 pb-1"
-          footer-classes="pb-2"
-        >
-          <embed
-            :src="base64PDFSALIDACONTROLES"
-            type="application/pdf"
-            width="98.7%"
-            height="98.7%"
-          />
+        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControles px-0 pb-1"
+          footer-classes="pb-2">
+          <embed :src="base64PDFSALIDACONTROLES" type="application/pdf" width="98.7%" height="98.7%" />
 
           <div>
             <!--<el-table
@@ -161,10 +91,10 @@
                     scope.row.PenaCtrlSali_d
                   }}</strong>
                 </template>
-              </el-table-column>
+</el-table-column>
 
-              <div slot="empty"></div>
-            </el-table>-->
+<div slot="empty"></div>
+</el-table>-->
           </div>
         </card>
       </div>
@@ -405,19 +335,19 @@ export default {
       this.oHeaderRSalidasFrecuenciasControles = [
         "REPORTE DE CUMPLIMIENTO DE SALIDAS, RUTAS Y FRECUENCIAS ",
         "Fechas : " +
-          this.fechaInicialSalidasPanelBusqueda +
-          " hasta " +
-          this.fechaFinalSalidasPanelBusqueda,
+        this.fechaInicialSalidasPanelBusqueda +
+        " hasta " +
+        this.fechaFinalSalidasPanelBusqueda,
         "Unidades : " +
-          (this.itemUnidadSalidasPanelBusqueda.length <= 0
-            ? "TODAS LAS UNIDADES"
-            : this.itemUnidadSalidasPanelBusqueda),
+        (this.itemUnidadSalidasPanelBusqueda.length <= 0
+          ? "TODAS LAS UNIDADES"
+          : this.itemUnidadSalidasPanelBusqueda),
         "Rutas : " +
-          (this.mSelectRutaSalidaPanelBusqueda == null
-            ? "TODAS LAS RUTAS"
-            : this.getNombresRutasRSalidasFrecuenciasControles(
-                this.mSelectRutaSalidaPanelBusqueda
-              )),
+        (this.mSelectRutaSalidaPanelBusqueda == null
+          ? "TODAS LAS RUTAS"
+          : this.getNombresRutasRSalidasFrecuenciasControles(
+            this.mSelectRutaSalidaPanelBusqueda
+          )),
       ];
 
       swal.fire({
@@ -685,7 +615,7 @@ export default {
         ],
       ];
 
-      let width_table = [40, 85];
+      let width_table = [35, 80];
 
       //await this.readControlFrecuenciaCabezera();
 
@@ -704,7 +634,18 @@ export default {
           alignment: "center",
         });
         width_table.push("auto");
+
       }
+      resultadoString[0].push({
+        text:
+          "Total Atraso",
+        fontSize: this.mListControlesCabezera.length < 12 ? 6 : 8,
+        bold: true,
+        fillColor: "#039BC4",
+        color: "white",
+        alignment: "center",
+      });
+      width_table.push("auto");
 
       for (var j = 0; j < this.mListSalidasFrecuenciasControles.length; j++) {
         var obj = [
@@ -721,8 +662,9 @@ export default {
             alignment: "left",
           },
         ];
-
+        const total = 0;
         for (var k = 0; k < this.mListControlesCabezera.length; k++) {
+
           var result = this.getItemPdf(
             this.mListControlesCabezera[k].idFrec,
             this.mListControlesCabezera[k].CodiCtrlSecuCtrl,
@@ -730,7 +672,11 @@ export default {
             this.mListSalidasFrecuenciasControles[j].controles
           );
           obj.push(result);
+          if (this.mListSalidasFrecuenciasControles[j].controles[k].FaltSali_d > 0) {
+            total = total + parseFloat(this.mListSalidasFrecuenciasControles[j].controles[k].FaltSali_d);
+          }
         }
+        obj.push({ text: `${total}`, fontSize: 8.5, alignment: "center", });
 
         resultadoString.push(obj);
       }
@@ -741,10 +687,10 @@ export default {
 
       var docDefinition = {
         pageSize: "A4",
-        pageOrientation:  this.$cookies.get("empresa") == 'tumbaco' ?  
-                          this.mSelectRutaSalidaPanelBusqueda == 'RM' || 
-                          this.mSelectRutaSalidaPanelBusqueda == 'EQ' ||
-                          this.mSelectRutaSalidaPanelBusqueda == 'QA' ? 'landscape' : 'portrait' : 'portrait',
+        pageOrientation: this.$cookies.get("empresa") == 'tumbaco' ?
+          this.mSelectRutaSalidaPanelBusqueda == 'RM' ||
+            this.mSelectRutaSalidaPanelBusqueda == 'EQ' ||
+            this.mSelectRutaSalidaPanelBusqueda == 'QA' ? 'landscape' : 'portrait' : 'portrait',
         pageMargins: [30, 80, 40, 30],
         header: {
           margin: 15,
@@ -829,15 +775,15 @@ export default {
                 controles[i].FaltSali_d == null
                   ? ""
                   : controles[i].FaltSali_d +
-                    (controles[i].isCtrlRefeSali_d == 1 ? " (REF)" : ""),
+                  (controles[i].isCtrlRefeSali_d == 1 ? " (REF)" : ""),
               bold: true,
               fontSize: 8,
               color:
                 controles[i].FaltSali_d == 0
                   ? "#000"
                   : controles[i].FaltSali_d > 0
-                  ? "#FF0000"
-                  : "#008000",
+                    ? "#FF0000"
+                    : "#008000",
               alignment: "center",
             };
             break;
@@ -896,14 +842,14 @@ export default {
 
     this.isExportExcel =
       permisos != null &&
-      permisos.despacho != null &&
-      permisos.despacho.active != null &&
-      permisos.despacho.active &&
-      permisos.despacho.reportes != null &&
-      permisos.despacho.reportes.active != null &&
-      permisos.despacho.reportes.active &&
-      permisos.despacho.reportes.ExportExcelRSFC4 != null &&
-      permisos.despacho.reportes.ExportExcelRSFC4
+        permisos.despacho != null &&
+        permisos.despacho.active != null &&
+        permisos.despacho.active &&
+        permisos.despacho.reportes != null &&
+        permisos.despacho.reportes.active != null &&
+        permisos.despacho.reportes.active &&
+        permisos.despacho.reportes.ExportExcelRSFC4 != null &&
+        permisos.despacho.reportes.ExportExcelRSFC4
         ? true
         : false;
   },
@@ -913,15 +859,17 @@ export default {
 .containerModalRecorridoPanelDespacho {
   display: flex;
 }
+
 .cardControlesMarc {
   height: calc(80vh);
   width: 18rem;
 }
+
 .current-row {
   background-color: rgba(0, 0, 0, 0.178);
 }
 
-.el-table__body tr.current-row > td.el-table__cell {
+.el-table__body tr.current-row>td.el-table__cell {
   background-color: rgba(0, 0, 0, 0.178) !important;
 }
 
@@ -970,6 +918,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+
 .no-border-card .card-footer {
   border-top: 0;
 }
