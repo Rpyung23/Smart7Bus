@@ -479,10 +479,10 @@ export default {
         if (datos.data.status_code == 200) {
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
           this.mListControlesCabezera.push(...datos.data.datosC);
-          console.log('ACa REporteeeee')
-          console.log(datos.data.datos)
-          console.log('ACa REporteeeee Controles')
-          console.log(datos.data.datosC)
+          console.log("ACa REporteeeee");
+          console.log(datos.data.datos);
+          console.log("ACa REporteeeee Controles");
+          console.log(datos.data.datosC);
 
           this.exportExcel(datos.data.datos);
 
@@ -685,7 +685,7 @@ export default {
         ],
       ];
 
-      let width_table = [40, 85];
+      let width_table = [40, 45];
 
       //await this.readControlFrecuenciaCabezera();
 
@@ -706,7 +706,19 @@ export default {
         width_table.push("auto");
       }
 
+      resultadoString[0].push({
+        text: "T. MINUTOS",
+        fontSize: 8.5,
+        bold: true,
+        fillColor: "#039BC4",
+        color: "white",
+        alignment: "center",
+      });
+
+      width_table.push(45);
+
       for (var j = 0; j < this.mListSalidasFrecuenciasControles.length; j++) {
+        var totMinutos = 0;
         var obj = [
           {
             text: this.mListSalidasFrecuenciasControles[j].CodiVehiSali_m,
@@ -717,20 +729,27 @@ export default {
           {
             text: this.mListSalidasFrecuenciasControles[j].HoraSaliProgSali_m,
             fontSize: 8.5,
-
             alignment: "left",
           },
         ];
 
-        for (var k = 0; k < this.mListControlesCabezera.length; k++) {
+        for (var k = 0; k < this.mListControlesCabezera.length; k++) 
+        {
           var result = this.getItemPdf(
             this.mListControlesCabezera[k].idFrec,
             this.mListControlesCabezera[k].CodiCtrlSecuCtrl,
             this.mListSalidasFrecuenciasControles[j].idFrecSali_m,
             this.mListSalidasFrecuenciasControles[j].controles
-          );
-          obj.push(result);
+          )
+          totMinutos = totMinutos + result.valor_minuto
+          obj.push(result.obj_pdf);
         }
+
+        obj.push({
+            text: totMinutos,
+            fontSize: 8.5,
+            alignment: "center",
+          },);
 
         resultadoString.push(obj);
       }
@@ -741,10 +760,14 @@ export default {
 
       var docDefinition = {
         pageSize: "A4",
-        pageOrientation:  this.$cookies.get("empresa") == 'tumbaco' ?  
-                          this.mSelectRutaSalidaPanelBusqueda == 'RM' || 
-                          this.mSelectRutaSalidaPanelBusqueda == 'EQ' ||
-                          this.mSelectRutaSalidaPanelBusqueda == 'QA' ? 'landscape' : 'portrait' : 'portrait',
+        pageOrientation:
+          this.$cookies.get("empresa") == "tumbaco"
+            ? this.mSelectRutaSalidaPanelBusqueda == "RM" ||
+              this.mSelectRutaSalidaPanelBusqueda == "EQ" ||
+              this.mSelectRutaSalidaPanelBusqueda == "QA"
+              ? "landscape"
+              : "portrait"
+            : "portrait",
         pageMargins: [30, 80, 40, 30],
         header: {
           margin: 15,
@@ -816,29 +839,31 @@ export default {
     },
     getItemPdf(idFrecuencia, idControl, idFrecuenciaSM, controles) {
       var obj = {
-        text: "--",
-        fontSize: 8.5,
-        alignment: "center",
+        valor_minuto: 0,
+        obj_pdf: { text: "--", fontSize: 8.5, alignment: "center" },
       };
 
       for (var i = 0; i < controles.length; i++) {
         if (idFrecuencia == idFrecuenciaSM) {
           if (idControl == controles[i].CodiCtrlSali_d) {
             obj = {
-              text:
-                controles[i].FaltSali_d == null
-                  ? ""
-                  : controles[i].FaltSali_d +
-                    (controles[i].isCtrlRefeSali_d == 1 ? " (REF)" : ""),
-              bold: true,
-              fontSize: 8,
-              color:
-                controles[i].FaltSali_d == 0
-                  ? "#000"
-                  : controles[i].FaltSali_d > 0
-                  ? "#FF0000"
-                  : "#008000",
-              alignment: "center",
+              valor_minuto: (controles[i].isCtrlRefeSali_d == 1 ? 0 : controles[i].FaltSali_d > 0 ? controles[i].FaltSali_d : 0),
+              obj_pdf: {
+                text:
+                  controles[i].FaltSali_d == null
+                    ? ""
+                    : (controles[i].FaltSali_d +
+                      (controles[i].isCtrlRefeSali_d == 1 ? " (REF)" : "")),
+                bold: true,
+                fontSize: 8,
+                color:
+                  controles[i].FaltSali_d == 0
+                    ? "#000"
+                    : controles[i].FaltSali_d > 0
+                    ? "#FF0000"
+                    : "#008000",
+                alignment: "center",
+              },
             };
             break;
           }
