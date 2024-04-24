@@ -2,33 +2,19 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardOpcionesRPagosVehiculoProduccion">
             <!--<el-autocomplete class="inline-input" v-model="itemUnidadPanelProduccion"
               :fetch-suggestions="querySearchUnidadProduccionRPagoVehiculo" style="margin-right: 0.5rem"
               placeholder="Unidad" prefix-icon="ni ni-bus-front-12" :trigger-on-focus="false"></el-autocomplete>-->
 
-            <el-select
-              v-model="itemUnidadPanelProduccion"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
-              :loading="loadingTableUnidadesPanelProduccoionLoading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesPanelProduccion"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadPanelProduccion" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesPanelProduccionJustificacion"
+              :loading="loadingTableUnidadesPanelProduccoionLoading">
+              <el-option v-for="item in optionsUnidadesPanelProduccion" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
@@ -44,120 +30,70 @@
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
 
             <div class="buttonCenterEndDerecha">
-              <base-button
-              icon
-              type="primary"
-              v-if="!loadingRTableroProduccionCobranzas"
-              size="sm"
-              @click="readlPanelTableroProduccion()"
-            >
-              <span class="btn-inner--icon"
-                ><i class="el-icon-search"></i
-              ></span>
-            </base-button>
+              <base-button icon type="primary" v-if="!loadingRTableroProduccionCobranzas" size="sm"
+                @click="readlPanelTableroProduccion()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              </base-button>
 
-            <base-button
-              icon
-              type="default"
-              size="sm"
-              @click="realizarCobro()"
-              v-if="multipleSelectionProduccionCobros.length > 0"
-            >
-              <span class="btn-inner--icon"><i class="ni ni-money-coins"></i></span>
-              <span class="btn-inner--text">PAGAR</span>
-            </base-button>
+              <base-button icon type="default" size="sm" @click="realizarCobro()"
+                v-if="multipleSelectionProduccionCobros.length > 0">
+                <span class="btn-inner--icon"><i class="ni ni-money-coins"></i></span>
+                <span class="btn-inner--text">PAGAR</span>
+              </base-button>
             </div>
 
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
             <!--<el-select v-model="mSelectRubroValueTablero" multiple collapse-tags placeholder="Rubros">
               <el-option v-for="item in mListRubrosTableroProduccion" :key="item.id" :label="item.descripcion"
                 :value="item.id">
               </el-option>
             </el-select>-->
-            <el-select
-              v-model="mSelectLineasValueTablero"
-              style="margin-right: 0.5rem"
-              multiple
-              collapse-tags
-              placeholder="Rutas"
-            >
-              <el-option
-                v-for="item in mListLineasTableroProduccion"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
-              >
+            <el-select v-model="mSelectLineasValueTablero" style="margin-right: 0.5rem" multiple collapse-tags
+              placeholder="Rutas">
+              <el-option v-for="item in mListLineasTableroProduccion" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.idRuta">
               </el-option>
             </el-select>
           </div>
 
           <div class="cardTextoRPagosVehiculoProduccion">
-            <strong style="color: dark; margin-right: 0.5rem"
-              >Pendiente : {{ mPendienteRPagosVehiculo }} $</strong
-            >
-            <strong style="color: green"
-              >Total a Cobrar:
+            <strong style="color: dark; margin-right: 0.5rem">Pendiente : {{ mPendienteRPagosVehiculo }} $</strong>
+            <strong style="color: green">Total a Cobrar:
               {{
                 multipleSelectionProduccionCobros.length > 0
                   ? mTotalRPagosVehiculo
                   : "0.00"
               }}
-              $</strong
-            >
+              $</strong>
           </div>
         </card>
 
-        <card
-          id="cardTableroCobros"
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="cardTableroCobros card-bodyRCobrosVehiculoProduccionPC px-0 pb-1"
-          footer-classes="pb-2"
-        >
+        <card id="cardTableroCobros" class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="cardTableroCobros card-bodyRCobrosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
           <div>
             <div class="row row-example">
-              <el-table
-                v-loading="loadingRTableroProduccionCobranzas"
-                ref="multipleTableCobrosPagar"
-                @selection-change="handleSelectionChangeTableCobros"
-                element-loading-text="Cargando Datos..."
-                :data="tableDataPanelControlProduccion"
-                row-key="id"
-                class="col-12 col-md-8 tablePanelControlProduccion"
-                header-row-class-name="thead-dark"
-                height="calc(100vh - 13rem)"
-                style="width: 100%"
-              >
+              <el-table v-loading="loadingRTableroProduccionCobranzas" ref="multipleTableCobrosPagar"
+                @selection-change="handleSelectionChangeTableCobros" element-loading-text="Cargando Datos..."
+                :data="tableDataPanelControlProduccion" row-key="id" class="col-12 col-md-8 tablePanelControlProduccion"
+                header-row-class-name="thead-dark" height="calc(100vh - 13rem)" style="width: 100%">
                 <el-table-column type="selection" minWidth="50">
                 </el-table-column>
 
                 <el-table-column prop="Unidad" label="Unidad" minWidth="70">
                 </el-table-column>
-                <el-table-column
-                  prop="DescRuta"
-                  label="Ruta - Linea"
-                  minWidth="140"
-                >
+                <el-table-column prop="DescRuta" label="Ruta - Linea" minWidth="140">
                 </el-table-column>
 
                 <el-table-column prop="Fecha" label="Fecha" minWidth="60">
                 </el-table-column>
 
-                <el-table-column
-                  prop="DeudaTotal"
-                  sortable
-                  label="Total($)"
-                  minWidth="70"
-                >
+                <el-table-column prop="DeudaTotal" sortable label="Total($)" minWidth="70">
                   <template slot-scope="scope">
                     <strong style="color: black">{{
                       scope.row.DeudaTotal
@@ -168,16 +104,12 @@
                 <div slot="empty"></div>
               </el-table>
 
-              <iframe
-                class="col-6 col-md-4"
-                :src="baseURlPDFComprobanteIngresoTableroCobro"
-                style="
+              <iframe class="col-6 col-md-4" :src="baseURlPDFComprobanteIngresoTableroCobro" style="
                   width: 100%;
                   padding: 0rem;
                   border-width: 0rem;
                   height: calc(100vh - 13em);
-                "
-              ></iframe>
+                "></iframe>
             </div>
           </div>
         </card>
@@ -200,12 +132,7 @@
 
           <template slot="footer">
             <base-button type="primary">Save changes</base-button>
-            <base-button
-              type="link"
-              class="ml-auto"
-              @click="modals.classic = false"
-              >Close</base-button
-            >
+            <base-button type="link" class="ml-auto" @click="modals.classic = false">Close</base-button>
           </template>
         </modal>
       </div>
@@ -239,6 +166,7 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { convertSecondtoTimeString } from "../../util/fechas";
+import { color } from "d3";
 
 export default {
   mixins: [clientPaginationMixin],
@@ -321,7 +249,11 @@ export default {
             this.crearPreviewReciboIngresoPanelCobroUAmbatena(
               this.multipleSelectionProduccionCobros
             );
-          }else {
+          } else if (this.codigoEmpresaTableroCobrosProduccion == "tjerpazol") {
+            this.crearPreviewReciboIngresoPanelCobroTJerpazol(
+              this.multipleSelectionProduccionCobros
+            );
+          } else {
             this.crearPreviewReciboIngresoPanelCobro(
               this.multipleSelectionProduccionCobros
             );
@@ -375,38 +307,38 @@ export default {
       try {
         this.tableDataPanelControlProduccion = [];
 
-      var datos = await this.$axios.post(
-        process.env.baseUrl + "/ProduccionPanelProduccionCobranza",
-        {
-          token: this.token,
-          fechaI: getFecha_dd_mm_yyyy(this.fechaInicialTableroProduccion),
-          fechaF: getFecha_dd_mm_yyyy(this.fechaFinalTableroProduccion),
-          rutas:
-            this.mSelectLineasValueTablero.length <= 0
-              ? "*"
-              : this.mSelectLineasValueTablero,
-          unidades:
-            this.itemUnidadPanelProduccion.length <= 0
-              ? "*"
-              : this.itemUnidadPanelProduccion,
-        }
-      );
+        var datos = await this.$axios.post(
+          process.env.baseUrl + "/ProduccionPanelProduccionCobranza",
+          {
+            token: this.token,
+            fechaI: getFecha_dd_mm_yyyy(this.fechaInicialTableroProduccion),
+            fechaF: getFecha_dd_mm_yyyy(this.fechaFinalTableroProduccion),
+            rutas:
+              this.mSelectLineasValueTablero.length <= 0
+                ? "*"
+                : this.mSelectLineasValueTablero,
+            unidades:
+              this.itemUnidadPanelProduccion.length <= 0
+                ? "*"
+                : this.itemUnidadPanelProduccion,
+          }
+        );
 
-      //console.log(datos.data)
+        //console.log(datos.data)
 
-      if (datos.data.status_code == 200) {
-        let dinero = 0;
-        for (var i = 0; i < datos.data.datos.length; i++) {
-          dinero =
-            dinero +
-            (datos.data.datos[i].DeudaTotal == null
-              ? 0
-              : parseFloat(datos.data.datos[i].DeudaTotal));
+        if (datos.data.status_code == 200) {
+          let dinero = 0;
+          for (var i = 0; i < datos.data.datos.length; i++) {
+            dinero =
+              dinero +
+              (datos.data.datos[i].DeudaTotal == null
+                ? 0
+                : parseFloat(datos.data.datos[i].DeudaTotal));
+          }
+          console.log("DINERO : " + dinero);
+          this.mPendienteRPagosVehiculo = dinero;
+          this.tableDataPanelControlProduccion.push(...datos.data.datos);
         }
-        console.log("DINERO : " + dinero);
-        this.mPendienteRPagosVehiculo = dinero;
-        this.tableDataPanelControlProduccion.push(...datos.data.datos);
-      }
       } catch (error) {
         console.log(error)
       }
@@ -701,8 +633,7 @@ export default {
 
       this.banderaMarcoAguaRecibo = true;
     },
-    async crearPreviewReciboIngresoPanelCobroModelo3(mLista) 
-    {
+    async crearPreviewReciboIngresoPanelCobroModelo3(mLista) {
       var atrasoFaltaTotal = 0
       var atrasoJustTotal = 0
       var dineroTotal = 0
@@ -710,7 +641,7 @@ export default {
 
       var datosSalidas = [];
       var contentPDF = [];
-      for(var contador = 0;contador<mLista.length;contador++){
+      for (var contador = 0; contador < mLista.length; contador++) {
         mListaSalidas.push(mLista[contador].Codigo)
       }
       console.log("--------------------")
@@ -720,7 +651,7 @@ export default {
       try {
         var datos = await this.$axios.post(
           process.env.baseUrl +
-            "/ProduccionPreviewDetalleInfoPanelProduccionCobranza",
+          "/ProduccionPreviewDetalleInfoPanelProduccionCobranza",
           {
             token: this.token,
             salidas: mListaSalidas,
@@ -754,10 +685,9 @@ export default {
 
       if (datosSalidas.length > 0) {
 
-        for (var i = 0; i < datosSalidas.length; i++) 
-        {
+        for (var i = 0; i < datosSalidas.length; i++) {
           console.log(datosSalidas[i])
-          
+
 
           var resultadoString = [
             [
@@ -814,18 +744,17 @@ export default {
               },
             }
           );
-          
-          for (var j = 0; j < datosSalidas[i].detalle.length; j++) 
-          {
-            dineroTotal =  dineroTotal + parseFloat(datosSalidas[i].detalle[j].AtrasoPenalidadControl)
+
+          for (var j = 0; j < datosSalidas[i].detalle.length; j++) {
+            dineroTotal = dineroTotal + parseFloat(datosSalidas[i].detalle[j].AtrasoPenalidadControl)
 
             atrasoFaltaTotal = atrasoFaltaTotal + datosSalidas[i].detalle[j].AtrasoFNumeroControl
             atrasoJustTotal = atrasoJustTotal + datosSalidas[i].detalle[j].AtrasoJNumeroControl
-            
+
 
             resultadoString.push([
               {
-                text: datosSalidas[i].detalle[j].DescCtrl.substring(0,8),
+                text: datosSalidas[i].detalle[j].DescCtrl.substring(0, 8),
                 fontSize: 8.5,
               },
               {
@@ -838,7 +767,7 @@ export default {
               },
               {
                 text:
-                datosSalidas[i].detalle[j].HoraMarcSali_d,
+                  datosSalidas[i].detalle[j].HoraMarcSali_d,
                 fontSize: 8.5,
                 alignment: "center",
               },
@@ -864,7 +793,7 @@ export default {
 
               body: resultadoString,
             },
-          },{
+          }, {
             fontSize: 6,
             layout: "noBorders", // optional
             table: {
@@ -873,38 +802,38 @@ export default {
               ],
             },
           })
-          
+
         }
       }
 
-      contentPDF.push( { text: "---------------------------------------------------------" },{
-            text:
-              "Fecha de Pago : " +
-              (this.banderaMarcoAguaRecibo
-                ? "RECIBO SIN PAGAR"
-                : this.initFechaActualTicket()),
-            pageOrientation: "portrait",
-            fontSize: 8,
-          },
-          {
-            text: "Fecha Impresion : " + this.initFechaActualTicket(),
-            pageOrientation: "portrait",
-            fontSize: 8,
-          },{
-            text:
-              "Atraso Falta: "+atrasoFaltaTotal,
-            fontSize: 7.5,
-          },
-          {
-            text:
-              "Atraso Just: "+atrasoJustTotal,
-            fontSize: 7.5,
-          },{
-            text:
-              "DINERO TOTAL: "+Number(dineroTotal).toFixed(2),
-            fontSize: 10,
-            bold: true,
-          })
+      contentPDF.push({ text: "---------------------------------------------------------" }, {
+        text:
+          "Fecha de Pago : " +
+          (this.banderaMarcoAguaRecibo
+            ? "RECIBO SIN PAGAR"
+            : this.initFechaActualTicket()),
+        pageOrientation: "portrait",
+        fontSize: 8,
+      },
+        {
+          text: "Fecha Impresion : " + this.initFechaActualTicket(),
+          pageOrientation: "portrait",
+          fontSize: 8,
+        }, {
+        text:
+          "Atraso Falta: " + atrasoFaltaTotal,
+        fontSize: 7.5,
+      },
+        {
+          text:
+            "Atraso Just: " + atrasoJustTotal,
+          fontSize: 7.5,
+        }, {
+        text:
+          "DINERO TOTAL: " + Number(dineroTotal).toFixed(2),
+        fontSize: 10,
+        bold: true,
+      })
 
       var docDefinition = {
         // a string or { width: 190, height: number }
@@ -923,6 +852,179 @@ export default {
       };
 
       var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl;
+        this.banderaMarcoAguaRecibo = true;
+      });
+
+      this.banderaMarcoAguaRecibo = true;
+    },
+    async crearPreviewReciboIngresoPanelCobroTJerpazol(mLista) {
+
+      let dineroCobrado = 0.0;
+
+      var mListaCuerpoRecibo = [];
+      for (var i = 0; i < mLista.length; i++) {
+        dineroCobrado = dineroCobrado + parseFloat(mLista[i].DeudaTotal);
+
+        var obj = [
+          { text: mLista[i].Unidad, alignment: "center" },
+          { text: mLista[i].DescRuta, alignment: "center" },
+          { text: mLista[i].Fecha, alignment: "center" },
+          { text: mLista[i].DeudaTotal, alignment: "center" },
+        ];
+        mListaCuerpoRecibo.push(obj);
+      }
+
+      var empresa = [
+        {
+          text: this.$cookies.get("nameEmpresa").substring(0, 30),
+          fontSize: 12,
+          bold: true,
+          alignment: "center",
+        },
+      ];
+
+      var dd = {
+        pageSize: { width: 220, height: mLista.length < 4 ? 300 : "auto" },
+        watermark: {
+          text: this.banderaMarcoAguaRecibo ? "NO PAGADO" : "",
+          color: "red",
+          opacity: 0.25,
+          bold: true,
+          fontSize: mLista.length > 50 ? 115 : 25,
+        },
+        pageMargins: [15, 15, 15, 15],
+        compress: true,
+        content: [
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: "noBorders",
+            table: {
+              widths: ["*"],
+              body: [empresa],
+            },
+          },
+          { text: "COMPROBANTE DE INGRESO", alignment: "center", fontSize: 10 },
+          {
+            fontSize: 8.5,
+            layout: "noBorders",
+            table: {
+              // 19, 65, 44, 27
+              headerRows: 0,
+              widths: [70, 10, 70, 10],
+              body: [
+                [{}, {}, {}, {}],
+                [
+                  { text: "Recibo N° :", alignment: "left", bold: true },
+                  {},
+                  { text: "NO PAGADO ", alignment: "right", bold: true, color: "red" },
+                  {},
+                ],
+              ],
+            },
+          },
+          { text: "---------------------------------------------------------" },
+          {
+            fontSize: 8.5,
+            layout: "noBorders",
+            table: {
+              // 19, 65, 44, 27
+              headerRows: 0,
+              widths: [19, 65, 44, 27],
+              body: [
+                [
+                  { text: "VEHI", alignment: "center", bold: true },
+                  { text: "LINEA", alignment: "center", bold: true },
+                  { text: "FECHA", alignment: "center", bold: true },
+                  { text: "VALOR", alignment: "center", bold: true },
+                ],
+              ],
+            },
+          },
+          { text: "---------------------------------------------------------" },
+
+          {
+            fontSize: 8.5,
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [19, 65, 44, 27],
+              body: mLista.length > 0 ? mListaCuerpoRecibo : [[]],
+            },
+          },
+
+          { text: "---------------------------------------------------------" },
+          {
+            text: "Operador : " + this.$cookies.get("namesUsuario"),
+            pageOrientation: "portrait",
+            fontSize: 9,
+          },
+          {
+            text:
+              "Fecha de Pago : " +
+              (this.banderaMarcoAguaRecibo
+                ? "RECIBO SIN PAGAR"
+                : this.initFechaActualTicket()),
+            pageOrientation: "portrait",
+            fontSize: 9,
+          },
+          {
+            text: "Fecha Impresion : " + this.initFechaActualTicket(),
+            pageOrientation: "portrait",
+            fontSize: 9,
+          },
+          {
+            text: "TOTAL DINERO : " + Number(dineroCobrado).toFixed(2),
+            pageOrientation: "portrait",
+            fontSize: 11,
+            color: "darkgreen",
+            bold: true,
+          },
+          {
+            fontSize: 8.5,
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [70, 10, 70, 10],
+              body: [
+                [
+                  { text: "\n\n\n", alignment: "center" }, // Espacio antes de las firmas
+                  {},
+                  { text: "\n\n\n", alignment: "center" }, // Espacio antes de las firmas
+                  {},
+                ],
+                [
+                  { text: "......................................", alignment: "center", colSpan: 2, marginTop: 5 }, // Puntos suspensivos sobre Firma A
+                  {},
+                  { text: "......................................", alignment: "center", colSpan: 2, marginTop: 5 }, // Puntos suspensivos sobre Firma B
+                  {},
+                ],
+                [
+                  { text: "Firma Autorizada", alignment: "center", bold: true, colSpan: 2 },
+                  {},
+                  { text: "Recibi Conforme", alignment: "center", bold: true, colSpan: 2 },
+                  {},
+                ],
+
+
+              ],
+            },
+          }
+          ,
+          {
+            text: ".",
+            pageOrientation: "portrait",
+            fontSize: 6,
+            margin: [0, 5, 0, 0],
+          },
+        ],
+      };
+
+      var pdfDocGenerator = pdfMake.createPdf(dd);
 
       pdfDocGenerator.getDataUrl((dataUrl) => {
         this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl;
@@ -968,15 +1070,20 @@ export default {
               3000
             );
 
-            if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
+            if (this.codigoEmpresaTableroCobrosProduccion === "uambatena") {
               this.crearPreviewReciboIngresoPanelCobroUAmbatena(
+                this.multipleSelectionProduccionCobros
+              );
+            } else if (this.codigoEmpresaTableroCobrosProduccion === "tjerpazol") {
+              this.crearPreviewReciboIngresoPanelCobroTJerpazol(
                 this.multipleSelectionProduccionCobros
               );
             } else {
               this.crearPreviewReciboIngresoPanelCobro(
                 this.multipleSelectionProduccionCobros
-              )
+              );
             }
+
 
             this.reloadStoreTableCobros(mListaCobrosAuxiliar);
           } else {
@@ -1053,6 +1160,8 @@ export default {
 
     if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
       this.crearPreviewReciboIngresoPanelCobroUAmbatena([]);
+    } else if (this.codigoEmpresaTableroCobrosProduccion == "tjerpazol") {
+      this.crearPreviewReciboIngresoPanelCobroTJerpazol([]);
     } else {
       this.crearPreviewReciboIngresoPanelCobro([]);
     }
