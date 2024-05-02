@@ -325,7 +325,7 @@ export default {
           //salto de hoja del ticket
           if (index < lista.length - 1) {
             // Agregar el salto de página solo si no es el último elemento
-            const saltoDePagina = { text: '', pageBreak: 'after' };
+            const saltoDePagina = { text: '\n\n'/*, pageBreak: 'after'*/ };
             contenido.push(saltoDePagina);
           }
 
