@@ -69,7 +69,7 @@
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda"></div>
         </card>
 
-        <card class="" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControles px-0 pb-1">
+        <card class="" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControlesT px-0 pb-1">
 
           <!-- <embed :src="base64PDFSALIDACONTROLES" type="application/pdf" width="98.7%" height="98.7%" /> -->
 
@@ -887,11 +887,10 @@ export default {
   border-top: 0;
 }
 
-.card-bodyRSalidasControles {
-  padding: 0rem !important;
+.card-bodyRSalidasControlesT {
+  padding: 0.3rem !important;
   height: calc(100vh - 13.2rem);
   overflow: none;
-
   justify-content: center;
   align-items: center;
 }

@@ -1,7 +1,5 @@
 <template>
-  <card type="secondary" header-classes="bg-transparent pb-5" class="border-0 mb-0">
-    <iframe :src="baseURlPDFPanelDespachoTarjeta" style="width: 100%; height: 30rem"></iframe>
-  </card>
+  <iframe :src="baseURlPDFPanelDespachoTarjeta" style="width: 100%; height: 100%"></iframe>
 </template>
 
 <style></style>
