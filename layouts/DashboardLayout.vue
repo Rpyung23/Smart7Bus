@@ -279,6 +279,20 @@
             path: '/movilidad/rIcanlidadMovilidad',
           }"
         />
+        <sidebar-item
+          translate="no"
+          v-if="
+            permisos != null &&
+            permisos.movilidad != null &&
+            permisos.movilidad.active != null &&
+            permisos.movilidad.active
+          "
+          :link="{
+            name: 'Movilidad2',
+            icon: 'ni ni-building text-dark',
+            path: '/movilidad2/rIcanlidadMovilidad',
+          }"
+        />
       </template>
     </side-bar>
     <div class="main-content">
