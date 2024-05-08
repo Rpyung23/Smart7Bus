@@ -316,16 +316,12 @@ export default {
               body: [
                 ["TOTAL Faltas : +" + sumFalt],
                 ["TOTAL Dinero : " + Number(penFalt).toFixed(2)],
+                [{ text: '.', bold: false,fontSize:10 }]
               ],
             },
           };
           contenido.push(footerT)
-          //salto de hoja del ticket
-          if (index < lista.length - 1) {
-            // Agregar el salto de página solo si no es el último elemento
-            const saltoDePagina = { text: '\n\n'/*, pageBreak: 'after'*/ };
-            contenido.push(saltoDePagina);
-          }
+
 
         })
         console.log("leng", contenido.length)
@@ -333,8 +329,8 @@ export default {
       }
 
       var docDefinition = {
-        // a string or { width: 190, height: number }
-        pageSize: { width: 225, height: 400 },
+        // 2245 -> alto 800mm
+        pageSize: { width: 225, height:  2245},
         pageMargins: [14, 14, 14, 14],
         //compress: false,
         //header: [empresa],
