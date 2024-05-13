@@ -290,7 +290,7 @@
           :link="{
             name: 'Movilidad2',
             icon: 'ni ni-building text-dark',
-            path: '/movilidad2/rIcanlidadMovilidad',
+            path: '/movilidad2/rIndicadorConsolidado',
           }"
         />
       </template>

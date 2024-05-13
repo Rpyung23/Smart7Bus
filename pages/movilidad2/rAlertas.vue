@@ -2,239 +2,100 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select
-              v-model="itemUnidadRSemanales"
-              multiple
-              filterable
-              remote
-              placeholder="Unidades"
-              prefix-icon="ni ni-bus-front-12"
-              style="margin-right: 0.5rem"
-              :remote-method="remoteMethodUnidadesRecibosProduccion"
-              :loading="loadingTableUnidadesSemanales"
-            >
-              <el-option
-                v-for="item in optionsUnidadesSemanales"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadRSemanales" multiple filterable remote placeholder="Unidades"
+              prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
+              :remote-method="remoteMethodUnidadesRecibosProduccion" :loading="loadingTableUnidadesSemanales">
+              <el-option v-for="item in optionsUnidadesSemanales" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                format="yyyy/MM/dd"
-                class="form-controlPersonal datepicker"
-                v-model="fechaDia1SalidasPanelBusqueda"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                format="yyyy/MM/dd" class="form-controlPersonal datepicker" v-model="fechaDia1SalidasPanelBusqueda">
               </flat-picker>
             </base-input>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-              disabled
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                format="yyyy/MM/dd"
-                class="form-controlPersonal datepicker"
-                v-model="fechaDia2SalidasPanelBusqueda"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem" disabled>
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                format="yyyy/MM/dd" class="form-controlPersonal datepicker" v-model="fechaDia2SalidasPanelBusqueda">
               </flat-picker>
             </base-input>
           </div>
 
-          <div
-            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          >
+          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda">
             <div class="buttonCenterEndDerecha">
-              <base-button
-                icon
-                type="primary"
-                size="sm"
-                @click="readApiPenalidades()"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="el-icon-search"></i
-                ></span>
+              <base-button icon type="primary" size="sm" @click="readApiPenalidades()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
 
-              <base-button
-                type="danger"
-                size="sm"
-                v-if="mListDatosPenalidades.length > 0 ? true : false"
-                @click="exportPdfRPenalidadesSemanales()"
-                title="Exportar PDF"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="ni ni-single-copy-04"></i
-                ></span>
+              <base-button type="danger" size="sm" v-if="mListDatosPenalidades.length > 0 ? true : false"
+                @click="exportPdfRPenalidadesSemanales()" title="Exportar PDF">
+                <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
               </base-button>
 
-              <download-excel
-                v-if="mListDatosPenalidades.length > 0 ? true : false"
-                class="btn btn-icon btn-fab btn-success btn-sm"
-                outline
-                :header="oheaderExcelRSalidasSemanales"
-                title="Exportar a Excel"
-                :data="mListDatosPenalidades"
-                :fields="json_fields_excelRPenalidadesSemanales"
-                :worksheet="WorksheetExcelRSalidasSemanales"
-                :name="FileNameExcelRSalidasSemanales"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="ni ni-collection"></i
-                ></span>
-              </download-excel>
             </div>
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
-              v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false"
-              v-model="itemGruposPenalidadesSemanales"
-              multiple
-              placeholder="Grupos"
-            >
-              <el-option
-                v-for="item in mListaGruposPenalidadesSemanales"
-                :key="item.id"
-                :label="item.descripcion"
-                :value="item.id"
-              >
+            <el-select style="margin-right: 0.5rem" collapse-tags
+              v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false" v-model="itemGruposPenalidadesSemanales"
+              multiple placeholder="Grupos">
+              <el-option v-for="item in mListaGruposPenalidadesSemanales" :key="item.id" :label="item.descripcion"
+                :value="item.id">
               </el-option>
             </el-select>
 
-            <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
-              v-model="itemRutasRSalidasSemanales"
-              multiple
-              placeholder="Rutas"
-            >
-              <el-option
-                v-for="item in mListaRutasSalidasSemanales"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
+            <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRutasRSalidasSemanales" multiple
+              placeholder="Rutas">
+              <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
               </el-option>
             </el-select>
           </div>
 
-          <div
-            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          >
+          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda">
             <div class="buttonCenterEndDerecha"></div>
           </div>
         </card>
 
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="card-bodyRPenalidadesSemanales px-0 pb-1"
-          footer-classes="pb-2"
-        >
+        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRPenalidadesSemanales px-0 pb-1"
+          footer-classes="pb-2">
           <div>
-            <el-table
-              element-loading-text="Cargando Datos..."
-              row-key="id"
-              v-loading="loadingPenalidadesSemanales"
-              :data="mListDatosPenalidades"
-              class="tablePanelControlProduccion"
-              header-row-class-name="thead-dark"
-              height="calc(100vh - 12.8rem)"
-            >
+            <el-table element-loading-text="Cargando Datos..." row-key="id" v-loading="loadingPenalidadesSemanales"
+              :data="mListDatosPenalidades" class="tablePanelControlProduccion" header-row-class-name="thead-dark"
+              height="calc(100vh - 12.8rem)">
+
+              <el-table-column prop="CodiVehiSali_m" label="Detalle Alerta" width="200">
+
+                <template slot-scope="scope">
+                  <base-button size="sm" title="Recorrido" @click="showRecorridoSalidasPanelBusqueda(scope.row)"
+                    type="success"><i class="ni ni-world"></i></base-button>
+                </template>
+
+              </el-table-column>
+
 
               <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
               </el-table-column>
 
-              <el-table-column
-                prop="NumeVuelSali_m"
-                label="N° Vuelta"
-                width="150"
-              >
+              <el-table-column prop="HoraSaliProgSali_mI" label="Fecha Inico" width="300">
               </el-table-column>
 
-              <el-table-column
-                prop="DescRutaSali_m"
-                label="Detalle Ruta"
-                width="250"
-              >
+              <el-table-column prop="HoraSaliProgSali_mF" label="Fecha Final" width="300">
               </el-table-column>
 
-              <el-table-column
-                prop="HoraSaliProgSali_m"
-                label="Fecha Inico"
-                width="190"
-              >
+              <el-table-column prop="DescRutaSali_m" label="Detalle Ruta" width="440">
               </el-table-column>
 
-              <el-table-column
-                prop="HoraLlegProgSali_m"
-                label="Fecha Final"
-                width="170"
-              >
-              </el-table-column>
-
-              <el-table-column
-                prop="TiempoVuelta"
-                label="C. Viaje"
-                width="150"
-              >
-              </el-table-column>
-
-              <el-table-column
-                prop="Intervalo"
-                label="Intervalo"
-                width="170"
-              >
-              </el-table-column>
-
-
-
-              <el-table-column
-                prop="atrasosTime"
-                label="T. Atraso"
-                width="150"
-              >
-              </el-table-column>
-
-
-              <el-table-column
-                prop="adelantosTime"
-                label="T. Adelanto"
-                width="150"
-              >
-              </el-table-column>
 
               <div slot="empty"></div>
             </el-table>
@@ -242,10 +103,15 @@
         </card>
       </div>
     </base-header>
+    <modal :show.sync="modalSalidasPanelDespachoBusqueda" size="xl" body-classes="p-1">
+      <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
+    </modal>
+
 
   </div>
 </template>
 <script>
+import moment from "moment";
 import { getFechatoDDMM, getFecha_dd_mm_yyyy } from "../../util/fechas";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
@@ -279,11 +145,13 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { FechaStringToHour } from "../../util/fechas";
+import RecorridoMapa from "../../components/monitoreo/recorridoMapa.vue";
 
 export default {
   mixins: [clientPaginationMixin],
   layout: "DashboardLayoutMovilidad2",
   components: {
+    ComponenteRecorrido: RecorridoMapa,
     Tabs,
     TabPane,
     BasePagination,
@@ -308,10 +176,9 @@ export default {
     return {
       token: this.$cookies.get("token"),
       fechaDia1SalidasPanelBusqueda: "",
-      modalSalidasPenalidadesSemanales: false,
+      modalSalidasPanelDespachoBusqueda: false,
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
-      modalSalidasPenalidadesSemanales: false,
       loadingPenalidadesSemanales: false,
       mListaUnidadesSemanales: [],
       optionsUnidadesSemanales: [],
@@ -321,29 +188,12 @@ export default {
       itemRutasRSalidasSemanales: [],
       mListaGruposPenalidadesSemanales: [],
       itemGruposPenalidadesSemanales: [],
+      baseURlPDFPenalidadesSemanales: "",
       fechaDia2SalidasPanelBusqueda: "",
-      json_fields_excelRPenalidadesSemanales: {
-        UNIDAD: "CodiVehiSali_m",
-        "N° Vuelta": "NumeVuelSali_m",
-        RUTA: "DescRutaSali_m",
-        "FECHA INICIAL": "HoraSaliProgSali_m",
-        "FECHA FINAL": "HoraLlegProgSali_m",
-        "CICLO VIAJE": "TiempoVuelta",
-        "INTERVALO": "Intervalo",
-        "TIEMPO ATRASOS": "atrasosTime",
-        "TIEMPO ADELANTO": "adelantosTime"
-      },
-      WorksheetExcelRSalidasSemanales: "",
-      FileNameExcelRSalidasSemanales: "",
-      oheaderExcelRSalidasSemanales: "",
     };
   },
   methods: {
-    showModalPenalidadesSemanales(row) {
-      console.log(row);
-      this.modalSalidasPenalidadesSemanales = true;
-      this.readDetallePenalidadesSemanales(row)
-    },
+
     async readAllRutasSalidasSEmanales() {
       this.mListaRutasSalidasSemanales = [];
 
@@ -421,27 +271,6 @@ export default {
       this.mListDatosPenalidades = [];
       this.loadingPenalidadesSemanales = true;
 
-      this.WorksheetExcelRSalidasSemanales = "RS_S_W_" + Date.now();
-      this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
-
-      this.oheaderExcelRSalidasSemanales = [
-        "Reporte Despachos Semanales",
-        "Fechas : " +
-          this.fechaDia1SalidasPanelBusqueda +
-          " hasta " +
-          this.fechaDia2SalidasPanelBusqueda,
-        "Unidades : " +
-          (this.itemUnidadRSemanales.length <= 0
-            ? "TODAS LAS UNIDADES"
-            : this.itemUnidadRSemanales),
-        "Rutas : " +
-          (this.itemRutasRSalidasSemanales.length <= 0
-            ? "TODAS LAS RUTAS"
-            : this.getNombresRutasRDespachosGenerados(
-                this.itemRutasRSalidasSemanales
-              )),
-      ];
-
       try {
         var obj = {
           token: this.token,
@@ -460,21 +289,23 @@ export default {
         console.log(obj);
 
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/tablaOperacional",
+          process.env.baseUrl + "/readPenalidadesSemanales",
           obj
         );
 
         console.log(datos.data);
         this.mListDatosPenalidades.push(...datos.data.datos);
       } catch (error) {
+        this.$notify({
+          title: "Reporte de Unidades",
+          message: error.toString(),
+          type: "danger",
+        });
         console.log(error);
       }
-
       this.loadingPenalidadesSemanales = false;
     },
-    exportPdfRPenalidadesSemanales() 
-    {
-
+    exportPdfRPenalidadesSemanales() {
       var empresa = [
         {
           text: "Empresa : " + this.$cookies.get("nameEmpresa"),
@@ -496,7 +327,6 @@ export default {
       ];
 
       var mList = [];
-
       mList.push([
         {
           text: "UNIDAD",
@@ -507,23 +337,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "N° Vuelta",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "RUTA",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "F. INICIAL",
+          text: "F. INICIO",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -539,95 +353,65 @@ export default {
           alignment: "center",
         },
         {
-          text: "C. VIAJE",
+          text: "RUTA",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
           color: "white",
           alignment: "center",
         },
-        {
-          text: "INTERVALO",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "T. ATRASO",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "T. ADELANTO",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        }
+
       ]);
 
       for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
-
         var obj = [
           {
             text: this.mListDatosPenalidades[i].CodiVehiSali_m,
             fontSize: 8.5,
             alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
           },
           {
-            text: this.mListDatosPenalidades[i].NumeVuelSali_m,
+            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mI,
             fontSize: 8.5,
             alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
           },
+          {
+            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mF,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+
           {
             text: this.mListDatosPenalidades[i].DescRutaSali_m,
             fontSize: 8.5,
             alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
           },
-          {
-            text: this.mListDatosPenalidades[i].HoraSaliProgSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].HoraLlegProgSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].TiempoVuelta,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].Intervalo,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].atrasosTime,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].adelantosTime,
-            fontSize: 8.5,
-            alignment: "center",
-          }
-        ]
 
+
+
+        ];
         mList.push(obj);
       }
 
       var docDefinition = {
         pageSize: "A4",
-        pageOrientation: "landscape",
+        pageOrientation: "portrait",
         pageMargins: [40, 80, 40, 60],
         header: {
           margin: 15,
@@ -682,15 +466,14 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 60, 180, 90, 55, 52, 48, 62, 62, 50],
+              widths: [40, 60, 60, 90],
               body: mList,
             },
           },
         ],
       };
 
-      pdfMake.createPdf(docDefinition).download("RPS_" + Date.now());
-
+      pdfMake.createPdf(docDefinition).download("RA_" + Date.now());
     },
     async readGruposActivosPenalidadesSemanales() {
       this.mListaGruposPenalidadesSemanales = [];
@@ -706,13 +489,20 @@ export default {
         this.mListaGruposPenalidadesSemanales.push(...datos.data.data);
       }
     },
+    showRecorridoSalidasPanelBusqueda(item) {
+      console.log(item);
+      this.modalSalidasPanelDespachoBusqueda = true;
+      this.$refs.ComponenteRecorrido.readHistorialSalidaPanelBusqueda(item);
+    },
+    cerrarModal() {
+      this.modalSalidasPanelDespachoBusqueda = false;
+    }
   },
   mounted() {
     this.readGruposActivosPenalidadesSemanales();
     this.readAllRutasSalidasSEmanales();
     this.readAllUnidadesSalidasSemanales();
     this.initPrimerDiaSemanaActualSalidaBusquedaPanel();
-    //this.readApiPenalidades();
   },
 };
 </script>

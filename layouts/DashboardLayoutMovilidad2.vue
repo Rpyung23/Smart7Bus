@@ -3,9 +3,6 @@
     <notifications></notifications>
     <side-bar>
       <template slot-scope="props" slot="links">
-       
-
-
 
         <sidebar-item
           v-if="permisos != null && permisos.movilidad.active != null && permisos.movilidad.reportes.active != null && permisos.movilidad.reportes.indicadorConsolidadoTotal"
@@ -15,13 +12,18 @@
             path: '/movilidad2/rIndicadorConsolidado',
           }" />
 
+        <sidebar-item translate="no" :link="{
+          name: 'R. Unidades',
+          icon: 'ni ni-bus-front-12 text-default',
+          path: '/movilidad2/rUnidades',
+        }" />
 
-     
+        <sidebar-item translate="no" :link="{
+          name: 'R. Alertas',
+          icon: 'ni ni-notification-70 text-default',
+          path: '/movilidad2/rAlertas',
+        }" />
 
-
-
-
-       
 
       </template>
     </side-bar>
