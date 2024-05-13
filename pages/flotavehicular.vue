@@ -1467,7 +1467,7 @@ export default {
       this.loadingUnidadesFlotaVehicular = true;
       try {
         var datos = await this.$axios.post(
-          process.env.baseUrlPanel + "/unidades",
+          process.env.baseUrlPanel + "/unidades_all",
           {
             token: this.token,
           }
