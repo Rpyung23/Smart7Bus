@@ -276,7 +276,6 @@ export default {
     async readDetalleSalidaDPanelBusquedaAntActPos(salida) {
       this.baseURlPDFPanelDespachoTarjeta = "";
 
-      console.log("DETALLE SALIDA");
 
       var datos = await this.$axios.post(
         process.env.baseUrl + "/detalleSalida",
@@ -565,6 +564,306 @@ export default {
       this.baseURlPDFPanelDespachoTarjeta = await pdfDoc.saveAsBase64({
         dataUri: true,
       });
+    },
+
+    async readDetalleSalidaDPanelBusquedaAntActPosVertical(salida) {
+      this.baseURlPDFPanelDespachoTarjeta = "";
+
+      console.log("DETALLE SALIDA HORIZONTAL");
+      //console.log(salida);
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/detalleSalida",
+        {
+          token: this.token,
+          idsalida: [
+            salida[0] == undefined
+              ? 0
+              : salida[0].idSali_m == ""
+                ? 0
+                : parseInt(salida[0].idSali_m),
+            salida[1] == undefined ? 0 : parseInt(salida[1].idSali_m),
+            salida[2] == undefined
+              ? 0
+              : salida[2].idSali_m == ""
+                ? 0
+                : parseInt(salida[2].idSali_m),
+          ],
+        }
+      );
+      console.log("DIVIDIDO");
+      this.mListSalidasTarjeta = [];
+      this.mListSalidasTarjetaAnterior = [];
+      this.mListSalidasTarjetaActual = [];
+      this.mListSalidasTarjetaPosterior = [];
+
+      this.mListSalidasTarjeta.push(...datos.data.data);
+
+      console.log(this.mListSalidasTarjeta);
+      console.log(salida[1]);
+      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
+        var item = this.mListSalidasTarjeta[i];
+        //console.log(item);
+        if (salida[0] && typeof salida[0].idSali_m !== 'undefined' && salida[0].idSali_m !== null && Number(item.idSali_mSali_d) === Number(salida[0].idSali_m)) {
+          this.mListSalidasTarjetaAnterior.push(item);
+        } else if (salida[1] && salida[1].idSali_m && Number(item.idSali_mSali_d) === Number(salida[1].idSali_m)) {
+          this.mListSalidasTarjetaActual.push(item);
+        } else if (salida[2] && salida[2].idSali_m && Number(item.idSali_mSali_d) === Number(salida[2].idSali_m)) {
+          this.mListSalidasTarjetaPosterior.push(item);
+        }
+      }
+
+
+      console.log(this.mListSalidasTarjetaAnterior);
+      console.log(this.mListSalidasTarjetaActual);
+      console.log(this.mListSalidasTarjetaPosterior);
+
+
+      const bodyTable = (lista) => {
+        const resultadoString = [[
+          { text: "RELOJ", fontSize: 8.5, bold: true, alignment: "center" },
+          { text: "PROG", fontSize: 8.5, bold: true, alignment: "center" },
+          { text: "MARC", fontSize: 8.5, bold: true, alignment: "center" },
+          { text: "FALT", fontSize: 8.5, bold: true, alignment: "center" },
+          { text: "PEN", fontSize: 8.5, bold: true, alignment: "center" },
+        ],]
+
+        for (var i = 0; i < lista.length; i++) {
+          var arrys = [
+            {
+              text: lista[i].DescCtrlSali_d.substring(0, 7),
+              fontSize: 8.5,
+            },
+            {
+              text: lista[i].HoraProgSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text:
+                lista[i].HoraMarcSali_d == "00:00:00"
+                  ? ""
+                  : lista[i].HoraMarcSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text:
+                lista[i].HoraMarcSali_d != "00:00:00"
+                  ? lista[i].FaltSali_d
+                  : lista[i].FaltSali_d == "0"
+                    ? ""
+                    : lista[i].FaltSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+            {
+              text:
+                lista[i].PenaCtrlSali_d == "0.00"
+                  ? ""
+                  : lista[i].PenaCtrlSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+            },
+          ];
+          resultadoString.push(arrys);
+        }
+        return resultadoString;
+      }
+
+      const footerTable = (lista) => {
+        var heightAux = 9.7;
+        var sumFalt = 0;
+        var penFalt = 0;
+
+        for (var i = 0; i < lista.length; i++) {
+          heightAux = heightAux + 1;
+          if (
+            lista[i].FaltSali_d > 0 &&
+            lista[i].isCtrlRefeSali_d == 0
+          ) {
+            sumFalt = sumFalt + lista[i].FaltSali_d;
+          }
+
+          if (lista[i].isCtrlRefeSali_d == 0) {
+            var pen = parseFloat(lista[i].PenaCtrlSali_d);
+            penFalt = penFalt + pen;
+          }
+        }
+        return { sumFalt, penFalt }
+      }
+
+      const contentPdf = (listaItems, index) => {
+        console.log("Aca lista", listaItems.length)
+        if (listaItems.length === 0) {
+          return []; // Devuelve un array vacío si la lista está vacía
+        }
+        const { penFalt, sumFalt } = footerTable(listaItems);
+        const datos = bodyTable(listaItems)
+        return [
+          this.$cookies.get("empresa") == "tjerpazol"
+            ? {
+              layout: "noBorders",
+              alignment: "center",
+              table: {
+                headerRows: 0,
+                widths: ["*"],
+
+                body: [
+                  [
+                    {
+                      image: getBase64LogoReportes(
+                        this.$cookies.get("empresa")
+                      ),
+                      fit: [60, 60],
+                    },
+                  ],
+                ],
+              },
+            }
+            : {},
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: "noBorders", // optional
+            table: {
+              widths: ["*"],
+              body: [[
+                {
+                  text: this.$cookies.get("nameEmpresa").substring(0, 30),
+                  fontSize: 12,
+                  bold: true,
+                  alignment: "center",
+                },
+              ]],
+            },
+          },
+          {
+            bold: true,
+            fontSize: 9,
+            alignment: "center",
+            layout: "noBorders", // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [35, 75, 25, 22],
+              body: [["Unidad", "Salida #" + salida[index].idSali_m, "Ruta", "Vue"]],
+            },
+          },
+
+          {
+            //bold: true,
+            fontSize: 9,
+            alignment: "center",
+
+            layout: "noBorders", // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [35, 75, 25, 22],
+              body: [
+                [
+                  salida[index].CodiVehiSali_m,
+                  salida[index].HoraSaliProgSali_mF.substring(0, 10),
+                  { text: salida[index].LetraRutaSali_m, bold: true },
+                  salida[index].NumeVuelSali_m,
+                ],
+              ],
+            },
+          },
+
+          {
+            fontSize: 10,
+            layout: "noBorders", // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              widths: ["*"],
+              body: [["FREC: " + salida[index].DescFrec.substring(0, 25)]],
+            },
+          },
+
+          { text: "---------------------------------------------------------" },
+          {
+            fontSize: 8.5,
+            layout: "noBorders",
+            // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+              headerRows: 0,
+              widths: [45, 33, 33, 19, 17],
+
+              body: datos,
+            },
+          },
+
+          { text: "---------------------------------------------------------" },
+          { text: "Chofer: ", fontSize: 8 },
+          { text: "Cobrador: ", fontSize: 8 },
+          {
+            text: "Adelanto: " + salida[index].adelantoFaltasTime,
+            fontSize: 8,
+            fontSize: 8,
+          },
+          {
+            text: "Atrasos: " + salida[index].atrasoFaltasTime,
+            fontSize: 8,
+          },
+
+          {
+            fontSize: 10,
+            bold: true,
+            layout: "noBorders", // optional
+            table: {
+              // headers are automatically repeated if the table spans over multiple pages
+              // you can declare how many rows should be treated as headers
+
+              body: [
+                ["TOTAL Faltas : +" + sumFalt],
+                ["TOTAL Dinero : " + Number(penFalt).toFixed(2)],
+              ],
+            },
+          },
+
+          {
+            fontSize: 6,
+            layout: "noBorders",
+            table: {
+              body: [
+                ["\n"], // Esto agrega una fila vacía para crear un salto de línea
+              ],
+            },
+          }
+
+        ]
+
+
+      }
+
+      var docDefinition = {
+        // a string or { width: 190, height: number }
+        pageSize: { width: 240, height: 400 },
+        pageMargins: [15, 15, 15, 15],
+        compress: true,
+        content: [
+          contentPdf(this.mListSalidasTarjetaAnterior, 0),
+          contentPdf(this.mListSalidasTarjetaActual, 1),
+          contentPdf(this.mListSalidasTarjetaPosterior, 2)
+        ],
+      };
+
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        this.baseURlPDFPanelDespachoTarjeta = dataUrl;
+      });
+      this.baseURlPDFPanelDespachoTarjeta = await pdfDoc.saveAsBase64({
+        dataUri: true,
+      });
+
     },
 
     initFechaActualTicket() {
