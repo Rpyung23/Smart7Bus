@@ -829,15 +829,9 @@ export default {
           },
 
           {
-            fontSize: 6,
-            layout: "noBorders",
-            table: {
-              body: [
-                ["\n"], // Esto agrega una fila vacía para crear un salto de línea
-              ],
-            },
-          }
-
+            text: ".",
+            fontSize: 8,
+          },
         ]
 
 
@@ -845,7 +839,7 @@ export default {
 
       var docDefinition = {
         // a string or { width: 190, height: number }
-        pageSize: { width: 240, height: 400 },
+        pageSize: { width: 240, height: 'auto' },
         pageMargins: [15, 15, 15, 15],
         compress: true,
         content: [
