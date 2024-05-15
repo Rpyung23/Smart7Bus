@@ -828,7 +828,427 @@ export default {
         this.baseURlPDFPanelDespachoTarjeta = dataUrl;
       })
 
-    }
+    },
+
+    async readDetalleSalidaDPanelBusquedaAntActPosVertical(salida) {
+      this.baseURlPDFPanelDespachoTarjeta = ""
+      console.log("DETALLE SALIDA HORIZONTAL A4");
+
+      var datos = await this.$axios.post(
+        process.env.baseUrl + "/detalleSalida",
+        {
+          token: this.token,
+          idsalida: [
+            salida[0] == undefined
+              ? 0
+              : salida[0].idSali_m == ""
+                ? 0
+                : parseInt(salida[0].idSali_m),
+            salida[1] == undefined ? 0 : parseInt(salida[1].idSali_m),
+            salida[2] == undefined
+              ? 0
+              : salida[2].idSali_m == ""
+                ? 0
+                : parseInt(salida[2].idSali_m),
+          ],
+        }
+      );
+
+      this.mListSalidasTarjeta = [];
+      this.mListSalidasTarjetaAnterior = [];
+      this.mListSalidasTarjetaActual = [];
+      this.mListSalidasTarjetaPosterior = [];
+      this.mListSalidasTarjeta.push(...datos.data.data);
+
+
+
+      for (var i = 0; i < this.mListSalidasTarjeta.length; i++) {
+        var item = this.mListSalidasTarjeta[i];
+        if (salida[0] && typeof salida[0].idSali_m !== 'undefined' && salida[0].idSali_m !== null && item.idSali_mSali_d === salida[0].idSali_m) {
+          this.mListSalidasTarjetaAnterior.push(item);
+        } else if (salida[1] && salida[1].idSali_m && item.idSali_mSali_d === salida[1].idSali_m) {
+          this.mListSalidasTarjetaActual.push(item);
+        } else if (salida[2] && salida[2].idSali_m && item.idSali_mSali_d === salida[2].idSali_m) {
+          this.mListSalidasTarjetaPosterior.push(item);
+        }
+      }
+
+      const bodyTable = (lista) => {
+        const resultadoString = [
+          [
+            {
+              text: "Control",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "H. PROG",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "H. MARC",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "Faltas",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "V. Max",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "PEN ($)",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            },
+            {
+              text: "Sanción",
+              fontSize: 8.5,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+            }
+          ],]
+
+
+        for (var i = 0; i < lista.length; i++) {
+          var arrys = [
+            {
+              text: lista[i].DescCtrlSali_d,
+              fontSize: 8.5,
+              alignment: "left",
+              color: lista[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+            },
+            {
+              text: lista[i].HoraProgSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+              color: lista[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+            },
+            {
+              text: lista[i].HoraMarcSali_d == '00:00:00' ? '' : lista[i].HoraMarcSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+              color: lista[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+            },
+            {
+              text: lista[i].FaltSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+              color: lista[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+            },
+            {
+              text: '',
+              fontSize: 8.5,
+              alignment: "center",
+              color: lista[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+            },
+            {
+              text: lista[i].PenaCtrlSali_d == '0.00' ? '' : lista[i].PenaCtrlSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+              color: lista[i].isCtrlRefeSali_d == 0 ? '#000000' : '#FF0000'
+            },
+            {
+              text: lista[i].isCtrlRefeSali_d == 1 ? 'REFERENCIAL' : 'SANCIONABLE',
+              fontSize: 8.5,
+              alignment: "center",
+              color: lista[i].isCtrlRefeSali_d == 1 ? '#FF0000' : '#008019'
+            },
+          ];
+          resultadoString.push(arrys);
+        }
+        return resultadoString;
+      }
+
+      const totalFaltasAdelantos = {
+        text: "Total Faltas Adelantos",
+        fontSize: 8.5,
+        bold: true,
+        fillColor: "#039BC4",
+        color: "white",
+        alignment: "center",
+      };
+
+      const totalFaltasAtrasos = {
+        text: "Total Faltas Atrasos",
+        fontSize: 8.5,
+        bold: true,
+        fillColor: "#039BC4",
+        color: "white",
+        alignment: "center",
+      };
+
+      const totalMultas = {
+        text: "Total Multas ($)",
+        fontSize: 8.5,
+        bold: true,
+        fillColor: "#039BC4",
+        color: "white",
+        alignment: "center",
+      };
+
+      const datosFinales = [
+        totalFaltasAdelantos,
+        totalFaltasAtrasos,
+        totalMultas,
+      ];
+
+      const contentPdf = (listaItems, index) => {
+        console.log("Aca index", index)
+        if (listaItems.length === 0) {
+          return []; // Devuelve un array vacío si la lista está vacía
+        }
+        const datos = bodyTable(listaItems)
+
+        return [
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: "noBorders", // optional
+            table: {
+              widths: ["*"],
+              body: [[
+                {
+                  text: this.$cookies.get("nameEmpresa").substring(0, 30),
+                  fontSize: 12,
+                  bold: true,
+                  alignment: "center",
+                },
+              ]],
+            },
+          },
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: "noBorders", // optional
+            table: {
+              widths: ["*"],
+              body: [[
+                {
+                  text:
+                    "Unidad : " + salida[index].CodiVehiSali_m,
+                  fontSize: 9,
+                  alignment: "left",
+                },
+              ]],
+            },
+          },
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: "noBorders", // optional
+            table: {
+              widths: ["*"],
+              body: [[
+                {
+                  text:
+                    "Ruta : " + salida[index].DescRutaSali_m,
+                  fontSize: 9,
+                  alignment: "left",
+                },
+              ]],
+            },
+          },
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: "noBorders", // optional
+            table: {
+              widths: ["*"],
+              body: [[
+                {
+                  text:
+                    "Fecha Salida : " + salida[index].HoraSaliProgSali_mF + " Hasta " + salida[index].HoraLlegProgSali_m,
+                  fontSize: 9,
+                  alignment: "left",
+                },
+              ]],
+            },
+          },
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: "noBorders", // optional
+            table: {
+              widths: ["*"],
+              body: [[
+                {
+                  text:
+                    "N° Vuelta : " + salida[index].NumeVuelSali_m,
+                  fontSize: 9,
+                  alignment: "left",
+                },
+              ]],
+            },
+          },
+          {
+            headerRows: 0,
+            fontSize: 12,
+            bold: true,
+            layout: "noBorders", // optional
+            table: {
+              widths: ["*"],
+              body: [[
+                {
+                  text:
+                    "Frecuencia : " + salida[index].DescFrec,
+                  fontSize: 9,
+                  alignment: "left",
+                },
+              ]],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [170, 35, 40, 35, 35, 40, 90],
+              body: datos,
+            },
+          },
+          {
+            text: '.',
+            fontSize: 6
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [90, 90, 90],
+              body: [[{
+                text: "Total Faltas Adelantos",
+                fontSize: 8.5,
+                bold: true,
+                fillColor: "#039BC4",
+                color: "white",
+                alignment: "center",
+              }, {
+                text: "Total Faltas Atrasos",
+                fontSize: 8.5,
+                bold: true,
+                fillColor: "#039BC4",
+                color: "white",
+                alignment: "center",
+              }, {
+                text: "Total Multas ($)",
+                fontSize: 8.5,
+                bold: true,
+                fillColor: "#039BC4",
+                color: "white",
+                alignment: "center",
+              }
+              ],
+              [{
+                text: salida[index].adelantoFaltasTime,
+                fontSize: 8.5,
+                alignment: "center",
+              },
+              {
+                text: salida[index].atrasoFaltasTime,
+                fontSize: 8.5,
+                alignment: "center",
+              },
+              {
+                text: salida[index].PenaCtrlSali_d,
+                fontSize: 8.5,
+                alignment: "center",
+              }]]
+            },
+          },
+          {
+            text: '\n\n\n\n\n\n',
+            fontSize: 6
+          },
+        ]
+      }
+
+      var docDefinition = {
+        pageSize: "A4",
+        pageMargins: [40, 80, 40, 60],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE SALIDAS DETALLADAS",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  /*[
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],*/
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          contentPdf(this.mListSalidasTarjetaAnterior, 0),
+          contentPdf(this.mListSalidasTarjetaActual, 1),
+          contentPdf(this.mListSalidasTarjetaPosterior, 2)
+        ],
+      };
+
+      //pdfMake.createPdf(docDefinition).download("RSD_" + Date.now());
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        this.baseURlPDFPanelDespachoTarjeta = dataUrl;
+      })
+
+    },
+
   },
   mounted() { },
 };

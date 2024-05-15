@@ -2,107 +2,50 @@
   <div class="content">
     <base-header class="py-3">
 
-      
 
 
-      <card
-        class="no-border-card col"
-        style="margin-bottom: 0.5rem"
+
+      <card class="no-border-card col" style="margin-bottom: 0.5rem"
         body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-        footer-classes="pb-2"
-      >
+        footer-classes="pb-2">
         <div class="cardTiposDespachosPanelDespacho">
-          <base-button
-            icon
-            type="danger"
-            title="SALIDAS ANULADAS"
-            size="sm"
-            @click="showModalDespachoSalidasAnuladas()"
-          >
-            <span class="btn-inner--icon"
-              ><i class="ni ni-single-copy-04"></i
-            ></span>
+          <base-button icon type="danger" title="SALIDAS ANULADAS" size="sm"
+            @click="showModalDespachoSalidasAnuladas()">
+            <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
           </base-button>
 
-          <el-date-picker
-            type="date"
-            placeholder="Select date and time"
-            style="margin-right: 0.5rem; width: 10rem"
-            v-model="fechaActualSalidasPanelDespacho"
-          >
+          <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem; width: 10rem"
+            v-model="fechaActualSalidasPanelDespacho">
           </el-date-picker>
 
-          <el-select
-            v-model="mSelectRutaSalidaPanelDespacho"
-            collapse-tags
-            placeholder="Lineas"
-            style="margin-right: 0.5rem"
-          >
-            <el-option
-              v-for="item in mListRutasDespacho"
-              :key="item.idRuta"
-              :label="item.DescRuta"
-              :value="item.idRuta"
-            >
+          <el-select v-model="mSelectRutaSalidaPanelDespacho" collapse-tags placeholder="Lineas"
+            style="margin-right: 0.5rem">
+            <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
+              :value="item.idRuta">
             </el-option>
           </el-select>
 
-          <base-button
-            icon
-            type="primary"
-            size="sm"
-            @click="createHeaderTable()"
-            title="Buscar"
-          >
+          <base-button icon type="primary" size="sm" @click="createHeaderTable()" title="Buscar">
             <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
           </base-button>
         </div>
 
         <div class="buttonsAdicionalesDespacho">
-          <base-button
-            icon
-            v-if="isPermisoAnularTodo"
-            type="danger"
-            size="sm"
-            @click="showModalAnularTodo()"
-          >
-            <span class="btn-inner--icon"
-              ><i class="ni ni-scissors"></i> AN. TODO</span
-            >
+          <base-button icon v-if="isPermisoAnularTodo" type="danger" size="sm" @click="showModalAnularTodo()">
+            <span class="btn-inner--icon"><i class="ni ni-scissors"></i> AN. TODO</span>
           </base-button>
 
-          <base-button
-            icon
-            type="warning"
-            v-if="isPermisoFinalizarTodo"
-            size="sm"
-            @click="showModalFinalizarTodo()"
-          >
-            <span class="btn-inner--icon"
-              ><i class="ni ni-fat-delete"></i> FIN. TODO</span
-            >
+          <base-button icon type="warning" v-if="isPermisoFinalizarTodo" size="sm" @click="showModalFinalizarTodo()">
+            <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i> FIN. TODO</span>
           </base-button>
 
-          <base-button
-            icon
-            type="info"
-            v-if="isPermisoRecalificarTodo"
-            size="sm"
-            @click="showModalDespachoRecalificarTodoSalida()"
-          >
-            <span class="btn-inner--icon"
-              ><i class="ni ni-watch-time"></i> REC. TODO</span
-            >
+          <base-button icon type="info" v-if="isPermisoRecalificarTodo" size="sm"
+            @click="showModalDespachoRecalificarTodoSalida()">
+            <span class="btn-inner--icon"><i class="ni ni-watch-time"></i> REC. TODO</span>
           </base-button>
 
-          <base-button
-            icon
-            type="success"
-            title="Despachar"
-            v-if="isPermisoDespachar"
-            size="sm"
-            @click="showEnviarDespachoPanel()"
-          >
+          <base-button icon type="success" title="Despachar" v-if="isPermisoDespachar" size="sm"
+            @click="showEnviarDespachoPanel()">
             <span class="btn-inner--icon"><i class="ni ni-send"></i></span>
           </base-button>
 
@@ -196,151 +139,76 @@
         </div>
       </card>
 
-      <card
-        class="no-border-card col"
-        style="margin-bottom: 0.5rem"
+      <card class="no-border-card col" style="margin-bottom: 0.5rem"
         body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-        footer-classes="pb-2"
-      >
+        footer-classes="pb-2">
         <div class="cardTiposDespachosPanelDespacho2">
           <el-checkbox-group v-model="radioEstadoRSalidasPanelDespacho">
-            <el-checkbox
-              label="0,1"
-              style="
+            <el-checkbox label="0,1" style="
                 background-color: rgba(140, 248, 126, 0.384);
                 margin-right: 0.5rem;
-              "
-              >DIFERIDA
+              ">DIFERIDA
             </el-checkbox>
-            <el-checkbox
-              label="2"
-              style="
+            <el-checkbox label="2" style="
                 background-color: hsla(226, 88%, 61%, 0.274);
                 margin-right: 0.5rem;
-              "
-              >EN RUTA</el-checkbox
-            >
-            <el-checkbox label="3" style="margin-right: 0rem"
-              >FINALIZADO</el-checkbox
-            >
+              ">EN RUTA</el-checkbox>
+            <el-checkbox label="3" style="margin-right: 0rem">FINALIZADO</el-checkbox>
           </el-checkbox-group>
 
           <base-button icon type="link" size="sm" disabled>
-            <span class="btn-inner--icon"
-              ><i
-                class="ni ni-collection"
-                style="color: white; cursor: none"
-              ></i
-            ></span>
+            <span class="btn-inner--icon"><i class="ni ni-collection" style="color: white; cursor: none"></i></span>
           </base-button>
         </div>
 
         <div class="buttonsAdicionalesDespacho2">
-          <base-button
-            icon
-            type="info"
-
-            @click="showModalDespachoRecalificarSalida()"
-            v-show="
-              this.selectRowId != null &&
-              this.selectRowId != '' &&
-              this.selectRowEstado != '' &&
-              this.selectRowEstado != 'DIFERIDO' &&
-              this.isPermisoRecalificar
-            "
-            size="sm"
-            title="Recalificar Salida"
-          >
-            <span class="btn-inner--icon"
-              ><i class="ni ni-watch-time"></i
-            ></span>
+          <base-button icon type="info" @click="showModalDespachoRecalificarSalida()" v-show="this.selectRowId != null &&
+            this.selectRowId != '' &&
+            this.selectRowEstado != '' &&
+            this.selectRowEstado != 'DIFERIDO' &&
+            this.isPermisoRecalificar
+            " size="sm" title="Recalificar Salida">
+            <span class="btn-inner--icon"><i class="ni ni-watch-time"></i></span>
           </base-button>
 
-          <base-button
-            icon
-            type="danger"
-            @click="showModalAnularFinalizarDespacho(4)"
-            v-show="
-              this.selectRowId != null &&
-              this.selectRowId != '' &&
-              this.selectRowEstado != '' && this.isPermisoAnular"
-              
-            size="sm"
-            title="Anular Salida"
-          >
+          <base-button icon type="danger" @click="showModalAnularFinalizarDespacho(4)" v-show="this.selectRowId != null &&
+            this.selectRowId != '' &&
+            this.selectRowEstado != '' && this.isPermisoAnular" size="sm" title="Anular Salida">
             <span class="btn-inner--icon"><i class="ni ni-scissors"></i></span>
           </base-button>
 
-          <base-button
-            icon
-            type="warning"
-            @click="showModalAnularFinalizarDespacho(3)"
-            v-show="
-              this.selectRowId != null &&
-              this.selectRowId != '' &&
-              this.selectRowEstado != '' &&
-              this.selectRowEstado != 'FINALIZADO' &&
-              this.selectRowEstado != 'DIFERIDO' && 
-              this.isPermisoFinalizar
-            "
-            size="sm"
-            title="Finalizar Salida"
-          >
-            <span class="btn-inner--icon"
-              ><i class="ni ni-fat-delete"></i
-            ></span>
+          <base-button icon type="warning" @click="showModalAnularFinalizarDespacho(3)" v-show="this.selectRowId != null &&
+            this.selectRowId != '' &&
+            this.selectRowEstado != '' &&
+            this.selectRowEstado != 'FINALIZADO' &&
+            this.selectRowEstado != 'DIFERIDO' &&
+            this.isPermisoFinalizar
+            " size="sm" title="Finalizar Salida">
+            <span class="btn-inner--icon"><i class="ni ni-fat-delete"></i></span>
           </base-button>
 
-          <base-button
-            icon
-            type="default"
-            @click="showRecorridoSalidaPanelDespacho()"
-            v-show="
-              this.selectRowId != null &&
-              this.selectRowId != '' &&
-              this.selectRowEstado != '' &&
-              this.selectRowEstado != 'DIFERIDO'
-            "
-            size="sm"
-            title="Recorrido"
-          >
+          <base-button icon type="default" @click="showRecorridoSalidaPanelDespacho()" v-show="this.selectRowId != null &&
+            this.selectRowId != '' &&
+            this.selectRowEstado != '' &&
+            this.selectRowEstado != 'DIFERIDO'
+            " size="sm" title="Recorrido">
             <span class="btn-inner--icon"><i class="ni ni-world"></i></span>
           </base-button>
 
-          <base-button
-            icon
-            type="primary"
-            v-show="
-              this.selectRowId != null &&
-              this.selectRowId != '' &&
-              this.selectRowEstado != '' &&
-              this.isTarjetaAntActPos == false
-            "
-            @click="showReporteLlegadaSAlida()"
-            size="sm"
-            title="Ver Tarjeta"
-          >
-            <span class="btn-inner--icon"
-              ><i class="ni ni-collection"></i
-            ></span>
+          <base-button icon type="primary" v-show="this.selectRowId != null &&
+            this.selectRowId != '' &&
+            this.selectRowEstado != '' &&
+            this.isTarjetaAntActPos == false
+            " @click="showReporteLlegadaSAlida()" size="sm" title="Ver Tarjeta">
+            <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
           </base-button>
 
-          <base-button
-            icon
-            type="primary"
-            v-show="
-              this.selectRowId != null &&
-              this.selectRowId != '' &&
-              this.selectRowEstado != '' &&
-              this.isTarjetaAntActPos
-            "
-            @click="showReporteLlegadaSAlida()"
-            size="sm"
-            title="VER TARJETAS"
-          >
-            <span class="btn-inner--icon"
-              ><i class="ni ni-collection"></i
-            ></span>
+          <base-button icon type="primary" v-show="this.selectRowId != null &&
+            this.selectRowId != '' &&
+            this.selectRowEstado != '' &&
+            this.isTarjetaAntActPos
+            " @click="showReporteLlegadaSAlida()" size="sm" title="VER TARJETAS">
+            <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
           </base-button>
 
           <!--<base-button
@@ -370,20 +238,11 @@
           </div>
         </div>-->
         <div class="container-calendario col_personalizado">
-          <JqxGrid
-            ref="myGridDespachoPanel"
-            @rowclick="myGridOnRowClick($event)"
-            @cellbeginedit="cellBeginEditEvent($event)"
-            :height="'100%'"
-            style="margin-right: 50rem !important"
-            @cellendedit="cellEndEditEvent($event)"
-            :columns="columnsInfo"
-            :source="dataAdapter"
-            @rowselect="myGridOnRowSelect($event)"
-            :selectionmode="'singlerow'"
-            :enabletooltips="true"
-            :width="getWidth"
-          >
+          <JqxGrid ref="myGridDespachoPanel" @rowclick="myGridOnRowClick($event)"
+            @cellbeginedit="cellBeginEditEvent($event)" :height="'100%'" style="margin-right: 50rem !important"
+            @cellendedit="cellEndEditEvent($event)" :columns="columnsInfo" :source="dataAdapter"
+            @rowselect="myGridOnRowSelect($event)" :selectionmode="'singlerow'" :enabletooltips="true"
+            :width="getWidth">
           </JqxGrid>
 
           <!--<JqxMenu
@@ -403,21 +262,16 @@
             </ul>
           </JqxMenu>-->
 
-          <div
-            style="
+          <div style="
               font-size: 12px;
               font-family: Verdana;
               margin-top: 30px;
               display: none;
-            "
-          >
+            ">
             <div ref="beginEdit"></div>
             <div ref="endEdit" style="margin-top: 10px"></div>
           </div>
-          <div
-            class="loadingRecorridoSalidaBusquedaPanel"
-            v-if="isLoadingDespachoSalidaPanelBusqueda"
-          >
+          <div class="loadingRecorridoSalidaBusquedaPanel" v-if="isLoadingDespachoSalidaPanelBusqueda">
             <div class="circleProgress"></div>
           </div>
 
@@ -432,62 +286,27 @@
     </base-header>
 
     <!--Form modal TICKET LLEGADA-->
-    <modal
-      :show.sync="modalSalidasTarjetaPanelDespacho"
-      size="sm"
-      body-classes="p-0"
-    >
+    <modal :show.sync="modalSalidasTarjetaPanelDespacho" size="sm" body-classes="p-0">
       <ComponenteTarjeta ref="ComponenteTarjeta"></ComponenteTarjeta>
     </modal>
 
     <!--Form modal Despacho Salidas Anuladas-->
-    <modal
-      :show.sync="modalDespachoSalidasAnuladas"
-      size="xl"
-      body-classes="p-0"
-    >
+    <modal :show.sync="modalDespachoSalidasAnuladas" size="xl" body-classes="p-0">
       <h6 slot="header" class="modal-title">Despacho Salidas Anuladas</h6>
-      <card
-        class="no-border-card"
-        style="margin-bottom: 0rem"
-        body-classes="card-bodyDSalidasAnuladas p-0"
-      >
+      <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyDSalidasAnuladas p-0">
         <div>
-          <el-table
-            v-loading="isLoadingDespachoSalidaPanelBusqueda"
-            element-loading-text="Cargando Datos..."
-            :data="mListDespachosSalidasAnuladas"
-            row-key="id"
-            height="calc(100vh - 9rem)"
-            style="width: 100%"
-            header-row-class-name="thead-dark"
-            :default-sort="{ prop: 'HoraSaliProgSali_m', order: 'ascending' }"
-            :row-class-name="tableRowClassNameDSalidasAnuladas"
-          >
-            <el-table-column
-              prop="CodiVehiSali_m"
-              label="Unidad"
-              min-width="110px"
-            >
+          <el-table v-loading="isLoadingDespachoSalidaPanelBusqueda" element-loading-text="Cargando Datos..."
+            :data="mListDespachosSalidasAnuladas" row-key="id" height="calc(100vh - 9rem)" style="width: 100%"
+            header-row-class-name="thead-dark" :default-sort="{ prop: 'HoraSaliProgSali_m', order: 'ascending' }"
+            :row-class-name="tableRowClassNameDSalidasAnuladas">
+            <el-table-column prop="CodiVehiSali_m" label="Unidad" min-width="110px">
             </el-table-column>
 
-            <el-table-column
-              prop="HoraSaliProgSali_m"
-              label="H.Salida"
-              min-width="120px"
-            >
+            <el-table-column prop="HoraSaliProgSali_m" label="H.Salida" min-width="120px">
             </el-table-column>
-            <el-table-column
-              prop="HoraLlegProgSali_m"
-              label="H.LLegada"
-              min-width="130px"
-            >
+            <el-table-column prop="HoraLlegProgSali_m" label="H.LLegada" min-width="130px">
             </el-table-column>
-            <el-table-column
-              prop="idSali_m"
-              label="N° Salida"
-              min-width="130px"
-            >
+            <el-table-column prop="idSali_m" label="N° Salida" min-width="130px">
             </el-table-column>
 
             <el-table-column prop="EstaSali_m" label="Estado" min-width="130px">
@@ -496,17 +315,9 @@
               </template>
             </el-table-column>
 
-            <el-table-column
-              prop="NumeVuelSali_m"
-              label="Vuelta"
-              min-width="110px"
-            >
+            <el-table-column prop="NumeVuelSali_m" label="Vuelta" min-width="110px">
             </el-table-column>
-            <el-table-column
-              prop="SumaMinuPosiSali_m"
-              label="Falta"
-              min-width="150px"
-            >
+            <el-table-column prop="SumaMinuPosiSali_m" label="Falta" min-width="150px">
             </el-table-column>
 
             <el-table-column prop="Intervalo" label="Inte." min-width="100px">
@@ -515,25 +326,13 @@
               </template>
             </el-table-column>
 
-            <el-table-column
-              prop="DescFrec"
-              label="Frecuencia Salida"
-              min-width="270px"
-            >
+            <el-table-column prop="DescFrec" label="Frecuencia Salida" min-width="270px">
             </el-table-column>
 
-            <el-table-column
-              prop="MontInfrUnidSali_m"
-              label="Multa"
-              min-width="100px"
-            >
+            <el-table-column prop="MontInfrUnidSali_m" label="Multa" min-width="100px">
             </el-table-column>
 
-            <el-table-column
-              prop="VeloMaxiSali_m"
-              label="KM/H"
-              min-width="100px"
-            >
+            <el-table-column prop="VeloMaxiSali_m" label="KM/H" min-width="100px">
             </el-table-column>
 
             <el-table-column prop="Country23" label="Chofer" min-width="250px">
@@ -551,10 +350,7 @@
     <modal :show.sync="modalEnviarDespachoPanel">
       <div class="row" style="margin-bottom: 1rem">
         <div class="col-md-12">
-          <el-radio-group
-            v-model="radioTipoDespacho"
-            style="display: flex; justify-content: center"
-          >
+          <el-radio-group v-model="radioTipoDespacho" style="display: flex; justify-content: center">
             <el-radio :label="2">Salida Diferida</el-radio>
             <el-radio :label="1">Salida Normal.</el-radio>
             <el-radio :label="3">Generar Tarjeta</el-radio>
@@ -564,12 +360,8 @@
 
       <div class="row" style="margin-bottom: 0.5rem">
         <div class="col-md-12">
-          <base-input
-            class="inputDatimeDespachoPanel2"
-            type="datetime-local"
-            v-model="fechaActualSalidasPanelDespachoDespachador"
-            format="yyyy-MM-dd HH:mm:00"
-          ></base-input>
+          <base-input class="inputDatimeDespachoPanel2" type="datetime-local"
+            v-model="fechaActualSalidasPanelDespachoDespachador" format="yyyy-MM-dd HH:mm:00"></base-input>
           <!--<el-date-picker
             type="datetime"
             class="dateTimeDespacho"
@@ -584,21 +376,11 @@
 
       <div class="row" style="margin-bottom: 0.3rem">
         <div class="col-md-12">
-          <el-select
-            v-model="itemUnidadSalidasPanelDespacho"
-            filterable
-            remote
-            placeholder="Ingrese unidad"
-            style="width: 100%; margin-bottom: 0.5rem"
-            :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-            :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-          >
-            <el-option
-              v-for="item in optionsUnidadesSalidasPanelSalidas"
-              :key="item.CodiVehi"
-              :label="item.CodiVehi"
-              :value="item"
-            >
+          <el-select v-model="itemUnidadSalidasPanelDespacho" filterable remote placeholder="Ingrese unidad"
+            style="width: 100%; margin-bottom: 0.5rem" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+            :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+            <el-option v-for="item in optionsUnidadesSalidasPanelSalidas" :key="item.CodiVehi" :label="item.CodiVehi"
+              :value="item">
             </el-option>
           </el-select>
         </div>
@@ -606,19 +388,10 @@
 
       <div class="row" style="margin-bottom: 0.5rem">
         <div class="col-md-12">
-          <el-select
-            v-model="mSelectRutaSalidaDespachar"
-            @change="readFrecuenciasSalidasPanel()"
-            collapse-tags
-            placeholder="Lineas"
-            style="width: 100%"
-          >
-            <el-option
-              v-for="item in mListRutasDespacho"
-              :key="item.idRuta"
-              :label="item.DescRuta"
-              :value="item.idRuta"
-            >
+          <el-select v-model="mSelectRutaSalidaDespachar" @change="readFrecuenciasSalidasPanel()" collapse-tags
+            placeholder="Lineas" style="width: 100%">
+            <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
+              :value="item.idRuta">
             </el-option>
           </el-select>
         </div>
@@ -626,42 +399,23 @@
 
       <div class="row">
         <div class="col-md-12">
-          <el-select
-            v-model="mSelectRutaFrecuenciaPanelDespacho"
-            style="width: 100%"
-            collapse-tags
-            placeholder="Frecuencias"
-          >
-            <el-option
-              v-for="item in mListRutasFrecuencias"
-              :key="item.idFrec"
-              :label="item.DescFrec"
-              :value="item.idFrec"
-            >
+          <el-select v-model="mSelectRutaFrecuenciaPanelDespacho" style="width: 100%" collapse-tags
+            placeholder="Frecuencias">
+            <el-option v-for="item in mListRutasFrecuencias" :key="item.idFrec" :label="item.DescFrec"
+              :value="item.idFrec">
             </el-option>
           </el-select>
         </div>
       </div>
 
       <template slot="footer">
-        <base-button type="link" @click="modalEnviarDespachoPanel = false"
-          >Cancelar</base-button
-        >
-        <base-button
-          type="primary"
-          class="ml-auto"
-          @click="EnviarDespachoUnidad()"
-          >ENVIAR DESPACHO</base-button
-        >
+        <base-button type="link" @click="modalEnviarDespachoPanel = false">Cancelar</base-button>
+        <base-button type="primary" class="ml-auto" @click="EnviarDespachoUnidad()">ENVIAR DESPACHO</base-button>
       </template>
     </modal>
 
     <!--RECORRIDO modal-->
-    <modal
-      :show.sync="modalRecorridoPanelDespachoControl"
-      size="xl"
-      body-classes="p-1"
-    >
+    <modal :show.sync="modalRecorridoPanelDespachoControl" size="xl" body-classes="p-1">
       <ComponenteRecorrido ref="ComponenteRecorrido"></ComponenteRecorrido>
     </modal>
 
@@ -673,72 +427,41 @@
           selectedRowSalida == null
             ? ""
             : selectedRowSalida.HoraLlegProgSali_mF +
-              " (" +
-              selectedRowSalida.CodiVehiSali_m +
-              ")"
+            " (" +
+            selectedRowSalida.CodiVehiSali_m +
+            ")"
         }}
       </h6>
 
       <div class="container-modal-recalifica">
         <div class="container-div-check-recalifica">
-          <el-checkbox
-            style="width: auto"
-            label="USAR POSICIONES"
-            v-model="RecaTarjUsaPosi"
-            border
-          ></el-checkbox>
-          <el-checkbox
-            style="width: auto"
-            v-model="RecaSobrCtrlMarcClie"
-            label="REESCRIBE CONTROL (MRC)"
-            border
-          ></el-checkbox>
+          <el-checkbox style="width: auto" label="USAR POSICIONES" v-model="RecaTarjUsaPosi" border></el-checkbox>
+          <el-checkbox style="width: auto" v-model="RecaSobrCtrlMarcClie" label="REESCRIBE CONTROL (MRC)"
+            border></el-checkbox>
         </div>
 
         <div class="container-div-range-minutos">
-          <base-input
-            type="number"
-            v-model="RecaTarjRangInic"
-            label="Min. Antes"
-          ></base-input>
-          <base-input
-            type="number"
-            v-model="RecaTarjRangFin"
-            label="Min. Despues"
-          ></base-input>
+          <base-input type="number" v-model="RecaTarjRangInic" label="Min. Antes"></base-input>
+          <base-input type="number" v-model="RecaTarjRangFin" label="Min. Despues"></base-input>
           <div class="btn-update-tiempo-a-d">
-            <base-button
-              icon
-              type="default"
-              title="GUARDAR CAMBIOS"
-              size="sm"
-              @click="updateTiempoRecalTarjeta()"
-            >
-              <span class="btn-inner--icon"
-                ><i class="ni ni-check-bold"></i
-              ></span>
+            <base-button icon type="default" title="GUARDAR CAMBIOS" size="sm" @click="updateTiempoRecalTarjeta()">
+              <span class="btn-inner--icon"><i class="ni ni-check-bold"></i></span>
             </base-button>
           </div>
         </div>
       </div>
 
       <template slot="footer">
-        <base-button type="info" @click="RecaTarjeta()"
-          >RECALIFICAR</base-button
-        >
+        <base-button type="info" @click="RecaTarjeta()">RECALIFICAR</base-button>
       </template>
     </modal>
 
     <!--Form modal Despacho Anular Salida-->
     <modal :show.sync="modalDespachoAnularSalida" body-classes="p-0">
-      <base-alert
-        v-if="
-          reponseAnularFinalizar != null &&
-          reponseAnularFinalizar.status_code != 200
-        "
-        type="danger"
-        class="container_body_modal_despacho"
-      >
+      <base-alert v-if="
+        reponseAnularFinalizar != null &&
+        reponseAnularFinalizar.status_code != 200
+      " type="danger" class="container_body_modal_despacho">
         {{
           reponseAnularFinalizar == null
             ? "ERROR INDEFINIDO"
@@ -772,24 +495,16 @@
         }}
       </div>
       <template slot="footer">
-        <base-button
-          type="danger"
-          @click="consumirApiAnularFinalizarDespacho(4)"
-          >Anular Salida</base-button
-        >
+        <base-button type="danger" @click="consumirApiAnularFinalizarDespacho(4)">Anular Salida</base-button>
       </template>
     </modal>
 
     <!--Form modal Despacho Finalizar Salida-->
     <modal :show.sync="modalDespachoFinalizarSalida" body-classes="p-0">
-      <base-alert
-        v-if="
-          reponseAnularFinalizar != null &&
-          reponseAnularFinalizar.status_code != 200
-        "
-        type="danger"
-        class="container_body_modal_despacho"
-      >
+      <base-alert v-if="
+        reponseAnularFinalizar != null &&
+        reponseAnularFinalizar.status_code != 200
+      " type="danger" class="container_body_modal_despacho">
         {{
           reponseAnularFinalizar == null
             ? "ERROR INDEFINIDO"
@@ -824,11 +539,7 @@
         }}
       </div>
       <template slot="footer">
-        <base-button
-          type="warning"
-          @click="consumirApiAnularFinalizarDespacho(3)"
-          >Finalizar Salida</base-button
-        >
+        <base-button type="warning" @click="consumirApiAnularFinalizarDespacho(3)">Finalizar Salida</base-button>
       </template>
     </modal>
 
@@ -840,100 +551,50 @@
 
       <div class="row" style="margin-right: 1rem; margin-left: 1rem">
         <div class="col-md-6">
-          <el-select
-            v-model="itemUnidadSalidaAnularFinalizar"
-            multiple
-            filterable
-            remote
-            placeholder="Ingrese unidad"
-            style="width: 100%; margin-bottom: 0.5rem"
-            :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-            :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-          >
-            <el-option
-              v-for="item in optionsUnidadesSalidasPanelSalidas"
-              :key="item.CodiVehi"
-              :label="item.CodiVehi"
-              :value="item.CodiVehi"
-            >
+          <el-select v-model="itemUnidadSalidaAnularFinalizar" multiple filterable remote placeholder="Ingrese unidad"
+            style="width: 100%; margin-bottom: 0.5rem" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+            :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+            <el-option v-for="item in optionsUnidadesSalidasPanelSalidas" :key="item.CodiVehi" :label="item.CodiVehi"
+              :value="item.CodiVehi">
             </el-option>
           </el-select>
         </div>
 
         <div class="col-md-6">
-          <base-input
-            addon-left-icon="ni ni-calendar-grid-58"
-            style="margin-right: 0.5rem"
-            class="input_date_anular_despacho_todo"
-          >
-            <flat-picker
-              slot-scope="{ focus, blur }"
-              :min="{ fechaActualAnularFinalizarTodo }"
-              @on-open="focus"
-              @on-close="blur"
-              :config="config_flatpicker"
-              class="form-controlPersonal datepicker"
-              v-model="fechaActualAnularFinalizarTodo"
-            >
+          <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem"
+            class="input_date_anular_despacho_todo">
+            <flat-picker slot-scope="{ focus, blur }" :min="{ fechaActualAnularFinalizarTodo }" @on-open="focus"
+              @on-close="blur" :config="config_flatpicker" class="form-controlPersonal datepicker"
+              v-model="fechaActualAnularFinalizarTodo">
             </flat-picker>
           </base-input>
         </div>
       </div>
 
-      <div
-        class="row"
-        style="margin-bottom: 1.5rem; margin-right: 1rem; margin-left: 1rem"
-      >
+      <div class="row" style="margin-bottom: 1.5rem; margin-right: 1rem; margin-left: 1rem">
         <div class="col-md-12">
-          <el-select
-            v-model="mSelectRutaAnularFinalizarTodo"
-            collapse-tags
-            placeholder="Lineas"
-            style="width: 100%"
-          >
-            <el-option
-              v-for="item in mListRutasDespacho"
-              :key="item.idRuta"
-              :label="item.DescRuta"
-              :value="item.idRuta"
-            >
+          <el-select v-model="mSelectRutaAnularFinalizarTodo" collapse-tags placeholder="Lineas" style="width: 100%">
+            <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
+              :value="item.idRuta">
             </el-option>
           </el-select>
         </div>
       </div>
 
-      <div
-        class="row"
-        style="margin-bottom: 0.5rem; justify-content: center; width: 100%"
-      >
-        <base-checkbox
-          class="col-md-3"
-          v-model="mCheckDiferidaFinalizarAnulado"
-          style="margin-right: 0.5rem"
-        >
+      <div class="row" style="margin-bottom: 0.5rem; justify-content: center; width: 100%">
+        <base-checkbox class="col-md-3" v-model="mCheckDiferidaFinalizarAnulado" style="margin-right: 0.5rem">
           DIFERIDAS
         </base-checkbox>
-        <base-checkbox
-          class="col-md-3"
-          v-model="mCheckEnRutaFinalizarAnulado"
-          style="margin-right: 0.5rem"
-        >
+        <base-checkbox class="col-md-3" v-model="mCheckEnRutaFinalizarAnulado" style="margin-right: 0.5rem">
           EN RUTA
         </base-checkbox>
-        <base-checkbox
-          class="col-md-3"
-          v-model="mCheckFinalizadaFinalizarAnulado"
-        >
+        <base-checkbox class="col-md-3" v-model="mCheckFinalizadaFinalizarAnulado">
           FINALIZADAS
         </base-checkbox>
       </div>
 
       <template slot="footer">
-        <base-button
-          type="danger"
-          @click="sendFinalizarAnularAllSalidas(4, 'CANCELAR')"
-          >ANULAR SALIDAS</base-button
-        >
+        <base-button type="danger" @click="sendFinalizarAnularAllSalidas(4, 'CANCELAR')">ANULAR SALIDAS</base-button>
       </template>
     </modal>
 
@@ -943,100 +604,51 @@
 
       <div class="row" style="margin-right: 1rem; margin-left: 1rem">
         <div class="col-md-6">
-          <el-select
-            v-model="itemUnidadSalidaAnularFinalizar"
-            multiple
-            filterable
-            remote
-            placeholder="Ingrese unidad"
-            style="width: 100%; margin-bottom: 0.5rem"
-            :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-            :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-          >
-            <el-option
-              v-for="item in optionsUnidadesSalidasPanelSalidas"
-              :key="item.CodiVehi"
-              :label="item.CodiVehi"
-              :value="item.CodiVehi"
-            >
+          <el-select v-model="itemUnidadSalidaAnularFinalizar" multiple filterable remote placeholder="Ingrese unidad"
+            style="width: 100%; margin-bottom: 0.5rem" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+            :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+            <el-option v-for="item in optionsUnidadesSalidasPanelSalidas" :key="item.CodiVehi" :label="item.CodiVehi"
+              :value="item.CodiVehi">
             </el-option>
           </el-select>
         </div>
 
         <div class="col-md-6">
-          <base-input
-            addon-left-icon="ni ni-calendar-grid-58"
-            style="margin-right: 0.5rem"
-            class="input_date_anular_despacho_todo"
-          >
-            <flat-picker
-              slot-scope="{ focus, blur }"
-              :min="{ fechaActualAnularFinalizarTodo }"
-              @on-open="focus"
-              @on-close="blur"
-              :config="config_flatpicker"
-              class="form-controlPersonal datepicker"
-              v-model="fechaActualAnularFinalizarTodo"
-            >
+          <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem"
+            class="input_date_anular_despacho_todo">
+            <flat-picker slot-scope="{ focus, blur }" :min="{ fechaActualAnularFinalizarTodo }" @on-open="focus"
+              @on-close="blur" :config="config_flatpicker" class="form-controlPersonal datepicker"
+              v-model="fechaActualAnularFinalizarTodo">
             </flat-picker>
           </base-input>
         </div>
       </div>
 
-      <div
-        class="row"
-        style="margin-bottom: 1.5rem; margin-right: 1rem; margin-left: 1rem"
-      >
+      <div class="row" style="margin-bottom: 1.5rem; margin-right: 1rem; margin-left: 1rem">
         <div class="col-md-12">
-          <el-select
-            v-model="mSelectRutaAnularFinalizarTodo"
-            collapse-tags
-            placeholder="Lineas"
-            style="width: 100%"
-          >
-            <el-option
-              v-for="item in mListRutasDespacho"
-              :key="item.idRuta"
-              :label="item.DescRuta"
-              :value="item.idRuta"
-            >
+          <el-select v-model="mSelectRutaAnularFinalizarTodo" collapse-tags placeholder="Lineas" style="width: 100%">
+            <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
+              :value="item.idRuta">
             </el-option>
           </el-select>
         </div>
       </div>
 
-      <div
-        class="row"
-        style="margin-bottom: 0.5rem; justify-content: center; width: 100%"
-      >
-        <base-checkbox
-          class="col-md-3"
-          v-model="mCheckDiferidaFinalizarAnulado"
-          style="margin-right: 0.5rem"
-        >
+      <div class="row" style="margin-bottom: 0.5rem; justify-content: center; width: 100%">
+        <base-checkbox class="col-md-3" v-model="mCheckDiferidaFinalizarAnulado" style="margin-right: 0.5rem">
           DIFERIDAS
         </base-checkbox>
-        <base-checkbox
-          class="col-md-3"
-          v-model="mCheckEnRutaFinalizarAnulado"
-          style="margin-right: 0.5rem"
-        >
+        <base-checkbox class="col-md-3" v-model="mCheckEnRutaFinalizarAnulado" style="margin-right: 0.5rem">
           EN RUTA
         </base-checkbox>
-        <base-checkbox
-          class="col-md-3"
-          v-model="mCheckFinalizadaFinalizarAnulado"
-        >
+        <base-checkbox class="col-md-3" v-model="mCheckFinalizadaFinalizarAnulado">
           FINALIZADAS
         </base-checkbox>
       </div>
 
       <template slot="footer">
-        <base-button
-          type="warning"
-          @click="sendFinalizarAnularAllSalidas(3, 'FINALIZAR')"
-          >FINALIZAR SALIDAS</base-button
-        >
+        <base-button type="warning" @click="sendFinalizarAnularAllSalidas(3, 'FINALIZAR')">FINALIZAR
+          SALIDAS</base-button>
       </template>
     </modal>
 
@@ -1046,42 +658,17 @@
 
       <div class="container-modal-recalifica">
         <div class="container-div-check-recalifica">
-          <el-checkbox
-            style="width: auto"
-            label="USAR POSICIONES"
-            v-model="RecaTarjUsaPosi"
-            border
-          ></el-checkbox>
-          <el-checkbox
-            style="width: auto"
-            v-model="RecaSobrCtrlMarcClie"
-            label="REESCRIBE CONTROL (MRC)"
-            border
-          ></el-checkbox>
+          <el-checkbox style="width: auto" label="USAR POSICIONES" v-model="RecaTarjUsaPosi" border></el-checkbox>
+          <el-checkbox style="width: auto" v-model="RecaSobrCtrlMarcClie" label="REESCRIBE CONTROL (MRC)"
+            border></el-checkbox>
         </div>
 
         <div class="container-div-range-minutos">
-          <base-input
-            type="number"
-            v-model="RecaTarjRangInic"
-            label="Min. Antes"
-          ></base-input>
-          <base-input
-            type="number"
-            v-model="RecaTarjRangFin"
-            label="Min. Despues"
-          ></base-input>
+          <base-input type="number" v-model="RecaTarjRangInic" label="Min. Antes"></base-input>
+          <base-input type="number" v-model="RecaTarjRangFin" label="Min. Despues"></base-input>
           <div class="btn-update-tiempo-a-d">
-            <base-button
-              icon
-              type="default"
-              title="GUARDAR CAMBIOS"
-              size="sm"
-              @click="updateTiempoRecalTarjeta()"
-            >
-              <span class="btn-inner--icon"
-                ><i class="ni ni-check-bold"></i
-              ></span>
+            <base-button icon type="default" title="GUARDAR CAMBIOS" size="sm" @click="updateTiempoRecalTarjeta()">
+              <span class="btn-inner--icon"><i class="ni ni-check-bold"></i></span>
             </base-button>
           </div>
         </div>
@@ -1103,40 +690,20 @@
 
         <div class="row">
           <div class="col-md-6">
-            <el-select
-              v-model="itemUnidadSalidaRecalificarTodo"
-              multiple
-              filterable
-              remote
-              placeholder="Ingrese unidad"
-              style="width: 100%; margin-bottom: 0.5rem"
-              :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-            >
-              <el-option
-                v-for="item in optionsUnidadesSalidasPanelSalidas"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadSalidaRecalificarTodo" multiple filterable remote placeholder="Ingrese unidad"
+              style="width: 100%; margin-bottom: 0.5rem" :remote-method="remoteMethodUnidadesSalidasPanelBusqueda"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading">
+              <el-option v-for="item in optionsUnidadesSalidasPanelSalidas" :key="item.CodiVehi" :label="item.CodiVehi"
+                :value="item.CodiVehi">
               </el-option>
             </el-select>
           </div>
 
           <div class="col-md-6">
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-              class="input_date_anular_despacho_todo"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="config_flatpicker"
-                class="form-controlPersonal datepicker"
-                v-model="fechaActualAnularFinalizarTodo"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem"
+              class="input_date_anular_despacho_todo">
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="config_flatpicker"
+                class="form-controlPersonal datepicker" v-model="fechaActualAnularFinalizarTodo">
               </flat-picker>
             </base-input>
           </div>
@@ -1144,18 +711,9 @@
 
         <div class="row" style="margin-bottom: 1.5rem">
           <div class="col-md-12">
-            <el-select
-              v-model="mSelectRutaRecalificarTodo"
-              collapse-tags
-              placeholder="Lineas"
-              style="width: 100%"
-            >
-              <el-option
-                v-for="item in mListRutasDespacho"
-                :key="item.idRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
-              >
+            <el-select v-model="mSelectRutaRecalificarTodo" collapse-tags placeholder="Lineas" style="width: 100%">
+              <el-option v-for="item in mListRutasDespacho" :key="item.idRuta" :label="item.DescRuta"
+                :value="item.idRuta">
               </el-option>
             </el-select>
           </div>
@@ -1163,9 +721,7 @@
       </div>
 
       <template slot="footer">
-        <base-button type="info" @click="RecaTarjetaTodo()"
-          >RECALIFICAR</base-button
-        >
+        <base-button type="info" @click="RecaTarjetaTodo()">RECALIFICAR</base-button>
       </template>
     </modal>
   </div>
@@ -1308,18 +864,18 @@ export default {
       itemUnidadSalidaRecalificarTodo: null,
       mSelectRutaRecalificarTodo: null,
 
-      isTarjetaAntActPos: false, 
+      isTarjetaAntActPos: false,
 
 
-      isPermisoDespachar : true,
-      isPermisoAnular : true,
-      isPermisoRecalificar : true,
-      isPermisoFinalizar : true,
-      
+      isPermisoDespachar: true,
+      isPermisoAnular: true,
+      isPermisoRecalificar: true,
+      isPermisoFinalizar: true,
+
       isPermisoAnularTodo: true,
-      isPermisoFinalizarTodo :true,
-      isPermisoRecalificarTodo : true,
-      is_loading_anu_fin_rec:false
+      isPermisoFinalizarTodo: true,
+      isPermisoRecalificarTodo: true,
+      is_loading_anu_fin_rec: false
 
 
     };
@@ -1337,23 +893,31 @@ export default {
     },
     showReporteLlegadaSAlida() {
       this.modalSalidasTarjetaPanelDespacho = true;
-
+      
       var idSalidaAnt =
         this.$refs.myGridDespachoPanel.source.localdata[
-          this.ArrowGridSelect - 1
+        this.ArrowGridSelect - 1
         ];
 
       var idSalidaPost =
         this.$refs.myGridDespachoPanel.source.localdata[
-          this.ArrowGridSelect + 1
+        this.ArrowGridSelect + 1
         ]
-
       if (this.isTarjetaAntActPos) {
-        this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPos([
-          idSalidaAnt,
-          this.selectedRowSalida,
-          idSalidaPost,
-        ]);
+        if (this.$cookies.get("empresa") == "liribamba") {
+          this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPosVertical([
+            idSalidaAnt,
+            this.selectedRowSalida,
+            idSalidaPost,
+          ])
+        } else {
+          this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPos([
+            idSalidaAnt,
+            this.selectedRowSalida,
+            idSalidaPost,
+          ]);
+        }
+
       } else {
         this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(
           this.selectedRowSalida
@@ -1390,8 +954,7 @@ export default {
       }
       return null;
     },
-    showModalDespacho() 
-    {
+    showModalDespacho() {
       this.mSelectRutaSalidaDespachar = null
       this.mSelectRutaFrecuenciaPanelDespacho = null
 
@@ -1400,7 +963,7 @@ export default {
         : (this.modalEnviarDespachoPanel = true);
     },
     async showModalDespachoRecalificarSalida() {
-      
+
 
       this.modalDespachoRecalificarSalida
         ? (this.modalDespachoRecalificarSalida = false)
@@ -1566,7 +1129,7 @@ export default {
               this.radioEstadoRSalidasPanelDespacho.length <= 0
                 ? "*"
                 : this.radioEstadoRSalidasPanelDespacho,
-            frecuencia: "*"    
+            frecuencia: "*"
           }
         )
         console.log("------------------------------")
@@ -1767,25 +1330,25 @@ export default {
           var objD =
             obj == null
               ? {
-                  LetraRutaSali_m: "",
-                  CodiVehiSali_m: "",
-                  idSali_m: "",
-                  HoraSaliProgSali_m: HS,
-                  HoraLlegProgSali_m: "",
-                  HoraSaliProgSali_mF: "",
-                  HoraLlegProgSali_mF: "",
-                  EstaSali_m: "",
-                  idFrecSali_m: "",
-                  DescFrec: "",
-                  PenaCtrlSali_d: "",
-                  VeloMaxiSali_m: "",
-                  NumeVuelSali_m: "",
-                  atrasoFaltasTime: "",
-                  adelantoFaltasTime: "",
-                  nombres_chofer: "",
-                  Intervalo: "",
-                  DescRutaSali_m: "",
-                }
+                LetraRutaSali_m: "",
+                CodiVehiSali_m: "",
+                idSali_m: "",
+                HoraSaliProgSali_m: HS,
+                HoraLlegProgSali_m: "",
+                HoraSaliProgSali_mF: "",
+                HoraLlegProgSali_mF: "",
+                EstaSali_m: "",
+                idFrecSali_m: "",
+                DescFrec: "",
+                PenaCtrlSali_d: "",
+                VeloMaxiSali_m: "",
+                NumeVuelSali_m: "",
+                atrasoFaltasTime: "",
+                adelantoFaltasTime: "",
+                nombres_chofer: "",
+                Intervalo: "",
+                DescRutaSali_m: "",
+              }
               : obj;
           if (obj == null) {
             ListaVacia.push(objD);
@@ -1842,10 +1405,10 @@ export default {
               obj.EstaSali_m == 4
                 ? "ANULADO"
                 : obj.EstaSali_m == 1 || obj.EstaSali_m == 0
-                ? "DIFERIDO"
-                : obj.EstaSali_m == 2
-                ? "EN RUTA"
-                : "FINALIZADO";
+                  ? "DIFERIDO"
+                  : obj.EstaSali_m == 2
+                    ? "EN RUTA"
+                    : "FINALIZADO";
             this.mListDespachosPanelAuxiliar.splice(i, 1);
             return obj;
           }
@@ -1857,10 +1420,10 @@ export default {
       this.removeAllRutaNoSelect();
       this.activeRutaDespacho(ruta);
     },
-    handleLike(index, row) {},
-    handleEdit(index, row) {},
-    handleDelete(index, row) {},
-    deleteRow(row) {},
+    handleLike(index, row) { },
+    handleEdit(index, row) { },
+    handleDelete(index, row) { },
+    deleteRow(row) { },
     async readAllUnidadesSalidasPanelBusqueda() {
       var datos = await this.$axios.post(
         process.env.baseUrl + "/unidadesDespacho",
@@ -2001,8 +1564,7 @@ export default {
 
         var objDespacho = null
 
-        if(this.radioTipoDespacho==3)
-        {
+        if (this.radioTipoDespacho == 3) {
           objDespacho = {
             token: this.token,
             unidad: this.itemUnidadSalidasPanelDespacho.CodiVehi,
@@ -2020,7 +1582,7 @@ export default {
             recalifica_minutos_despues: this.RecaTarjRangFin,
             recalifica_sobreescribir_si_tiene_marcacion: this.RecaSobrCtrlMarcClie,
           }
-        }else{
+        } else {
           objDespacho = {
             token: this.token,
             unidad: this.itemUnidadSalidasPanelDespacho.CodiVehi,
@@ -2140,8 +1702,7 @@ export default {
       this.mCheckFinalizadaFinalizarAnulado = false;
       this.fechaActualAnularFinalizarTodo = this.getFechaActual()
     },
-    sendFinalizarAnularAllSalidas(estado_, title) 
-    {
+    sendFinalizarAnularAllSalidas(estado_, title) {
 
       if (this.mSelectRutaAnularFinalizarTodo == null) {
         Notification.warning({
@@ -2155,30 +1716,30 @@ export default {
 
       MessageBox.confirm(
         "Esta seguro que desea " +
-          title +
-          " LAS SALIDAS para las unidades : " +
-          (this.itemUnidadSalidaAnularFinalizar == null ||
+        title +
+        " LAS SALIDAS para las unidades : " +
+        (this.itemUnidadSalidaAnularFinalizar == null ||
           this.itemUnidadSalidaAnularFinalizar.length <= 0
-            ? "TODAS LAS UNIDADES"
-            : this.itemUnidadSalidaAnularFinalizar.toString()) +
-          " en la RUTA : " +
-          (this.mSelectRutaAnularFinalizarTodo == null ||
+          ? "TODAS LAS UNIDADES"
+          : this.itemUnidadSalidaAnularFinalizar.toString()) +
+        " en la RUTA : " +
+        (this.mSelectRutaAnularFinalizarTodo == null ||
           this.mSelectRutaAnularFinalizarTodo.length <= 0
-            ? "TODAS LAS RUTAS"
-            : this.getRutaPorID(this.mSelectRutaAnularFinalizarTodo).DescRuta) +
-          " para la FECHA " +
-          this.fechaActualAnularFinalizarTodo +
-          " (" +
-          (this.mCheckDiferidaFinalizarAnulado == false &&
+          ? "TODAS LAS RUTAS"
+          : this.getRutaPorID(this.mSelectRutaAnularFinalizarTodo).DescRuta) +
+        " para la FECHA " +
+        this.fechaActualAnularFinalizarTodo +
+        " (" +
+        (this.mCheckDiferidaFinalizarAnulado == false &&
           this.mCheckEnRutaFinalizarAnulado == false &&
           this.mCheckFinalizadaFinalizarAnulado == false
-            ? " DIFERIDA,EN RUTA,FINALIZADA"
-            : (this.mCheckDiferidaFinalizarAnulado == true ? "DIFERIDA," : "") +
-              (this.mCheckFinalizadaFinalizarAnulado == true
-                ? "FINALIZADAS,"
-                : "") +
-              (this.mCheckEnRutaFinalizarAnulado == true ? "EN RUTA" : "")) +
-          ") ",
+          ? " DIFERIDA,EN RUTA,FINALIZADA"
+          : (this.mCheckDiferidaFinalizarAnulado == true ? "DIFERIDA," : "") +
+          (this.mCheckFinalizadaFinalizarAnulado == true
+            ? "FINALIZADAS,"
+            : "") +
+          (this.mCheckEnRutaFinalizarAnulado == true ? "EN RUTA" : "")) +
+        ") ",
         "Advertencia",
         {
           confirmButtonText: "Confirmar",
@@ -2205,7 +1766,7 @@ export default {
             ruta: this.mSelectRutaAnularFinalizarTodo,
             unidades:
               this.itemUnidadSalidaAnularFinalizar == null ||
-              this.itemUnidadSalidaAnularFinalizar.length <= 0
+                this.itemUnidadSalidaAnularFinalizar.length <= 0
                 ? "*"
                 : this.itemUnidadSalidaAnularFinalizar,
             isFinalizada: this.mCheckFinalizadaFinalizarAnulado == true ? 1 : 0,
@@ -2259,11 +1820,10 @@ export default {
           console.log(this.objConfigRecalificar);
           console.log("------------------------------------------");
 
-          if (this.objConfigRecalificar != null) 
-          {
+          if (this.objConfigRecalificar != null) {
             this.RecaTarjRangInic = this.objConfigRecalificar.RecaTarjRangInic;
             this.RecaTarjRangFin = this.objConfigRecalificar.RecaTarjRang;
-            
+
             this.RecaTarjUsaPosi = this.objConfigRecalificar.RecaTarjUsaPosi == 1 ? true : false
             this.RecaSobrCtrlMarcClie = this.objConfigRecalificar.RecaSobrCtrlMarcClie == 1 ? true : false
 
@@ -2403,7 +1963,7 @@ export default {
             ruta: this.mSelectRutaRecalificarTodo,
             unidad:
               this.itemUnidadSalidaRecalificarTodo == null ||
-              this.itemUnidadSalidaRecalificarTodo.length <= 0
+                this.itemUnidadSalidaRecalificarTodo.length <= 0
                 ? "*"
                 : this.itemUnidadSalidaRecalificarTodo,
             PosiUse: this.RecaTarjUsaPosi, //priorizar el local
@@ -2453,8 +2013,7 @@ export default {
       this.mSelectRutaRecalificarTodo = null;
     },
   },
-  mounted() 
-  {
+  mounted() {
     this.isTarjetaAntActPos =
       (this.$cookies.get("empresa") == "glimitada" || this.$cookies.get("empresa") == "liribamba") ? true : false;
     this.readConfigRecalTarjeta();
@@ -2472,26 +2031,26 @@ export default {
     console.log("++++++++++++++++++++++")
 
 
-    this.isPermisoDespachar = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
-                           oPermisoDespacho.despacho.panelDespacho.crear_despacho != undefined ? 
-                           oPermisoDespacho.despacho.panelDespacho.crear_despacho : false : false : false
+    this.isPermisoDespachar = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ?
+      oPermisoDespacho.despacho.panelDespacho.crear_despacho != undefined ?
+        oPermisoDespacho.despacho.panelDespacho.crear_despacho : false : false : false
 
-    this.isPermisoAnular = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
-                           oPermisoDespacho.despacho.panelDespacho.anular : false : false
-    this.isPermisoFinalizar = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
-                           oPermisoDespacho.despacho.panelDespacho.finalizar : false : false
-    this.isPermisoRecalificar = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
-                           oPermisoDespacho.despacho.panelDespacho.recalificar : false : false
+    this.isPermisoAnular = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ?
+      oPermisoDespacho.despacho.panelDespacho.anular : false : false
+    this.isPermisoFinalizar = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ?
+      oPermisoDespacho.despacho.panelDespacho.finalizar : false : false
+    this.isPermisoRecalificar = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ?
+      oPermisoDespacho.despacho.panelDespacho.recalificar : false : false
 
-    this.isPermisoAnularTodo = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
-                           oPermisoDespacho.despacho.panelDespacho.anular_todo != undefined ? 
-                           oPermisoDespacho.despacho.panelDespacho.anular_todo : false : false : false
-    this.isPermisoFinalizarTodo = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
-                           oPermisoDespacho.despacho.panelDespacho.finalizar_todo != undefined ? 
-                           oPermisoDespacho.despacho.panelDespacho.finalizar_todo : false : false : false
-    this.isPermisoRecalificarTodo = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ? 
-                           oPermisoDespacho.despacho.panelDespacho.recalificar_todo != undefined ? 
-                           oPermisoDespacho.despacho.panelDespacho.recalificar_todo : false : false : false
+    this.isPermisoAnularTodo = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ?
+      oPermisoDespacho.despacho.panelDespacho.anular_todo != undefined ?
+        oPermisoDespacho.despacho.panelDespacho.anular_todo : false : false : false
+    this.isPermisoFinalizarTodo = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ?
+      oPermisoDespacho.despacho.panelDespacho.finalizar_todo != undefined ?
+        oPermisoDespacho.despacho.panelDespacho.finalizar_todo : false : false : false
+    this.isPermisoRecalificarTodo = oPermisoDespacho.despacho.active ? oPermisoDespacho.despacho.panelDespacho.active ?
+      oPermisoDespacho.despacho.panelDespacho.recalificar_todo != undefined ?
+        oPermisoDespacho.despacho.panelDespacho.recalificar_todo : false : false : false
 
 
 
@@ -2509,19 +2068,18 @@ export default {
 </script>
 
 <style>
-
-.loafing_reca_anu_fin_todo{
+.loafing_reca_anu_fin_todo {
   height: 98%;
-    width: 98%;
-  z-index:999999999999999;
+  width: 98%;
+  z-index: 999999999999999;
   background-color: rgba(0, 0, 0, 0.53);
   position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    border-radius: 1rem;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border-radius: 1rem;
 }
 
 
@@ -2535,7 +2093,7 @@ export default {
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  margin-bottom:1rem;
+  margin-bottom: 1rem;
 }
 
 .container-div-check-recalifica {
@@ -2544,11 +2102,13 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
+
 .inputDatimeDespachoPanel2 .form-group .form-control {
   margin-bottom: 0rem;
   font-size: 2rem;
   color: black;
 }
+
 .dateTimeDespacho .el-input__inner {
   font-size: 2.5rem;
   height: 3rem;
@@ -2557,10 +2117,12 @@ export default {
 .input_date_anular_despacho_todo .form-group {
   margin-bottom: 0rem;
 }
+
 .container_body_modal_despacho {
   margin-right: 1.25rem;
   margin-left: 1.25rem;
 }
+
 .buttonsAdicionalesDespacho {
   margin: auto;
   display: flex;
@@ -2714,8 +2276,7 @@ export default {
 }
 
 .estadofinalizadoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected),
-.jqx-widget
-  .estadofinalizadoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
+.jqx-widget .estadofinalizadoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
   background-color: #ffffff;
   color: black;
 }
@@ -2726,8 +2287,7 @@ export default {
 }
 
 .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected),
-.jqx-widget
-  .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
+.jqx-widget .estadoenrutaDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
   background-color: hsla(226, 88%, 61%, 0.315);
   color: black;
 }
@@ -2743,8 +2303,7 @@ export default {
 }
 
 .estadodiferidoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected),
-.jqx-widget
-  .estadodiferidoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
+.jqx-widget .estadodiferidoDespacho:not(.jqx-grid-cell-hover):not(.jqx-grid-cell-selected) {
   background-color: rgba(140, 248, 126, 0.315);
   color: black;
 }
@@ -2754,5 +2313,3 @@ export default {
   overflow: none;
 }
 </style>
-
-

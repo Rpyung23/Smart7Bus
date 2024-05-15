@@ -32,9 +32,9 @@
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
 
-              <download-excel class="btn btn-icon btn-fab btn-success btn-sm" v-if="mListaSalidasPanelBusqueda.length > 0"
-                :data="mListaSalidasPanelBusqueda" :fields="json_fields_excelRPanelBusqueda"
-                :name="FileNameExcelRPanelBusqueda">
+              <download-excel class="btn btn-icon btn-fab btn-success btn-sm"
+                v-if="mListaSalidasPanelBusqueda.length > 0" :data="mListaSalidasPanelBusqueda"
+                :fields="json_fields_excelRPanelBusqueda" :name="FileNameExcelRPanelBusqueda">
                 <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
 
               </download-excel>
@@ -60,7 +60,8 @@
             </el-select>
 
 
-            <el-select v-model="mSelectRutaSalidaPanelBusqueda" collapse-tags v-if="!isMultipleRutas" placeholder="Linea">
+            <el-select v-model="mSelectRutaSalidaPanelBusqueda" collapse-tags v-if="!isMultipleRutas"
+              placeholder="Linea">
               <el-option v-for="item in mListLineasSalidasPanelBusqueda" :key="item.LetrRuta" :label="item.DescRuta"
                 :value="item.LetrRuta">
               </el-option>
@@ -142,15 +143,15 @@
                     ></i>-->
                   <span class="status"><strong>{{
                     row.EstaSali_m == 1 || row.EstaSali_m == 0
-                    ? "DIFERIDA"
-                    : row.EstaSali_m == 4
-                      ? "ANULADO"
-                      : row.EstaSali_m == 2
-                        ? "EN RUTA"
-                        : row.EstaSali_m == 3 &&
-                          row.atrasoFaltasTime != "00:00:00"
-                          ? "FINALIZADO CON PENALIDAD"
-                          : "FINALIZADA SIN PENALIDAD"
+                      ? "DIFERIDA"
+                      : row.EstaSali_m == 4
+                        ? "ANULADO"
+                        : row.EstaSali_m == 2
+                          ? "EN RUTA"
+                          : row.EstaSali_m == 3 &&
+                            row.atrasoFaltasTime != "00:00:00"
+                            ? "FINALIZADO CON PENALIDAD"
+                            : "FINALIZADA SIN PENALIDAD"
                   }}</strong></span>
                 </badge>
               </template>
@@ -292,25 +293,25 @@
       <template slot="header">
         {{
           titulo_modal_add_anotacion == null
-          ? ""
-          : "Unidad N° : " +
-          titulo_modal_add_anotacion.CodiVehiSali_m +
-          " Vuelta N° : " +
-          titulo_modal_add_anotacion.NumeVuelSali_m +
-          " Ruta : " +
-          titulo_modal_add_anotacion.DescRutaSali_m +
-          " (" +
-          titulo_modal_add_anotacion.HoraSaliProgSali_m +
-          " - " +
-          titulo_modal_add_anotacion.HoraLlegProgSali_m +
-          ")"
+            ? ""
+            : "Unidad N° : " +
+            titulo_modal_add_anotacion.CodiVehiSali_m +
+            " Vuelta N° : " +
+            titulo_modal_add_anotacion.NumeVuelSali_m +
+            " Ruta : " +
+            titulo_modal_add_anotacion.DescRutaSali_m +
+            " (" +
+            titulo_modal_add_anotacion.HoraSaliProgSali_m +
+            " - " +
+            titulo_modal_add_anotacion.HoraLlegProgSali_m +
+            ")"
         }}
       </template>
 
       <div class="container-add-rubro">
         <el-select v-model="oSelectRubro" filterable placeholder="RUBROS" style="width: 30%; margin-right: 0.5rem">
-          <el-option v-for="item in mListTipoRubro" :key="item.id" :label="'(' + item.precio + ' $) ' + item.descripcion"
-            :value="item.id">
+          <el-option v-for="item in mListTipoRubro" :key="item.id"
+            :label="'(' + item.precio + ' $) ' + item.descripcion" :value="item.id">
           </el-option>
         </el-select>
 
@@ -694,11 +695,19 @@ export default {
         var idSalidaAnt = this.getObjetoSalida(salida, 'a')
         var idSalidaPost = this.getObjetoSalida(salida, 'p')
 
-        this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPos([
-          idSalidaAnt,
-          salida,
-          idSalidaPost,
-        ])
+        if (this.$cookies.get("empresa") == "liribamba") {
+          this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPosVertical([
+            idSalidaAnt,
+            salida,
+            idSalidaPost,
+          ])
+        } else {
+          this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaAntActPos([
+            idSalidaAnt,
+            salida,
+            idSalidaPost,
+          ])
+        }
 
       } else {
         this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusqueda(salida);
@@ -724,12 +733,22 @@ export default {
       if (this.isTarjetaAntActPos) {
         var idSalidaAnt = this.getObjetoSalida(salida, 'a')
         var idSalidaPost = this.getObjetoSalida(salida, 'p')
+        console.log("Aca this.isTarjetaAntActPos A4", this.isTarjetaAntActPos)
+        console.log("Aca  A4", this.$cookies.get("empresa"))
+        if (this.$cookies.get("empresa") == "liribamba") {
+          this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusquedaAntActPosVertical([
+            idSalidaAnt,
+            salida,
+            idSalidaPost,
+          ])
+        } else {
+          this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusquedaAntActPos([
+            idSalidaAnt,
+            salida,
+            idSalidaPost,
+          ])
+        }
 
-        this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusquedaAntActPos([
-          idSalidaAnt,
-          salida,
-          idSalidaPost,
-        ])
 
       } else {
         this.$refs.ComponenteTarjetaA4.readDetalleSalidaDPanelBusqueda(salida);
@@ -1467,7 +1486,7 @@ export default {
     //this.readHistorialSalidaPanelBusqueda();
 
     this.isTarjetaAntActPos =
-      this.$cookies.get("empresa") == "glimitada" || this.$cookies.get("empresa") == "liribamba"? true : false
+      this.$cookies.get("empresa") == "glimitada" || this.$cookies.get("empresa") == "liribamba" ? true : false
 
     this.isMultipleRutas = this.$cookies.get("empresa") == "glimitada" || this.$cookies.get("empresa") == "liribamba" ? false : true
 
