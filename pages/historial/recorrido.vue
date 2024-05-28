@@ -602,6 +602,9 @@ export default {
     {
 
       return `<div style="width:300px;padding:0.50rem">
+        <strong class="strongLetrasInfoWindows">UNIDAD : </strong> ${
+                unidad.CodiVehiHistEven
+              }<br>
               <strong class="strongLetrasInfoWindows">FECHA MONI : </strong> ${
                 unidad.FechHistEven
               }<br>
