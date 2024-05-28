@@ -1488,7 +1488,7 @@ export default {
     this.isTarjetaAntActPos =
       this.$cookies.get("empresa") == "glimitada" || this.$cookies.get("empresa") == "liribamba" ? true : false
 
-    this.isMultipleRutas = this.$cookies.get("empresa") == "glimitada" || this.$cookies.get("empresa") == "liribamba" ? false : true
+    this.isMultipleRutas = this.$cookies.get("empresa") == "glimitada" ? false : true
 
     this.initFechaActualSalidaBusquedaPanel();
     this.readAllLineasContadorSalidasPanelBusqueda();
