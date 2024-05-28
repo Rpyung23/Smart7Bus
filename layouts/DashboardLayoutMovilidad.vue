@@ -41,20 +41,21 @@
           path: '/movilidad/rhrecorrido',
         }" />
 
-        <sidebar-item
-          :link="{ name: 'R. Velocidad Mov', icon: 'ni ni-collection text-warning', path: '/movilidad/rvelocidadM' }"
-          translate="no" />
-          
-          <sidebar-item
-          translate="no"
-          v-if="
-            permisos != null &&
-            permisos.movilidad.active !=
-            null &&
-            permisos.movilidad.reportes.active != null &&
-            permisos.movilidad.reportes.rConsolidadoSalidas"
-          :link="{ name: 'R. Consolidado Salidas', icon: 'ni ni-bus-front-12 text-warning', path: '/movilidad/rConsolidadoSalidas' }"
-           />
+        <sidebar-item translate="no" v-if="
+          permisos != null &&
+          permisos.movilidad.active !=
+          null &&
+          permisos.movilidad.reportes.active != null &&
+          permisos.movilidad.reportes.rVelocidadMov"
+          :link="{ name: 'R. Velocidad Mov', icon: 'ni ni-collection text-warning', path: '/movilidad/rvelocidadM' }" />
+
+        <sidebar-item translate="no" v-if="
+          permisos != null &&
+          permisos.movilidad.active !=
+          null &&
+          permisos.movilidad.reportes.active != null &&
+          permisos.movilidad.reportes.rConsolidadoSalidas"
+          :link="{ name: 'R. Consolidado Salidas', icon: 'ni ni-bus-front-12 text-warning', path: '/movilidad/rConsolidadoSalidas' }" />
 
 
       </template>
