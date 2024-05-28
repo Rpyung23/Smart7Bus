@@ -600,6 +600,8 @@ export default {
 
     async getInfoWindowContentRecorrido(unidad) 
     {
+      console.log("RECORRIFO UNIDAD")
+      console.log(unidad)
 
       return `<div style="width:300px;padding:0.50rem">
         <strong class="strongLetrasInfoWindows">UNIDAD : </strong> ${
