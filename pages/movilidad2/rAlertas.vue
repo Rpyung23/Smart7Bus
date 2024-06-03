@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <base-header>
-      <div class="align-items-center py-3">
+      <div class="align-items-center pt-3 pb-1">
         <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
           footer-classes="pb-2">
@@ -67,12 +67,12 @@
           </div>
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRPenalidadesSemanales px-0 pb-1"
+        <card class="no-border-card" style="margin-bottom: 0.5rem" body-classes="card-bodyRPenalidadesSemanales px-0 pb-1"
           footer-classes="pb-2">
           <div>
             <el-table element-loading-text="Cargando Datos..." row-key="id" v-loading="loadingPenalidadesSemanales"
               :data="mListDatosPenalidades" class="tablePanelControlProduccion" header-row-class-name="thead-dark"
-              height="calc(100vh - 12.8rem)">
+              height="calc(100vh - 13rem)">
 
               <el-table-column prop="CodiVehiSali_m" label="Detalle Alerta" width="200">
 
@@ -93,11 +93,8 @@
               <el-table-column prop="HoraSaliProgSali_mF" label="Fecha Final" width="300">
               </el-table-column>
 
-              <el-table-column prop="DescRutaSali_m" label="Detalle Ruta" width="440">
-              </el-table-column>
-
-
-              <div slot="empty"></div>
+              <el-table-column prop="DescRutaSali_m" label="Detalle Ruta" width="460">
+              </el-table-column>   
             </el-table>
           </div>
         </card>

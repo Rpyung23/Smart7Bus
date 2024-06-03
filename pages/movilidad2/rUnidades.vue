@@ -37,7 +37,8 @@
           </div>
         </card>
 
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card v-show="mListaGruposPenalidadesSemanales.length > 0" class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
           footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
@@ -49,18 +50,13 @@
                 :value="item.id">
               </el-option>
             </el-select>
-            <!--   <el-select v-model="mSelectRutaSalidaPanelBusqueda" multiple collapse-tags placeholder="Lineas">
-              <el-option v-for="item in mListLineasFecuenciasControles" :key="item.LetrRuta" :label="item.DescRuta"
-                :value="item.LetrRuta">
-              </el-option>
-            </el-select> -->
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda"></div>
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRSalidasControles px-0 pb-1"
-          footer-classes="pb-2">
+        <card class="no-border-card" body-classes="card-bodyRSalidasControles px-0 pb-0" footer-classes="pb-2"
+          style="margin-bottom: 0px; width: 100%;"
+          :style="{ height: mListaGruposPenalidadesSemanales.length > 0 ? 'calc(100vh - 13.2rem)' : 'calc(100vh - 9.5rem)' }">
 
           <embed :src="base64PDFSALIDACONTROLES" type="application/pdf" width="98.7%" height="98.7%" />
 
