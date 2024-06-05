@@ -598,7 +598,7 @@ body::-webkit-scrollbar{
 .loadingRecorridoSalidaBusquedaPanel {
     height: 98%;
     width: 98%;
-    background-color: rgba(0, 0, 0, 0.253);
+    background-color: rgba(7, 7, 7, 0.5);
     position: absolute;
     top: 0;
     left: 0;
@@ -606,6 +606,7 @@ body::-webkit-scrollbar{
     bottom: 0;
     margin: auto;
     border-radius: 1rem;
+    z-index: 2000;
   }
   
   .circleProgress {
