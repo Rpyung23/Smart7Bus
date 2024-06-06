@@ -428,6 +428,7 @@
     <script src="../js/tabButtonsMonitoreo.js"></script>
   </div>
 </template>
+
 <style>
 .containerUnidadTitulo {
   display: flex;
@@ -1013,7 +1014,8 @@ export default {
         this.girarMarcador();
       }
     },
-    async initRastreo() {
+    async initRastreo() 
+    {
       try {
         var datos = null;
         var rutaApi = "/monitoring";
