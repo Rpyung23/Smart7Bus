@@ -112,6 +112,13 @@
           path: '/produccion/estadistico',
         }">
         </sidebar-item>
+        <sidebar-item translate="no" 
+        :link="{
+          name: 'Blanco',
+          icon: 'ni ni-satisfied text-primary',
+          path: '/produccion/_blank',
+        }">
+        </sidebar-item>
       </template>
     </side-bar>
     <div class="main-content">

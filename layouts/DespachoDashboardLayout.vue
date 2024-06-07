@@ -37,6 +37,13 @@
         >
         </sidebar-item>
 
+        <sidebar-item translate="no" 
+        :link="{
+          name: 'Blanco',
+          icon: 'ni ni-satisfied text-primary',
+          path: '/despacho/_blank',
+        }">
+        </sidebar-item>
 
 
         <sidebar-item
@@ -222,6 +229,8 @@
               path: '/despacho/rSalidasOdometro',
             }"
           />
+
+        
 
 
         </sidebar-item>

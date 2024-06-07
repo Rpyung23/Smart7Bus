@@ -24,6 +24,14 @@
         >
         </sidebar-item>
 
+        <sidebar-item translate="no" 
+        :link="{
+          name: 'Blanco',
+          icon: 'ni ni-satisfied text-primary',
+          path: '/historial/_blank',
+        }">
+        </sidebar-item>
+
       </template>
     </side-bar>
     <div class="main-content">
