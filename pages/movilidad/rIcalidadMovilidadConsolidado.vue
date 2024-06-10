@@ -30,8 +30,8 @@
           <div class="cardSelectAgrupacionRIcalidad">
 
 
-            <el-select v-model="modelTiposEvento" multiple collapse-tags style="margin-right: 0.5rem" placeholder="Rutas"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading" @change="updateSelectedRouteDescriptions">
+            <el-select v-model="modelTiposEvento" collapse-tags  :multiple-limit="1" style="margin-right: 0.5rem" placeholder="Rutas"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading" @change="updateSelectedRouteDescriptions" clearable>
               <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
                 :value="item.idRuta">
               </el-option>
@@ -183,12 +183,9 @@ export default {
     },
 
 
-    updateSelectedRouteDescriptions(selectedRoutes) {
-      // Filtrar las opciones seleccionadas y obtener sus descripciones
-      this.selectedRouteDescriptions = selectedRoutes.map(id => {
-        const route = this.mListaRutasSalidasSemanales.find(route => route.idRuta === id);
-        return route ? route.DescRuta : '';
-      })
+    updateSelectedRouteDescriptions(selectedRoute) {
+      const route = this.mListaRutasSalidasSemanales.find(route => route.idRuta === selectedRoute);
+      this.selectedRouteDescription = route ? route.DescRuta : '';
     },
 
 
@@ -349,7 +346,7 @@ export default {
               text:
                 (this.modelTiposEvento.length === 0
                   ? "TODAS LAS RUTAS"
-                  : this.selectedRouteDescriptions.toString()),
+                  : this.selectedRouteDescription.toString()),
               fontSize: 11,
               alignment: "left",
               bold: true,
