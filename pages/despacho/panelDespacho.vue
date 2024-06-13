@@ -1705,6 +1705,7 @@ export default {
         this.columnsInfo[11] = {
           text: "Multa",
           datafield: "PenaCtrlSali_d",
+          type: 'string',
           width: 100,
           cellclassname: this.cellclassname,
           cellbeginedit: this.cellbeginedit,

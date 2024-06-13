@@ -279,7 +279,7 @@
             path: '/movilidad/rIcanlidadMovilidad',
           }"
         />
-        <sidebar-item
+        <!--<sidebar-item
           translate="no"
           v-if="
             permisos != null &&
@@ -292,7 +292,7 @@
             icon: 'ni ni-building text-dark',
             path: '/movilidad2/rIndicadorConsolidado',
           }"
-        />
+        />-->
       </template>
     </side-bar>
     <div class="main-content">
