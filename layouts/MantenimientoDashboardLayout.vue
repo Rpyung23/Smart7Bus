@@ -45,13 +45,6 @@
 
         </sidebar-item>
 
-        <sidebar-item translate="no" 
-        :link="{
-          name: 'Blanco',
-          icon: 'ni ni-satisfied text-primary',
-          path: '/tablero/_blank',
-        }">
-        </sidebar-item>
   
         </template>
       </side-bar>

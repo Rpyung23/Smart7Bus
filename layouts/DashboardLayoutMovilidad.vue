@@ -3,12 +3,7 @@
     <notifications></notifications>
     <side-bar>
       <template slot-scope="props" slot="links">
-        <sidebar-item translate="no" :link="{
-          name: 'Blanco',
-          icon: 'ni ni-satisfied text-primary',
-          path: '/movilidad/_blank',
-        }">
-        </sidebar-item>
+
         <sidebar-item translate="no" :link="{
           name: 'Indicadores de Calidad',
           icon: 'ni ni-chart-pie-35 text-default',

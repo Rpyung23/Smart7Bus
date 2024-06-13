@@ -24,12 +24,7 @@
           path: '/movilidad2/rAlertas',
         }" />
 
-        <sidebar-item translate="no" :link="{
-          name: 'Blanco',
-          icon: 'ni ni-satisfied text-primary',
-          path: '/movilidad2/_blank',
-        }">
-        </sidebar-item>
+
 
 
       </template>

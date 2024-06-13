@@ -24,13 +24,6 @@
         >
         </sidebar-item>
 
-        <sidebar-item translate="no" 
-        :link="{
-          name: 'Blanco',
-          icon: 'ni ni-satisfied text-primary',
-          path: '/recaudo/_blank',
-        }">
-        </sidebar-item>
 
 
         <!--<sidebar-item
