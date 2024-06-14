@@ -138,7 +138,7 @@
                     </div>
                 </card> -->
 
-                <card class="no-border-card" style="margin-bottom: 0rem" :style="{ height: '70vh' }"
+                <card class="no-border-card" style="margin-bottom: 0rem;height:calc(100vh - 13rem)"
                     body-classes="cardMinutosTarjetas card-bodyRPagosVehiculoProduccionPC px-0 pb-1" footer-classes="pb-2">
                     <embed id="iframeContainerrMinutosTarjetasV" :src="oBase64IndicadoresCalidad" type="application/pdf"
                         width="100%" height="100%" />
@@ -386,8 +386,10 @@ export default {
             }
             swal.close()
         },
-        async generatePdf() {
-            var empresa = [
+        async generatePdf() 
+        {
+            try {
+                var empresa = [
                 {
                     text: "Empresa : " + this.$cookies.get("nameEmpresa"),
                     fontSize: 12,
@@ -623,6 +625,9 @@ export default {
                 let iframe = document.getElementById('iframeContainerrMinutosTarjetasV');
                 iframe.src = pdfUrl;
             });
+            } catch (error) {
+                console.log(error)
+            }
         }
 
     },

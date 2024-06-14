@@ -213,3 +213,19 @@ export function convertSecondtoTimeString(seconds) {
 }
 
 
+export function validaRangoFechaNoMas30Dias(fecha1,fecha2)
+{
+        // Convertir las cadenas de fecha en objetos Date
+        const fechaInicio = new Date(fecha1);
+        const fechaFin = new Date(fecha2);
+        
+        // Calcular la diferencia en milisegundos
+        const diferenciaMilisegundos = fechaFin - fechaInicio;
+        
+        // Convertir la diferencia de milisegundos a días (1 día = 24 * 60 * 60 * 1000 ms)
+        const diferenciaDias = diferenciaMilisegundos / (1000 * 60 * 60 * 24);
+        
+        // Verificar si la diferencia es menor o igual a 31 días
+        return diferenciaDias <= 31 ? true : false
+}
+

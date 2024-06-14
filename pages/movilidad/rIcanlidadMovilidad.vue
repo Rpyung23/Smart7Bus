@@ -121,7 +121,7 @@
 <script>
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-import { getFecha_dd_mm_yyyy } from "../../util/fechas";
+import { getFecha_dd_mm_yyyy,validaRangoFechaNoMas30Dias } from "../../util/fechas";
 
 import {
   Table,
@@ -249,7 +249,21 @@ export default {
         this.mListaRutasIndicadoresCalidad.push(...datos.data.data);
       }
     },
-    async readAllIndicadoresCalidad() {
+    async readAllIndicadoresCalidad() 
+    {
+
+      if(!validaRangoFechaNoMas30Dias(getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
+      getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad)))
+      {
+        Notification.warning({
+          title: "RAGO MAXIMO 31 DIAS",
+          message: 'SOLO SE PERMITE UN MAXIMO DE 31 DIAS',
+          duration: 2000,
+        });
+        return
+      }
+
+      
       this.mListaRutasIndicadoresCalidad = [];
 
       let iframe = document.getElementById("iframeContainerIndicadoresCalidad");
