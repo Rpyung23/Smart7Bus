@@ -5,7 +5,7 @@
       <template slot-scope="props" slot="links">
 
         <sidebar-item translate="no" :link="{
-          name: 'Indicadores de Calidad',
+          name: 'Indicadores de Calidad (Diario)',
           icon: 'ni ni-chart-pie-35 text-default',
           path: '/movilidad/rIcanlidadMovilidad',
         }" />
@@ -13,7 +13,7 @@
         <sidebar-item
           v-if="permisos != null && permisos.movilidad.active != null && permisos.movilidad.reportes.active != null && permisos.movilidad.reportes.indicadorConsolidado"
           translate="no" :link="{
-            name: 'Indicadores de Calidad Consolidado',
+            name: 'Indicadores de Calidad Consolidado (Mes)',
             icon: 'ni ni-chart-pie-35 text-default',
             path: '/movilidad/rIcalidadMovilidadConsolidado',
           }" />

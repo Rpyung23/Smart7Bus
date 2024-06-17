@@ -52,13 +52,13 @@
             >
             </el-date-picker>
 
-            <el-date-picker
+          <!--   <el-date-picker
               type="date"
               placeholder="Select date and time"
               style="margin-right: 0.5rem"
               v-model="fechaFinalIndicadorCalidad"
             >
-            </el-date-picker>
+            </el-date-picker> -->
 
             <!-- DOWNLOAD EXCEL-->
           </div>
@@ -121,7 +121,7 @@
 <script>
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-import { getFecha_dd_mm_yyyy,validaRangoFechaNoMas30Dias } from "../../util/fechas";
+import { getFecha_dd_mm_yyyy } from "../../util/fechas";
 
 import {
   Table,
@@ -251,19 +251,6 @@ export default {
     },
     async readAllIndicadoresCalidad() 
     {
-
-      if(!validaRangoFechaNoMas30Dias(getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
-      getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad)))
-      {
-        Notification.warning({
-          title: "RAGO MAXIMO 31 DIAS",
-          message: 'SOLO SE PERMITE UN MAXIMO DE 31 DIAS',
-          duration: 2000,
-        });
-        return
-      }
-
-      
       this.mListaRutasIndicadoresCalidad = [];
 
       let iframe = document.getElementById("iframeContainerIndicadoresCalidad");
@@ -323,7 +310,7 @@ export default {
                 ? "*"
                 : this.itemRutasIndicadoresCalidad,
             fechaI: getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
-            fechaF: getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
+            fechaF: getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
             rutasString: rutasString,
             nameEmpresa: this.$cookies.get("nameEmpresa"),
             usuarioName: this.$cookies.get("namesUsuario"),
@@ -462,7 +449,7 @@ export default {
             "Desde ",
             getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
             " Hasta ",
-            getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
+            getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
           ],
           colSpan: 2,
         };
