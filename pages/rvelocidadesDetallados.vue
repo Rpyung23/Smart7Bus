@@ -61,6 +61,8 @@
                             </el-option>
                         </el-select>
 
+                        <el-checkbox style="margin-left: 12px; margin-bottom: 0 !important" v-model="checkedExVel">Exc. Velocidad</el-checkbox>
+
 
                     </div>
                 </card>
@@ -164,6 +166,7 @@ export default {
                 new Date(2016, 9, 10, 9, 0),
                 new Date(2016, 9, 23, 59, 59),
             ],
+            checkedExVel: false,
         };
     },
 
@@ -277,6 +280,7 @@ export default {
                                 : this.itemGruposPenalidadesSemanales,
                         rutas:
                             this.modelTiposEvento.length <= 0 ? "*" : this.modelTiposEvento,
+                        tipo: this.checkedExVel ? 1 : 0,
 
                     },
                     {

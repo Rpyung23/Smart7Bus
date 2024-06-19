@@ -20,11 +20,11 @@
               </flat-picker>
             </base-input>
 
-            <base-input title="Exportar a PDF" addon-left-icon="ni ni-calendar-grid-58">
+          <!--   <base-input title="Exportar a PDF" addon-left-icon="ni ni-calendar-grid-58">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker" v-model="fechaFinalSalidasPanelBusqueda">
               </flat-picker>
-            </base-input>
+            </base-input> -->
           </div>
 
           <div class="buttonsAdicionalesRbuttonsAdicionalesRVelocidadVelocidad">
@@ -263,7 +263,7 @@ export default {
           token: this.token,
           "unidades": this.itemUnidadSalidasPanelBusqueda.length > 0 ? this.itemUnidadSalidasPanelBusqueda : "*",
           fechaI: this.fechaInicialSalidasPanelBusqueda,
-          fechaF: this.fechaFinalSalidasPanelBusqueda
+          fechaF: this.fechaInicialSalidasPanelBusqueda
         }, {
           timeout: 600000,
         });
@@ -279,7 +279,7 @@ export default {
             "Fechas : " +
             this.fechaInicialSalidasPanelBusqueda +
             " hasta " +
-            this.fechaFinalSalidasPanelBusqueda,
+            this.fechaInicialSalidasPanelBusqueda,
 
           ];
           console.log(datos.data.datos)
@@ -314,7 +314,7 @@ export default {
             "Del : " +
             (this.fechaInicialSalidasPanelBusqueda) +
             " Hasta " +
-            (this.fechaFinalSalidasPanelBusqueda),
+            (this.fechaInicialSalidasPanelBusqueda),
           fontSize: 11,
           alignment: "left",
           bold: true,
