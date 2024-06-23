@@ -475,6 +475,10 @@ export default {
           },
           { text: "", alignment: "center", fontSize: 10 },
 
+          /*{text: "Recibo N° " },
+          
+          { text: "", alignment: "center", fontSize: 10 },*/
+
           { text: "---------------------------------------------------------" },
           {
             fontSize: 8.5,

@@ -265,6 +265,7 @@ import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { convertSecondtoTimeString } from "../../util/fechas";
+import { text } from "d3";
 
 export default {
   mixins: [clientPaginationMixin],
@@ -348,9 +349,12 @@ export default {
             this.crearPreviewReciboIngresoPanelCobroUAmbatena(
               this.multipleSelectionProduccionCobros
             );
-          } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r") {
+          } else if (
+            this.codigoEmpresaTableroCobrosProduccion == "costenita" ||
+            this.codigoEmpresaTableroCobrosProduccion == "consorcio-r"
+          ) {
             this.crearPreviewReciboIngresoPanelCobroModelo3(
-              this.multipleSelectionProduccionCobros
+              this.multipleSelectionProduccionCobros,null
             );
           } else {
             this.crearPreviewReciboIngresoPanelCobro(
@@ -401,7 +405,13 @@ export default {
 
       return format + " " + formatHora;
     },
-    async readlPanelTableroProduccion() {
+    async readlPanelTableroProduccion() 
+    {
+
+      this.mPendienteRPagosVehiculo = "0.00"
+      
+      let dinero = 0;
+
       this.loadingRTableroProduccionCobranzas = true;
       this.tableDataPanelControlProduccion = [];
 
@@ -425,7 +435,7 @@ export default {
       //console.log(datos.data)
 
       if (datos.data.status_code == 200) {
-        let dinero = 0;
+        
         for (var i = 0; i < datos.data.datos.length; i++) {
           dinero =
             dinero +
@@ -434,7 +444,7 @@ export default {
               : parseFloat(datos.data.datos[i].DeudaTotal));
         }
         console.log("DINERO : " + dinero);
-        this.mPendienteRPagosVehiculo = dinero;
+        this.mPendienteRPagosVehiculo = dinero.toFixed(2);
         this.tableDataPanelControlProduccion.push(...datos.data.datos);
       }
 
@@ -482,8 +492,7 @@ export default {
 
       var mListaCuerpoRecibo = [];
 
-      for (var i = 0; i < mLista.length; i++) 
-      {
+      for (var i = 0; i < mLista.length; i++) {
         dineroCobrado = dineroCobrado + parseFloat(mLista[i].DeudaTotal);
 
         var obj = [
@@ -503,9 +512,6 @@ export default {
           alignment: "center",
         },
       ];
-
-
-      
 
       var dd = {
         pageSize: { width: 220, height: mLista.length < 4 ? 300 : "auto" },
@@ -641,8 +647,6 @@ export default {
         },
       ];
 
-
-
       var dd = {
         pageSize: { width: 220, height: mLista.length < 4 ? 300 : "auto" },
         watermark: {
@@ -735,206 +739,234 @@ export default {
 
       this.banderaMarcoAguaRecibo = true;
     },
-    async crearPreviewReciboIngresoPanelCobroModelo3(mLista) 
-    {
+    async crearPreviewReciboIngresoPanelCobroModelo3(mLista,num_recibo) {
       try {
-        var atrasoFaltaTotal = 0
-      var atrasoJustTotal = 0
-      var dineroTotal = 0
-      var mListaSalidas = []
+        var atrasoFaltaTotal = 0;
+        var atrasoJustTotal = 0;
+        var dineroTotal = 0;
+        var mListaSalidas = [];
 
-      var datosSalidas = [];
-      var contentPDF = [];
-      
-      for(var contador = 0;contador<mLista.length;contador++)
-      {
-        mListaSalidas.push(mLista[contador].IDSalida)
-      }
+        var datosSalidas = [];
+        var contentPDF = [];
 
+        for (var contador = 0; contador < mLista.length; contador++) {
+          mListaSalidas.push(mLista[contador].IDSalida);
+        }
 
-      try {
-        var datos = await this.$axios.post(
-          process.env.baseUrl +
-            "/ProduccionPreviewDetalleInfoPanelProduccionCobranzaVueltas",
-          {
-            token: this.token,
-            salidas: mListaSalidas,
-          }
-        );
-        datosSalidas.push(...datos.data.datos);
-      } catch (error) {
-        console.log(error);
-        datosSalidas = [];
-      }
-
-      console.log(datosSalidas);
-
-      var empresa = [
-        {
-          text: this.$cookies.get("nameEmpresa").substring(0, 30),
-          fontSize: 12,
-          bold: true,
-          alignment: "center",
-        },
-      ];
-
-      
-
-      /*var recibo = [
-        {
-          text: ("N° RECIBO : "+(datosSalidas.length == 0 ? "NO PAGADO" : datosSalidas[0].NumeroCobro == 0 || datosSalidas[0].NumeroCobro == undefined ? "NO PAGADO" : datosSalidas[0].NumeroCobro)),
-          fontSize: 9,
-          bold: true,
-          alignment: "left",
-        },
-      ];*/
-
-      
-      var grupo = [
-        {
-          text: this.$cookies.get("empresa") == "consorcio-r" ? datosSalidas.length > 0 ? datosSalidas[0].detalle.length > 0 ? datosSalidas[0].detalle[0].descripcion : "" : "" : "",
-          fontSize: 12,
-          bold: true,
-          alignment: "center",
-        },
-      ];
-
-      contentPDF.push({
-        headerRows: 0,
-        fontSize: 12,
-        bold: true,
-        layout: "noBorders", // optional
-        table: {
-          widths: ["*"],
-          body: [empresa,grupo/*,recibo*/]
-        },
-      });
-
-      if (datosSalidas.length > 0) 
-      {
-
-        for (var i = 0; i < datosSalidas.length; i++) 
-        {
-          console.log(datosSalidas[i])
-          dineroTotal =  dineroTotal + parseFloat(datosSalidas[i].AtrasoPenalidadTotal)
-
-          var resultadoString = [
-            [
-              { text: "RELOJ", fontSize: 8.5, bold: true, alignment: "center" },
-              { text: "PROG", fontSize: 8.5, bold: true, alignment: "center" },
-              { text: "MARC", fontSize: 8.5, bold: true, alignment: "center" },
-              { text: "FALT", fontSize: 8.5, bold: true, alignment: "center" },
-              { text: "PEN", fontSize: 8.5, bold: true, alignment: "center" },
-            ],
-          ];
-
-          contentPDF.push(
+        try {
+          var datos = await this.$axios.post(
+            process.env.baseUrl +
+              "/ProduccionPreviewDetalleInfoPanelProduccionCobranzaVueltas",
             {
-              bold: true,
-              fontSize: 9,
-              alignment: "center",
-              layout: "noBorders", // optional
-              table: {
-                headerRows: 0,
-                widths: [35, 75, 25, 22],
-                body: [
-                  [
-                    "Unidad",
-                    "Salida # " + datosSalidas[i].idSali_m,
-                    "Ruta",
-                    "Vue",
-                  ],
-                ],
-              },
-            },
-            {
-              fontSize: 9,
-              alignment: "center",
-              layout: "noBorders", // optional
-              table: {
-                headerRows: 0,
-                widths: [35, 75, 25, 22],
-                body: [
-                  [
-                    datosSalidas[i].CodiVehiSali_m,
-                    datosSalidas[i].HoraSaliProgSali_mF.substring(0, 10),
-                    { text: datosSalidas[i].LetraRutaSali_m, bold: true },
-                    datosSalidas[i].NumeVuelSali_m,
-                  ],
-                ],
-              },
-            },
-            {
-              fontSize: 10,
-              layout: "noBorders",
-              table: {
-                widths: ["*"],
-                body: [["FREC : " + datosSalidas[i].DescFrec],["H. SALIDA : "+datosSalidas[i].HoraSaliProgSali_m_]],
-              },
+              token: this.token,
+              salidas: mListaSalidas,
             }
           );
-          
-          for (var j = 0; j < datosSalidas[i].detalle.length; j++) 
-          {
-            atrasoFaltaTotal = atrasoFaltaTotal + datosSalidas[i].detalle[j].AtrasoFNumeroControl
-            atrasoJustTotal = atrasoJustTotal + datosSalidas[i].detalle[j].AtrasoJNumeroControl
-            
-
-            resultadoString.push([
-              {
-                text: datosSalidas[i].detalle[j].DescCtrl.substring(0,8),
-                fontSize: 8.5,
-              },
-              {
-                text: datosSalidas[i].detalle[j].HoraProgSali_d.substring(
-                  0,
-                  5
-                ),
-                fontSize: 8.5,
-                alignment: "center",
-              },
-              {
-                text:
-                datosSalidas[i].detalle[j].HoraMarcSali_d,
-                fontSize: 8.5,
-                alignment: "center",
-              },
-              {
-                text: datosSalidas[i].detalle[j].AtrasoFNumeroControl,
-                fontSize: 8.5,
-                alignment: "center",
-              },
-              {
-                text: datosSalidas[i].detalle[j].AtrasoFPenalidadControl,
-                fontSize: 8.5,
-                alignment: "center",
-              },
-            ]);
-          }
-
-          contentPDF.push({
-            fontSize: 8.5,
-            layout: "noBorders",
-            table: {
-              headerRows: 0,
-              widths: [45, 23, 33, 19, 27],
-
-              body: resultadoString,
-            },
-          },{
-            fontSize: 6,
-            layout: "noBorders", // optional
-            table: {
-              body: [
-                ["."]
-              ],
-            },
-          })
-          
+          datosSalidas.push(...datos.data.datos);
+        } catch (error) {
+          console.log(error);
+          datosSalidas = [];
         }
-      }
 
-      contentPDF.push( { text: "---------------------------------------------------------" },{
+        console.log(datosSalidas);
+
+        var empresa = [
+          {
+            text: this.$cookies.get("nameEmpresa").substring(0, 30),
+            fontSize: 12,
+            bold: true,
+            alignment: "center",
+          },
+        ];
+
+        var recibo = [
+          {
+            text:
+              "N° RECIBO : " +
+              (num_recibo == null ? "NO PAGADO" : num_recibo),
+            fontSize: 9,
+            bold: true,
+            alignment: "left",
+          },
+        ];
+
+        var grupo = [
+          {
+            text:
+              this.$cookies.get("empresa") == "consorcio-r"
+                ? datosSalidas.length > 0
+                  ? datosSalidas[0].detalle.length > 0
+                    ? datosSalidas[0].detalle[0].descripcion
+                    : ""
+                  : ""
+                : "",
+            fontSize: 12,
+            bold: true,
+            alignment: "center",
+          },
+        ];
+
+        contentPDF.push({
+          headerRows: 0,
+          fontSize: 12,
+          bold: true,
+          layout: "noBorders", // optional
+          table: {
+            widths: ["*"],
+            body: [empresa, grupo, recibo],
+          },
+        });
+
+        if (datosSalidas.length > 0) {
+          for (var i = 0; i < datosSalidas.length; i++) {
+            console.log(datosSalidas[i]);
+            dineroTotal =
+              dineroTotal + parseFloat(datosSalidas[i].AtrasoPenalidadTotal);
+
+            var resultadoString = [
+              [
+                {
+                  text: "RELOJ",
+                  fontSize: 8.5,
+                  bold: true,
+                  alignment: "center",
+                },
+                {
+                  text: "PROG",
+                  fontSize: 8.5,
+                  bold: true,
+                  alignment: "center",
+                },
+                {
+                  text: "MARC",
+                  fontSize: 8.5,
+                  bold: true,
+                  alignment: "center",
+                },
+                {
+                  text: "FALT",
+                  fontSize: 8.5,
+                  bold: true,
+                  alignment: "center",
+                },
+                { text: "PEN", fontSize: 8.5, bold: true, alignment: "center" },
+              ],
+            ];
+
+            contentPDF.push(
+              { text: "", fontSize: 6 },
+              {
+                bold: true,
+                fontSize: 9,
+                alignment: "center",
+                layout: "noBorders", // optional
+                table: {
+                  headerRows: 0,
+                  widths: [35, 75, 25, 22],
+                  body: [
+                    [
+                      "Unidad",
+                      "Salida # " + datosSalidas[i].idSali_m,
+                      "Ruta",
+                      "Vue",
+                    ],
+                  ],
+                },
+              },
+              {
+                fontSize: 9,
+                alignment: "center",
+                layout: "noBorders", // optional
+                table: {
+                  headerRows: 0,
+                  widths: [35, 75, 25, 22],
+                  body: [
+                    [
+                      datosSalidas[i].CodiVehiSali_m,
+                      datosSalidas[i].HoraSaliProgSali_mF.substring(0, 10),
+                      { text: datosSalidas[i].LetraRutaSali_m, bold: true },
+                      datosSalidas[i].NumeVuelSali_m,
+                    ],
+                  ],
+                },
+              },
+              {
+                fontSize: 10,
+                layout: "noBorders",
+                table: {
+                  widths: ["*"],
+                  body: [
+                    ["FREC : " + datosSalidas[i].DescFrec],
+                    ["H. SALIDA : " + datosSalidas[i].HoraSaliProgSali_m_],
+                  ],
+                },
+              }
+            );
+
+            for (var j = 0; j < datosSalidas[i].detalle.length; j++) {
+              atrasoFaltaTotal =
+                atrasoFaltaTotal +
+                datosSalidas[i].detalle[j].AtrasoFNumeroControl;
+              atrasoJustTotal =
+                atrasoJustTotal +
+                datosSalidas[i].detalle[j].AtrasoJNumeroControl;
+
+              resultadoString.push([
+                {
+                  text: datosSalidas[i].detalle[j].DescCtrl.substring(0, 8),
+                  fontSize: 8.5,
+                },
+                {
+                  text: datosSalidas[i].detalle[j].HoraProgSali_d.substring(
+                    0,
+                    5
+                  ),
+                  fontSize: 8.5,
+                  alignment: "center",
+                },
+                {
+                  text: datosSalidas[i].detalle[j].HoraMarcSali_d,
+                  fontSize: 8.5,
+                  alignment: "center",
+                },
+                {
+                  text: datosSalidas[i].detalle[j].AtrasoFNumeroControl,
+                  fontSize: 8.5,
+                  alignment: "center",
+                },
+                {
+                  text: datosSalidas[i].detalle[j].AtrasoFPenalidadControl,
+                  fontSize: 8.5,
+                  alignment: "center",
+                },
+              ]);
+            }
+
+            contentPDF.push(
+              {
+                fontSize: 8.5,
+                layout: "noBorders",
+                table: {
+                  headerRows: 0,
+                  widths: [45, 23, 33, 19, 27],
+
+                  body: resultadoString,
+                },
+              },
+              {
+                fontSize: 6,
+                layout: "noBorders", // optional
+                table: {
+                  body: [["."]],
+                },
+              }
+            );
+          }
+        }
+
+        contentPDF.push(
+          { text: "---------------------------------------------------------" },
+          {
             text:
               "Fecha de Pago : " +
               (this.banderaMarcoAguaRecibo
@@ -947,51 +979,58 @@ export default {
             text: "Fecha Impresion : " + this.initFechaActualTicket(),
             pageOrientation: "portrait",
             fontSize: 8,
-          },{
-            text:
-              "Atraso Falta: "+atrasoFaltaTotal,
+          },
+          {
+            text: "Atraso Falta: " + atrasoFaltaTotal,
             fontSize: 7.5,
           },
           {
-            text:
-              "Atraso Just: "+atrasoJustTotal,
+            text: "Atraso Just: " + atrasoJustTotal,
             fontSize: 7.5,
-          },{
-            text:
-              "DINERO TOTAL: "+Number(dineroTotal).toFixed(2),
+          },
+          {
+            text: "DINERO TOTAL: " + Number(dineroTotal).toFixed(2),
             fontSize: 10,
             bold: true,
-          })
+          },
+          {
+            text: ".",
+            fontSize: 10,
+          }
+        );
 
-      var docDefinition = {
-        // a string or { width: 190, height: number }
-        pageSize: { width: 220, height: mLista.length < 4 ? 300 : 'auto' },
-        watermark: {
+        var docDefinition = {
+          // a string or { width: 190, height: number }
+          pageSize: { width: 220, height:  2245},
+          //pageSize: { width: 220, height: mLista.length < 4 ? 300 : "auto" },
+          /*watermark: {
           text: this.banderaMarcoAguaRecibo ? "NO PAGADO" : "",
           color: "red",
           opacity: 0.30,
           bold: true,
           fontSize: mLista.length > 50 ? 120 : 27,
-        },
-        pageMargins: [15, 15, 15, 15],
-        compress: true,
-        // header: [empresa],
-        content: contentPDF,
-      };
+        },*/
+          pageMargins: [15, 15, 15, 15],
+          compress: true,
+          // header: [empresa],
+          content: contentPDF,
+        };
 
-      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+        var pdfDocGenerator = pdfMake.createPdf(docDefinition);
 
-      pdfDocGenerator.getDataUrl((dataUrl) => {
-        this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl;
+        pdfDocGenerator.getDataUrl((dataUrl) => {
+          this.baseURlPDFComprobanteIngresoTableroCobro = dataUrl;
+          this.banderaMarcoAguaRecibo = true;
+        });
+
         this.banderaMarcoAguaRecibo = true;
-      });
-
-      this.banderaMarcoAguaRecibo = true;
       } catch (error) {
         this.notifyVue("danger", error.toString(), "ni ni-settings", 4500);
       }
     },
-    async realizarCobro() {
+    async realizarCobro() 
+    {
+      
       var mListaCobrosAuxiliar = [];
       mListaCobrosAuxiliar.push(...this.multipleSelectionProduccionCobros);
 
@@ -1000,7 +1039,7 @@ export default {
       var totalC = 0;
       for (var i = 0; i < this.multipleSelectionProduccionCobros.length; i++) 
       {
-        unidades.push(this.multipleSelectionProduccionCobros[i].Unidad)
+        unidades.push(this.multipleSelectionProduccionCobros[i].Unidad);
         codigos.push(this.multipleSelectionProduccionCobros[i].CodigoDeuda);
         totalC =
           totalC +
@@ -1008,7 +1047,6 @@ export default {
       }
 
       try {
-
         var datos = await this.$axios.post(
           process.env.baseUrl + "/RegistrarProduccionPagosVueltas",
           {
@@ -1017,41 +1055,41 @@ export default {
             total: totalC,
             codigos: codigos,
           }
-        )
+        );
+
+        console.log(datos.data)
 
         if (datos.data.status_code == 200) 
         {
-          if (datos.data.code == 200) 
-          {
-            this.banderaMarcoAguaRecibo = false;
 
-            this.notifyVue(
-              "default",
-              datos.data.msm + "\n <strong>Listo para imprimir</strong>",
-              "ni ni-check-bold",
-              3000
+          this.notifyVue(
+            "default",
+            datos.data.msm + "\n <strong>Listo para imprimir</strong>",
+            "ni ni-check-bold",
+            3000
+          );
+
+          if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
+            this.crearPreviewReciboIngresoPanelCobroUAmbatena(
+              this.multipleSelectionProduccionCobros
             );
-
-            if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
-              this.crearPreviewReciboIngresoPanelCobroUAmbatena(
-                this.multipleSelectionProduccionCobros
-              );
-            } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r"){
-  
-              this.crearPreviewReciboIngresoPanelCobroModelo3(
-                this.multipleSelectionProduccionCobros
-              );
-            }else{
-              
-              this.crearPreviewReciboIngresoPanelCobro(
-                this.multipleSelectionProduccionCobros
-              );
-            }
-
-            this.reloadStoreTableCobros(mListaCobrosAuxiliar);
+          } else if (
+            this.codigoEmpresaTableroCobrosProduccion == "costenita" ||
+            this.codigoEmpresaTableroCobrosProduccion == "consorcio-r"
+          ) {
+            this.crearPreviewReciboIngresoPanelCobroModelo3(
+              this.multipleSelectionProduccionCobros,
+              datos.data.recibo
+            );
           } else {
-            this.notifyVue("warning", datos.data.msm, "ni ni-fat-remove", 4500);
+            this.crearPreviewReciboIngresoPanelCobro(
+              this.multipleSelectionProduccionCobros
+            );
           }
+          
+
+          this.reloadStoreTableCobros(mListaCobrosAuxiliar);
+          //this.readlPanelTableroProduccion()
         } else {
           this.notifyVue("danger", datos.data.msm, "ni ni-settings", 4500);
         }
@@ -1064,44 +1102,52 @@ export default {
         );
       }
     },
-    async reloadStoreTableCobros(mListaCobrosAuxiliar) 
-    {
+    async reloadStoreTableCobros(mListaCobrosAuxiliar) {
+      
       try {
+
         var mListaTablaAuxiliar = [];
 
-      this.banderaMarcoAguaRecibo = false;
-      this.multipleSelectionProduccionCobros = [];
-      for (
-        var contadorListaAux = 0;
-        contadorListaAux < mListaCobrosAuxiliar.length;
-        contadorListaAux++
-      ) {
+        this.banderaMarcoAguaRecibo = false;
+        this.multipleSelectionProduccionCobros = [];
+
         for (
-          var contadorListaTable = 0;
-          contadorListaTable < this.tableDataPanelControlProduccion.length;
-          contadorListaTable++
+          var contadorListaAux = 0;
+          contadorListaAux < mListaCobrosAuxiliar.length;
+          contadorListaAux ++
         ) {
-          if (
-            mListaCobrosAuxiliar[contadorListaAux].Codigo ==
-            this.tableDataPanelControlProduccion[contadorListaTable].Codigo
+          for (
+            var contadorListaTable = 0;
+            contadorListaTable < this.tableDataPanelControlProduccion.length;
+            contadorListaTable++
           ) {
-            console.log("DELETE : " + contadorListaTable);
-            this.tableDataPanelControlProduccion.splice(contadorListaTable, 1);
+            console.log(mListaCobrosAuxiliar[contadorListaAux].IDSalida +" == "+
+            this.tableDataPanelControlProduccion[contadorListaTable].IDSalida)
+            if (
+              mListaCobrosAuxiliar[contadorListaAux].IDSalida ==
+              this.tableDataPanelControlProduccion[contadorListaTable].IDSalida
+            ) {
+              console.log("DELETE : " + contadorListaTable);
+              this.tableDataPanelControlProduccion.splice(
+                contadorListaTable,
+                1
+              );
+            }
           }
         }
-      }
 
-      mListaTablaAuxiliar.push(...this.tableDataPanelControlProduccion);
-      this.tableDataPanelControlProduccion = [];
-      this.tableDataPanelControlProduccion.push(...mListaTablaAuxiliar);
+        mListaTablaAuxiliar.push(...this.tableDataPanelControlProduccion);
 
-      var dinero = 0;
-      for (var i = 0; i < this.tableDataPanelControlProduccion.length; i++) {
-        dinero =
-          dinero +
-          parseFloat(this.tableDataPanelControlProduccion[i].DeudaTotal);
-      }
-      this.mPendienteRPagosVehiculo = Number(dinero).toFixed(2);
+        this.tableDataPanelControlProduccion = [];
+        this.tableDataPanelControlProduccion.push(...mListaTablaAuxiliar);
+
+        var dinero = 0;
+        for (var i = 0; i < this.tableDataPanelControlProduccion.length; i++) {
+          dinero =
+            dinero +
+            parseFloat(this.tableDataPanelControlProduccion[i].DeudaTotal);
+        }
+        this.mPendienteRPagosVehiculo = Number(dinero).toFixed(2);
       } catch (error) {
         this.notifyVue("danger", error.toString(), "ni ni-fat-remove", 4500);
       }
@@ -1128,8 +1174,11 @@ export default {
 
     if (this.codigoEmpresaTableroCobrosProduccion == "uambatena") {
       this.crearPreviewReciboIngresoPanelCobroUAmbatena([]);
-    } else if (this.codigoEmpresaTableroCobrosProduccion == "costenita" || this.codigoEmpresaTableroCobrosProduccion == "consorcio-r") {
-      this.crearPreviewReciboIngresoPanelCobroModelo3([]);
+    } else if (
+      this.codigoEmpresaTableroCobrosProduccion == "costenita" ||
+      this.codigoEmpresaTableroCobrosProduccion == "consorcio-r"
+    ) {
+      this.crearPreviewReciboIngresoPanelCobroModelo3([],null);
     } else {
       this.crearPreviewReciboIngresoPanelCobro([]);
     }

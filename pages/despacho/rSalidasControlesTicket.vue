@@ -808,7 +808,7 @@ export default {
     this.readAllUnidadesSalidasControles();
     this.readLineasRSalidasFrecuenciasControles();
     this.readRutaControles();
-    this.readReporteSalidasControles();
+    //this.readReporteSalidasControles();
     this.readGruposActivosPenalidadesSemanales();
     //this.createPDFSalidasControles()
   },
