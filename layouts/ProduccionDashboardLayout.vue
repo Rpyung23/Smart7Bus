@@ -59,6 +59,14 @@
         }">
         </sidebar-item>
 
+        
+        <sidebar-item translate="no" v-if="anularPago" :link="{
+          name: 'Anular Pagos',
+          icon: 'ni ni-single-copy-04 text-danger',
+          path: '/produccion/anularReciboConsorcio',
+        }">
+        </sidebar-item>
+
         <sidebar-item translate="no" v-if="ReporteProduccion" :link="{
           name: 'Reportes',
           icon: 'ni ni-book-bookmark text-blank',
@@ -169,6 +177,7 @@ export default {
       Tablero: false,
       TableroPerjudicado: false,
       tableroCobroTarjeta: false,
+      anularPago: false,
       rEstadisticoControles: false,
       ReporteProduccion: false,
       Recibopagosvehiculo: false,
@@ -219,6 +228,12 @@ export default {
         this.TableroPerjudicado = permisos.produccion != null &&
         permisos.produccion.TableroPerjudicado != null &&
         permisos.produccion.TableroPerjudicado
+        ? true
+        : false;
+
+    this.anularPago = permisos.produccion != null &&
+        permisos.produccion.anularPago != null &&
+        permisos.produccion.anularPago
         ? true
         : false;
 
