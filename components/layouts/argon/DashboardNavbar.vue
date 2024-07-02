@@ -65,15 +65,17 @@
               v-for="alerta in mListaAlertasDispositivosNotificaciones" :key="alerta.idDispEven">
               <div class="row align-items-center">
                 <div class="col-auto">
-                  <img alt="Image placeholder" src="img/monitoreo/alerta_lista_big.png" class="avatar rounded-circle" />
+                  <img alt="Image placeholder" src="img/monitoreo/alerta_lista_big.png" style="height: 1.5rem;width: 1.5rem;" class="avatar rounded-circle" />
                 </div>
                 <div class="col ml--2">
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
-                      <h4 class="mb-0 text-sm">
-                        Unidad N°{{ alerta.CodiVehiDispEven }} Dispositivo N°
-                        {{ alerta.CodiDispDispEven }}
-                      </h4>
+                      <label class="mb-0 text-sm">
+                        
+                        Unidad <strong>{{ alerta.unidad_notification }}</strong>
+                        {{ alerta.detalle_notificacion}}
+                      </label>
+                      <span style="font-size: 0.8rem;">{{alerta.fecha_notificacion}}</span>
                     </div>
                     <div class="text-right text-muted">
                       <small>{{ alerta.HoraDispEven }}</small>
@@ -87,8 +89,8 @@
               </div>
             </a>
           </div>
-          <!-- View all -->
-          <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">Ver todo</a>
+          <!-- View all
+          <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">Ver todo</a> -->
         </template>
       </base-dropdown>
 
@@ -275,11 +277,13 @@ export default {
 
     reproducirSonido() {
       var encontrado = false
-      if (this.mListaAlertasDispositivosNotificacionesAux.length > 0) {
-        for (var contador = 0; contador < this.mListaAlertasDispositivosNotificacionesAux.length; contador++) {
+      if (this.mListaAlertasDispositivosNotificacionesAux.length > 0) 
+      {
+        for (var contador = 0; contador < this.mListaAlertasDispositivosNotificacionesAux.length; contador++) 
+        {
           if (
-            this.mListaAlertasDispositivosNotificacionesAux[contador].idDispEven !=
-            this.mListaAlertasDispositivosNotificaciones[contador].idDispEven
+            this.mListaAlertasDispositivosNotificacionesAux[contador].id_notificacion !=
+            this.mListaAlertasDispositivosNotificaciones[contador].id_notificacion
           ) {
             console.log("NUEVO EVENTO")
             var audio = new Audio("mp3/alerta.mp3");
@@ -303,6 +307,8 @@ export default {
         } );
 
       this.mListaAlertasDispositivosNotificaciones = [];
+      console.log("----------- ALERTAS")
+      console.log(datos.data.datos)
 
       if (datos.data.status_code == 200) {
         this.mListaAlertasDispositivosNotificaciones.push(...datos.data.datos);
@@ -320,12 +326,12 @@ export default {
 
 
       this.oEspacio = (this.permisos != null && this.permisos.notification != null && this.permisos.notification.active != null && this.permisos.notification.active) ? false : true
-      /*if(this.permisos!=null && this.permisos.notification.active){
+      if(this.permisos!=null && this.permisos.notification.active){
             this.readNotificacionesAlertaDipositivos();
     setInterval(() => {
       this.readNotificacionesAlertaDipositivos();
     }, 10000);
-      }*/
+      }
     }
   },
   mounted() {

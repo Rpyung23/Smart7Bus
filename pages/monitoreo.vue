@@ -33,7 +33,7 @@
         @click="showInfoWindows(unidad, index)"
         :options="{
           label: {
-            text: unidad.CodiVehiMoni,
+            text: unidad.LetrRutaMoni != '' && unidad.LetrRutaMoni != null ? `${unidad.CodiVehiMoni} - RUTA ${unidad.LetrRutaMoni}` : `${unidad.CodiVehiMoni}`,
             color: unidad.icono.color,
             className: 'paddingLabel',
           },
