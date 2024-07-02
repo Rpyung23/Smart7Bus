@@ -33,7 +33,7 @@
         @click="showInfoWindows(unidad, index)"
         :options="{
           label: {
-            text: unidad.CodiVehiMoni,
+            text: unidad.LetrRutaMoniInicial != '' && unidad.LetrRutaMoniInicial != null ? `${unidad.CodiVehiMoni} - RUTA ${unidad.LetrRutaMoniInicial}` : `${unidad.CodiVehiMoni}`,
             color: unidad.icono.color,
             className: 'paddingLabel',
           },
@@ -992,7 +992,8 @@ export default {
           }
         } else {
           if (this.mListUnidades.length == 0) {
-            for (var i = 0; i < datos.data.data.length; i++) {
+            for (var i = 0; i < datos.data.data.length; i++) 
+            {
               this.mListUnidades[i] = datos.data.data[i];
               this.mListUnidades[i].isvisible = true;
               this.mListUnidades[i].icono = this.getIcono(
