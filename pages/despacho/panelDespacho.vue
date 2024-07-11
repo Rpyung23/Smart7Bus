@@ -1959,7 +1959,7 @@ export default {
 
         // SOLO SALIDAS ANULADAS CORREGIR XXQ YA ESTA API DE SALIDAS Q TRAE TODO
         var datos = await this.$axios.post(
-          process.env.baseUrl + "/readSalidasPanelDespacho",
+          process.env.baseUrl + "/readSalidasAnuladas",
           {
             token: this.token,
             ruta: ruta.LetrRuta,

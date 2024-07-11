@@ -306,12 +306,12 @@ export default {
           minWidth: 170,
         },
         {
-          prop: "atrasoFaltas",
+          prop: "atrasos",
           label: "F. Atrasos",
           minWidth: 170,
         },
         {
-          prop: "adelantoFaltas",
+          prop: "adelantos",
           label: "F. Adelantos",
           minWidth: 170,
         },
@@ -506,17 +506,17 @@ export default {
               ) {
                 faltaAtrasos =
                   faltaAtrasos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].atrasos;
                 faltaAdelantos =
                   faltaAdelantos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
               } else {
                 faltaAtrasos =
                   faltaAtrasos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].atrasos;
                 faltaAdelantos =
                   faltaAdelantos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
                 faltaAtrasosAtrasos =
                   faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
      
@@ -546,10 +546,10 @@ export default {
             } else {
               faltaAtrasos =
                 faltaAtrasos +
-                this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+                this.mListSalidasFrecuenciasControlesExcel[i].atrasos;
               faltaAdelantos =
                 faltaAdelantos +
-                this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+                this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
               faltaAtrasosAtrasos =
                 faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
 

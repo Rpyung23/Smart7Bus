@@ -306,12 +306,12 @@ export default {
           minWidth: 170,
         },
         {
-          prop: "atrasoFaltas",
+          prop: "atrasos",
           label: "F. Atrasos",
           minWidth: 170,
         },
         {
-          prop: "adelantoFaltas",
+          prop: "adelantos",
           label: "F. Adelantos",
           minWidth: 170,
         },
@@ -335,8 +335,8 @@ export default {
         "Hora Marcación": "HoraMarcSali_d",
         "Tiempo Atrasos": "atrasoFaltasTime",
         "Tiempo Adelantos": "adelantoFaltasTime",
-        "Fata Atrasos": "atrasoFaltas",
-        "Falta Adelantos": "adelantoFaltas",
+        "Fata Atrasos": "atrasos",
+        "Falta Adelantos": "adelantos",
         "PENALIDAD $": "PenaCtrlSali_d",
       },
     };
@@ -487,19 +487,19 @@ export default {
               ) {
                 faltaAtrasos =
                   faltaAtrasos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].atrasos;
                 faltaAdelantos =
                   faltaAdelantos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
                 
               } else {
 
                 faltaAtrasos =
                   faltaAtrasos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].atrasos;
                 faltaAdelantos =
                   faltaAdelantos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
                 faltaAtrasosAtrasos =
                   faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
                   //console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)
@@ -535,10 +535,10 @@ export default {
             }else{
               faltaAtrasos =
                   faltaAtrasos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].atrasoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].atrasos;
                 faltaAdelantos =
                   faltaAdelantos +
-                  this.mListSalidasFrecuenciasControlesExcel[i].adelantoFaltas;
+                  this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
                 faltaAtrasosAtrasos =
                   faltaAtrasosAtrasos + (faltaAtrasos + faltaAdelantos);
                   //console.log(this.mListSalidasFrecuenciasControlesExcel[i].idSali_m)

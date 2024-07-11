@@ -479,12 +479,12 @@ export default {
         } /*
 
         {
-          prop: "atrasoFaltas",
+          prop: "atrasos",
           label: "F. Atrasos",
           minWidth: 160,
         },
         {
-          prop: "adelantoFaltas",
+          prop: "adelantos",
           label: "F. Adelantos",
           minWidth: 160,
         },*/,
@@ -810,63 +810,70 @@ export default {
         [
           {
             text: "Unidad",
-            fontSize: 11,
+            fontSize: 9.5,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
           },
           {
             text: "Ruta",
-            fontSize: 11,
+            fontSize: 9.5,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
           },
           {
             text: "Vuelta",
-            fontSize: 11,
+            fontSize: 9.5,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
           },
           {
             text: "H.Salida",
-            fontSize: 11,
+            fontSize: 9.5,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
           },
           {
             text: "H. Llegada",
-            fontSize: 11,
+            fontSize: 9.5,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
           },
           {
             text: "T. Atraso",
-            fontSize: 11,
+            fontSize: 9.5,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
           },
           {
             text: "T. Adelanto",
-            fontSize: 11,
+            fontSize: 9.5,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
           },
           {
             text: "V. Max",
-            fontSize: 11,
+            fontSize: 9.5,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
           },
           {
             text: "PEN ($)",
-            fontSize: 11,
+            fontSize: 9.5,
+            bold: true,
+            fillColor: "#039BC4",
+            alignment: "center",
+          },
+          {
+            text: "CHOFER",
+            fontSize: 9.5,
             bold: true,
             fillColor: "#039BC4",
             alignment: "center",
@@ -884,20 +891,20 @@ export default {
             parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d);
           totalTimeAdelantos =
             totalTimeAdelantos +
-            parseInt(this.mListaSalidasPanelBusqueda[i].adelantoFaltas);
+            parseInt(this.mListaSalidasPanelBusqueda[i].adelantos);
           totalTimeAtrasos =
             totalTimeAtrasos +
-            parseInt(this.mListaSalidasPanelBusqueda[i].atrasoFaltas);
+            parseInt(this.mListaSalidasPanelBusqueda[i].atrasos);
 
           totalPenalidadLocal =
             totalPenalidadLocal +
             parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d);
           totalTimeAdelantosLocal =
             totalTimeAdelantosLocal +
-            parseInt(this.mListaSalidasPanelBusqueda[i].adelantoFaltas);
+            parseInt(this.mListaSalidasPanelBusqueda[i].adelantos);
           totalTimeAtrasosLocal =
             totalTimeAtrasosLocal +
-            parseInt(this.mListaSalidasPanelBusqueda[i].atrasoFaltas);
+            parseInt(this.mListaSalidasPanelBusqueda[i].atrasos);
 
           var estado =
             this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1
@@ -956,6 +963,11 @@ export default {
               text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
               fontSize: 8.5,
               alignment: "center",
+            },{
+              text: (this.mListaSalidasPanelBusqueda[i].nombres_chofer == undefined || 
+              this.mListaSalidasPanelBusqueda[i].nombres_chofer == null ? "" : this.mListaSalidasPanelBusqueda[i].nombres_chofer),
+              fontSize: 8.5,
+              alignment: "left",
             },
           ];
           resultadoString.push(arrys);
@@ -990,6 +1002,13 @@ export default {
                   alignment: "center",
                 },
                 {
+                  text: "",
+                  fontSize: 9,
+                  bold: true,
+                  fillColor: "#039BC4",
+                  color: "white",
+                  alignment: "center",
+                },{
                   text: "",
                   fontSize: 9,
                   bold: true,
@@ -1132,10 +1151,10 @@ export default {
             parseFloat(this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d);
           totalTimeAdelantos =
             totalTimeAdelantos +
-            parseInt(this.mListaSalidasPanelBusqueda[i].adelantoFaltas);
+            parseInt(this.mListaSalidasPanelBusqueda[i].adelantos);
           totalTimeAtrasos =
             totalTimeAtrasos +
-            parseInt(this.mListaSalidasPanelBusqueda[i].atrasoFaltas);
+            parseInt(this.mListaSalidasPanelBusqueda[i].atrasos);
 
           var estado =
             this.mListaSalidasPanelBusqueda[i].EstaSali_m <= 1
@@ -1194,6 +1213,12 @@ export default {
               text: this.mListaSalidasPanelBusqueda[i].PenaCtrlSali_d,
               fontSize: 8.5,
               alignment: "center",
+            },
+            {
+              text: (this.mListaSalidasPanelBusqueda[i].nombres_chofer == undefined || 
+              this.mListaSalidasPanelBusqueda[i].nombres_chofer == null ? "" : this.mListaSalidasPanelBusqueda[i].nombres_chofer),
+              fontSize: 8.5,
+              alignment: "left",
             },
           ];
           resultadoString.push(arrys);
@@ -1280,7 +1305,7 @@ export default {
               // headers are automatically repeated if the table spans over multiple pages
               // you can declare how many rows should be treated as headers
               headerRows: 0,
-              widths: [45, 220, 45, 95, 60, 60, 60, 45, 45],
+              widths: [40, 125, 45, 95, 60, 60, 60, 45, 45,100],
               body: resultadoString,
             },
           },

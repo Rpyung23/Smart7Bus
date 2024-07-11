@@ -202,12 +202,12 @@ export default {
           minWidth: 170,
         },
         {
-          prop: "atrasoFaltas",
+          prop: "atrasos",
           label: "F. Atrasos",
           minWidth: 170,
         },
         {
-          prop: "adelantoFaltas",
+          prop: "adelantos",
           label: "F. Adelantos",
           minWidth: 170,
         },
