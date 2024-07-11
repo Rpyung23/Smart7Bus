@@ -90,8 +90,6 @@
         >
         </sidebar-item>
 
-<<<<<<< HEAD
-        
         <sidebar-item translate="no" v-if="anularPago" :link="{
           name: 'Anular Pagos',
           icon: 'ni ni-single-copy-04 text-danger',
@@ -99,15 +97,6 @@
         }">
         </sidebar-item>
 
-        <sidebar-item translate="no" v-if="ReporteProduccion" :link="{
-          name: 'Reportes',
-          icon: 'ni ni-book-bookmark text-blank',
-        }">
-          <sidebar-item translate="no" :link="{
-          name: 'Cobros por Rubros',
-          path: '/produccion/rcobrosRubros',
-        }" />
-=======
         <sidebar-item
           translate="no"
           v-if="ReporteProduccion"
@@ -123,7 +112,6 @@
               path: '/produccion/rcobrosRubros',
             }"
           />
->>>>>>> a9ad4b928f68285c5a7b82f41dbcdd7f1672b9b0
 
           <sidebar-item
             translate="no"
@@ -269,7 +257,6 @@ export default {
       Tablero: false,
       TableroPerjudicado: false,
       tableroCobroTarjeta: false,
-      anularPago: false,
       rEstadisticoControles: false,
       ReporteProduccion: false,
       Recibopagosvehiculo: false,
@@ -278,6 +265,7 @@ export default {
       rminutosSancionConsorcioGeneral: false,
       rdeudasacumuladas: false,
       ReciboTarjetapagosvehiculoV: false,
+      anularPago: false,
     };
   },
   methods: {
@@ -319,12 +307,6 @@ export default {
       permisos.produccion != null &&
       permisos.produccion.TableroPerjudicado != null &&
       permisos.produccion.TableroPerjudicado
-        ? true
-        : false;
-
-    this.anularPago = permisos.produccion != null &&
-        permisos.produccion.anularPago != null &&
-        permisos.produccion.anularPago
         ? true
         : false;
 
@@ -394,6 +376,12 @@ export default {
       permisos.produccion.reportes != null &&
       permisos.produccion.reportes.rPerjudicado != null &&
       permisos.produccion.reportes.rPerjudicado
+        ? true
+        : false;
+
+    this.anularPago = permisos.produccion != null &&
+        permisos.produccion.anularPago != null &&
+        permisos.produccion.anularPago
         ? true
         : false;
 
