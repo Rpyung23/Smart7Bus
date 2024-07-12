@@ -215,6 +215,18 @@
             icon: 'ni ni-ungroup text-orange',
           }"
         >
+        <sidebar-item
+         translate="no"
+        v-if="
+            permisos != null &&
+            permisos.reportes != null &&
+            permisos.reportes.active != null &&
+            permisos.reportes.active  &&
+            permisos.reportes.rContadorExcesosVelocidad != null &&
+            permisos.reportes.rContadorExcesosVelocidad
+          "
+            :link="{ name: 'R. Cant Velocidad', path: '/rCantVelocidad' }"
+          />
           <sidebar-item
             :link="{ name: 'R. Kilometros', path: '/rdistancia' }"
             translate="no"

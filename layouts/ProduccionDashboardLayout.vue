@@ -90,6 +90,13 @@
         >
         </sidebar-item>
 
+        <sidebar-item translate="no" v-if="anularPago" :link="{
+          name: 'Anular Pagos',
+          icon: 'ni ni-single-copy-04 text-danger',
+          path: '/produccion/anularReciboConsorcio',
+        }">
+        </sidebar-item>
+
         <sidebar-item
           translate="no"
           v-if="ReporteProduccion"
@@ -258,6 +265,7 @@ export default {
       rminutosSancionConsorcioGeneral: false,
       rdeudasacumuladas: false,
       ReciboTarjetapagosvehiculoV: false,
+      anularPago: false,
     };
   },
   methods: {
@@ -368,6 +376,12 @@ export default {
       permisos.produccion.reportes != null &&
       permisos.produccion.reportes.rPerjudicado != null &&
       permisos.produccion.reportes.rPerjudicado
+        ? true
+        : false;
+
+    this.anularPago = permisos.produccion != null &&
+        permisos.produccion.anularPago != null &&
+        permisos.produccion.anularPago
         ? true
         : false;
 
