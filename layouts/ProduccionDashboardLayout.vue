@@ -90,12 +90,12 @@
         >
         </sidebar-item>
 
-        <sidebar-item translate="no" v-if="anularPago" :link="{
+        <!--<sidebar-item translate="no" v-if="anularPago" :link="{
           name: 'Anular Pagos',
           icon: 'ni ni-single-copy-04 text-danger',
           path: '/produccion/anularReciboConsorcio',
         }">
-        </sidebar-item>
+        </sidebar-item>-->
 
         <sidebar-item
           translate="no"
