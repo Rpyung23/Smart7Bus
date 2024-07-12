@@ -19,7 +19,7 @@
         >
         </sidebar-item>
 
-        <sidebar-item
+       <sidebar-item
           translate="no"
           v-if="
             permisos != null &&
@@ -60,16 +60,7 @@
         >
         </sidebar-item>
 
-        <!--<sidebar-item
-          translate="no"
-          :link="{
-            name: 'Rol Programado',
-            icon: 'ni ni-archive-2 text-danger',
-            path: '/despacho_automatico/CalendarioDespachoAutomatico',
-          }"
-        >
-        </sidebar-item>-->
-
+       
         <sidebar-item
           translate="no"
           v-if="
@@ -215,18 +206,7 @@
             icon: 'ni ni-ungroup text-orange',
           }"
         >
-        <sidebar-item
-         translate="no"
-        v-if="
-            permisos != null &&
-            permisos.reportes != null &&
-            permisos.reportes.active != null &&
-            permisos.reportes.active  &&
-            permisos.reportes.rContadorExcesosVelocidad != null &&
-            permisos.reportes.rContadorExcesosVelocidad
-          "
-            :link="{ name: 'R. Cant Velocidad', path: '/rCantVelocidad' }"
-          />
+        
           <sidebar-item
             :link="{ name: 'R. Kilometros', path: '/rdistancia' }"
             translate="no"
@@ -234,6 +214,19 @@
           <sidebar-item
             :link="{ name: 'Velocidades', path: '/rvelocidades' }"
             translate="no"
+          />
+          <sidebar-item
+         translate="no"
+        v-if="
+            permisos != null &&
+            permisos.reportes != null &&
+            permisos.reportes.active != null &&
+            permisos.reportes.active  &&
+            permisos.reportes.rContadorExcesosVelocidad != undefined &&
+            permisos.reportes.rContadorExcesosVelocidad != null &&
+            permisos.reportes.rContadorExcesosVelocidad
+          "
+            :link="{ name: 'R. Cant Velocidad', path: '/rCantVelocidad' }"
           />
           <sidebar-item
             :link="{
@@ -261,7 +254,7 @@
           />
         </sidebar-item>
 
-        <sidebar-item
+         <sidebar-item
           translate="no"
           v-if="
             permisos != null &&
@@ -291,20 +284,6 @@
             path: '/movilidad/rIcanlidadMovilidad',
           }"
         />
-        <!--<sidebar-item
-          translate="no"
-          v-if="
-            permisos != null &&
-            permisos.movilidad != null &&
-            permisos.movilidad.active != null &&
-            permisos.movilidad.active
-          "
-          :link="{
-            name: 'Movilidad2',
-            icon: 'ni ni-building text-dark',
-            path: '/movilidad2/rIndicadorConsolidado',
-          }"
-        />-->
       </template>
     </side-bar>
     <div class="main-content">
@@ -369,6 +348,7 @@ export default {
     },
   },
   mounted() {
+    
     this.oPermisosWebProduccionPanelJSON = this.$cookies.get("WebProduccion");
 
     this.pathProduccionTablero =
