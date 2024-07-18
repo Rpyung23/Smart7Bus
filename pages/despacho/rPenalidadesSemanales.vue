@@ -775,8 +775,212 @@ export default {
         },
       ];
 
+
+      var rutas = [
+        {
+          text:"Rutas : " +
+          (this.itemRutasRSalidasSemanales.length <= 0
+            ? "TODAS LAS RUTAS"
+            : this.getNombresRutasRDespachosGenerados(
+                this.itemRutasRSalidasSemanales
+              )),
+          fontSize: 11,
+          alignment: "left",
+        },
+      ];
+
+      
+
+
+
       var mList = [];
-      mList.push([
+
+      if(this.$cookies.get("empresa") == 'hemisfericos')
+      {
+        mList.push([
+        {
+          text: "UNIDAD",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. INICIO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. FINAL",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "T. SALIDAS",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. ATRASO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. ADELANTO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "T. DINERO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+      ]);
+
+      for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
+        var obj = [
+          {
+            text: this.mListDatosPenalidades[i].CodiVehiSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mI,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].HoraSaliProgSali_mF,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].totalSalidas,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].atrasos,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
+          {
+            text: this.mListDatosPenalidades[i].adelantos,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].PenaCtrlSali_d,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+        ];
+        mList.push(obj);
+      }
+
+      var docDefinition = {
+        pageSize: "A4",
+        pageMargins: [40, 80, 40, 60],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE PENALIDADES SEMANALES",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  /*[
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],*/
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450, 450,450],
+              body: [empresa, desde_hasta,rutas],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40, 60, 60, 55,52, 62, 50],
+              body: mList,
+            },
+          },
+        ],
+      };
+      }else{
+        mList.push([
         {
           text: "UNIDAD",
           fontSize: 8.5,
@@ -1006,6 +1210,8 @@ export default {
           },
         ],
       };
+      }
+      
 
       pdfMake.createPdf(docDefinition).download("RPS_" + Date.now());
     },
