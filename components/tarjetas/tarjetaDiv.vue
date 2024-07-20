@@ -31,7 +31,7 @@ export default {
 
     async readDetalleSalidaDPanelBusquedaControles(salida, controles) {
       this.baseURlPDFPanelDespachoTarjeta = "";
-      console.log("iniciooooo");
+      console.log("iniciooooo ");
       //console.log(salida);
 
       const idSalidasUnicas = new Set();
@@ -49,6 +49,7 @@ export default {
           idsalida: idSalidasUnicasArray,
         }
       );
+
       if (controles.length > 0) {
         const datosfiltrados = datos.data.data.filter((elemento) => {
           return controles.includes(elemento.CodiCtrlSali_d)
@@ -58,7 +59,7 @@ export default {
       } else {
         this.mListSalidasTarjeta = [];
         this.mListSalidasTarjeta.push(...datos.data.data);
-        //console.log("Aca los datos de api ", this.mListSalidasTarjeta)
+        console.log("Aca los datos de api ", this.mListSalidasTarjeta)
 
       }
 
@@ -69,9 +70,10 @@ export default {
       salida.forEach((elemento) => {
         if (!auxSalida.has(elemento.idSali_m)) {
           auxSalida.set(elemento.idSali_m, elemento)
+          console.log(elemento)
         }
       })
-      //console.log("Aca agrupado Salida ", auxSalida)
+      console.log("Aca agrupado Salida ", auxSalida)
 
 
       //arreglar datos (procesar datos)
@@ -171,6 +173,7 @@ export default {
             sumFalt = sumFalt + elementos[i].FaltSali_d;
           }
 
+
           if (elementos[i].isCtrlRefeSali_d == 0) {
             const pen = parseFloat(elementos[i].PenaCtrlSali_d);
             penFalt = penFalt + pen;
@@ -179,10 +182,81 @@ export default {
         return { sumFalt, penFalt }
       }
 
+      const sumTimes = (time1, time2) => {
+        // Función para convertir "HH:MM:SS" a segundos
+        const timeToSeconds = (time) => {
+          const [hours, minutes, seconds] = time.split(':').map(Number);
+          return (hours * 3600) + (minutes * 60) + seconds;
+        }
+
+        // Función para convertir segundos a "HH:MM:SS"
+        const secondsToTime = (seconds) => {
+          const hours = Math.floor(seconds / 3600);
+          seconds %= 3600;
+          const minutes = Math.floor(seconds / 60);
+          seconds %= 60;
+          return [
+            hours.toString().padStart(2, '0'),
+            minutes.toString().padStart(2, '0'),
+            seconds.toString().padStart(2, '0')
+          ].join(':');
+        }
+
+        // Convertir ambos tiempos a segundos
+        const totalSeconds = timeToSeconds(time1) + timeToSeconds(time2);
+
+        // Convertir el total de segundos a "HH:MM:SS"
+        return secondsToTime(totalSeconds);
+      }
+
+      function convertMinutesToTime(minutes) {
+        const absMinutes = Math.abs(minutes);
+        const hours = Math.floor(absMinutes / 60);
+        const mins = absMinutes % 60;
+        const timeString = [
+          hours.toString().padStart(2, '0'),
+          mins.toString().padStart(2, '0'),
+          '00'
+        ].join(':');
+        return (minutes < 0 ? '-' : '') + timeString;
+      }
+
+
+      const totalesFalta = (elementos) => {
+        let heightAux = 9.7;
+        let sumaAtrasos = '00:00:00';
+        let sumaAdelantos = '00:00:00';
+
+        for (let i = 0; i < elementos.length; i++) {
+          heightAux += 1;
+
+          if (elementos[i].FaltSali_d > 0 && elementos[i].isCtrlRefeSali_d === 0) {
+            const atrasoTime = convertMinutesToTime(elementos[i].FaltSali_d);
+            sumaAtrasos = sumTimes(sumaAtrasos, atrasoTime);
+          }
+
+          if (elementos[i].FaltSali_d < 0 && elementos[i].isCtrlRefeSali_d === 0) {
+            const adelantoTime = convertMinutesToTime(elementos[i].FaltSali_d);
+            sumaAdelantos = sumTimes(sumaAdelantos, adelantoTime);
+          }
+        }
+
+        return { sumaAtrasos, sumaAdelantos };
+      };
+
+
       const crearTicket = (lista) => {
         const contenido = []
         //console.log("aca elemento ticket", lista.length)
+        var totalAdelantos = '00:00:00';
+        var totalAtrasos = '00:00:00';
+        var totalFaltas = 0;
+        var totalDinero = 0;
+        var add = 0;
         lista.forEach((elemento, index) => {
+          var totalAdelantosT = '00:00:00';
+          var totalAtrasosT = '00:00:00';
+
           //Logo de la empresa 
           /*  const logoEmpresa =
              this.$cookies.get("empresa") == "tjerpazol"
@@ -233,6 +307,8 @@ export default {
           contenido.push(tituloEncabezado)
           //valores del encabezado
           const informacionSalida = auxSalida.get(elemento[0].idSali_mSali_d);
+          //console.log("informacionSalida")
+          //console.log(informacionSalida)
           const valoresEncabezado =
           {
             //bold: true,
@@ -295,16 +371,22 @@ export default {
           //footer
           contenido.push({ text: "Chofer: ", fontSize: 8 })
           contenido.push({ text: "Cobrador: ", fontSize: 8 })
+
+          const { sumaAtrasos, sumaAdelantos } = totalesFalta(elemento);
           contenido.push({
-            text: "Adelanto: " + informacionSalida?.adelantoFaltasTime || "Null",
+            text: "Adelanto: " + sumaAdelantos,
             fontSize: 8,
-          })
+          });
           contenido.push({
-            text: "Atrasos: " + informacionSalida?.atrasoFaltasTime || "Null",
+            text: "Atrasos: " + sumaAtrasos,
             fontSize: 8,
-          })
+          });
+          totalAdelantos = sumTimes(totalAdelantos, sumaAdelantos || '00:00:00');
+          totalAtrasos = sumTimes(totalAtrasos, sumaAtrasos || '00:00:00');
           //footer totales 
           const { penFalt, sumFalt } = totales(elemento)
+          totalFaltas = totalFaltas + Number(sumFalt || 0);
+          totalDinero = totalDinero + Number(penFalt || 0);
           const footerT = {
             fontSize: 10,
             bold: true,
@@ -316,7 +398,7 @@ export default {
               body: [
                 ["TOTAL Faltas : +" + sumFalt],
                 ["TOTAL Dinero : " + Number(penFalt).toFixed(2)],
-                [{ text: '.', bold: false,fontSize:10 }]
+                [{ text: '.', bold: false, fontSize: 10 }]
               ],
             },
           };
@@ -324,13 +406,40 @@ export default {
 
 
         })
+
         console.log("leng", contenido.length)
+        contenido.push({
+          text: "\n",
+          fontSize: 8,
+        })
+        contenido.push({
+          text: "SUMATORIA TOTAL",
+          fontSize: 16,
+          alignment: 'center',
+          bold: true
+        })
+        contenido.push({
+          text: "Total Adelantos: " + totalAdelantos,
+          fontSize: 8,
+        })
+        contenido.push({
+          text: "Total Atrasos: " + totalAtrasos,
+          fontSize: 8,
+        })
+        contenido.push({
+          text: "Total Faltas: " + totalFaltas,
+          fontSize: 8,
+        })
+        contenido.push({
+          text: "Total Dinero: " + totalDinero,
+          fontSize: 8,
+        })
         return contenido
       }
 
       var docDefinition = {
         // 2245 -> alto 800mm
-        pageSize: { width: 225, height:  2245},
+        pageSize: { width: 225, height: 2245 },
         pageMargins: [14, 14, 14, 14],
         //compress: false,
         //header: [empresa],
