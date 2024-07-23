@@ -125,6 +125,7 @@ import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPag
 import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
+import { getFecha_dd_mm_yyyy,validaRangoFechaNoMas30Dias } from "../util/fechas";
 
 export default {
   mixins: [clientPaginationMixin],
@@ -266,6 +267,17 @@ export default {
       this.mListaRVelocidades = []
       this.WorksheetExcelRPagosVehiculoResumidoProduccion = "RPV_W_RD_"+this.itemUnidadSalidasPanelBusqueda+"_"+Date.now()
       this.FileNameExcelRPagosVehiculoResumidoProduccion = "RPV_RD_"+this.itemUnidadSalidasPanelBusqueda+"_"+Date.now()+".xls"
+
+      if(!validaRangoFechaNoMas30Dias(getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
+      getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad)))
+      {
+        Notification.warning({
+          title: "RAGO MAXIMO 31 DIAS",
+          message: 'SOLO SE PERMITE UN MAXIMO DE 31 DIAS',
+          duration: 2000,
+        });
+        return
+      }
 
       this.headerExcelRPagosVehiculoResumidoProduccion = [
               "Reporte Kilometros Recorridos: "+(this.itemUnidadSalidasPanelBusqueda.length == 0  ? "TODAS LAS UNIDADES" : 
