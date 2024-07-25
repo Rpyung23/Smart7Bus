@@ -46,9 +46,10 @@
                 ><i class="ni ni-collection"></i
               ></span>
             </download-excel>
-            <!--<base-button type="danger" size="sm">
+            <base-button size="sm" title="EXPORTAR PDF" v-if="mListaRVelocidades.length > 0 ? true : false" type="danger"
+              @click="generatePdf()">
               <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
-            </base-button>-->
+            </base-button>
           </div>
           </div>
         </card>
@@ -122,10 +123,13 @@ import RouteBreadCrumb from "@/components/argon-core/Breadcrumb/RouteBreadcrumb"
 import { BasePagination } from "@/components/argon-core";
 import clientPaginationMixin from "~/components/tables/PaginatedTables/clientPaginationMixin";
 
-import swal from "sweetalert2";
 import Tabs from "@/components/argon-core/Tabs/Tabs";
 import TabPane from "@/components/argon-core/Tabs/Tab";
 import { getFecha_dd_mm_yyyy,validaRangoFechaNoMas30Dias } from "../util/fechas";
+import { getBase64LogoReportes } from "../util/logoReport";
+import pdfMake from "pdfmake/build/pdfmake.js";
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
   mixins: [clientPaginationMixin],
@@ -315,7 +319,202 @@ export default {
         });
       }
       this.loadingTableRVelocidadesBusquedaloading = false
+    },
+    generatePdf() {
+      var empresa = [
+        {
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          fontSize: 12,
+          alignment: "left",
+          bold: true,
+        },
+      ];
+      var tipoReporte = [
+        {
+          text:
+            "REPORTE DE LA RUTA : TODAS LAS RUTAS",
+          fontSize: 11,
+          alignment: "left",
+          bold: true,
+        },
+      ];
+      var desde_hasta = [
+        {
+          text:
+            "Del : " +
+            (this.fechaInicialSalidasPanelBusqueda) +
+            " Hasta " +
+            (this.fechaInicialSalidasPanelBusqueda),
+          fontSize: 11,
+          alignment: "left",
+          bold: true,
+        },
+      ];
+      var unidades = [
+        {
+          text:
+            "Unidades : " +
+            (this.itemUnidadSalidasPanelBusqueda.length === 0
+              ? "TODAS LAS UNIDADES"
+              : this.itemUnidadSalidasPanelBusqueda.toString()),
+          fontSize: 11,
+          alignment: "left",
+          bold: true,
+        },
+      ];
+      var resultadoString = [
+        [
+          {
+            text: "Unidad",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Fecha",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Ruta",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Km. Trabajado",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Km. Muerto",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+          {
+            text: "Km. Total",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },
+        ],
+      ];
+      for (var i = 0; i < this.mListaRVelocidades.length; i++) {
+        var arrys = [
+          {
+            text: this.mListaRVelocidades[i].CodiVehiHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].FechHistEven,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].DescRutaSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].odometroTrabajado,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].odometroMuerto,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListaRVelocidades[i].odometroTotal,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+        ];
+        resultadoString.push(arrys);
+      }
+      var docDefinition = {
+        pageSize: "A4",
+        pageOrientation: "portrait",
+        pageMargins: [30, 80, 40, 30],
+        header: {
+          margin: 15,
+          columns: [
+            {
+              image: getBase64LogoReportes(this.$cookies.get("empresa")),
+              width: 100,
+              height: 50,
+              margin: [30, 0, 0, 0],
+            },
+            {
+              layout: "noBorders",
+              table: {
+                widths: ["*"],
+                body: [
+                  [
+                    {
+                      text: "REPORTE KILOMETROS TRABAJADOS/MUERTOS",
+                      alignment: "center",
+                      fontSize: 16,
+                      bold: true,
+                    },
+                  ],
+                  /*[
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],*/
+                ],
+              },
+            },
+          ],
+        },
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450, 450, 450],
+              body: [empresa, tipoReporte, desde_hasta, unidades],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40, 60, 180, 50, 40, 40],
+              body: resultadoString,
+            },
+          },
+        ],
+      };
+      pdfMake.createPdf(docDefinition).download("RDV_" + Date.now());
     }
+
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
