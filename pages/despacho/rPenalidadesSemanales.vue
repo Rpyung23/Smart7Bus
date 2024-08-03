@@ -105,16 +105,19 @@
               <el-table-column prop="atrasos" label="F. Atraso" width="150">
               </el-table-column>
 
-              <el-table-column prop="atrasosTiempo" label="T. Atraso" width="150">
-              </el-table-column>
+              <!--<el-table-column prop="atrasosTiempo" label="T. Atraso" width="150">
+              </el-table-column>-->
 
               <el-table-column prop="adelantos" label="F. Adelanto" width="150">
               </el-table-column>
 
-              <el-table-column prop="adelantoTiempo" label="T. Adelanto" width="150">
-              </el-table-column>
+              <!--<el-table-column prop="adelantoTiempo" label="T. Adelanto" width="150">
+              </el-table-column>-->
 
               <el-table-column prop="PenaCtrlSali_d" label="T. Dinero" width="150">
+              </el-table-column>
+
+              <el-table-column prop="chofer" label="Chofer" width="250">
               </el-table-column>
 
               <div slot="empty"></div>
@@ -217,9 +220,9 @@ export default {
         "TOTAL SALIDAS": "totalSalidas",
         RUTA: "DescRutaSali_m",
         "FALTA ATRASOS": "atrasos",
-        "TIEMPO ATRASOS": "atrasosTiempo",
+        /*"TIEMPO ATRASOS": "atrasosTiempo",*/
         "FALTA ADELANTOS": "adelantos",
-        "TIEMPO ADELANTO": "adelantoTiempo",
+        /*"TIEMPO ADELANTO": "adelantoTiempo",*/
         "TOTAL DINERO": "PenaCtrlSali_d",
       },
       json_fields_excelRPenalidadesSemanales_Hemisfericos: {
@@ -912,14 +915,14 @@ export default {
             color: "white",
             alignment: "center",
           },
-          {
+         /* {
             text: "T. ATRASO",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
+          },*/
           {
             text: "F. ADELANTO",
             fontSize: 8.5,
@@ -928,16 +931,23 @@ export default {
             color: "white",
             alignment: "center",
           },
-          {
+          /*{
             text: "T. ADELANTO",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
             color: "white",
             alignment: "center",
-          },
+          },*/
           {
             text: "T. DINERO",
+            fontSize: 8.5,
+            bold: true,
+            fillColor: "#039BC4",
+            color: "white",
+            alignment: "center",
+          },{
+            text: "CHOFER",
             fontSize: 8.5,
             bold: true,
             fillColor: "#039BC4",
@@ -1002,7 +1012,7 @@ export default {
                   ? "black"
                   : "black",
             },
-            {
+            /*{
               text: this.mListDatosPenalidades[i].atrasosTiempo,
               fontSize: 8.5,
               alignment: "center",
@@ -1010,19 +1020,23 @@ export default {
                 this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
                   ? "black"
                   : "black",
-            },
+            },*/
             {
               text: this.mListDatosPenalidades[i].adelantos,
               fontSize: 8.5,
               alignment: "center",
             },
-            {
+            /*{
               text: this.mListDatosPenalidades[i].adelantoTiempo,
               fontSize: 8.5,
               alignment: "center",
-            },
+            },*/
             {
               text: this.mListDatosPenalidades[i].PenaCtrlSali_d,
+              fontSize: 8.5,
+              alignment: "center",
+            },{
+              text: this.mListDatosPenalidades[i].chofer,
               fontSize: 8.5,
               alignment: "center",
             },
@@ -1087,7 +1101,7 @@ export default {
             {
               table: {
                 headerRows: 0,
-                widths: [40, 60, 60, 55, 170, 52, 48, 62, 62, 50],
+                widths: [40, 60, 60, 55, 150, 52, 62, 50,120],
                 body: mList,
               },
             },
