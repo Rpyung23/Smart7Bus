@@ -287,11 +287,16 @@ export default {
         if (datos.data.status_code == 200) {
           console.log("Agrego indicadores Calidad Totales.........");
           this.genratePdf(datos.data.datos);
+        }else {
+          Notification.info({
+            title: "Reporte de Indicadores Consolidado de Calidad (Total)",
+            message: datos.data.msm,
+          });
         }
       } catch (error) {
         console.log(error);
         Notification.error({
-          title: "ERROR",
+          title: "Reporte de Indicadores Consolidado de Calidad (Total)",
           message: error.toString(),
           duration: 2500,
         });

@@ -170,13 +170,13 @@ export default {
           this.mListaRutasSalidasSemanales.push(...datos.data.data);
         } else {
           Notification.info({
-            title: "Tipos Eventos Dispositivos",
+            title: "Reporte de Indicadores de Calidad (Mes)",
             message: datos.data.msm,
           });
         }
       } catch (error) {
         Notification.error({
-          title: "Tipos Eventos Dispositivos",
+          title: "Reporte de Indicadores de Calidad (Mes)",
           message: error.toString(),
         });
       }

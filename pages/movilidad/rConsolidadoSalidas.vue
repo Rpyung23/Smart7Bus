@@ -198,14 +198,14 @@ export default {
           console.log(datos.data.data);
           this.mListaRutasSalidasSemanales.push(...datos.data.data);
         } else {
-          Notification.info({
-            title: "Tipos Eventos Dispositivos",
+          Notification.warning({
+            title: "Reporte de Consolidado de Salidas",
             message: datos.data.msm,
           });
         }
       } catch (error) {
         Notification.error({
-          title: "Tipos Eventos Dispositivos",
+          title: "Reporte de Consolidado de Salidas",
           message: error.toString(),
         });
       }
@@ -267,11 +267,16 @@ export default {
         if (datos.data.status_code == 200) {
           console.log("Agrego Consolidado Salidas .........");
           this.genratePdf(datos.data.datos);
+        }else {
+          Notification.warning({
+            title: "Reporte de Consolidado de Salidas",
+            message: datos.data.msm,
+          });
         }
       } catch (error) {
         console.log(error);
         Notification.error({
-          title: "ERROR",
+          title: "Reporte de Consolidado de Salidas",
           message: error.toString(),
           duration: 2500,
         });

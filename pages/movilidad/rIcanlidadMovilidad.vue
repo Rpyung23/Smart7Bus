@@ -328,10 +328,16 @@ export default {
           console.log("Agrego indicadores Calidad .........");
           this.genratePdf(datos.data.datos);
         }
+        else {
+          Notification.warning({
+            title: "Reporte de Indicadores de Calidad (Diario)",
+            message: datos.data.msm,
+          });
+        }
       } catch (error) {
         console.log(error);
         Notification.error({
-          title: "ERROR",
+          title: "Reporte de Indicadores de Calidad (Diario)",
           message: error.toString(),
           duration: 2500,
         });
