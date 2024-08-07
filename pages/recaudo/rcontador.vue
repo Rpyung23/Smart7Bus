@@ -2,29 +2,15 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-select
-              v-model="itemUnidadContadorPasajero"
-              multiple
-              filterable
-              style="margin-right: 0.5rem"
-              remote
-              placeholder="Ingrese unidad"
-              :remote-method="remoteMethodUnidadesContadorPasajeros"
-              :loading="loadingUnidadesContadorPasajeros"
-            >
-              <el-option
-                v-for="item in optionsUnidadesSelectContadorPasajero"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+            <el-select v-model="itemUnidadContadorPasajero" multiple filterable style="margin-right: 0.5rem" remote
+              placeholder="Ingrese unidad" :remote-method="remoteMethodUnidadesContadorPasajeros"
+              :loading="loadingUnidadesContadorPasajeros">
+              <el-option v-for="item in optionsUnidadesSelectContadorPasajero" :key="item.CodiVehi"
+                :label="item.CodiVehi" :value="item.CodiVehi">
               </el-option>
             </el-select>
 
@@ -47,124 +33,73 @@
             >
             </el-date-picker> -->
 
-            <el-date-picker
-              v-model="fechaInicialConteoPasajeros"
-              type="datetime"
-              format="yyyy-MM-dd HH:mm:ss"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              style="margin-right: 0.5rem"
-              placeholder="Fecha/Hora inicial"
-            >
+            <el-date-picker v-model="fechaInicialConteoPasajeros" type="datetime" format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss" style="margin-right: 0.5rem" placeholder="Fecha/Hora inicial">
             </el-date-picker>
 
-            <el-date-picker
-              v-model="fechaFinalConteoPasajeros"
-              type="datetime"
-              format="yyyy-MM-dd HH:mm:ss"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              placeholder="Fecha/Hora final"
-            >
+            <el-date-picker v-model="fechaFinalConteoPasajeros" type="datetime" format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss" placeholder="Fecha/Hora final">
             </el-date-picker>
+
+
+
           </div>
 
           <div class="buttonsAdicionalesRContador">
-            <base-button
-              icon
-              size="sm"
-              type="primary"
-              @click="readConteoPasajeros()"
-            >
-              <span class="btn-inner--icon"
-                ><i class="el-icon-search"></i
-              ></span>
+            <base-button icon size="sm" type="primary" @click="readConteoPasajeros()">
+              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>
-            <base-button
-              icon
-              size="sm"
-              v-if="tableDataRecaudoContadorPasajeros.length > 0 ? true : false"
-              title="EXPORTAR A PDF"
-              @click="exportConteoPasajerosPDf()"
-              type="danger"
-            >
-              <span class="btn-inner--icon"
-                ><i class="ni ni-single-copy-04"></i
-              ></span>
+            <base-button icon size="sm" v-if="tableDataRecaudoContadorPasajeros.length > 0 ? true : false"
+              title="EXPORTAR A PDF" @click="exportConteoPasajerosPDf()" type="danger">
+              <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
             </base-button>
-            <download-excel
-              class="btn btn-sm btn-success"
-              title="EXPORTAR A EXCEL"
-              v-if="tableDataRecaudoContadorPasajeros.length > 0 ? (permisos != null && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active && permisos.recaudo.ExportarExcel != null && permisos.recaudo.ExportarExcel) ?  true : false  : false"
-              :header="oHeaderExcelConteoPasajeros"
-              :data="tableDataRecaudoContadorPasajeros"
+            <download-excel class="btn btn-sm btn-success" title="EXPORTAR A EXCEL"
+              v-if="tableDataRecaudoContadorPasajeros.length > 0 ? (permisos != null && permisos.recaudo != null && permisos.recaudo.active != null && permisos.recaudo.active && permisos.recaudo.ExportarExcel != null && permisos.recaudo.ExportarExcel) ? true : false : false"
+              :header="oHeaderExcelConteoPasajeros" :data="tableDataRecaudoContadorPasajeros"
               :fields="json_fields_excelRPagosVehiculoProduccion"
               :worksheet="ConteoPasajerosWorksheetExcelRPagosVehiculoProduccion"
-              :name="ConteoPasajerosFileNameExcelRPagosVehiculoProduccion"
-            >
-              <span class="btn-inner--icon"
-                ><i class="ni ni-collection"></i
-              ></span>
+              :name="ConteoPasajerosFileNameExcelRPagosVehiculoProduccion">
+              <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
             </download-excel>
             <!--<base-button type="danger" size="sm">
               <span class="btn-inner--icon"><i class="ni ni-ungroup"></i></span>
             </base-button>-->
+
+
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectRubrosEstadosRPagosVehiculoProduccion">
-            <el-select
-              v-model="mSelectRutaContadorPasajero"
-              multiple
-              collapse-tags
-              placeholder="Lineas"
-            >
-              <el-option
-                v-for="item in mListLineasContadorPasajeros"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
+            <el-select v-model="mSelectRutaContadorPasajero" multiple collapse-tags placeholder="Lineas">
+              <el-option v-for="item in mListLineasContadorPasajeros" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
               </el-option>
             </el-select>
           </div>
 
-          <div class="cardTextoRPagosVehiculoProduccion"></div>
+          <div class="cardTextoRPagosVehiculoProduccion switch">
+            <el-switch v-model="oSwitchOrdenarCobrosRubrosFechas" active-text="A. Fecha" inactive-text="A. Ruta">
+            </el-switch>
+          </div>
+
         </card>
 
-        <card
-          class="no-border-card"
-          style="margin-bottom: 0rem"
-          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1"
-          footer-classes="pb-2"
-        >
+        <card class="no-border-card" style="margin-bottom: 0rem"
+          body-classes="card-bodyRPagosVehiculoProduccion px-0 pb-1" footer-classes="pb-2">
           <div>
-            <el-table
-              v-loading="loadingUnidadesContadorPasajerosPasajeros"
-              element-loading-text="Cargando Datos..."
-              :data="tableDataRecaudoContadorPasajeros"
-              highlight-current-row
-              row-key="id"
-              height="calc(100vh - 13rem)"
-              style="width: 100%"
-              class="tablePanelControlProduccion"
-              header-row-class-name="thead-dark"
-            >
+            <el-table v-loading="loadingUnidadesContadorPasajerosPasajeros" element-loading-text="Cargando Datos..."
+              :data="tableDataRecaudoContadorPasajeros" highlight-current-row row-key="id" height="calc(100vh - 13rem)"
+              style="width: 100%" class="tablePanelControlProduccion" header-row-class-name="thead-dark">
               <el-table-column prop="unidad" label="Unidad" minWidth="110">
               </el-table-column>
 
               <el-table-column prop="hora" label="Fecha" minWidth="180">
               </el-table-column>
 
-              <el-table-column
-                prop="DescRutaSali_m"
-                label="Ruta - Linea"
-                minWidth="200"
-              >
+              <el-table-column prop="DescRutaSali_m" label="Ruta - Linea" minWidth="200">
               </el-table-column>
 
               <el-table-column prop="subida1" label="Puerta 1" minWidth="130">
@@ -191,11 +126,7 @@
                 minWidth="160"
               >
               </el-table-column>-->
-              <el-table-column
-                prop="totalSubidas"
-                label="T. Subidas"
-                minWidth="140"
-              >
+              <el-table-column prop="totalSubidas" label="T. Subidas" minWidth="140">
               </el-table-column>
 
               <el-table-column prop="dinero" label="T. Dinero" minWidth="140">
@@ -204,11 +135,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column
-                prop="valorPonderada"
-                label="T. Central ($)"
-                minWidth="150"
-              >
+              <el-table-column prop="valorPonderada" label="T. Central ($)" minWidth="150">
               </el-table-column>
 
               <el-table-column prop="Odometro" label="Km/H" minWidth="110">
@@ -234,6 +161,7 @@ import {
   Button,
   Select,
   Option,
+  Switch,
   Autocomplete,
   DatePicker,
   RadioButton,
@@ -272,6 +200,7 @@ export default {
     [RadioButton.name]: RadioButton,
     [Radio.name]: Radio,
     [Button.name]: Button,
+    [Switch.name]: Switch,
   },
   data() {
     return {
@@ -280,6 +209,7 @@ export default {
       mListLineasContadorPasajeros: [],
       loadingUnidadesContadorPasajeros: false,
       loadingUnidadesContadorPasajerosPasajeros: false,
+      oSwitchOrdenarCobrosRubrosFechas: true,
       mSelectRutaContadorPasajero: [],
       itemUnidadContadorPasajero: [],
       token: this.$cookies.get("token"),
@@ -381,19 +311,19 @@ export default {
       this.oHeaderExcelConteoPasajeros = [
         "REPORTE CONTEO DE PASAJEROS DIARIO",
         "Fechas : " +
-          this.fechaInicialConteoPasajeros.toString() +
-          " hasta " +
-          this.fechaFinalConteoPasajeros.toString(),
+        this.fechaInicialConteoPasajeros.toString() +
+        " hasta " +
+        this.fechaFinalConteoPasajeros.toString(),
         "Unidades : " +
-          (this.itemUnidadContadorPasajero.length <= 0
-            ? "TODAS LAS UNIDADES"
-            : this.itemUnidadContadorPasajero),
+        (this.itemUnidadContadorPasajero.length <= 0
+          ? "TODAS LAS UNIDADES"
+          : this.itemUnidadContadorPasajero),
         "Rutas : " +
-          (this.mSelectRutaContadorPasajero.length <= 0
-            ? "TODAS LAS RUTAS"
-            : this.getNombresRutasRConteoPasajeros(
-                this.mSelectRutaContadorPasajero
-              )),
+        (this.mSelectRutaContadorPasajero.length <= 0
+          ? "TODAS LAS RUTAS"
+          : this.getNombresRutasRConteoPasajeros(
+            this.mSelectRutaContadorPasajero
+          )),
       ];
 
       if (this.loadingUnidadesContadorPasajerosPasajeros) {
@@ -738,7 +668,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 65,130, 50, 50, 50, 80, 60, 45, 40, 60],
+              widths: [40, 65, 130, 50, 50, 50, 80, 60, 45, 40, 60],
               body: resultadoString,
             },
           },
@@ -765,8 +695,7 @@ export default {
       pdfMake.createPdf(docDefinition).download("RCP_" + Date.now());
     },
   },
-  mounted() 
-  {
+  mounted() {
     this.permisos = this.$cookies.get("permisos")
 
     this.readAllUnidadesContadorPasajeros();
@@ -780,6 +709,7 @@ export default {
 .form-group {
   margin-bottom: 0rem;
 }
+
 .form-controlPersonal {
   display: block;
   width: 100%;
@@ -804,10 +734,12 @@ export default {
   align-items: center;
   width: 90%;
 }
+
 .cardSelectRubrosEstadosPagosVehiculoProduccionContainer {
   display: flex;
   justify-content: space-between;
 }
+
 .el-table .warning-row-panelControlProduccion {
   background: rgba(252, 143, 143, 0.692) !important;
 }
@@ -819,6 +751,7 @@ export default {
 .no-border-card .card-footer {
   border-top: 0;
 }
+
 .card-bodyRPagosVehiculoProduccion {
   padding: 0rem !important;
   height: calc(100vh - 13rem);
@@ -827,5 +760,9 @@ export default {
 
 .card-bodyTopOpcionesRPagosVehiculoPRoduccion {
   padding-top: 0.25rem !important;
+}
+
+.switch {
+  margin-left: 24px;
 }
 </style>
