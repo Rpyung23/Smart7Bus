@@ -299,7 +299,7 @@ export default {
       this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
 
       this.oheaderExcelRSalidasSemanales = [
-        "Reporte Despachos Semanales",
+        "TABLA OPERACIONAL",
         "Fechas : " +
         this.fechaDia1SalidasPanelBusqueda +
         " hasta " +
@@ -530,7 +530,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE PENALIDADES SEMANALES",
+                      text: "TABLA OPERACIONAL",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
