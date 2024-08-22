@@ -20,7 +20,7 @@
               </flat-picker>
             </base-input>
 
-          <!--   <base-input title="Exportar a PDF" addon-left-icon="ni ni-calendar-grid-58">
+            <!--   <base-input title="Exportar a PDF" addon-left-icon="ni ni-calendar-grid-58">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker" v-model="fechaFinalSalidasPanelBusqueda">
               </flat-picker>
@@ -32,15 +32,15 @@
               <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
             </base-button>
 
-            <base-button size="sm" title="EXPORTAR PDF" v-if="mListaRVelocidades.length > 0 ? true : false" type="danger"
-              @click="generatePdf()">
+            <base-button size="sm" title="EXPORTAR PDF" v-if="mListaRVelocidades.length > 0 ? true : false"
+              type="danger" @click="generatePdf()">
               <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
             </base-button>
 
             <download-excel title="EXCEL" v-if="mListaRVelocidades.length > 0
               ? true
               : false
-              " class="btn btn-icon btn-fab btn-success btn-sm" :header="ReporteheaderExcelVelocidades"
+            " class="btn btn-icon btn-fab btn-success btn-sm" :header="ReporteheaderExcelVelocidades"
               :data="mListaRVelocidades" :fields="json_fields_excelReporteVelocidades"
               :worksheet="WorksheetExcelReporteVelocidades" :name="FileNameExcelReporteCelocidades">
               <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
@@ -48,7 +48,32 @@
 
 
           </div>
+
         </card>
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
+          footer-classes="pb-2">
+
+          <div class="cardSelectAgrupacionRIcalidad"
+            style="display: flex; justify-content: center; align-items: center">
+            <el-select v-model="modelTiposEvento" multiple collapse-tags style="margin-right: 1rem;" placeholder="Rutas"
+              :loading="loadingTableUnidadesSalidasPanelBusquedaloading" @change="updateSelectedRouteDescriptions">
+              <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.idRuta">
+              </el-option>
+            </el-select>
+
+            <div class="custom-radio-group">
+              <el-radio-group v-model="radioTipoDespacho" style="display: flex; align-items: center;">
+                <el-radio :label="1" style="margin-right: 1rem;">A. Día</el-radio>
+                <el-radio :label="2">A. Ruta</el-radio>
+              </el-radio-group>
+            </div>
+          </div>
+        </card>
+
+
+
 
         <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRVelocidades px-0 pb-1"
           footer-classes="pb-2">
@@ -80,6 +105,7 @@ import {
   Autocomplete,
   DatePicker,
   RadioButton,
+  RadioGroup,
   Radio,
   Notification,
   Checkbox,
@@ -119,6 +145,7 @@ export default {
     [Autocomplete.name]: Autocomplete,
     [TableColumn.name]: TableColumn,
     [RadioButton.name]: RadioButton,
+    [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
     [Checkbox.name]: Checkbox,
     [CheckboxButton.name]: CheckboxButton,
@@ -129,6 +156,10 @@ export default {
   data() {
     return {
       mListaUnidadesSalidasPanelBusqueda: [],
+      modelTiposEvento: [],
+      selectedRouteDescriptions: [],
+      mListaRutasSalidasSemanales: [],
+      radioTipoDespacho: 1,
       mListLineasSalidasPanelBusqueda: [],
       loadingTableRVelocidadesBusquedaloading: false,
       loadingTableUnidadesSalidasPanelBusquedaloading: false,
@@ -272,6 +303,10 @@ export default {
           this.ReporteheaderExcelVelocidades = [
             this.$cookies.get("nameEmpresa"),
             "Reporte Velocidades",
+            "Ruta : " +
+            (this.modelTiposEvento.length <= 0
+              ? "TODAS LAS RUTAS"
+              : this.selectedRouteDescriptions.toString()),
             "Unidades : " +
             (this.itemUnidadSalidasPanelBusqueda.length <= 0
               ? "TODAS LAS UNIDADES"
@@ -299,15 +334,19 @@ export default {
           bold: true,
         },
       ];
+      var rutaTexto = this.modelTiposEvento.length === 0
+        ? "TODAS LAS RUTAS"
+        : this.selectedRouteDescriptions.toString();
+
       var tipoReporte = [
         {
-          text:
-            "REPORTE DE LA RUTA : TODAS LAS RUTAS",
+          text: "REPORTE DE LA RUTA : " + rutaTexto,
           fontSize: 11,
           alignment: "left",
           bold: true,
         },
       ];
+
       var desde_hasta = [
         {
           text:
@@ -332,6 +371,7 @@ export default {
           bold: true,
         },
       ];
+
       var resultadoString = [
         [
           {
@@ -521,8 +561,8 @@ export default {
             layout: "noBorders",
             table: {
               headerRows: 0,
-              widths: [450, 450, 450],
-              body: [empresa, tipoReporte, desde_hasta, unidades],
+              widths: [450, 450, 450, 450],
+              body: [empresa, desde_hasta, tipoReporte, unidades],
             },
           },
           {
@@ -535,8 +575,43 @@ export default {
         ],
       };
       pdfMake.createPdf(docDefinition).download("RDV_" + Date.now());
-    }
+    },
 
+    updateSelectedRouteDescriptions(selectedRoutes) {
+      // Filtrar las opciones seleccionadas y obtener sus descripciones
+      this.selectedRouteDescriptions = selectedRoutes.map((id) => {
+        const route = this.mListaRutasSalidasSemanales.find(
+          (route) => route.idRuta === id
+        );
+        return route ? route.DescRuta : "";
+      });
+    },
+
+    async readEventosListaReporte() {
+      this.mListaRutasSalidasSemanales = [];
+
+      try {
+        var datos = await this.$axios.post(process.env.baseUrl + "/rutes", {
+          token: this.token,
+          tipo: 1,
+        });
+
+        if (datos.data.status_code == 200) {
+          console.log(datos.data.data);
+          this.mListaRutasSalidasSemanales.push(...datos.data.data);
+        } else {
+          Notification.info({
+            title: "Tipos Eventos Dispositivos",
+            message: datos.data.msm,
+          });
+        }
+      } catch (error) {
+        Notification.error({
+          title: "Tipos Eventos Dispositivos",
+          message: error.toString(),
+        });
+      }
+    },
 
 
   },
@@ -544,6 +619,7 @@ export default {
     //this.readHistorialSalidaPanelBusqueda();
     this.initFechaActualSalidaBusquedaPanel()
     this.readAllUnidadesSalidasPanelBusqueda()
+    this.readEventosListaReporte()
   },
 };
 </script>
