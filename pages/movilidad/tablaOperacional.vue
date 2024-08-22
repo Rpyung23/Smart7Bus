@@ -33,7 +33,7 @@
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
 
-              <base-button type="danger" size="sm" v-if="mListDatosPenalidades.length > 0 ? true : false"
+              <!--  <base-button type="danger" size="sm" v-if="mListDatosPenalidades.length > 0 ? true : false"
                 @click="exportPdfRPenalidadesSemanales()" title="Exportar PDF">
                 <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
               </base-button>
@@ -43,7 +43,7 @@
                 title="Exportar a Excel" :data="mListDatosPenalidades" :fields="json_fields_excelRPenalidadesSemanales"
                 :worksheet="WorksheetExcelRSalidasSemanales" :name="FileNameExcelRSalidasSemanales">
                 <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-              </download-excel>
+              </download-excel> -->
             </div>
           </div>
         </card>
@@ -73,46 +73,51 @@
           </div>
         </card>
 
-        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRPenalidadesSemanales px-0 pb-1"
+        <!--   <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRPenalidadesSemanales px-0 pb-1"
           footer-classes="pb-2">
           <div>
             <el-table element-loading-text="Cargando Datos..." row-key="id" v-loading="loadingPenalidadesSemanales"
               :data="mListDatosPenalidades" class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               height="calc(100vh - 12.8rem)">
 
-              <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
+              <el-table-column prop="" label="No" width="80">
               </el-table-column>
 
-              <el-table-column prop="NumeVuelSali_m" label="N° Vuelta" width="150">
+              <el-table-column prop="" label="Tipo" width="100">
               </el-table-column>
 
-              <el-table-column prop="DescRutaSali_m" label="Detalle Ruta" width="250">
+              <el-table-column prop="CodiVehiSali_m" label="No Habilitación" width="180">
               </el-table-column>
 
-              <el-table-column prop="HoraSaliProgSali_m" label="Fecha Inico" width="190">
+              <el-table-column prop="" label="Código de Conductor" width="210">
               </el-table-column>
 
-              <el-table-column prop="HoraLlegProgSali_m" label="Fecha Final" width="170">
+              <el-table-column prop="HoraSaliProgSali_m" label="Hora Inico de Viaje" width="200">
               </el-table-column>
 
-              <el-table-column prop="TiempoVuelta" label="C. Viaje" width="150">
+              <el-table-column prop="HoraLlegProgSali_m" label="Hora Final de Viaje" width="200">
               </el-table-column>
 
-              <el-table-column prop="Intervalo" label="Intervalo" width="170">
+              <el-table-column prop="TiempoVuelta" label="Ciclo de Viaje" width="150">
+              </el-table-column>
+
+              <el-table-column prop="Intervalo" label="Intervalo" width="140">
+              </el-table-column>
+
+              <el-table-column prop="" label="Tiempo en Despacho" width="190">
               </el-table-column>
 
 
-
-              <el-table-column prop="atrasosTime" label="T. Atraso" width="150">
-              </el-table-column>
-
-
-              <el-table-column prop="adelantosTime" label="T. Adelanto" width="150">
-              </el-table-column>
 
               <div slot="empty"></div>
             </el-table>
           </div>
+        </card> -->
+
+        <card class="no-border-card" body-classes="card_body_0_01rem"
+          style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
+          <embed id="iframeContainerTablaOperacional" :src="oBase64IndicadoresCalidad" type="application/pdf"
+            width="100%" height="100%" />
         </card>
       </div>
     </base-header>
@@ -120,7 +125,7 @@
   </div>
 </template>
 <script>
-import { getFechatoDDMM, getFecha_dd_mm_yyyy } from "../../util/fechas";
+import { validaRangoFechaNoMas30Dias, getFecha_dd_mm_yyyy } from "../../util/fechas";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 
@@ -295,6 +300,16 @@ export default {
       this.mListDatosPenalidades = [];
       this.loadingPenalidadesSemanales = true;
 
+      if (!validaRangoFechaNoMas30Dias(getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda),
+        getFecha_dd_mm_yyyy(this.fechaDia2SalidasPanelBusqueda))) {
+        Notification.warning({
+          title: "RAGO MAXIMO 31 DIAS",
+          message: 'SOLO SE PERMITE UN MAXIMO DE 31 DIAS',
+          duration: 2000,
+        });
+        return
+      }
+
       this.WorksheetExcelRSalidasSemanales = "RS_S_W_" + Date.now();
       this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
 
@@ -315,6 +330,26 @@ export default {
             this.itemRutasRSalidasSemanales
           )),
       ];
+      let iframe = document.getElementById("iframeContainerTablaOperacional");
+      iframe.src = "";
+      swal.fire({
+        title: "Generando Reporte ...",
+        width: 600,
+        padding: "3em",
+        background: "#fff",
+        showCancelButton: false,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        allowOutsideClick: false,
+        backdrop: `
+                    rgba(0, 0, 0, 0.5)
+                    left top
+                    no-repeat
+                  `,
+      });
+
+      this.oBase64IndicadoresCalidad = "";
 
       try {
         var obj = {
@@ -341,6 +376,7 @@ export default {
         console.log(datos.data);
         if (datos.data.status_code == 200) {
           this.mListDatosPenalidades.push(...datos.data.datos);
+          this.exportPdfRPenalidadesSemanales();
         } else {
           Notification.warning({
             title: "Reporte de Tabla Operacional",
@@ -355,14 +391,14 @@ export default {
         });
         console.log(error);
       }
-
+      swal.close();
       this.loadingPenalidadesSemanales = false;
     },
     exportPdfRPenalidadesSemanales() {
 
       var empresa = [
         {
-          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
+          text: "Operadora : " + this.$cookies.get("nameEmpresa"),
           fontSize: 11,
           alignment: "left",
         },
@@ -380,11 +416,39 @@ export default {
         },
       ];
 
+      var ruta = [
+        {
+          text:
+            "Rutas : " +
+            (this.itemRutasRSalidasSemanales.length <= 0
+              ? "TODAS LAS RUTAS"
+              : this.getNombresRutasRDespachosGenerados(
+                this.itemRutasRSalidasSemanales
+              )),
+          fontSize: 11,
+          alignment: "left",
+        },
+      ];
+
+
       var mList = [];
 
       mList.push([
         {
-          text: "UNIDAD",
+          text: "Tipo de Día : (Típico-Sabado-Domingo)",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+          colSpan: 9, 
+        },
+        {}, {}, {}, {}, {}, {}, {}, {} 
+      ]);
+
+      mList.push([
+        {
+          text: "No",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -392,7 +456,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "N° Vuelta",
+          text: "Tipo",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -400,7 +464,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "RUTA",
+          text: "No Habilitación",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -408,7 +472,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "F. INICIAL",
+          text: "Código de Conductor",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -416,7 +480,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "F. FINAL",
+          text: "F. Inicial",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -424,7 +488,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "C. VIAJE",
+          text: "F. Final",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -432,7 +496,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "INTERVALO",
+          text: "C. Viaje",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -440,7 +504,7 @@ export default {
           alignment: "center",
         },
         {
-          text: "T. ATRASO",
+          text: "Intervalo",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
@@ -448,30 +512,35 @@ export default {
           alignment: "center",
         },
         {
-          text: "T. ADELANTO",
+          text: "T. Despacho",
           fontSize: 8.5,
           bold: true,
           fillColor: "#039BC4",
           color: "white",
           alignment: "center",
-        }
+        },
       ]);
 
       for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
 
         var obj = [
           {
+            text: this.mListDatosPenalidades[i].no,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text:  this.mListDatosPenalidades[i].tipo,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
             text: this.mListDatosPenalidades[i].CodiVehiSali_m,
             fontSize: 8.5,
             alignment: "center",
           },
           {
-            text: this.mListDatosPenalidades[i].NumeVuelSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].DescRutaSali_m,
+            text: "0000000000",
             fontSize: 8.5,
             alignment: "center",
           },
@@ -496,15 +565,10 @@ export default {
             alignment: "center",
           },
           {
-            text: this.mListDatosPenalidades[i].atrasosTime,
+            text:  this.mListDatosPenalidades[i].TiempoDespacho,
             fontSize: 8.5,
             alignment: "center",
           },
-          {
-            text: this.mListDatosPenalidades[i].adelantosTime,
-            fontSize: 8.5,
-            alignment: "center",
-          }
         ]
 
         mList.push(obj);
@@ -530,7 +594,7 @@ export default {
                 body: [
                   [
                     {
-                      text: "REPORTE PENALIDADES SEMANALES",
+                      text: "TABLA OPERACIONAL",
                       alignment: "center",
                       fontSize: 16,
                       bold: true,
@@ -560,21 +624,28 @@ export default {
             layout: "noBorders",
             table: {
               headerRows: 0,
-              widths: [450, 450],
-              body: [empresa, desde_hasta],
+              widths: [450, 450, 450],
+              body: [empresa, desde_hasta, ruta],
             },
           },
           {
             table: {
               headerRows: 0,
-              widths: [40, 60, 180, 90, 55, 52, 48, 62, 62, 50],
+              widths: [50, 50, 80, 60, 90, 55, 52, 48, 62],
               body: mList,
             },
           },
         ],
       };
 
-      pdfMake.createPdf(docDefinition).download("RPS_" + Date.now());
+      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
+      pdfDocGenerator.getBlob((blob) => {
+        var pdfUrl = URL.createObjectURL(blob);
+        let iframe = document.getElementById(
+          "iframeContainerTablaOperacional"
+        );
+        iframe.src = pdfUrl;
+      });
 
     },
     async readGruposActivosPenalidadesSemanales() {
