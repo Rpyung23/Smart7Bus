@@ -314,7 +314,7 @@ export default {
       this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
 
       this.oheaderExcelRSalidasSemanales = [
-        "Reporte Despachos Semanales",
+        "TABLA OPERACIONAL",
         "Fechas : " +
         this.fechaDia1SalidasPanelBusqueda +
         " hasta " +
