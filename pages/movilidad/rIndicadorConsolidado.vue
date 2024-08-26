@@ -50,7 +50,7 @@
           <div class="cardSelectAgrupacionRIcalidad">
             <el-select
               v-model="modelTiposEvento"
-              multiple
+              :multiple-limit="1"
               collapse-tags
               style="margin-right: 0.5rem"
               placeholder="Rutas"
