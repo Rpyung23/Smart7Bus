@@ -395,22 +395,10 @@ export default {
       this.loadingPenalidadesSemanales = false;
     },
     exportPdfRPenalidadesSemanales() {
-
+      // Define los encabezados estáticos
       var empresa = [
         {
           text: "Operadora : " + this.$cookies.get("nameEmpresa"),
-          fontSize: 11,
-          alignment: "left",
-        },
-      ];
-
-      var desde_hasta = [
-        {
-          text:
-            "Fecha : " +
-            this.fechaDia1SalidasPanelBusqueda +
-            " hasta " +
-            this.fechaDia2SalidasPanelBusqueda,
           fontSize: 11,
           alignment: "left",
         },
@@ -430,149 +418,123 @@ export default {
         },
       ];
 
+      var desde_hasta = [
+        {
+          text:
+            "Fecha : " +
+            this.fechaDia1SalidasPanelBusqueda +
+            " hasta " +
+            this.fechaDia2SalidasPanelBusqueda,
+          fontSize: 11,
+          alignment: "left",
+        },
+      ];
 
-      var mList = [];
+      // Agrupa los datos por fecha
+      var datosPorFecha = this.mListDatosPenalidades.reduce((acc, item) => {
+        let fecha = item.HoraSaliProgSali_mDate; // Suponiendo que tienes la fecha en el formato YYYY-MM-DD
+        if (!acc[fecha]) acc[fecha] = [];
+        acc[fecha].push(item);
+        return acc;
+      }, {});
 
-      mList.push([
+      // Define el contenido del PDF
+      var content = [
         {
-          text: "Tipo de Día : (Típico-Sabado-Domingo)",
-          fontSize: 12,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-          colSpan: 9, 
+          layout: "noBorders",
+          table: {
+            headerRows: 0,
+            widths: [450, 450, 450],
+            body: [empresa, desde_hasta, ruta],
+          },
         },
-        {}, {}, {}, {}, {}, {}, {}, {} 
-      ]);
+      ];
 
-      mList.push([
-        {
-          text: "No",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "Tipo",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "No Habilitación",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "Código de Conductor",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "F. Inicial",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "F. Final",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "C. Viaje",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "Intervalo",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-        {
-          text: "T. Despacho",
-          fontSize: 8.5,
-          bold: true,
-          fillColor: "#039BC4",
-          color: "white",
-          alignment: "center",
-        },
-      ]);
+      // Itera sobre las fechas agrupadas
+      Object.keys(datosPorFecha).forEach(fecha => {
+        var rutaDatos = datosPorFecha[fecha];
+        var rutas = [...new Set(rutaDatos.map(item => item.LetraRutaSali_m))]; // Obtener rutas únicas para ese día
 
-      for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
+        // Agrega la fecha como título en el PDF
+        content.push([
+          { text: "Fecha: " + fecha, fontSize: 12, bold: true, fillColor: "#039BC4", color: "white", alignment: "center", colSpan: 9 },
+          {}, {}, {}, {}, {}, {}, {}, {}
+        ]);
 
-        var obj = [
-          {
-            text: this.mListDatosPenalidades[i].no,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text:  this.mListDatosPenalidades[i].tipo,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].CodiVehiSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].codigo_chofer,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].HoraSaliProgSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].HoraLlegProgSali_m,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].TiempoVuelta,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text: this.mListDatosPenalidades[i].Intervalo,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-          {
-            text:  this.mListDatosPenalidades[i].TDespacho,
-            fontSize: 8.5,
-            alignment: "center",
-          },
-        ]
+        // Itera sobre cada ruta del día
+        rutas.forEach(ruta => {
+          var rutaDatosPorRuta = rutaDatos.filter(item => item.LetraRutaSali_m === ruta);
+          var rutaDescripcion = rutaDatosPorRuta.length > 0 ? rutaDatosPorRuta[0].DescRutaSali_m : "Descripción no disponible";
 
-        mList.push(obj);
-      }
+          var mList = [];
+          mList.push([
+            {
+              text: "Tipo de Día: " + (
+                rutaDatosPorRuta[0].tipo_dia === "t" ? "Típico" :
+                  rutaDatosPorRuta[0].tipo_dia === "s" ? "Sábado" :
+                    rutaDatosPorRuta[0].tipo_dia === "d" ? "Domingo" : ""
+              ),
+              fontSize: 12,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+              colSpan: 9,
+            },
+            {}, {}, {}, {}, {}, {}, {}, {}
+          ]);
+
+          mList.push([
+            {
+              text: "Ruta: " + rutaDescripcion,
+              fontSize: 12,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+              colSpan: 9,
+            },
+            {}, {}, {}, {}, {}, {}, {}, {}
+          ]);
+
+          mList.push([
+            { text: "No", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
+            { text: "Tipo", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
+            { text: "No Habilitación", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
+            { text: "Código de Conductor", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
+            { text: "F. Inicial", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
+            { text: "F. Final", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
+            { text: "C. Viaje", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
+            { text: "Intervalo", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
+            { text: "T. Despacho", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
+          ]);
+
+          rutaDatosPorRuta.forEach((item, i) => {
+            var obj = [
+              { text: i + 1, fontSize: 8.5, alignment: "center" },
+              { text: "P", fontSize: 8.5, alignment: "center" },
+              { text: item.CodiVehiSali_m, fontSize: 8.5, alignment: "center" },
+              { text: item.codigo_chofer, fontSize: 8.5, alignment: "center" },
+              { text: item.HoraSaliProgSali_m, fontSize: 8.5, alignment: "center" },
+              { text: item.HoraLlegProgSali_m, fontSize: 8.5, alignment: "center" },
+              { text: item.TiempoVuelta, fontSize: 8.5, alignment: "center" },
+              { text: item.Intervalo, fontSize: 8.5, alignment: "center" },
+              { text: item.TDespacho, fontSize: 8.5, alignment: "center" },
+            ];
+            mList.push(obj);
+          });
+
+          content.push({
+            table: {
+              headerRows: 0,
+              widths: [50, 50, 80, 85, 90, 55, 52, 48, 62],
+              body: mList,
+            },
+          });
+
+          content.push({ text: "", margin: [0, 10] }); // Salto de línea para separar tablas
+        });
+      });
 
       var docDefinition = {
         pageSize: "A4",
@@ -600,54 +562,26 @@ export default {
                       bold: true,
                     },
                   ],
-                  /*[
-                    {
-                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
-                      alignment: "center",
-                      fontSize: 8,
-                    },
-                  ],
-                  [
-                    {
-                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
-                      alignment: "center",
-                      fontSize: 8,
-                    },
-                  ],*/
                 ],
               },
             },
           ],
         },
-        content: [
-          {
-            layout: "noBorders",
-            table: {
-              headerRows: 0,
-              widths: [450, 450, 450],
-              body: [empresa, desde_hasta, ruta],
-            },
-          },
-          {
-            table: {
-              headerRows: 0,
-              widths: [50, 50, 80, 85, 90, 55, 52, 48, 62],
-              body: mList,
-            },
-          },
-        ],
+        content: content,
       };
 
       var pdfDocGenerator = pdfMake.createPdf(docDefinition);
       pdfDocGenerator.getBlob((blob) => {
         var pdfUrl = URL.createObjectURL(blob);
-        let iframe = document.getElementById(
-          "iframeContainerTablaOperacional"
-        );
+        let iframe = document.getElementById("iframeContainerTablaOperacional");
         iframe.src = pdfUrl;
       });
-
     },
+
+
+
+
+
     async readGruposActivosPenalidadesSemanales() {
       this.mListaGruposPenalidadesSemanales = [];
 
