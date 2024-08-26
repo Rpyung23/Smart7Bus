@@ -436,7 +436,7 @@ export default {
       mList.push([
         {
           text: "Tipo de Día : (Típico-Sabado-Domingo)",
-          fontSize: 8.5,
+          fontSize: 12,
           bold: true,
           fillColor: "#039BC4",
           color: "white",
@@ -540,7 +540,7 @@ export default {
             alignment: "center",
           },
           {
-            text: "0000000000",
+            text: this.mListDatosPenalidades[i].codigo_chofer,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -565,7 +565,7 @@ export default {
             alignment: "center",
           },
           {
-            text:  this.mListDatosPenalidades[i].TiempoDespacho,
+            text:  this.mListDatosPenalidades[i].TDespacho,
             fontSize: 8.5,
             alignment: "center",
           },
@@ -631,7 +631,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [50, 50, 80, 60, 90, 55, 52, 48, 62],
+              widths: [50, 50, 80, 85, 90, 55, 52, 48, 62],
               body: mList,
             },
           },
