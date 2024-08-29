@@ -6,11 +6,18 @@
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
           footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select v-model="itemUnidadRSemanales" multiple filterable remote placeholder="Unidades"
+            <!--el-select v-model="itemUnidadRSemanales" multiple filterable remote placeholder="Unidades"
               prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
               :remote-method="remoteMethodUnidadesRecibosProduccion" :loading="loadingTableUnidadesSemanales">
               <el-option v-for="item in optionsUnidadesSemanales" :key="item.CodiVehi" :label="item.CodiVehi"
                 :value="item.CodiVehi">
+              </el-option>
+            </el-select!-->
+
+            <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRutasRSalidasSemanales" multiple
+              placeholder="Rutas">
+              <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
               </el-option>
             </el-select>
 
@@ -48,22 +55,15 @@
           </div>
         </card>
 
-        <card class="no-border-card col" style="margin-bottom: 0.5rem"
+        <card v-if="mListaGruposPenalidadesSemanales.length > 0" class="no-border-card col"
+          style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
           footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select style="margin-right: 0.5rem" collapse-tags
-              v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false" v-model="itemGruposPenalidadesSemanales"
-              multiple placeholder="Grupos">
+            <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemGruposPenalidadesSemanales" multiple
+              placeholder="Grupos">
               <el-option v-for="item in mListaGruposPenalidadesSemanales" :key="item.id" :label="item.descripcion"
                 :value="item.id">
-              </el-option>
-            </el-select>
-
-            <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRutasRSalidasSemanales" multiple
-              placeholder="Rutas">
-              <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
-                :value="item.LetrRuta">
               </el-option>
             </el-select>
           </div>
@@ -73,52 +73,16 @@
           </div>
         </card>
 
-        <!--   <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRPenalidadesSemanales px-0 pb-1"
-          footer-classes="pb-2">
-          <div>
-            <el-table element-loading-text="Cargando Datos..." row-key="id" v-loading="loadingPenalidadesSemanales"
-              :data="mListDatosPenalidades" class="tablePanelControlProduccion" header-row-class-name="thead-dark"
-              height="calc(100vh - 12.8rem)">
 
-              <el-table-column prop="" label="No" width="80">
-              </el-table-column>
-
-              <el-table-column prop="" label="Tipo" width="100">
-              </el-table-column>
-
-              <el-table-column prop="CodiVehiSali_m" label="No Habilitación" width="180">
-              </el-table-column>
-
-              <el-table-column prop="" label="Código de Conductor" width="210">
-              </el-table-column>
-
-              <el-table-column prop="HoraSaliProgSali_m" label="Hora Inico de Viaje" width="200">
-              </el-table-column>
-
-              <el-table-column prop="HoraLlegProgSali_m" label="Hora Final de Viaje" width="200">
-              </el-table-column>
-
-              <el-table-column prop="TiempoVuelta" label="Ciclo de Viaje" width="150">
-              </el-table-column>
-
-              <el-table-column prop="Intervalo" label="Intervalo" width="140">
-              </el-table-column>
-
-              <el-table-column prop="" label="Tiempo en Despacho" width="190">
-              </el-table-column>
-
-
-
-              <div slot="empty"></div>
-            </el-table>
-          </div>
-        </card> -->
-
-        <card class="no-border-card" body-classes="card_body_0_01rem"
-          style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
+        <card class="no-border-card" body-classes="card_body_0_01rem" :style="{
+          marginBottom: '0px',
+          width: '100%',
+          height: mListaGruposPenalidadesSemanales.length > 0 ? 'calc(100vh - 13rem)' : 'calc(100vh - 10rem)'
+        }">
           <embed id="iframeContainerTablaOperacional" :src="oBase64IndicadoresCalidad" type="application/pdf"
             width="100%" height="100%" />
         </card>
+
       </div>
     </base-header>
 

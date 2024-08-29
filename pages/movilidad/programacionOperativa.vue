@@ -1076,7 +1076,7 @@ export default {
                     {
                         table: {
                             headerRows: 0,
-                            widths: [100, 50, 40, 60, 60, 80, 80, 60, 80],
+                            widths: [190, 50, 40, 60, 60, 80, 80, 60, 80],
                             body: [
                                 ...componneteParametros(),
                                 componenteHeaderTable([
@@ -1119,7 +1119,7 @@ export default {
                                 ...resultadoStringDomingo,
                             ],
                         },
-                        margin: [0, 20, 0, 20],
+                        margin: [0, 10, 0, 10],
                     },
                     {
                         table: {
