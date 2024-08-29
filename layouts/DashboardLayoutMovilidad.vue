@@ -27,6 +27,12 @@
             path: '/movilidad/rIndicadorConsolidado',
           }" />
 
+        <sidebar-item translate="no" :link="{
+          name: 'Programación Operatica',
+          icon: 'ni ni-archive-2 text-default',
+          path: '/movilidad/programacionOperativa',
+        }" />
+
 
         <sidebar-item translate="no" :link="{
           name: 'Tabla Operacional',
