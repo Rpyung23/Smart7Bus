@@ -358,6 +358,7 @@ export default {
       swal.close();
       this.loadingPenalidadesSemanales = false;
     },
+    
     exportPdfRPenalidadesSemanales() {
       // Define los encabezados estáticos
       var empresa = [
@@ -450,6 +451,19 @@ export default {
 
           mList.push([
             {
+              text: "Día: " +fecha,
+              fontSize: 12,
+              bold: true,
+              fillColor: "#039BC4",
+              color: "white",
+              alignment: "center",
+              colSpan: 9,
+            },
+            {}, {}, {}, {}, {}, {}, {}, {}
+          ]);
+
+          mList.push([
+            {
               text: "Ruta: " + rutaDescripcion,
               fontSize: 12,
               bold: true,
@@ -474,12 +488,13 @@ export default {
           ]);
 
           rutaDatosPorRuta.forEach((item, i) => {
+            var horaSali = item.HoraSaliProgSali_m.split(' ')[1]; // 'HH:mm:ss'
             var obj = [
               { text: i + 1, fontSize: 8.5, alignment: "center" },
               { text: "P", fontSize: 8.5, alignment: "center" },
               { text: item.CodiVehiSali_m, fontSize: 8.5, alignment: "center" },
               { text: item.codigo_chofer, fontSize: 8.5, alignment: "center" },
-              { text: item.HoraSaliProgSali_m, fontSize: 8.5, alignment: "center" },
+              { text: horaSali, fontSize: 8.5, alignment: "center" },
               { text: item.HoraLlegProgSali_m, fontSize: 8.5, alignment: "center" },
               { text: item.TiempoVuelta, fontSize: 8.5, alignment: "center" },
               { text: item.Intervalo, fontSize: 8.5, alignment: "center" },
@@ -491,7 +506,7 @@ export default {
           content.push({
             table: {
               headerRows: 0,
-              widths: [50, 50, 80, 85, 90, 55, 52, 48, 62],
+              widths: [50, 50, 80, 85, 55, 55, 52, 48, 62],
               body: mList,
             },
           });
@@ -541,10 +556,6 @@ export default {
         iframe.src = pdfUrl;
       });
     },
-
-
-
-
 
     async readGruposActivosPenalidadesSemanales() {
       this.mListaGruposPenalidadesSemanales = [];

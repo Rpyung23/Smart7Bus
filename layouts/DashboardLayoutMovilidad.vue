@@ -64,7 +64,7 @@
           permisos.movilidad.reportes.rConsolidadoSalidas"
           :link="{ name: 'R. Consolidado Salidas', icon: 'ni ni-bus-front-12 text-warning', path: '/movilidad/rConsolidadoSalidas' }" />
 
-        <sidebar-item translate="no" v-if="
+       <!--  <sidebar-item translate="no" v-if="
           permisos != null &&
           permisos.movilidad.active !=
           null &&
@@ -73,7 +73,7 @@
             name: 'R. Odómetro',
             icon: 'ni ni-map-big text-default',
             path: '/movilidad/rOdometro',
-          }" />
+          }" /> -->
 
 
       </template>

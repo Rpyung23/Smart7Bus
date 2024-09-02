@@ -6,12 +6,19 @@
                     body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
                     footer-classes="pb-2">
                     <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-                        <el-select v-model="itemUnidadRSemanales" multiple filterable remote placeholder="Unidades"
+                        <!--  <el-select v-model="itemUnidadRSemanales" multiple filterable remote placeholder="Unidades"
                             prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
                             :remote-method="remoteMethodUnidadesRecibosProduccion"
                             :loading="loadingTableUnidadesSemanales">
                             <el-option v-for="item in optionsUnidadesSemanales" :key="item.CodiVehi"
                                 :label="item.CodiVehi" :value="item.CodiVehi">
+                            </el-option>
+                        </el-select> -->
+
+                        <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRutasRSalidasSemanales"
+                            multiple placeholder="Rutas">
+                            <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta"
+                                :label="item.DescRuta" :value="item.LetrRuta">
                             </el-option>
                         </el-select>
 
@@ -51,22 +58,15 @@
                     </div>
                 </card>
 
-                <card class="no-border-card col" style="margin-bottom: 0.5rem"
+                <card v-if="mListaGruposPenalidadesSemanales.length > 0" class="no-border-card col"
+                    style="margin-bottom: 0.5rem"
                     body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
                     footer-classes="pb-2">
                     <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-                        <el-select style="margin-right: 0.5rem" collapse-tags
-                            v-if="mListaGruposPenalidadesSemanales.length > 0 ? true : false"
-                            v-model="itemGruposPenalidadesSemanales" multiple placeholder="Grupos">
+                        <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemGruposPenalidadesSemanales"
+                            multiple placeholder="Grupos">
                             <el-option v-for="item in mListaGruposPenalidadesSemanales" :key="item.id"
                                 :label="item.descripcion" :value="item.id">
-                            </el-option>
-                        </el-select>
-
-                        <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRutasRSalidasSemanales"
-                            multiple placeholder="Rutas">
-                            <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta"
-                                :label="item.DescRuta" :value="item.LetrRuta">
                             </el-option>
                         </el-select>
                     </div>
@@ -76,10 +76,13 @@
                     </div>
                 </card>
 
-                <card class="no-border-card" body-classes="card_body_0_01rem"
-                    style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
-                    <embed id="iframeContainerprogramcionOperativa" :src="oBase64IndicadoresCalidad"
-                        type="application/pdf" width="100%" height="100%" />
+                <card class="no-border-card" body-classes="card_body_0_01rem" :style="{
+                    marginBottom: '0px',
+                    width: '100%',
+                    height: mListaGruposPenalidadesSemanales.length > 0 ? 'calc(100vh - 13rem)' : 'calc(100vh - 10rem)'
+                }">
+                    <embed id="iframeContainerprogramcionOperativa" :src="oBase64IndicadoresCalidad" type="application/pdf"
+                        width="100%" height="100%" />
                 </card>
             </div>
         </base-header>
@@ -607,10 +610,6 @@ export default {
                     datosDomingo.push(dato);
                 }
             });
-            console.log("datosTipico");
-            console.log(datosTipico);
-            console.log(datosSabado);
-            //console.log(datosTipico[0].odometrodiff);
 
 
             // tabla Dia tipico
@@ -623,7 +622,7 @@ export default {
                         alignment: "center",
                     },
                     {
-                        text: "0",
+                        text: datosTipico[i].cantUnidades,
                         fontSize: 9,
                         alignment: "center",
                     },
@@ -654,7 +653,7 @@ export default {
                         alignment: "center",
                     },
                     {
-                        text: "8",
+                        text: datosTipico[i].cantVuelta,
                         fontSize: 9,
                         alignment: "center",
                     },
@@ -678,7 +677,7 @@ export default {
                         alignment: "center",
                     },
                     {
-                        text: "0",
+                        text: datosSabado[i].cantUnidades,
                         fontSize: 9,
                         alignment: "center",
                     },
@@ -709,7 +708,7 @@ export default {
                         alignment: "center",
                     },
                     {
-                        text: "8",
+                        text: datosSabado[i].cantVuelta,
                         fontSize: 9,
                         alignment: "center",
                     },
@@ -733,7 +732,7 @@ export default {
                         alignment: "center",
                     },
                     {
-                        text: "0",
+                        text: datosDomingo[i].cantUnidades,
                         fontSize: 9,
                         alignment: "center",
                     },
@@ -764,7 +763,7 @@ export default {
                         alignment: "center",
                     },
                     {
-                        text: "8",
+                        text: datosDomingo[i].cantVuelta,
                         fontSize: 9,
                         alignment: "center",
                     },
@@ -1153,8 +1152,8 @@ export default {
                         table: {
                             headerRows: 0,
                             widths: [190, 50, 40, 60, 60, 80, 80, 60, 80],
-                            body: 
-                               
+                            body:
+
                                 /*[componenteHeaderTable([
                                     "Dia Tipico",
                                     "Flota (Buses)",
