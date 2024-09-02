@@ -32,7 +32,7 @@
 
                     <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda">
                         <div class="buttonCenterEndDerecha">
-                            <base-button icon type="primary" size="sm" @click="readApiPenalidades()">
+                            <base-button icon type="primary" size="sm" @click="readApiProgramacionOperativa()">
                                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
                             </base-button>
 
@@ -258,7 +258,7 @@ export default {
             this.fechaDia1SalidasPanelBusqueda = format;
             this.fechaDia2SalidasPanelBusqueda = format;
         },
-        async readApiPenalidades() {
+        async readApiProgramacionOperativa() {
             this.mListDatosPenalidades = [];
             this.loadingPenalidadesSemanales = true;
 
@@ -276,7 +276,7 @@ export default {
             this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
 
             this.oheaderExcelRSalidasSemanales = [
-                "TABLA OPERACIONAL",
+                "TABLA PROGRAMACIÓN OPERATIVA",
                 "Fechas : " +
                 this.fechaDia1SalidasPanelBusqueda +
                 " hasta " +
@@ -331,7 +331,7 @@ export default {
                 console.log(obj);
 
                 var datos = await this.$axios.post(
-                    process.env.baseUrl + "/tablaOperacional",
+                    process.env.baseUrl + "/programacionOperativa",
                     obj
                 );
 
@@ -341,14 +341,14 @@ export default {
                     this.genratePdf();
                 } else {
                     Notification.warning({
-                        title: "Reporte de Tabla Operacional",
+                        title: "Reporte de Programación Operativa",
                         message: datos.data.msm,
                     });
                 }
 
             } catch (error) {
                 Notification.error({
-                    title: "Reporte de Tabla Operacional",
+                    title: "Reporte de Programación Operativa",
                     message: error.toString(),
                 });
                 console.log(error);
@@ -592,44 +592,64 @@ export default {
                 ]
             }
 
+            // Variables para almacenar los datos divididos
+            const datosTipico = [];
+            const datosSabado = [];
+            const datosDomingo = [];
+
+            // Dividir los datos según el tipo de día
+            this.mListDatosPenalidades.forEach((dato) => {
+                if (dato.tipo_dia === "t") {
+                    datosTipico.push(dato);
+                } else if (dato.tipo_dia === "s") {
+                    datosSabado.push(dato);
+                } else if (dato.tipo_dia === "d") {
+                    datosDomingo.push(dato);
+                }
+            });
+            console.log("datosTipico");
+            console.log(datosTipico);
+            console.log(datosSabado);
+            //console.log(datosTipico[0].odometrodiff);
+
 
             // tabla Dia tipico
             var resultadoString = [];
-            for (var i = 0; i < 8; i++) {
+            for (var i = 0; i < datosTipico.length; i++) {
                 var arrys = [
                     {
-                        text: "Ruta1: Carapungo",
+                        text: datosTipico[i].DescRuta,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "12",
+                        text: "0",
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "1:14",
+                        text: datosTipico[i].minutes_diff,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "36",
+                        text: datosTipico[i].distancia,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "40",
+                        text: datosTipico[i].VeloMaxiSali_m,
                         fontSize: 10,
                         alignment: "center",
 
                     },
                     {
-                        text: "0:09",
+                        text: datosTipico[i].intervalo_pico,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "0:10",
+                        text: datosTipico[i].intervalo_valle,
                         fontSize: 9,
                         alignment: "center",
                     },
@@ -639,8 +659,8 @@ export default {
                         alignment: "center",
                     },
                     {
-                        text: "288",
-                        fontSize: 10,
+                        text: datosTipico[i].odometrodiff,
+                        fontSize: 9,
                         alignment: "center",
 
                     },
@@ -650,109 +670,107 @@ export default {
 
             // tabla Dia Sabado
             var resultadoStringSabado = [];
-            for (var i = 0; i < 8; i++) {
+            for (var i = 0; i < datosSabado.length; i++) {
                 var arrys = [
                     {
-                        text: "Ruta 2: SAN JOSE",
+                        text: datosSabado[i].DescRuta,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "3",
+                        text: "0",
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "1:20",
+                        text: datosSabado[i].minutes_diff,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "28",
+                        text: datosSabado[i].distancia,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "40",
+                        text: datosSabado[i].VeloMaxiSali_m,
                         fontSize: 10,
                         alignment: "center",
 
                     },
                     {
-                        text: "0:30",
+                        text: datosSabado[i].intervalo_pico,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "0:30",
+                        text: datosSabado[i].intervalo_valle,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "7",
+                        text: "8",
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "196",
-                        fontSize: 10,
+                        text: datosSabado[i].odometrodiff,
+                        fontSize: 9,
                         alignment: "center",
 
                     },
                 ];
-
-
                 resultadoStringSabado.push(arrys);
             }
 
             // tabla Dia Domingo
             var resultadoStringDomingo = [];
-            for (var i = 0; i < 8; i++) {
+            for (var i = 0; i < datosDomingo.length; i++) {
                 var arrys = [
                     {
-                        text: "Ruta 3: SAN VICENTE",
+                        text: datosDomingo[i].DescRuta,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "7",
+                        text: "0",
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "1:50",
+                        text: datosDomingo[i].minutes_diff,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "25",
+                        text: datosDomingo[i].distancia,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "40",
+                        text: datosDomingo[i].VeloMaxiSali_m,
                         fontSize: 10,
                         alignment: "center",
 
                     },
                     {
-                        text: "0:15",
+                        text: datosDomingo[i].intervalo_pico,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "0:25",
+                        text: datosDomingo[i].intervalo_valle,
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "5",
+                        text: "8",
                         fontSize: 9,
                         alignment: "center",
                     },
                     {
-                        text: "125",
-                        fontSize: 10,
+                        text: datosDomingo[i].odometrodiff,
+                        fontSize: 9,
                         alignment: "center",
 
                     },
@@ -1012,6 +1030,64 @@ export default {
                 return [generarFila(texto, valor)];
             }
 
+            //condicion 
+            var bodyContent = [];
+            bodyContent.push(...componneteParametros());
+            // Condiciona la inclusión de la tabla del Día Típico
+            if (resultadoString.length > 0) {
+                bodyContent.push(
+                    componenteHeaderTable([
+                        "Día Típico",
+                        "Flota (Buses)",
+                        "Ciclo (min)",
+                        "Distancia (km)",
+                        "Velocidad (km/h)",
+                        "Intervalo Hora Pico (min)",
+                        "Intervalo Hora Valle (min)",
+                        "# Vueltas por autobús",
+                        "Kilómetros por autobús",
+                    ]),
+                    ...resultadoString
+                );
+            }
+
+            // Condiciona la inclusión de la tabla del Día Sábado
+            if (resultadoStringSabado.length > 0) {
+                bodyContent.push(
+                    componenteHeaderTable([
+                        "Día Sábado",
+                        "Flota (Buses)",
+                        "Ciclo (min)",
+                        "Distancia (km)",
+                        "Velocidad (km/h)",
+                        "Intervalo Hora Pico (min)",
+                        "Intervalo Hora Valle (min)",
+                        "# Vueltas por autobús",
+                        "Kilómetros por autobús",
+                    ]),
+                    ...resultadoStringSabado
+                );
+            }
+
+            // Condiciona la inclusión de la tabla del Día Domingo
+            if (resultadoStringDomingo.length > 0) {
+                bodyContent.push(
+                    componenteHeaderTable([
+                        "Día Domingo",
+                        "Flota (Buses)",
+                        "Ciclo (min)",
+                        "Distancia (km)",
+                        "Velocidad (km/h)",
+                        "Intervalo Hora Pico (min)",
+                        "Intervalo Hora Valle (min)",
+                        "# Vueltas por autobús",
+                        "Kilómetros por autobús",
+                    ]),
+                    ...resultadoStringDomingo
+                );
+            }
+
+
 
             var docDefinition = {
                 pageSize: "A4",
@@ -1077,9 +1153,9 @@ export default {
                         table: {
                             headerRows: 0,
                             widths: [190, 50, 40, 60, 60, 80, 80, 60, 80],
-                            body: [
-                                ...componneteParametros(),
-                                componenteHeaderTable([
+                            body: 
+                               
+                                /*[componenteHeaderTable([
                                     "Dia Tipico",
                                     "Flota (Buses)",
                                     "Ciclo (min)",
@@ -1116,8 +1192,10 @@ export default {
                                     "# Vueltas por autobús",
                                     "Kilómetros por autobús",
                                 ]),
-                                ...resultadoStringDomingo,
-                            ],
+                                ...resultadoStringDomingo, */
+                                bodyContent.length > 0 ? bodyContent : [
+                                    componenteHeaderTable(["No hay datos disponibles para los días seleccionados"]),
+                                ],
                         },
                         margin: [0, 10, 0, 10],
                     },
