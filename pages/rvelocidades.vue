@@ -64,17 +64,13 @@
             </el-select>
 
             <div class="custom-radio-group">
-              <el-radio-group v-model="radioTipoDespacho" style="display: flex; align-items: center;">
-                <el-radio :label="1" style="margin-right: 1rem;">A. Día</el-radio>
-                <el-radio :label="2">A. Ruta</el-radio>
+              <el-radio-group v-model="radioAgrupaVelocidad" style="display: flex; align-items: center;">
+                <el-radio :label="1" style="margin-right: 1rem;margin-bottom: 0;">A. Día</el-radio>
+                <el-radio :label="2" style="margin-bottom: 0;">A. Ruta</el-radio>
               </el-radio-group>
             </div>
           </div>
         </card>
-
-
-
-
         <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRVelocidades px-0 pb-1"
           footer-classes="pb-2">
           <div>
@@ -159,7 +155,7 @@ export default {
       modelTiposEvento: [],
       selectedRouteDescriptions: [],
       mListaRutasSalidasSemanales: [],
-      radioTipoDespacho: 1,
+      radioAgrupaVelocidad: null,
       mListLineasSalidasPanelBusqueda: [],
       loadingTableRVelocidadesBusquedaloading: false,
       loadingTableUnidadesSalidasPanelBusquedaloading: false,
@@ -576,7 +572,6 @@ export default {
       };
       pdfMake.createPdf(docDefinition).download("RDV_" + Date.now());
     },
-
     updateSelectedRouteDescriptions(selectedRoutes) {
       // Filtrar las opciones seleccionadas y obtener sus descripciones
       this.selectedRouteDescriptions = selectedRoutes.map((id) => {
@@ -586,8 +581,7 @@ export default {
         return route ? route.DescRuta : "";
       });
     },
-
-    async readEventosListaReporte() {
+    async readRutasRVelocidades() {
       this.mListaRutasSalidasSemanales = [];
 
       try {
@@ -612,14 +606,12 @@ export default {
         });
       }
     },
-
-
   },
   mounted() {
     //this.readHistorialSalidaPanelBusqueda();
     this.initFechaActualSalidaBusquedaPanel()
     this.readAllUnidadesSalidasPanelBusqueda()
-    this.readEventosListaReporte()
+    this.readRutasRVelocidades()
   },
 };
 </script>

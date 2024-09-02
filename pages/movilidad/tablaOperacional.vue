@@ -33,7 +33,7 @@
                 <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
 
-              <!--  <base-button type="danger" size="sm" v-if="mListDatosPenalidades.length > 0 ? true : false"
+              <base-button type="danger" size="sm" v-if="mListDatosPenalidades.length > 0 ? true : false"
                 @click="exportPdfRPenalidadesSemanales()" title="Exportar PDF">
                 <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
               </base-button>
@@ -43,7 +43,7 @@
                 title="Exportar a Excel" :data="mListDatosPenalidades" :fields="json_fields_excelRPenalidadesSemanales"
                 :worksheet="WorksheetExcelRSalidasSemanales" :name="FileNameExcelRSalidasSemanales">
                 <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-              </download-excel> -->
+              </download-excel>
             </div>
           </div>
         </card>
@@ -73,51 +73,46 @@
           </div>
         </card>
 
-        <!--   <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRPenalidadesSemanales px-0 pb-1"
+        <card class="no-border-card" style="margin-bottom: 0rem" body-classes="card-bodyRPenalidadesSemanales px-0 pb-1"
           footer-classes="pb-2">
           <div>
             <el-table element-loading-text="Cargando Datos..." row-key="id" v-loading="loadingPenalidadesSemanales"
               :data="mListDatosPenalidades" class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               height="calc(100vh - 12.8rem)">
 
-              <el-table-column prop="" label="No" width="80">
+              <el-table-column prop="CodiVehiSali_m" label="Unidad" width="150">
               </el-table-column>
 
-              <el-table-column prop="" label="Tipo" width="100">
+              <el-table-column prop="NumeVuelSali_m" label="N° Vuelta" width="150">
               </el-table-column>
 
-              <el-table-column prop="CodiVehiSali_m" label="No Habilitación" width="180">
+              <el-table-column prop="DescRutaSali_m" label="Detalle Ruta" width="250">
               </el-table-column>
 
-              <el-table-column prop="" label="Código de Conductor" width="210">
+              <el-table-column prop="HoraSaliProgSali_m" label="Fecha Inico" width="190">
               </el-table-column>
 
-              <el-table-column prop="HoraSaliProgSali_m" label="Hora Inico de Viaje" width="200">
+              <el-table-column prop="HoraLlegProgSali_m" label="Fecha Final" width="170">
               </el-table-column>
 
-              <el-table-column prop="HoraLlegProgSali_m" label="Hora Final de Viaje" width="200">
+              <el-table-column prop="TiempoVuelta" label="C. Viaje" width="150">
               </el-table-column>
 
-              <el-table-column prop="TiempoVuelta" label="Ciclo de Viaje" width="150">
-              </el-table-column>
-
-              <el-table-column prop="Intervalo" label="Intervalo" width="140">
-              </el-table-column>
-
-              <el-table-column prop="" label="Tiempo en Despacho" width="190">
+              <el-table-column prop="Intervalo" label="Intervalo" width="170">
               </el-table-column>
 
 
+
+              <el-table-column prop="atrasosTime" label="T. Atraso" width="150">
+              </el-table-column>
+
+
+              <el-table-column prop="adelantosTime" label="T. Adelanto" width="150">
+              </el-table-column>
 
               <div slot="empty"></div>
             </el-table>
           </div>
-        </card> -->
-
-        <card class="no-border-card" body-classes="card_body_0_01rem"
-          style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
-          <embed id="iframeContainerTablaOperacional" :src="oBase64IndicadoresCalidad" type="application/pdf"
-            width="100%" height="100%" />
         </card>
       </div>
     </base-header>
@@ -125,7 +120,7 @@
   </div>
 </template>
 <script>
-import { validaRangoFechaNoMas30Dias, getFecha_dd_mm_yyyy } from "../../util/fechas";
+import { getFechatoDDMM, getFecha_dd_mm_yyyy } from "../../util/fechas";
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 
@@ -300,16 +295,6 @@ export default {
       this.mListDatosPenalidades = [];
       this.loadingPenalidadesSemanales = true;
 
-      if (!validaRangoFechaNoMas30Dias(getFecha_dd_mm_yyyy(this.fechaDia1SalidasPanelBusqueda),
-        getFecha_dd_mm_yyyy(this.fechaDia2SalidasPanelBusqueda))) {
-        Notification.warning({
-          title: "RAGO MAXIMO 31 DIAS",
-          message: 'SOLO SE PERMITE UN MAXIMO DE 31 DIAS',
-          duration: 2000,
-        });
-        return
-      }
-
       this.WorksheetExcelRSalidasSemanales = "RS_S_W_" + Date.now();
       this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
 
@@ -330,26 +315,6 @@ export default {
             this.itemRutasRSalidasSemanales
           )),
       ];
-      let iframe = document.getElementById("iframeContainerTablaOperacional");
-      iframe.src = "";
-      swal.fire({
-        title: "Generando Reporte ...",
-        width: 600,
-        padding: "3em",
-        background: "#fff",
-        showCancelButton: false,
-        showConfirmButton: false,
-        allowEscapeKey: false,
-        allowEnterKey: false,
-        allowOutsideClick: false,
-        backdrop: `
-                    rgba(0, 0, 0, 0.5)
-                    left top
-                    no-repeat
-                  `,
-      });
-
-      this.oBase64IndicadoresCalidad = "";
 
       try {
         var obj = {
@@ -376,7 +341,6 @@ export default {
         console.log(datos.data);
         if (datos.data.status_code == 200) {
           this.mListDatosPenalidades.push(...datos.data.datos);
-          this.exportPdfRPenalidadesSemanales();
         } else {
           Notification.warning({
             title: "Reporte de Tabla Operacional",
@@ -391,28 +355,14 @@ export default {
         });
         console.log(error);
       }
-      swal.close();
+
       this.loadingPenalidadesSemanales = false;
     },
     exportPdfRPenalidadesSemanales() {
-      // Define los encabezados estáticos
+
       var empresa = [
         {
-          text: "Operadora : " + this.$cookies.get("nameEmpresa"),
-          fontSize: 11,
-          alignment: "left",
-        },
-      ];
-
-      var ruta = [
-        {
-          text:
-            "Rutas : " +
-            (this.itemRutasRSalidasSemanales.length <= 0
-              ? "TODAS LAS RUTAS"
-              : this.getNombresRutasRDespachosGenerados(
-                this.itemRutasRSalidasSemanales
-              )),
+          text: "Empresa : " + this.$cookies.get("nameEmpresa"),
           fontSize: 11,
           alignment: "left",
         },
@@ -430,111 +380,135 @@ export default {
         },
       ];
 
-      // Agrupa los datos por fecha
-      var datosPorFecha = this.mListDatosPenalidades.reduce((acc, item) => {
-        let fecha = item.HoraSaliProgSali_mDate; // Suponiendo que tienes la fecha en el formato YYYY-MM-DD
-        if (!acc[fecha]) acc[fecha] = [];
-        acc[fecha].push(item);
-        return acc;
-      }, {});
+      var mList = [];
 
-      // Define el contenido del PDF
-      var content = [
+      mList.push([
         {
-          layout: "noBorders",
-          table: {
-            headerRows: 0,
-            widths: [450, 450, 450],
-            body: [empresa, desde_hasta, ruta],
-          },
+          text: "UNIDAD",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
         },
-      ];
+        {
+          text: "N° Vuelta",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "RUTA",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. INICIAL",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "F. FINAL",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "C. VIAJE",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "INTERVALO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "T. ATRASO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
+        {
+          text: "T. ADELANTO",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        }
+      ]);
 
-      // Itera sobre las fechas agrupadas
-      Object.keys(datosPorFecha).forEach(fecha => {
-        var rutaDatos = datosPorFecha[fecha];
-        var rutas = [...new Set(rutaDatos.map(item => item.LetraRutaSali_m))]; // Obtener rutas únicas para ese día
+      for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
 
-        // Agrega la fecha como título en el PDF
-        content.push([
-          { text: "Fecha: " + fecha, fontSize: 12, bold: true, fillColor: "#039BC4", color: "white", alignment: "center", colSpan: 9 },
-          {}, {}, {}, {}, {}, {}, {}, {}
-        ]);
+        var obj = [
+          {
+            text: this.mListDatosPenalidades[i].CodiVehiSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].NumeVuelSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].DescRutaSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].HoraSaliProgSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].HoraLlegProgSali_m,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].TiempoVuelta,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].Intervalo,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].atrasosTime,
+            fontSize: 8.5,
+            alignment: "center",
+          },
+          {
+            text: this.mListDatosPenalidades[i].adelantosTime,
+            fontSize: 8.5,
+            alignment: "center",
+          }
+        ]
 
-        // Itera sobre cada ruta del día
-        rutas.forEach(ruta => {
-          var rutaDatosPorRuta = rutaDatos.filter(item => item.LetraRutaSali_m === ruta);
-          var rutaDescripcion = rutaDatosPorRuta.length > 0 ? rutaDatosPorRuta[0].DescRutaSali_m : "Descripción no disponible";
-
-          var mList = [];
-          mList.push([
-            {
-              text: "Tipo de Día: " + (
-                rutaDatosPorRuta[0].tipo_dia === "t" ? "Típico" :
-                  rutaDatosPorRuta[0].tipo_dia === "s" ? "Sábado" :
-                    rutaDatosPorRuta[0].tipo_dia === "d" ? "Domingo" : ""
-              ),
-              fontSize: 12,
-              bold: true,
-              fillColor: "#039BC4",
-              color: "white",
-              alignment: "center",
-              colSpan: 9,
-            },
-            {}, {}, {}, {}, {}, {}, {}, {}
-          ]);
-
-          mList.push([
-            {
-              text: "Ruta: " + rutaDescripcion,
-              fontSize: 12,
-              bold: true,
-              fillColor: "#039BC4",
-              color: "white",
-              alignment: "center",
-              colSpan: 9,
-            },
-            {}, {}, {}, {}, {}, {}, {}, {}
-          ]);
-
-          mList.push([
-            { text: "No", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
-            { text: "Tipo", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
-            { text: "No Habilitación", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
-            { text: "Código de Conductor", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
-            { text: "F. Inicial", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
-            { text: "F. Final", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
-            { text: "C. Viaje", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
-            { text: "Intervalo", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
-            { text: "T. Despacho", fontSize: 8.5, bold: true, fillColor: "#039BC4", color: "white", alignment: "center" },
-          ]);
-
-          rutaDatosPorRuta.forEach((item, i) => {
-            var obj = [
-              { text: i + 1, fontSize: 8.5, alignment: "center" },
-              { text: "P", fontSize: 8.5, alignment: "center" },
-              { text: item.CodiVehiSali_m, fontSize: 8.5, alignment: "center" },
-              { text: item.codigo_chofer, fontSize: 8.5, alignment: "center" },
-              { text: item.HoraSaliProgSali_m, fontSize: 8.5, alignment: "center" },
-              { text: item.HoraLlegProgSali_m, fontSize: 8.5, alignment: "center" },
-              { text: item.TiempoVuelta, fontSize: 8.5, alignment: "center" },
-              { text: item.Intervalo, fontSize: 8.5, alignment: "center" },
-              { text: item.TDespacho, fontSize: 8.5, alignment: "center" },
-            ];
-            mList.push(obj);
-          });
-
-          content.push({
-            table: {
-              headerRows: 0,
-              widths: [50, 50, 80, 85, 90, 55, 52, 48, 62],
-              body: mList,
-            },
-          });
-
-          content.push({ text: "", margin: [0, 10] }); // Salto de línea para separar tablas
-        });
-      });
+        mList.push(obj);
+      }
 
       var docDefinition = {
         pageSize: "A4",
@@ -562,26 +536,47 @@ export default {
                       bold: true,
                     },
                   ],
+                  /*[
+                    {
+                      text: "Dir : Av Chasquis y Rio Guayllabamba (Ambato) Email : vigitracklatam@gmail.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],
+                  [
+                    {
+                      text: "Tel : 0995737084 - 032421698 Sitio Web : www.vigitrackecuador.com",
+                      alignment: "center",
+                      fontSize: 8,
+                    },
+                  ],*/
                 ],
               },
             },
           ],
         },
-        content: content,
+        content: [
+          {
+            layout: "noBorders",
+            table: {
+              headerRows: 0,
+              widths: [450, 450],
+              body: [empresa, desde_hasta],
+            },
+          },
+          {
+            table: {
+              headerRows: 0,
+              widths: [40, 60, 180, 90, 55, 52, 48, 62, 62, 50],
+              body: mList,
+            },
+          },
+        ],
       };
 
-      var pdfDocGenerator = pdfMake.createPdf(docDefinition);
-      pdfDocGenerator.getBlob((blob) => {
-        var pdfUrl = URL.createObjectURL(blob);
-        let iframe = document.getElementById("iframeContainerTablaOperacional");
-        iframe.src = pdfUrl;
-      });
+      pdfMake.createPdf(docDefinition).download("RPS_" + Date.now());
+
     },
-
-
-
-
-
     async readGruposActivosPenalidadesSemanales() {
       this.mListaGruposPenalidadesSemanales = [];
 
