@@ -240,7 +240,8 @@ export default {
             usuarioName: this.$cookies.get("namesUsuario"),
           },
           {
-            "Content-Type": "application/json",
+            headers:{"Content-Type": "application/json"},
+            timeout:300000
           }
         );
 

@@ -76,7 +76,7 @@
           <div>
             <el-table v-loading="loadingTableRVelocidadesBusquedaloading" element-loading-text="Cargando Datos..."
               :data="mListaRVelocidades" row-key="id" class="tablePanelControlProduccion"
-              header-row-class-name="thead-dark" height="calc(100vh - 9.5rem)">
+              header-row-class-name="thead-dark" height="calc(100vh - 13.5rem)">
 
               <el-table-column v-for="column in tableColumnsUnidadesFlotaVehicular" :key="column.label" v-bind="column">
               </el-table-column>
@@ -655,7 +655,7 @@ export default {
 
 .card-bodyRVelocidades {
   padding: 0rem !important;
-  height: calc(100vh - 9.5rem);
+  height: calc(100vh - 13rem);
   overflow: auto;
 }
 

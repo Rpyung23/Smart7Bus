@@ -74,11 +74,7 @@
         </card>
 
 
-        <card class="no-border-card" body-classes="card_body_0_01rem" :style="{
-          marginBottom: '0px',
-          width: '100%',
-          height: mListaGruposPenalidadesSemanales.length > 0 ? 'calc(100vh - 13rem)' : 'calc(100vh - 10rem)'
-        }">
+        <card class="no-border-card" body-classes="card_body_tO" style="height: calc(100vh - 9.5rem);margin-bottom: 0rem;">
           <embed id="iframeContainerTablaOperacional" :src="oBase64IndicadoresCalidad" type="application/pdf"
             width="100%" height="100%" />
         </card>
@@ -506,7 +502,7 @@ export default {
           content.push({
             table: {
               headerRows: 0,
-              widths: [50, 50, 80, 85, 55, 55, 52, 48, 62],
+              widths: [35, 35, 50, 85, 50, 50, 50, 48, 45],
               body: mList,
             },
           });
@@ -517,8 +513,8 @@ export default {
 
       var docDefinition = {
         pageSize: "A4",
-        pageOrientation: "landscape",
-        pageMargins: [40, 80, 40, 60],
+        //pageOrientation: "landscape",
+        pageMargins: [35, 80, 40, 60],
         header: {
           margin: 15,
           columns: [
@@ -582,6 +578,9 @@ export default {
 };
 </script>
 <style>
+.card_body_tO{
+  padding: 0.5rem;
+}
 .containerModalRecorridoPanelDespacho {
   display: flex;
 }
