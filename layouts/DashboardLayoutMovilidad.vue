@@ -28,7 +28,7 @@
           }" />
 
         <sidebar-item translate="no" :link="{
-          name: 'Programación Operatica',
+          name: 'Programación Operativa',
           icon: 'ni ni-archive-2 text-default',
           path: '/movilidad/programacionOperativa',
         }" />
