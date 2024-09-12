@@ -302,6 +302,8 @@ export default {
         }, {
           timeout: 600000,
         });
+        console.log("respuesta de rdistancia")
+        console.log(datos.data.status_code)
 
         if (datos.data.status_code == 200) {
           this.mListaRVelocidades.push(...datos.data.datos)
@@ -344,7 +346,7 @@ export default {
             "Del : " +
             (this.fechaInicialSalidasPanelBusqueda) +
             " Hasta " +
-            (this.fechaInicialSalidasPanelBusqueda),
+            (this.fechaFinalSalidasPanelBusqueda),
           fontSize: 11,
           alignment: "left",
           bold: true,
