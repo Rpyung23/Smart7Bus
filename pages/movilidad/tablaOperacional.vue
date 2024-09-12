@@ -43,14 +43,14 @@
               <!--  <base-button type="danger" size="sm" v-if="mListDatosPenalidades.length > 0 ? true : false"
                 @click="exportPdfRPenalidadesSemanales()" title="Exportar PDF">
                 <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
-              </base-button>
+              </base-button-->
 
               <download-excel v-if="mListDatosPenalidades.length > 0 ? true : false"
                 class="btn btn-icon btn-fab btn-success btn-sm" outline :header="oheaderExcelRSalidasSemanales"
                 title="Exportar a Excel" :data="mListDatosPenalidades" :fields="json_fields_excelRPenalidadesSemanales"
                 :worksheet="WorksheetExcelRSalidasSemanales" :name="FileNameExcelRSalidasSemanales">
                 <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-              </download-excel> -->
+              </download-excel>
             </div>
           </div>
         </card>
@@ -74,7 +74,8 @@
         </card>
 
 
-        <card class="no-border-card" body-classes="card_body_tO" style="height: calc(100vh - 9.5rem);margin-bottom: 0rem;">
+        <card class="no-border-card" body-classes="card_body_tO"
+          style="height: calc(100vh - 9.5rem);margin-bottom: 0rem;">
           <embed id="iframeContainerTablaOperacional" :src="oBase64IndicadoresCalidad" type="application/pdf"
             width="100%" height="100%" />
         </card>
@@ -162,15 +163,15 @@ export default {
       itemGruposPenalidadesSemanales: [],
       fechaDia2SalidasPanelBusqueda: "",
       json_fields_excelRPenalidadesSemanales: {
-        UNIDAD: "CodiVehiSali_m",
-        "N° Vuelta": "NumeVuelSali_m",
-        RUTA: "DescRutaSali_m",
-        "FECHA INICIAL": "HoraSaliProgSali_m",
-        "FECHA FINAL": "HoraLlegProgSali_m",
-        "CICLO VIAJE": "TiempoVuelta",
-        "INTERVALO": "Intervalo",
-        "TIEMPO ATRASOS": "atrasosTime",
-        "TIEMPO ADELANTO": "adelantosTime"
+        " ":"No",
+        "  ": "P",
+        "   ": "CodiVehiSali_m",
+        "    ": "codigo_chofer",
+        "     ": "HoraSaliProgSali_m",
+        "      ": "HoraLlegProgSali_m",
+        "       ": "TiempoVuelta",
+        "        ": "Intervalo",
+        "         ": "TDespacho",
       },
       WorksheetExcelRSalidasSemanales: "",
       FileNameExcelRSalidasSemanales: "",
@@ -270,26 +271,6 @@ export default {
         return
       }
 
-      this.WorksheetExcelRSalidasSemanales = "RS_S_W_" + Date.now();
-      this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
-
-      this.oheaderExcelRSalidasSemanales = [
-        "TABLA OPERACIONAL",
-        "Fechas : " +
-        this.fechaDia1SalidasPanelBusqueda +
-        " hasta " +
-        this.fechaDia2SalidasPanelBusqueda,
-        "Unidades : " +
-        (this.itemUnidadRSemanales.length <= 0
-          ? "TODAS LAS UNIDADES"
-          : this.itemUnidadRSemanales),
-        "Rutas : " +
-        (this.itemRutasRSalidasSemanales.length <= 0
-          ? "TODAS LAS RUTAS"
-          : this.getNombresRutasRDespachosGenerados(
-            this.itemRutasRSalidasSemanales
-          )),
-      ];
       let iframe = document.getElementById("iframeContainerTablaOperacional");
       iframe.src = "";
       swal.fire({
@@ -337,6 +318,7 @@ export default {
         if (datos.data.status_code == 200) {
           this.mListDatosPenalidades.push(...datos.data.datos);
           this.exportPdfRPenalidadesSemanales();
+          this.exportExcel();
         } else {
           Notification.warning({
             title: "Reporte de Tabla Operacional",
@@ -354,7 +336,7 @@ export default {
       swal.close();
       this.loadingPenalidadesSemanales = false;
     },
-    
+
     exportPdfRPenalidadesSemanales() {
       // Define los encabezados estáticos
       var empresa = [
@@ -447,7 +429,7 @@ export default {
 
           mList.push([
             {
-              text: "Día: " +fecha,
+              text: "Día: " + fecha,
               fontSize: 12,
               bold: true,
               fillColor: "#039BC4",
@@ -553,6 +535,136 @@ export default {
       });
     },
 
+    exportExcel() {
+      this.WorksheetExcelRSalidasSemanales = "RTO_" + Date.now();
+      this.FileNameExcelRSalidasSemanales = "TablaOperacional_" + Date.now() + ".xls";
+
+      this.oheaderExcelRSalidasSemanales = [
+        "TABLA OPERACIONAL",
+        "Fechas : " + this.fechaDia1SalidasPanelBusqueda + " hasta " + this.fechaDia2SalidasPanelBusqueda,
+        "Unidades : " + (this.itemUnidadRSemanales.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadRSemanales),
+        "Rutas : " + (this.itemRutasRSalidasSemanales.length <= 0 ? "TODAS LAS RUTAS" : this.getNombresRutasRDespachosGenerados(this.itemRutasRSalidasSemanales)),
+      ];
+
+      let newExcelData = [];
+
+      // Agrupa los datos por fecha
+      let datosPorFecha = this.mListDatosPenalidades.reduce((acc, item) => {
+        let fecha = item.HoraSaliProgSali_m.split(" ")[0]; // Suponiendo que la fecha está en formato 'YYYY-MM-DD HH:mm:ss'
+        if (!acc[fecha]) acc[fecha] = [];
+        acc[fecha].push(item);
+        return acc;
+      }, {});
+
+      // Procesar los datos agrupados por fecha
+      Object.keys(datosPorFecha).forEach(fecha => {
+        let rutaDatos = datosPorFecha[fecha];
+        let rutas = [...new Set(rutaDatos.map(item => item.LetraRutaSali_m))]; // Obtener rutas únicas
+
+        // Obtener el tipo de día basado en el primer registro de la fecha
+        let tipoDiaTexto = "";
+        if (rutaDatos.length > 0) {
+          const tipoDia = rutaDatos[0].tipo_dia;
+          tipoDiaTexto = tipoDia === "t" ? "Típico" : tipoDia === "s" ? "Sábado" : tipoDia === "d" ? "Domingo" : "Desconocido";
+        }
+
+
+        // Procesar cada ruta dentro de la fecha
+        rutas.forEach(ruta => {
+          let rutaDatosPorRuta = rutaDatos.filter(item => item.LetraRutaSali_m === ruta);
+          let rutaDescripcion = rutaDatosPorRuta.length > 0 ? rutaDatosPorRuta[0].DescRutaSali_m : "Descripción no disponible";
+          // Agregar un título para el tipo de día
+          newExcelData.push({
+            "":"No",
+            "P": "",
+            "CodiVehiSali_m": "Tipo de Día:",
+            "codigo_chofer": tipoDiaTexto,
+            "HoraSaliProgSali_m": "",
+            "HoraLlegProgSali_m": "",
+            "TiempoVuelta": "",
+            "Intervalo": "",
+            "TDespacho": ""
+          });
+
+          // Agregar un título para la fecha
+          newExcelData.push({
+            "":"No",
+            "P": "",
+            "CodiVehiSali_m": "Día: ",
+            "codigo_chofer": fecha,
+            "HoraSaliProgSali_m": "",
+            "HoraLlegProgSali_m": "",
+            "TiempoVuelta": "",
+            "Intervalo": "",
+            "TDespacho": ""
+          });
+
+          // Agregar un título para la ruta
+          newExcelData.push({
+            "No":"",
+            "P": "",
+            "CodiVehiSali_m": "Ruta:",
+            "codigo_chofer": rutaDescripcion,
+            "HoraSaliProgSali_m": "",
+            "HoraLlegProgSali_m": "",
+            "TiempoVuelta": "",
+            "Intervalo": "",
+            "TDespacho": ""
+          });
+
+          newExcelData.push({
+            "No":"No",
+            "P": "Tipo",
+            "CodiVehiSali_m": "No Habilitación",
+            "codigo_chofer": "Código de Conductor",
+            "HoraSaliProgSali_m": "F. Inicial ",
+            "HoraLlegProgSali_m": "F. Final",
+            "TiempoVuelta": "C. Viaje ",
+            "Intervalo": "Intervalo",
+            "TDespacho": "T. Despacho"
+          });
+
+
+          // Agregar los datos de cada ruta
+          rutaDatosPorRuta.forEach((item, i) => {
+            const horaSali = item.HoraSaliProgSali_m.split(" ")[1];
+            newExcelData.push({
+              "No":i+1,
+              "P": "P",
+              "CodiVehiSali_m": item.CodiVehiSali_m,
+              "codigo_chofer": item.codigo_chofer,
+              "HoraSaliProgSali_m": horaSali,
+              "HoraLlegProgSali_m": item.HoraLlegProgSali_m,
+              "TiempoVuelta": item.TiempoVuelta,
+              "Intervalo": item.Intervalo,
+              "TDespacho": item.TDespacho,
+            });
+          });
+
+          // Agregar una fila vacía después de los datos de la ruta
+          newExcelData.push({
+            "No":"",
+            "P": "",
+            "CodiVehiSali_m": "",
+            "codigo_chofer": "",
+            "HoraSaliProgSali_m": "",
+            "HoraLlegProgSali_m": "",
+            "TiempoVuelta": "",
+            "Intervalo": "",
+            "TDespacho": ""
+          });
+        });
+      });
+
+      console.log("Datos listos para exportar: ", newExcelData);
+
+      // Asignar los datos procesados para exportar a Excel
+      this.mListDatosPenalidades = newExcelData;
+    },
+
+
+
+
     async readGruposActivosPenalidadesSemanales() {
       this.mListaGruposPenalidadesSemanales = [];
 
@@ -578,9 +690,10 @@ export default {
 };
 </script>
 <style>
-.card_body_tO{
+.card_body_tO {
   padding: 0.5rem;
 }
+
 .containerModalRecorridoPanelDespacho {
   display: flex;
 }
