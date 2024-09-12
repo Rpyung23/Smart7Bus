@@ -2,12 +2,9 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
             <!--  <el-select v-model="itemUnidadRSemanales" multiple filterable remote placeholder="Unidades"
                             prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
@@ -18,130 +15,51 @@
                             </el-option>
                         </el-select> -->
 
-            <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
-              v-model="itemRutasRSalidasSemanales"
-              multiple
-              placeholder="Rutas"
-            >
-              <el-option
-                v-for="item in mListaRutasSalidasSemanales"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.LetrRuta"
-              >
+            <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRutasRSalidasSemanales" multiple
+              placeholder="Rutas">
+              <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.LetrRuta">
               </el-option>
             </el-select>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                format="yyyy/MM/dd"
-                class="form-controlPersonal datepicker"
-                v-model="fechaDia1SalidasPanelBusqueda"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem">
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                format="yyyy/MM/dd" class="form-controlPersonal datepicker" v-model="fechaDia1SalidasPanelBusqueda">
               </flat-picker>
             </base-input>
 
-            <base-input
-              addon-left-icon="ni ni-calendar-grid-58"
-              style="margin-right: 0.5rem"
-              disabled
-            >
-              <flat-picker
-                slot-scope="{ focus, blur }"
-                @on-open="focus"
-                @on-close="blur"
-                :config="{ allowInput: true }"
-                format="yyyy/MM/dd"
-                class="form-controlPersonal datepicker"
-                v-model="fechaDia2SalidasPanelBusqueda"
-              >
+            <base-input addon-left-icon="ni ni-calendar-grid-58" style="margin-right: 0.5rem" disabled>
+              <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
+                format="yyyy/MM/dd" class="form-controlPersonal datepicker" v-model="fechaDia2SalidasPanelBusqueda">
               </flat-picker>
             </base-input>
           </div>
 
-          <div
-            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          >
+          <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda">
             <div class="buttonCenterEndDerecha">
-              <base-button
-                icon
-                type="primary"
-                size="sm"
-                @click="readApiProgramacionOperativa()"
-              >
-                <span class="btn-inner--icon"
-                  ><i class="el-icon-search"></i
-                ></span>
+              <base-button icon type="primary" size="sm" @click="readApiProgramacionOperativa()">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
               </base-button>
 
               <!--  <base-button type="danger" size="sm" v-if="mListDatosPenalidades.length > 0 ? true : false"
                   @click="exportPdfRPenalidadesSemanales()" title="Exportar PDF">
                   <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
-                </base-button>
-  
-                <download-excel v-if="mListDatosPenalidades.length > 0 ? true : false"
-                  class="btn btn-icon btn-fab btn-success btn-sm" outline :header="oheaderExcelRSalidasSemanales"
-                  title="Exportar a Excel" :data="mListDatosPenalidades" :fields="json_fields_excelRPenalidadesSemanales"
-                  :worksheet="WorksheetExcelRSalidasSemanales" :name="FileNameExcelRSalidasSemanales">
-                  <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
-                </download-excel> -->
+                </base-button-->
+
+              <download-excel v-if="mListaDatosExcel.length > 0 ? true : false"
+                class="btn btn-icon btn-fab btn-success btn-sm" outline :header="oheaderExcelRSalidasSemanales"
+                title="Exportar a Excel" :data="mListaDatosExcel" :fields="json_fields_excelRPenalidadesSemanales"
+                :worksheet="WorksheetExcelRSalidasSemanales" :name="FileNameExcelRSalidasSemanales">
+                <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
+              </download-excel>
             </div>
           </div>
         </card>
 
-        <!--<card
-          v-if="mListaGruposPenalidadesSemanales.length > 0"
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
-          body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccionPanelDespachoBusqueda cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          footer-classes="pb-2"
-        >
-          <div class="cardTextoRPagosVehiculoProduccionPanelDespachoBusqueda">
-            <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
-              v-model="itemGruposPenalidadesSemanales"
-              multiple
-              placeholder="Grupos"
-            >
-              <el-option
-                v-for="item in mListaGruposPenalidadesSemanales"
-                :key="item.id"
-                :label="item.descripcion"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </div>
-
-          <div
-            class="cardSelectRubrosEstadosPagosVehiculoProduccionContainerPanelDespachoBusqueda"
-          >
-            <div class="buttonCenterEndDerecha"></div>
-          </div>
-        </card>-->
-
-        <card
-          class="no-border-card"
-          body-classes="card_body_pO"
-          style="height: calc(100vh - 9.5rem);margin-bottom: 0rem;"
-        >
-          <embed
-            id="iframeContainerprogramcionOperativa"
-            :src="oBase64IndicadoresCalidad"
-            type="application/pdf"
-            width="100%"
-            height="100%"
-          />
+        <card class="no-border-card" body-classes="card_body_pO"
+          style="height: calc(100vh - 9.5rem);margin-bottom: 0rem;">
+          <embed id="iframeContainerprogramcionOperativa" :src="oBase64IndicadoresCalidad" type="application/pdf"
+            width="100%" height="100%" />
         </card>
       </div>
     </base-header>
@@ -216,6 +134,7 @@ export default {
       modalSalidasPenalidadesSemanales: false,
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
+      mListaDatosExcel: [],
       modalSalidasPenalidadesSemanales: false,
       loadingPenalidadesSemanales: false,
       mListaUnidadesSemanales: [],
@@ -228,15 +147,15 @@ export default {
       itemGruposPenalidadesSemanales: [],
       fechaDia2SalidasPanelBusqueda: "",
       json_fields_excelRPenalidadesSemanales: {
-        UNIDAD: "CodiVehiSali_m",
-        "N° Vuelta": "NumeVuelSali_m",
-        RUTA: "DescRutaSali_m",
-        "FECHA INICIAL": "HoraSaliProgSali_m",
-        "FECHA FINAL": "HoraLlegProgSali_m",
-        "CICLO VIAJE": "TiempoVuelta",
-        INTERVALO: "Intervalo",
-        "TIEMPO ATRASOS": "atrasosTime",
-        "TIEMPO ADELANTO": "adelantosTime",
+        " ": "DescRuta",
+        "  ": "cantUnidades",
+        "   ": "minutes_diff",
+        "    ": "distancia",
+        "     ": "VeloMaxiSali_m",
+        "      ": "intervalo_pico",
+        "       ": "intervalo_valle",
+        "        ": "cantVuelta",
+        "         ": "odometrodiff",
       },
       WorksheetExcelRSalidasSemanales: "",
       FileNameExcelRSalidasSemanales: "",
@@ -357,6 +276,7 @@ export default {
     async readApiProgramacionOperativa() {
       this.mListDatosPenalidades = [];
       this.loadingPenalidadesSemanales = true;
+      this.mListaDatosExcel = [];
 
       if (
         !validaRangoFechaNoMas30Dias(
@@ -372,26 +292,7 @@ export default {
         return;
       }
 
-      this.WorksheetExcelRSalidasSemanales = "RS_S_W_" + Date.now();
-      this.FileNameExcelRSalidasSemanales = "RS_S_" + Date.now() + ".xls";
 
-      this.oheaderExcelRSalidasSemanales = [
-        "TABLA PROGRAMACIÓN OPERATIVA",
-        "Fechas : " +
-          this.fechaDia1SalidasPanelBusqueda +
-          " hasta " +
-          this.fechaDia2SalidasPanelBusqueda,
-        "Unidades : " +
-          (this.itemUnidadRSemanales.length <= 0
-            ? "TODAS LAS UNIDADES"
-            : this.itemUnidadRSemanales),
-        "Rutas : " +
-          (this.itemRutasRSalidasSemanales.length <= 0
-            ? "TODAS LAS RUTAS"
-            : this.getNombresRutasRDespachosGenerados(
-                this.itemRutasRSalidasSemanales
-              )),
-      ];
       let iframe = document.getElementById(
         "iframeContainerprogramcionOperativa"
       );
@@ -441,12 +342,13 @@ export default {
 
         if (datos.data.status_code == 200) {
           this.mListDatosPenalidades.push(...datos.data.datos.datos);
+          this.mListaDatosExcel.push(...datos.data.datos.datos);
 
           this.oDiaTrabajo = datos.data.datos.p_dia_trabajo;
           this.oEstaUnidad = datos.data.datos.p_estadistico_dia_bus;
           this.oEstaKm = datos.data.datos.p_estadistico_km_bus;
           this.oEstaNoKm = datos.data.datos.p_estadistico_no_km_bus;
-
+          this.generateExcel();
           this.genratePdf();
         } else {
           Notification.warning({
@@ -485,8 +387,8 @@ export default {
                 this.itemRutasRSalidasSemanales.length === 0
                   ? "TODAS LAS RUTAS"
                   : this.getNombresRutasRDespachosGenerados(
-                      this.itemRutasRSalidasSemanales
-                    ),
+                    this.itemRutasRSalidasSemanales
+                  ),
               fontSize: 11,
               alignment: "left",
               bold: true,
@@ -949,7 +851,7 @@ export default {
           },
         ];
         resultadoStringDomingo.push(arrys);
-      } 
+      }
 
       // tabla Asignación Operativa
       var resultadoStringAsignacionT = [];
@@ -1358,10 +1260,10 @@ export default {
                 bodyContent.length > 0
                   ? bodyContent
                   : [
-                      componenteHeaderTable([
-                        "No hay datos disponibles para los días seleccionados",
-                      ]),
-                    ],
+                    componenteHeaderTable([
+                      "No hay datos disponibles para los días seleccionados",
+                    ]),
+                  ],
             },
             margin: [0, 10, 0, 10],
           },
@@ -1387,13 +1289,13 @@ export default {
                 ...generarResultado("Desviancion Estandar", this.oEstaUnidad.desviacionEstandar.toFixed(2)),
                 ...componneteKmu(),
                 ...generarResultado("Maximo", this.oEstaKm.maximo.toFixed(2)),
-                ...generarResultado("Minimo",  this.oEstaKm.minimo.toFixed(2)),
-                ...generarResultado("Rango",  this.oEstaKm.rango.toFixed(2)),
-                ...generarResultado("Cuenta",  this.oEstaKm.cuenta.toFixed(2)),
-                ...generarResultado("Mediana",  this.oEstaKm.mediana),
-                ...generarResultado("Moda",  this.oEstaKm.moda.toFixed(2)),
-                ...generarResultado("Promedio",  this.oEstaKm.promedio.toFixed(2)),
-                ...generarResultado("Desviancion Estandar",  this.oEstaKm.desviacionEstandar.toFixed(2)),
+                ...generarResultado("Minimo", this.oEstaKm.minimo.toFixed(2)),
+                ...generarResultado("Rango", this.oEstaKm.rango.toFixed(2)),
+                ...generarResultado("Cuenta", this.oEstaKm.cuenta.toFixed(2)),
+                ...generarResultado("Mediana", this.oEstaKm.mediana),
+                ...generarResultado("Moda", this.oEstaKm.moda.toFixed(2)),
+                ...generarResultado("Promedio", this.oEstaKm.promedio.toFixed(2)),
+                ...generarResultado("Desviancion Estandar", this.oEstaKm.desviacionEstandar.toFixed(2)),
                 ...componneteKmnu(),
                 ...generarResultado("Maximo", this.oEstaNoKm.maximo.toFixed(2)),
                 ...generarResultado("Minimo", this.oEstaNoKm.minimo.toFixed(2)),
@@ -1428,6 +1330,142 @@ export default {
       });
     },
 
+    generateExcel() {
+      // Asignar nombres dinámicos para el archivo y la hoja
+      this.WorksheetExcelRSalidasSemanales = "RPO" + Date.now();
+      this.FileNameExcelRSalidasSemanales = "ProgramacionOperativa" + Date.now() + ".xls";
+
+      this.oheaderExcelRSalidasSemanales = [
+        "TABLA PROGRAMACIÓN OPERATIVA",
+        "Fechas : " +
+        this.fechaDia1SalidasPanelBusqueda +
+        " hasta " +
+        this.fechaDia2SalidasPanelBusqueda,
+        "Unidades : " +
+        (this.itemUnidadRSemanales.length <= 0
+          ? "TODAS LAS UNIDADES"
+          : this.itemUnidadRSemanales),
+        "Rutas : " +
+        (this.itemRutasRSalidasSemanales.length <= 0
+          ? "TODAS LAS RUTAS"
+          : this.getNombresRutasRDespachosGenerados(this.itemRutasRSalidasSemanales)),
+      ];
+
+
+      const groupedData = {
+        tipico: [],
+        sabado: [],
+        domingo: []
+      };
+
+
+
+      this.mListaDatosExcel.forEach(item => {
+        if (item.tipo_dia === 't') {
+          groupedData.tipico.push(item);
+        } else if (item.tipo_dia === 's') {
+          groupedData.sabado.push(item);
+        } else if (item.tipo_dia === 'd') {
+          groupedData.domingo.push(item);
+        }
+      });
+
+      let newListaDatosExcel = [];
+
+      const addRowWithValues = (descRuta, cantUnidades, minutes_diff, distancia, VeloMaxiSali_m, intervalo_pico, intervalo_valle, cantVuelta, odometrodiff) => {
+        newListaDatosExcel.push({
+          "DescRuta": descRuta,
+          "cantUnidades": cantUnidades,
+          "minutes_diff": minutes_diff,
+          "distancia": distancia,
+          "VeloMaxiSali_m": VeloMaxiSali_m,
+          "intervalo_pico": intervalo_pico,
+          "intervalo_valle": intervalo_valle,
+          "cantVuelta": cantVuelta,
+          "odometrodiff": odometrodiff
+        });
+      };
+
+      const addHeaderForGroup = (dia) => {
+        addRowWithValues(dia, "Flota", "Ciclo", "Distancia", "Velocidad", "Intervalo Hora Pico", "Intervalo Hora Valle", "Vuelta por Buses", "Kilometos por Buses");
+      };
+
+      // Agregar cada grupo con su texto específico después del grupo
+      if (groupedData.tipico.length > 0) {
+        addHeaderForGroup("Día Típico"); // Añadir encabezado personalizado para Día Típico
+        newListaDatosExcel.push(...groupedData.tipico);
+        newListaDatosExcel.push({});
+      }
+
+      if (groupedData.sabado.length > 0) {
+        addHeaderForGroup("Día Sábado"); // Añadir encabezado personalizado para Día Típico
+        newListaDatosExcel.push(...groupedData.sabado);
+        newListaDatosExcel.push({});
+      }
+
+      if (groupedData.domingo.length > 0) {
+        addHeaderForGroup("Día Domingo"); // Añadir encabezado personalizado para Día Típico
+        newListaDatosExcel.push(...groupedData.domingo);
+        newListaDatosExcel.push({});
+      }
+
+      const truncateToTwoDecimals = (number) => {
+        if (typeof number !== 'number') return '';
+        return Math.floor(number * 100) / 100;
+      };
+
+
+
+      addRowWithValues("Asignación Operativa", "", "", "", "", "", "", "", "");
+      addRowWithValues("Programación de Días de Trabajo", "", "", "", "", "", "", "", "");
+      addRowWithValues("Típico", this.oDiaTrabajo.diasTipicos, "", "", "", "", "", "", "");
+      addRowWithValues("Sabado", this.oDiaTrabajo.sabados, "", "", "", "", "", "", "");
+      addRowWithValues("Domingo", this.oDiaTrabajo.domingos, "", "", "", "", "", "", "");
+      addRowWithValues("", "", "", "", "", "", "", "", "");
+      addRowWithValues("Periodo de Equilibrio de Producción", "", "", "", "", "", "", "", "");
+      addRowWithValues("Periodo(meses)", "1", "", "", "", "", "", "", "");
+      addRowWithValues("", "", "", "", "", "", "", "", "");
+      addRowWithValues("Días a trabajar por Autobús", "", "", "", "", "", "", "", "");
+      addRowWithValues("Máximo", this.oEstaUnidad.maximo, "", "", "", "", "", "", "");
+      addRowWithValues("Mínimo", this.oEstaUnidad.minimo, "", "", "", "", "", "", "");
+      addRowWithValues("Rango", this.oEstaUnidad.rango, "", "", "", "", "", "", "");
+      addRowWithValues("Cuenta", this.oEstaUnidad.cuenta, "", "", "", "", "", "", "");
+      addRowWithValues("Mediana", this.oEstaUnidad.mediana, "", "", "", "", "", "", "");
+      addRowWithValues("Moda", this.oEstaUnidad.moda, "", "", "", "", "", "", "");
+      addRowWithValues("Promedio", truncateToTwoDecimals(this.oEstaUnidad.promedio), "", "", "", "", "", "", "");
+      addRowWithValues("Desviación Estandar", truncateToTwoDecimals(this.oEstaUnidad.desviacionEstandar), "", "", "", "", "", "", "");
+      addRowWithValues("", "", "", "", "", "", "", "", "");
+      addRowWithValues("Kilómetros útiles por Autobús", "", "", "", "", "", "", "", "");
+      addRowWithValues("Máximo", this.oEstaKm.maximo, "", "", "", "", "", "", "");
+      addRowWithValues("Mínimo", this.oEstaKm.minimo, "", "", "", "", "", "", "");
+      addRowWithValues("Rango", this.oEstaKm.rango, "", "", "", "", "", "", "");
+      addRowWithValues("Cuenta", this.oEstaKm.cuenta, "", "", "", "", "", "", "");
+      addRowWithValues("Mediana", this.oEstaKm.mediana, "", "", "", "", "", "", "");
+      addRowWithValues("Moda", this.oEstaKm.moda, "", "", "", "", "", "", "");
+      addRowWithValues("Promedio", truncateToTwoDecimals(this.oEstaKm.promedio), "", "", "", "", "", "", "");
+      addRowWithValues("Desviación Estandar", truncateToTwoDecimals(this.oEstaKm.desviacionEstandar), "", "", "", "", "", "", "");
+      addRowWithValues("", "", "", "", "", "", "", "", "");
+      addRowWithValues("Kilómetros no útiles por Autobús", "", "", "", "", "", "", "", "");
+      addRowWithValues("Máximo", this.oEstaNoKm.maximo, "", "", "", "", "", "", "");
+      addRowWithValues("Mínimo", this.oEstaNoKm.minimo, "", "", "", "", "", "", "");
+      addRowWithValues("Rango", this.oEstaNoKm.rango, "", "", "", "", "", "", "");
+      addRowWithValues("Cuenta", this.oEstaNoKm.cuenta, "", "", "", "", "", "", "");
+      addRowWithValues("Mediana", this.oEstaNoKm.mediana, "", "", "", "", "", "", "");
+      addRowWithValues("Moda", this.oEstaNoKm.moda, "", "", "", "", "", "", "");
+      addRowWithValues("Promedio", truncateToTwoDecimals(this.oEstaNoKm.promedio), "", "", "", "", "", "", "");
+      addRowWithValues("Desviación Estandar", truncateToTwoDecimals(this.oEstaNoKm.desviacionEstandar), "", "", "", "", "", "", "");
+
+      this.mListaDatosExcel = newListaDatosExcel;
+
+      console.log("Datos agrupados y ordenados:", this.mListaDatosExcel);
+    }
+
+
+
+    ,
+
+
+
     async readGruposActivosPenalidadesSemanales() {
       this.mListaGruposPenalidadesSemanales = [];
 
@@ -1453,9 +1491,10 @@ export default {
 };
 </script>
 <style>
-.card_body_pO{
-    padding: 0.5rem;
+.card_body_pO {
+  padding: 0.5rem;
 }
+
 .containerModalRecorridoPanelDespacho {
   display: flex;
 }
