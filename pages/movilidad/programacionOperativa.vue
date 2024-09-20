@@ -1337,6 +1337,7 @@ export default {
 
       this.oheaderExcelRSalidasSemanales = [
         "TABLA PROGRAMACIÓN OPERATIVA",
+        "Operadora: "+ this.$cookies.get("nameEmpresa"),
         "Fechas : " +
         this.fechaDia1SalidasPanelBusqueda +
         " hasta " +
@@ -1372,6 +1373,8 @@ export default {
 
       let newListaDatosExcel = [];
 
+
+
       const addRowWithValues = (descRuta, cantUnidades, minutes_diff, distancia, VeloMaxiSali_m, intervalo_pico, intervalo_valle, cantVuelta, odometrodiff) => {
         newListaDatosExcel.push({
           "DescRuta": descRuta,
@@ -1386,8 +1389,12 @@ export default {
         });
       };
 
+      addRowWithValues("", "", "", "", "", "Parámetros Operativos", "", "", "");
+      addRowWithValues("", "", "", "", "", "Flota de Autobuses", "", "", "");
+      addRowWithValues("Flota Disponible", "", "", "", "", this.$cookies.get("nameEmpresa"), "", "", "");
+
       const addHeaderForGroup = (dia) => {
-        addRowWithValues(dia, "Flota", "Ciclo", "Distancia", "Velocidad", "Intervalo Hora Pico", "Intervalo Hora Valle", "Vuelta por Buses", "Kilometos por Buses");
+        addRowWithValues(dia, "Flota (Buses)", "Ciclo (min)", "Distancia (Km)", "Velocidad (Km/h)", "Intervalo Hora Pico (min)", "Intervalo Hora Valle (min)", "Vuelta por Buses (min)", "Kilometos por Buses");
       };
 
       // Agregar cada grupo con su texto específico después del grupo

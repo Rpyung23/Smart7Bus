@@ -480,6 +480,7 @@ export default {
               let frecuencia = this.mListSalidasFrecuenciasControlesExcel[i].DescFrec || "FRECUENCIA NO DISPONIBLE";
               let vuelta = this.mListSalidasFrecuenciasControlesExcel[i].NumeVuelSali_m || "vuelta NO DISPONIBLE";
               let fechaS = this.mListSalidasFrecuenciasControlesExcel[i].HoraSaliProgSali_m || "fecha NO DISPONIBLE";
+              let unidad =  this.mListSalidasFrecuenciasControlesExcel[i].CodiVehiSali_m || "Sin unidad";
 
 
 
@@ -495,6 +496,14 @@ export default {
               oListSalidasFrecuenciasControlesExcelAux.push({
                 DescCtrl: "FRECUENCIA",
                 HoraProgSali_d: frecuencia,
+                HoraMarcSali_d: "",
+                atrasos: "",
+                adelantos: "",
+                PenaCtrlSali_d: ""
+              });
+              oListSalidasFrecuenciasControlesExcelAux.push({
+                DescCtrl: "UNIDAD",
+                HoraProgSali_d: unidad,
                 HoraMarcSali_d: "",
                 atrasos: "",
                 adelantos: "",

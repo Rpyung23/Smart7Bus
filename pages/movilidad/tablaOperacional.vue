@@ -541,6 +541,7 @@ export default {
 
       this.oheaderExcelRSalidasSemanales = [
         "TABLA OPERACIONAL",
+        "Operadora: "+ this.$cookies.get("nameEmpresa"),
         "Fechas : " + this.fechaDia1SalidasPanelBusqueda + " hasta " + this.fechaDia2SalidasPanelBusqueda,
         "Unidades : " + (this.itemUnidadRSemanales.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadRSemanales),
         "Rutas : " + (this.itemRutasRSalidasSemanales.length <= 0 ? "TODAS LAS RUTAS" : this.getNombresRutasRDespachosGenerados(this.itemRutasRSalidasSemanales)),
