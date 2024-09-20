@@ -419,7 +419,7 @@ export default {
         console.log("Control \n" + this.mSelectRutasControles);
         console.log("Grupo \n" + this.itemGruposPenalidadesSemanales);
         if (datos.data.status_code == 200) {
-          //console.log(datos.data.datos);
+          console.log(datos.data.datos);
           this.$refs.ComponenteTarjeta.readDetalleSalidaDPanelBusquedaControles(datos.data.datos, this.mSelectRutasControles);
           //console.log(datos.data.datos);
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
@@ -444,6 +444,7 @@ export default {
       swal.close()
     },
     generateExcel() {
+
       this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now();
       this.oFileNameRSalidasFrecuenciasControles = "RSFC_" + Date.now() + ".xls";
 
@@ -458,15 +459,9 @@ export default {
         { DescCtrl: "Detalle Control", HoraProgSali_d: "Hora Programada", HoraMarcSali_d: "Hora Marcación", FaltSali_d: "Falta", PenaCtrlSali_d: "PENALIDAD" }
       ];
 
-      // Ordenar los datos por unidad (CodiVehiSali_m)
-      this.mListSalidasFrecuenciasControlesExcel.sort((a, b) => {
-        if (a.CodiVehiSali_m < b.CodiVehiSali_m) return -1;
-        if (a.CodiVehiSali_m > b.CodiVehiSali_m) return 1;
-        return 0;
-      });
-
-      // Iterar sobre los datos ya ordenados
+      // Iterar sobre los datos
       for (let i = 0; i < this.mListSalidasFrecuenciasControlesExcel.length; i++) {
+
         // Detectar el inicio de una nueva salida
         if (this.mListSalidasFrecuenciasControlesExcel[i].idSali_m !== currentIdSali) {
           // Si ya hemos agregado detalles, añade los totales del grupo anterior
@@ -506,6 +501,8 @@ export default {
           let vuelta = this.mListSalidasFrecuenciasControlesExcel[i].NumeVuelSali_m || "vuelta NO DISPONIBLE";
           let fechaS = this.mListSalidasFrecuenciasControlesExcel[i].HoraSaliProgSali_m || "fecha NO DISPONIBLE";
           let unidad = this.mListSalidasFrecuenciasControlesExcel[i].CodiVehiSali_m || "Sin unidad";
+
+
 
           // Añadir la frecuencia, vuelta y fechas en una fila
           oListSalidasFrecuenciasControlesExcelAux.push({
@@ -557,6 +554,7 @@ export default {
             PenaCtrlSali_d: ""
           });
 
+
           // Añadir el encabezado de detalle
           oListSalidasFrecuenciasControlesExcelAux.push(...encabezadoDetalle);
         }
@@ -564,12 +562,9 @@ export default {
         // Añadir el detalle actual
         oListSalidasFrecuenciasControlesExcelAux.push(this.mListSalidasFrecuenciasControlesExcel[i]);
 
-        // Sumar los atrasos y adelantos solo si PenaCtrlSali_d es diferente de "0.0"
-
+        // Sumar los atrasos y adelantos
         faltaAtrasos += this.mListSalidasFrecuenciasControlesExcel[i].atrasos;
         faltaAdelantos += this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
-
-
         faltaAtrasosAtrasos += this.mListSalidasFrecuenciasControlesExcel[i].atrasos + this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
       }
 
@@ -596,6 +591,7 @@ export default {
           DescCtrl: "",
           HoraProgSali_d: ""
         });
+
       }
 
       this.mListSalidasFrecuenciasControlesExcel = [];
