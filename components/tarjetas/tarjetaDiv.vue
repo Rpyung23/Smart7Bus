@@ -10,9 +10,6 @@ import { Table, TableColumn } from "element-ui";
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
 
-import { getBase64LogoReportes } from "../../util/logoReport";
-import { map } from "jquery";
-
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export default {
@@ -60,7 +57,6 @@ export default {
         this.mListSalidasTarjeta = [];
         this.mListSalidasTarjeta.push(...datos.data.data);
         console.log("Aca los datos de api ", this.mListSalidasTarjeta)
-
       }
 
 
@@ -70,40 +66,34 @@ export default {
       salida.forEach((elemento) => {
         if (!auxSalida.has(elemento.idSali_m)) {
           auxSalida.set(elemento.idSali_m, elemento)
-          console.log(elemento)
+          //console.log(elemento)
         }
       })
-      console.log("Aca agrupado Salida ", auxSalida)
+      //console.log("Aca agrupado Salida ", auxSalida)
 
 
       //arreglar datos (procesar datos)
       const auxListaSalida = new Map();
       this.mListSalidasTarjeta.forEach((elemento) => {
         if (auxListaSalida.has(elemento.idSali_mSali_d)) {
+          //CodiVehiSali_m
+          const codivehiculo = auxSalida.get(elemento.idSali_mSali_d)?.CodiVehiSali_m || "0"
           const aux = auxListaSalida.get(elemento.idSali_mSali_d)
-          aux.push(elemento)
-          auxListaSalida.set(elemento.idSali_mSali_d, aux)
+          //console.log("Aca AUX",aux)
+          aux.lista.push(elemento)
+          auxListaSalida.set(elemento.idSali_mSali_d, { lista: aux.lista, codivehiculo })
         } else {
+          const codivehiculo = auxSalida.get(elemento.idSali_mSali_d)?.CodiVehiSali_m || "0"
           const aux = []
           aux.push(elemento)
-          auxListaSalida.set(elemento.idSali_mSali_d, aux)
+          auxListaSalida.set(elemento.idSali_mSali_d, { lista: aux, codivehiculo })
         }
       })
       //console.log("Aca mapa ", auxListaSalida)
-      const arrayFormato = Array.from(auxListaSalida.values());
       //console.log("Aca array formateado ********");
-      //console.log(arrayFormato);
+      const arrayFormato = Array.from(auxListaSalida.values());
+      //console.log("Hoaaa", arrayFormato);
 
-
-
-      var empresa = [
-        {
-          text: this.$cookies.get("nameEmpresa").substring(0, 30),
-          fontSize: 12,
-          bold: true,
-          alignment: "center",
-        },
-      ];
 
       const tablaContenido = (elementos) => {
         const aux = []
@@ -257,31 +247,7 @@ export default {
           var totalAdelantosT = '00:00:00';
           var totalAtrasosT = '00:00:00';
 
-          //Logo de la empresa 
-          /*  const logoEmpresa =
-             this.$cookies.get("empresa") == "tjerpazol"
-               ? {
-                 layout: "noBorders",
-                 alignment: "center",
-                 table: {
-                   headerRows: 0,
-                   widths: ["*"],
- 
-                   body: [
-                     [
-                       {
-                         image: getBase64LogoReportes(
-                           this.$cookies.get("empresa")
-                         ),
-                         fit: [60, 60],
-                       },
-                     ],
-                   ],
-                 },
-               }
-               : {};
-           contenido.push(logoEmpresa) */
-          //nombre d ela empresa
+
           const nombreEmpresa = {
             text: this.$cookies.get("nameEmpresa").substring(0, 30),
             fontSize: 12,
@@ -289,7 +255,7 @@ export default {
             alignment: "center",
           };
           contenido.push(nombreEmpresa)
-          //titulo del encabezado 
+
           const tituloEncabezado =
           {
             bold: true,
@@ -297,18 +263,16 @@ export default {
             alignment: "center",
             layout: "noBorders", // optional
             table: {
-              // headers are automatically repeated if the table spans over multiple pages
-              // you can declare how many rows should be treated as headers
+
               headerRows: 0,
               widths: [35, 75, 25, 22],
               body: [["Unidad", "Salida #" + elemento[0].idSali_mSali_d, "Ruta", "Vue"]],
             },
           };
           contenido.push(tituloEncabezado)
-          //valores del encabezado
+
           const informacionSalida = auxSalida.get(elemento[0].idSali_mSali_d);
-          //console.log("informacionSalida")
-          //console.log(informacionSalida)
+
           const valoresEncabezado =
           {
             //bold: true,
@@ -407,7 +371,7 @@ export default {
 
         })
 
-        console.log("leng", contenido.length)
+        //console.log("leng", contenido.length)
         contenido.push({
           text: "\n",
           fontSize: 8,
@@ -445,7 +409,7 @@ export default {
         //header: [empresa],
 
 
-        content: crearTicket(arrayFormato)
+        content: crearTicket(arrayFormato.sort((a, b) => (Number(a.codivehiculo) - Number(b.codivehiculo))).map((ticket) => (ticket.lista)))
       };
 
       var pdfDocGenerator = pdfMake.createPdf(docDefinition);

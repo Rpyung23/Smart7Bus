@@ -383,11 +383,8 @@ export default {
       });
       this.loadingTableRSalidasFrecuenciasControles = true;
       this.mListSalidasFrecuenciasControles = [];
-      var oListSalidasFrecuenciasControlesExcelAux = []
       this.mListSalidasFrecuenciasControlesExcel = []
-      this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now();
-      this.oFileNameRSalidasFrecuenciasControles = "RSFC_" + Date.now() + ".xls";
-      //this.createPDFSalidasControles()
+
 
       try {
         var datos = await this.$axios.post(
@@ -427,128 +424,52 @@ export default {
           //console.log(datos.data.datos);
           this.mListSalidasFrecuenciasControles.push(...datos.data.datos);
           this.mListSalidasFrecuenciasControlesExcel.push(...datos.data.datos);
+          this.generateExcel();
 
-          let faltaAtrasos = 0;
-          let faltaAdelantos = 0;
-          let faltaAtrasosAtrasos = 0;
-          let oListSalidasFrecuenciasControlesExcelAux = [];
-          let currentIdSali = null;
+        } else {
+          this.$notify({
+            title: "Reporte Salidas Frecuencia Controles Ticket",
+            message: datos.data.msm,
+            type: "default",
+          });
+        }
+      } catch (error) {
+        this.$notify({
+          title: "Reporte Salidas Frecuencia Controles Ticket",
+          message: error.toString(),
+          type: "danger",
+        });
+      }
+      this.loadingTableRSalidasFrecuenciasControles = false;
+      swal.close()
+    },
+    generateExcel() {
+      this.oWorkSheetRSalidasFrecuenciasControles = "RSFC_W_" + Date.now();
+      this.oFileNameRSalidasFrecuenciasControles = "RSFC_" + Date.now() + ".xls";
 
-          // Encabezado de detalle en una sola fila
-          const encabezadoDetalle = [
-            { DescCtrl: "Detalle Control", HoraProgSali_d: "Hora Programada", HoraMarcSali_d: "Hora Marcación", FaltSali_d: "Falta", PenaCtrlSali_d: "PENALIDAD" }
-          ];
+      let faltaAtrasos = 0;
+      let faltaAdelantos = 0;
+      let faltaAtrasosAtrasos = 0;
+      let oListSalidasFrecuenciasControlesExcelAux = [];
+      let currentIdSali = null;
 
-          // Iterar sobre los datos
-          for (let i = 0; i < this.mListSalidasFrecuenciasControlesExcel.length; i++) {
+      // Encabezado de detalle en una sola fila
+      const encabezadoDetalle = [
+        { DescCtrl: "Detalle Control", HoraProgSali_d: "Hora Programada", HoraMarcSali_d: "Hora Marcación", FaltSali_d: "Falta", PenaCtrlSali_d: "PENALIDAD" }
+      ];
 
-            // Detectar el inicio de una nueva salida
-            if (this.mListSalidasFrecuenciasControlesExcel[i].idSali_m !== currentIdSali) {
-              // Si ya hemos agregado detalles, añade los totales del grupo anterior
-              if (currentIdSali !== null) {
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescCtrl: "",
-                  HoraProgSali_d: ""
-                });
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescCtrl: "CHOFER",
-                  HoraProgSali_d: ""
-                });
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescCtrl: "TOTAL MINUTOS ATRASOS",
-                  HoraProgSali_d: faltaAtrasos
-                });
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescCtrl: "TOTAL MINUTOS ADELANTOS",
-                  HoraProgSali_d: faltaAdelantos
-                });
-                oListSalidasFrecuenciasControlesExcelAux.push({
-                  DescCtrl: "",
-                  HoraProgSali_d: ""
-                });
-              }
+      // Ordenar los datos por unidad (CodiVehiSali_m)
+      this.mListSalidasFrecuenciasControlesExcel.sort((a, b) => {
+        if (a.CodiVehiSali_m < b.CodiVehiSali_m) return -1;
+        if (a.CodiVehiSali_m > b.CodiVehiSali_m) return 1;
+        return 0;
+      });
 
-              faltaAtrasos = 0;
-              faltaAdelantos = 0;
-              faltaAtrasosAtrasos = 0;
-
-              // Actualizar el ID de salida actual
-              currentIdSali = this.mListSalidasFrecuenciasControlesExcel[i].idSali_m;
-
-              // Obtener la frecuencia, vuelta y fechas para la nueva salida
-              let ruta = this.mListSalidasFrecuenciasControlesExcel[i].DescRuta || "Ruta NO DISPONIBLE";
-              let frecuencia = this.mListSalidasFrecuenciasControlesExcel[i].DescFrec || "FRECUENCIA NO DISPONIBLE";
-              let vuelta = this.mListSalidasFrecuenciasControlesExcel[i].NumeVuelSali_m || "vuelta NO DISPONIBLE";
-              let fechaS = this.mListSalidasFrecuenciasControlesExcel[i].HoraSaliProgSali_m || "fecha NO DISPONIBLE";
-              let unidad =  this.mListSalidasFrecuenciasControlesExcel[i].CodiVehiSali_m || "Sin unidad";
-
-
-
-              // Añadir la frecuencia, vuelta y fechas en una fila
-              oListSalidasFrecuenciasControlesExcelAux.push({
-                DescCtrl: "RUTA",
-                HoraProgSali_d: ruta,
-                HoraMarcSali_d: "",
-                atrasos: "",
-                adelantos: "",
-                PenaCtrlSali_d: ""
-              });
-              oListSalidasFrecuenciasControlesExcelAux.push({
-                DescCtrl: "FRECUENCIA",
-                HoraProgSali_d: frecuencia,
-                HoraMarcSali_d: "",
-                atrasos: "",
-                adelantos: "",
-                PenaCtrlSali_d: ""
-              });
-              oListSalidasFrecuenciasControlesExcelAux.push({
-                DescCtrl: "UNIDAD",
-                HoraProgSali_d: unidad,
-                HoraMarcSali_d: "",
-                atrasos: "",
-                adelantos: "",
-                PenaCtrlSali_d: ""
-              });
-              oListSalidasFrecuenciasControlesExcelAux.push({
-                DescCtrl: "VUELTA",
-                HoraProgSali_d: vuelta,
-                HoraMarcSali_d: "",
-                atrasos: "",
-                adelantos: "",
-                PenaCtrlSali_d: ""
-              });
-              oListSalidasFrecuenciasControlesExcelAux.push({
-                DescCtrl: "FECHA SALIDA",
-                HoraProgSali_d: fechaS,
-                HoraMarcSali_d: "",
-                atrasos: "",
-                adelantos: "",
-                PenaCtrlSali_d: ""
-              });
-              oListSalidasFrecuenciasControlesExcelAux.push({
-                DescCtrl: "",
-                HoraProgSali_d: "",
-                HoraMarcSali_d: "",
-                atrasos: "",
-                adelantos: "",
-                PenaCtrlSali_d: ""
-              });
-
-
-              // Añadir el encabezado de detalle
-              oListSalidasFrecuenciasControlesExcelAux.push(...encabezadoDetalle);
-            }
-
-            // Añadir el detalle actual
-            oListSalidasFrecuenciasControlesExcelAux.push(this.mListSalidasFrecuenciasControlesExcel[i]);
-
-            // Sumar los atrasos y adelantos
-            faltaAtrasos += this.mListSalidasFrecuenciasControlesExcel[i].atrasos;
-            faltaAdelantos += this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
-            faltaAtrasosAtrasos += this.mListSalidasFrecuenciasControlesExcel[i].atrasos + this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
-          }
-
-          // Añadir el total para el último grupo
+      // Iterar sobre los datos ya ordenados
+      for (let i = 0; i < this.mListSalidasFrecuenciasControlesExcel.length; i++) {
+        // Detectar el inicio de una nueva salida
+        if (this.mListSalidasFrecuenciasControlesExcel[i].idSali_m !== currentIdSali) {
+          // Si ya hemos agregado detalles, añade los totales del grupo anterior
           if (currentIdSali !== null) {
             oListSalidasFrecuenciasControlesExcelAux.push({
               DescCtrl: "",
@@ -558,7 +479,6 @@ export default {
               DescCtrl: "CHOFER",
               HoraProgSali_d: ""
             });
-
             oListSalidasFrecuenciasControlesExcelAux.push({
               DescCtrl: "TOTAL MINUTOS ATRASOS",
               HoraProgSali_d: faltaAtrasos
@@ -571,29 +491,117 @@ export default {
               DescCtrl: "",
               HoraProgSali_d: ""
             });
-
           }
 
-          this.mListSalidasFrecuenciasControlesExcel = [];
-          this.mListSalidasFrecuenciasControlesExcel.push(...oListSalidasFrecuenciasControlesExcelAux);
+          faltaAtrasos = 0;
+          faltaAdelantos = 0;
+          faltaAtrasosAtrasos = 0;
 
-        } else {
-          this.$notify({
-            title: "Reporte Salidas Frecuencia Controles",
-            message: datos.data.msm,
-            type: "default",
+          // Actualizar el ID de salida actual
+          currentIdSali = this.mListSalidasFrecuenciasControlesExcel[i].idSali_m;
+
+          // Obtener la frecuencia, vuelta y fechas para la nueva salida
+          let ruta = this.mListSalidasFrecuenciasControlesExcel[i].DescRuta || "Ruta NO DISPONIBLE";
+          let frecuencia = this.mListSalidasFrecuenciasControlesExcel[i].DescFrec || "FRECUENCIA NO DISPONIBLE";
+          let vuelta = this.mListSalidasFrecuenciasControlesExcel[i].NumeVuelSali_m || "vuelta NO DISPONIBLE";
+          let fechaS = this.mListSalidasFrecuenciasControlesExcel[i].HoraSaliProgSali_m || "fecha NO DISPONIBLE";
+          let unidad = this.mListSalidasFrecuenciasControlesExcel[i].CodiVehiSali_m || "Sin unidad";
+
+          // Añadir la frecuencia, vuelta y fechas en una fila
+          oListSalidasFrecuenciasControlesExcelAux.push({
+            DescCtrl: "RUTA",
+            HoraProgSali_d: ruta,
+            HoraMarcSali_d: "",
+            atrasos: "",
+            adelantos: "",
+            PenaCtrlSali_d: ""
           });
+          oListSalidasFrecuenciasControlesExcelAux.push({
+            DescCtrl: "FRECUENCIA",
+            HoraProgSali_d: frecuencia,
+            HoraMarcSali_d: "",
+            atrasos: "",
+            adelantos: "",
+            PenaCtrlSali_d: ""
+          });
+          oListSalidasFrecuenciasControlesExcelAux.push({
+            DescCtrl: "UNIDAD",
+            HoraProgSali_d: unidad,
+            HoraMarcSali_d: "",
+            atrasos: "",
+            adelantos: "",
+            PenaCtrlSali_d: ""
+          });
+          oListSalidasFrecuenciasControlesExcelAux.push({
+            DescCtrl: "VUELTA",
+            HoraProgSali_d: vuelta,
+            HoraMarcSali_d: "",
+            atrasos: "",
+            adelantos: "",
+            PenaCtrlSali_d: ""
+          });
+          oListSalidasFrecuenciasControlesExcelAux.push({
+            DescCtrl: "FECHA SALIDA",
+            HoraProgSali_d: fechaS,
+            HoraMarcSali_d: "",
+            atrasos: "",
+            adelantos: "",
+            PenaCtrlSali_d: ""
+          });
+          oListSalidasFrecuenciasControlesExcelAux.push({
+            DescCtrl: "",
+            HoraProgSali_d: "",
+            HoraMarcSali_d: "",
+            atrasos: "",
+            adelantos: "",
+            PenaCtrlSali_d: ""
+          });
+
+          // Añadir el encabezado de detalle
+          oListSalidasFrecuenciasControlesExcelAux.push(...encabezadoDetalle);
         }
-      } catch (error) {
-        this.$notify({
-          title: "Reporte Salidas Frecuencia Controles",
-          message: error.toString(),
-          type: "danger",
+
+        // Añadir el detalle actual
+        oListSalidasFrecuenciasControlesExcelAux.push(this.mListSalidasFrecuenciasControlesExcel[i]);
+
+        // Sumar los atrasos y adelantos solo si PenaCtrlSali_d es diferente de "0.0"
+
+        faltaAtrasos += this.mListSalidasFrecuenciasControlesExcel[i].atrasos;
+        faltaAdelantos += this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
+
+
+        faltaAtrasosAtrasos += this.mListSalidasFrecuenciasControlesExcel[i].atrasos + this.mListSalidasFrecuenciasControlesExcel[i].adelantos;
+      }
+
+      // Añadir el total para el último grupo
+      if (currentIdSali !== null) {
+        oListSalidasFrecuenciasControlesExcelAux.push({
+          DescCtrl: "",
+          HoraProgSali_d: ""
+        });
+        oListSalidasFrecuenciasControlesExcelAux.push({
+          DescCtrl: "CHOFER",
+          HoraProgSali_d: ""
+        });
+
+        oListSalidasFrecuenciasControlesExcelAux.push({
+          DescCtrl: "TOTAL MINUTOS ATRASOS",
+          HoraProgSali_d: faltaAtrasos
+        });
+        oListSalidasFrecuenciasControlesExcelAux.push({
+          DescCtrl: "TOTAL MINUTOS ADELANTOS",
+          HoraProgSali_d: faltaAdelantos
+        });
+        oListSalidasFrecuenciasControlesExcelAux.push({
+          DescCtrl: "",
+          HoraProgSali_d: ""
         });
       }
-      this.loadingTableRSalidasFrecuenciasControles = false;
-      swal.close()
-    },
+
+      this.mListSalidasFrecuenciasControlesExcel = [];
+      this.mListSalidasFrecuenciasControlesExcel.push(...oListSalidasFrecuenciasControlesExcelAux);
+    }
+
 
   },
   mounted() {
