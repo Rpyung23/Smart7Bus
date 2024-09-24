@@ -38,12 +38,15 @@
                 <span class="btn-inner--icon"><i class="ni ni-single-copy-04"></i></span>
               </base-button>
 
-              <download-excel v-if="mListDatosPenalidades.length > 0 ? true : false"
-                class="btn btn-icon btn-fab btn-success btn-sm" outline :header="oheaderExcelRSalidasSemanales"
-                title="Exportar a Excel" :data="mListDatosPenalidades" :fields="getFieldsExcel()"
-                :worksheet="WorksheetExcelRSalidasSemanales" :name="FileNameExcelRSalidasSemanales">
-                <span class="btn-inner--icon"><i class="ni ni-collection"></i></span>
+              <download-excel v-if="mListDatosPenalidades.length > 0" class="btn btn-icon btn-fab btn-success btn-sm"
+                outline :header="oheaderExcelRSalidasSemanales" title="Exportar a Excel"  :data="exportDataToExcel()"
+                :fields="getFieldsExcel()" :worksheet="WorksheetExcelRSalidasSemanales"
+                :name="FileNameExcelRSalidasSemanales">
+                <span class="btn-inner--icon">
+                  <i class="ni ni-collection"></i>
+                </span>
               </download-excel>
+
             </div>
           </div>
         </card>
@@ -80,12 +83,15 @@
               :data="mListDatosPenalidades" class="tablePanelControlProduccion" header-row-class-name="thead-dark"
               height="calc(100vh - 12.8rem)">
 
+              <!-- Columna numerada -->
+              <el-table-column type="index" label="N°" width="75">
+              </el-table-column>
+
               <el-table-column prop="CodiVehi" label="Unidad" width="110">
               </el-table-column>
 
               <el-table-column prop="HoraSaliProgSali_m" label="Fecha Inico" width="180">
               </el-table-column>
-
 
               <el-table-column prop="NumeVuelSali_m" label="Vuelta" width="120">
               </el-table-column>
@@ -93,14 +99,13 @@
               <el-table-column prop="DescRutaSali_m" label="Detalle Ruta" width="240">
               </el-table-column>
 
-              <el-table-column prop="DescFrec" label="Frecuencia" width="240">
+              <el-table-column prop="DescFrec" label="Frecuencia" width="210">
               </el-table-column>
 
-
-              <el-table-column prop="HoraMarc_I_OF_Time_" label="I. Ofelia" width="150">
+              <el-table-column prop="HoraMarc_I_OF_Time_" label="I. Ofelia" width="130">
               </el-table-column>
 
-              <el-table-column prop="HoraMarc_S_OF_Time_" label="S. Ofelia" width="150">
+              <el-table-column prop="HoraMarc_S_OF_Time_" label="S. Ofelia" width="130">
               </el-table-column>
 
               <el-table-column prop="tiempo_intermedio_" label="Tiempo Intermedio" width="200">
@@ -108,6 +113,7 @@
 
               <div slot="empty"></div>
             </el-table>
+
           </div>
         </card>
       </div>
@@ -184,6 +190,7 @@ export default {
       modalSalidasPenalidadesSemanales: false,
       tableColumnPenalidades: [],
       mListDatosPenalidades: [],
+      mListDatosPenalidadesExcel: [],
       modalSalidasPenalidadesSemanales: false,
       loadingPenalidadesSemanales: false,
       mListaUnidadesSemanales: [],
@@ -197,6 +204,7 @@ export default {
       baseURlPDFPenalidadesSemanales: "",
       fechaDia2SalidasPanelBusqueda: "",
       json_fields_excelRPenalidadesSemanales: {
+        N: "index", // Nueva columna para numeración
         UNIDAD: "CodiVehi",
         "FECHA INICIAL": "HoraSaliProgSali_m",
         "Vuelta": "NumeVuelSali_m",
@@ -206,7 +214,7 @@ export default {
         "S.Ofelia": "HoraMarc_S_OF_Time_",
         "Tiempo Intermedio": "tiempo_intermedio_",
       },
-      
+
       WorksheetExcelRSalidasSemanales: "",
       FileNameExcelRSalidasSemanales: "",
       oheaderExcelRSalidasSemanales: "",
@@ -415,7 +423,7 @@ export default {
                   body: [
                     [
                       {
-                        text: "REPORTE DETALLE PENALIDADES SEMANALES",
+                        text: "REPORTE DE INGRESO Y SALIDA OFELIA",
                         alignment: "center",
                         fontSize: 16,
                         bold: true,
@@ -605,10 +613,25 @@ export default {
           obj
         );
 
+        if (datos.data.status_code == 200) {
+          this.mListDatosPenalidades.push(...datos.data.datos);
+          
+        } else {
+          Notification.warning({
+            title: "REPORTE DE INGRESO Y SALIDA OFELIA",
+            message: datos.data.msm,
+          });
+        }
+
         //console.log(datos.data);
-        this.mListDatosPenalidades.push(...datos.data.datos);
+
       } catch (error) {
         console.log(error);
+        Notification.error({
+          title: "REPORTE DE INGRESO Y SALIDA OFELIA",
+          message: error.toString(),
+          duration: 2500,
+        });
       }
 
       this.loadingPenalidadesSemanales = false;
@@ -666,6 +689,14 @@ export default {
       var mList = [];
 
       mList.push([
+        {
+          text: "N°",
+          fontSize: 8.5,
+          bold: true,
+          fillColor: "#039BC4",
+          color: "white",
+          alignment: "center",
+        },
         {
           text: "UNIDAD",
           fontSize: 8.5,
@@ -734,6 +765,15 @@ export default {
 
       for (var i = 0; i < this.mListDatosPenalidades.length; i++) {
         var obj = [
+          {
+            text: i + 1,
+            fontSize: 8.5,
+            alignment: "center",
+            color:
+              this.mListDatosPenalidades[i].EstadoFaltasSumatoria == ""
+                ? "black"
+                : "black",
+          },
           {
             text: this.mListDatosPenalidades[i].CodiVehi,
             fontSize: 8.5,
@@ -854,7 +894,7 @@ export default {
           {
             table: {
               headerRows: 0,
-              widths: [40, 50, 50, 90, 90, 40, 40, 50],
+              widths: [20, 40, 50, 40, 90, 70, 40, 40, 50],
               body: mList,
             },
           },
@@ -863,15 +903,44 @@ export default {
 
       pdfMake.createPdf(docDefinition).download("RESOFELIA_" + Date.now());
     },
-    getFieldsExcel() {
-      return this.json_fields_excelRPenalidadesSemanales;
+    processedPenalidades() {
+      return this.mListDatosPenalidades.map((item, index) => {
+        return {
+          ...item,
+          index: index + 1
+        };
+      });
     },
+
+    exportDataToExcel() {
+      // Asigna los datos procesados con enumeración a mListDatosPenalidadesExcel
+      this.mListDatosPenalidadesExcel = this.processedPenalidades();
+      return this.mListDatosPenalidadesExcel;
+    },
+
+    getFieldsExcel() {
+      return {
+        N: "index", // Nueva columna para numeración
+        UNIDAD: "CodiVehi",
+        "FECHA INICIAL": "HoraSaliProgSali_m",
+        Vuelta: "NumeVuelSali_m",
+        RUTA: "DescRutaSali_m",
+        Frecuencia: "DescFrec",
+        "I.Ofelia": "HoraMarc_I_OF_Time_",
+        "S.Ofelia": "HoraMarc_S_OF_Time_",
+        "Tiempo Intermedio": "tiempo_intermedio_",
+      };
+    }
+
+
+
   },
   mounted() {
     this.readGruposActivosPenalidadesSemanales();
     this.readAllRutasSalidasSEmanales();
     this.readAllUnidadesSalidasSemanales();
     this.initPrimerDiaSemanaActualSalidaBusquedaPanel();
+
     //this.readApiPenalidades();
   },
 };
