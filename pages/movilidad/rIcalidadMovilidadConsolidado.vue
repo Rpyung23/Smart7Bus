@@ -1371,7 +1371,8 @@ export default {
         "Fechas: " + getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad) + " hasta " + getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
         "Operadora: " + this.$cookies.get("nameEmpresa"),
         "Unidades: " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadProduccionRPagoVehiculorecibo),
-        "Rutas: " + (this.mListaRutasSalidasSemanales.toString().length <= 0 ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
+        "Rutas: " + (this.modelTiposEvento.length === 0
+        ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
       ];
 
       // Verificar que los datos recibidos sean arrays

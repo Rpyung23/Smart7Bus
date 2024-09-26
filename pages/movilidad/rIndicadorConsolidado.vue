@@ -2,27 +2,16 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
-            <el-date-picker
-              type="date"
-              placeholder="Select date and time"
-              style="margin-right: 0.5rem"
-              v-model="fechaInicialIndicadorCalidad"
-            >
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem"
+              v-model="fechaInicialIndicadorCalidad">
             </el-date-picker>
 
-            <el-date-picker
-              type="date"
-              placeholder="Select date and time"
-              style="margin-right: 0.5rem"
-              v-model="fechaFinalIndicadorCalidad"
-            >
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem"
+              v-model="fechaFinalIndicadorCalidad">
             </el-date-picker>
 
             <!-- DOWNLOAD EXCEL-->
@@ -45,45 +34,24 @@
             </div>
           </div>
         </card>
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectAgrupacionRIcalidad">
-            <el-select
-              v-model="modelTiposEvento"
-              collapse-tags
-              :multiple-limit="1"
-              style="margin-right: 0.5rem"
-              placeholder="Rutas"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
-              @change="updateSelectedRouteDescriptions" clearable
-            >
-              <el-option
-                v-for="item in mListaRutasSalidasSemanales"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
-              >
+            <el-select v-model="modelTiposEvento" collapse-tags :multiple-limit="1" style="margin-right: 0.5rem"
+              placeholder="Rutas" :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
+              @change="updateSelectedRouteDescriptions" clearable>
+              <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.idRuta">
               </el-option>
             </el-select>
           </div>
         </card>
 
-        <card
-          class="no-border-card"
-          body-classes="card_body_0_01rem"
-          style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)"
-        >
-          <embed
-            id="iframeContainerIndicadoresCalidad"
-            :src="oBase64IndicadoresCalidad"
-            type="application/pdf"
-            width="100%"
-            height="100%"
-          />
+        <card class="no-border-card" body-classes="card_body_0_01rem"
+          style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
+          <embed id="iframeContainerIndicadoresCalidad" :src="oBase64IndicadoresCalidad" type="application/pdf"
+            width="100%" height="100%" />
         </card>
       </div>
     </base-header>
@@ -175,7 +143,7 @@ export default {
         "    ": "Col4",
         "     ": "Col5",
       },
-    
+
     };
   },
   methods: {
@@ -299,7 +267,7 @@ export default {
           console.log("Agrego indicadores Calidad Totales.........");
           this.genratePdf(datos.data.datos);
           this.generateExcel(datos.data.datos);
-        }else {
+        } else {
           Notification.info({
             title: "Reporte de Indicadores Consolidado de Calidad (Total)",
             message: datos.data.msm,
@@ -556,7 +524,7 @@ export default {
         iframe.src = pdfUrl;
       });
     },
-    
+
     generateExcel(datos) {
       // Definir nombre del archivo y nombre de la hoja
       this.oWorkSheetRIndicadoresCalidad = "Indicadores_Calidad";
@@ -569,7 +537,8 @@ export default {
         "Fechas: " + getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad) + " hasta " + getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
         "Operadora: " + this.$cookies.get("nameEmpresa"),
         "Unidades: " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadProduccionRPagoVehiculorecibo),
-        "Rutas: " + (this.mListaRutasSalidasSemanales.toString().length <= 0 ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
+        "Rutas: " + (this.modelTiposEvento.length === 0
+          ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
       ];
 
       // Verificar que los datos recibidos sean arrays
@@ -589,7 +558,7 @@ export default {
       // Inicializar la lista combinada
       const combinedData = [
         { "Col1": "Indicador de Consolidado Total" },
-        headers, 
+        headers,
         ...consolidadoData.map(item => ({
           "Col1": item.Numero || "N/A",
           "Col2": item.Indicador || "N/A",

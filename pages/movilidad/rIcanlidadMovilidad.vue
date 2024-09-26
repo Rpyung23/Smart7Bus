@@ -69,27 +69,17 @@
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
           footer-classes="pb-2">
           <div class="cardSelectAgrupacionRIcalidad">
-           <!--  <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRutasIndicadoresCalidad" multiple
+            <!--  <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRutasIndicadoresCalidad" multiple
               placeholder="Rutas">
               <el-option v-for="item in mListaRutasIndicadoresCalidad" :key="item.LetrRuta" :label="item.DescRuta"
                 :value="item.idRuta">
               </el-option>
             </el-select> -->
 
-            <el-select
-              v-model="itemRutasIndicadoresCalidad"
-              collapse-tags
-              :multiple-limit="1"
-              style="margin-right: 0.5rem"
-              placeholder="Rutas"
-              @change="updateSelectedRouteDescriptions" clearable
-            >
-              <el-option
-                v-for="item in mListaRutasIndicadoresCalidad"
-                :key="item.LetrRuta"
-                :label="item.DescRuta"
-                :value="item.idRuta"
-              >
+            <el-select v-model="itemRutasIndicadoresCalidad" collapse-tags :multiple-limit="1"
+              style="margin-right: 0.5rem" placeholder="Rutas" @change="updateSelectedRouteDescriptions" clearable>
+              <el-option v-for="item in mListaRutasIndicadoresCalidad" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.idRuta">
               </el-option>
             </el-select>
 
@@ -257,7 +247,7 @@ export default {
       }
     },
     async readAllIndicadoresCalidad() {
-     
+
       this.mListaIndicadoresCalidad = [];
 
       let iframe = document.getElementById("iframeContainerIndicadoresCalidad");
@@ -1632,7 +1622,8 @@ export default {
         "Fechas: " + this.fechaInicialIndicadorCalidad + " hasta " + this.fechaFinalIndicadorCalidad,
         "Operadora: " + this.$cookies.get("nameEmpresa"),
         "Unidades: " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadProduccionRPagoVehiculorecibo),
-        "Rutas: " + (this.mListaRutasIndicadoresCalidad.toString().length <= 0 ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
+        "Rutas: " + (this.itemRutasIndicadoresCalidad.length == 0
+          ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
       ];
 
       // Verificar que los datos recibidos sean arrays
