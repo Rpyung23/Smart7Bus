@@ -149,7 +149,7 @@ export default {
       tableDataRPagosVEhiculoProduccionRecibo: [],
       itemUnidadProduccionRPagoVehiculorecibo: [],
       modelTiposEvento: [],
-      selectedRouteDescriptions: [],
+      selectedRouteDescription: [],
       mListaRutasSalidasSemanales: [],
       token: this.$cookies.get("token"),
       fechaInicialIndicadorCalidad: "",

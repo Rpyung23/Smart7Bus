@@ -169,7 +169,7 @@ export default {
       tableDataRPagosVEhiculoProduccionRecibo: [],
       itemUnidadProduccionRPagoVehiculorecibo: [],
       itemRutasIndicadoresCalidad: [],
-      selectedRouteDescriptions: [],
+      selectedRouteDescription: [],
       token: this.$cookies.get("token"),
       fechaInicialIndicadorCalidad: "",
       fechaFinalIndicadorCalidad: "",
@@ -1628,7 +1628,7 @@ export default {
 
       // Encabezado general para todo el reporte
       this.oHeaderRIndicadoresCalidad = [
-        "Reporte Indicadores de Calidad (Mensual)",
+        "Reporte Indicadores de Calidad ",
         "Fechas: " + this.fechaInicialIndicadorCalidad + " hasta " + this.fechaFinalIndicadorCalidad,
         "Operadora: " + this.$cookies.get("nameEmpresa"),
         "Unidades: " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadProduccionRPagoVehiculorecibo),

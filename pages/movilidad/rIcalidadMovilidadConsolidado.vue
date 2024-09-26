@@ -122,7 +122,7 @@ export default {
       tableDataRPagosVEhiculoProduccionRecibo: [],
       itemUnidadProduccionRPagoVehiculorecibo: [],
       modelTiposEvento: [],
-      selectedRouteDescriptions: [],
+      selectedRouteDescription: [],
       mListaRutasSalidasSemanales: [],
       token: this.$cookies.get("token"),
       fechaInicialIndicadorCalidad: "",
@@ -1361,13 +1361,13 @@ export default {
 
     generateExcel(datos) {
       // Definir nombre del archivo y nombre de la hoja
-      this.oWorkSheetRIndicadoresCalidad = "Indicadores_Calidad";
+      this.oWorkSheetRIndicadoresCalidad = "Indicadores_Calidad (Mensual)";
       this.oFileNameRIndicadoresCalidad = "Reporte_Indicadores_Calidad_" + Date.now() + ".xls";
 
 
       // Encabezado general para todo el reporte
       this.oHeaderRIndicadoresCalidad = [
-        "Reporte Indicadores de Calidad (Diario)",
+        "Reporte Indicadores de Calidad (Mensual)",
         "Fechas: " + getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad) + " hasta " + getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
         "Operadora: " + this.$cookies.get("nameEmpresa"),
         "Unidades: " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadProduccionRPagoVehiculorecibo),
