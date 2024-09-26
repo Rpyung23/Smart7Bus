@@ -2,12 +2,9 @@
   <div class="content">
     <base-header>
       <div class="align-items-center py-3">
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardTextoRPagosVehiculoProduccion">
             <!--<el-autocomplete class="inline-input" v-model="itemUnidadProduccionRPagoVehiculorecibo" []ltiple
               collapse-tags :fetch-suggestions="
@@ -15,23 +12,12 @@
               " style="margin-right: 0.5rem" placeholder="Unidad" prefix-icon="ni ni-bus-front-12"
               :trigger-on-focus="false" @select="handleSelectUnidadProduccionRPagoVehiculoRecibo"></el-autocomplete>-->
 
-            <el-select
-              v-model="itemUnidadProduccionRPagoVehiculorecibo"
-              multiple
-              filterable
-              remote
-              placeholder="Unidades"
-              prefix-icon="ni ni-bus-front-12"
-              style="margin-right: 0.5rem"
+            <el-select v-model="itemUnidadProduccionRPagoVehiculorecibo" multiple filterable remote
+              placeholder="Unidades" prefix-icon="ni ni-bus-front-12" style="margin-right: 0.5rem"
               :remote-method="remoteMethodUnidadesRecibosProduccion"
-              :loading="loadingTableUnidadesRecibosVehiculoProduccion"
-            >
-              <el-option
-                v-for="item in optionsUnidadesProduccionPagosVehiculo"
-                :key="item.CodiVehi"
-                :label="item.CodiVehi"
-                :value="item.CodiVehi"
-              >
+              :loading="loadingTableUnidadesRecibosVehiculoProduccion">
+              <el-option v-for="item in optionsUnidadesProduccionPagosVehiculo" :key="item.CodiVehi"
+                :label="item.CodiVehi" :value="item.CodiVehi">
               </el-option>
             </el-select>
 
@@ -44,15 +30,11 @@
               </el-option>
             </el-select>-->
 
-            <el-date-picker
-              type="date"
-              placeholder="Select date and time"
-              style="margin-right: 0.5rem"
-              v-model="fechaInicialIndicadorCalidad"
-            >
+            <el-date-picker type="date" placeholder="Select date and time" style="margin-right: 0.5rem"
+              v-model="fechaInicialIndicadorCalidad">
             </el-date-picker>
 
-          <!--   <el-date-picker
+            <!--   <el-date-picker
               type="date"
               placeholder="Select date and time"
               style="margin-right: 0.5rem"
@@ -64,32 +46,43 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button
-              icon
-              type="primary"
-              @click="readAllIndicadoresCalidad"
-              size="sm"
-            >
-              <span class="btn-inner--icon"
-                ><i class="el-icon-search"></i
-              ></span>
-            </base-button>
+            <div class="buttonCenterEndDerecha">
+              <base-button icon type="primary" @click="readAllIndicadoresCalidad" size="sm">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              </base-button>
+
+              <download-excel v-if="mListaIndicadoresCalidad.length > 0" class="btn btn-icon btn-fab btn-success btn-sm"
+                title="Exportar a Excel" :header="oHeaderRIndicadoresCalidad" :data="mListaIndicadoresCalidad"
+                :fields="oJSONFieldsRIndicadoresCalidad" :worksheet="oWorkSheetRIndicadoresCalidad"
+                :name="oFileNameRIndicadoresCalidad">
+                <span class="btn-inner--icon">
+                  <i class="ni ni-collection"></i>
+                </span>
+              </download-excel>
+
+            </div>
+
           </div>
         </card>
 
-        <card
-          class="no-border-card col"
-          style="margin-bottom: 0.5rem"
+        <card class="no-border-card col" style="margin-bottom: 0.5rem"
           body-classes="px-0 pb-1 card-bodyTopOpcionesRPagosVehiculoPRoduccion cardSelectRubrosEstadosPagosVehiculoProduccionContainer"
-          footer-classes="pb-2"
-        >
+          footer-classes="pb-2">
           <div class="cardSelectAgrupacionRIcalidad">
+           <!--  <el-select style="margin-right: 0.5rem" collapse-tags v-model="itemRutasIndicadoresCalidad" multiple
+              placeholder="Rutas">
+              <el-option v-for="item in mListaRutasIndicadoresCalidad" :key="item.LetrRuta" :label="item.DescRuta"
+                :value="item.idRuta">
+              </el-option>
+            </el-select> -->
+
             <el-select
-              style="margin-right: 0.5rem"
-              collapse-tags
               v-model="itemRutasIndicadoresCalidad"
-              multiple
+              collapse-tags
+              :multiple-limit="1"
+              style="margin-right: 0.5rem"
               placeholder="Rutas"
+              @change="updateSelectedRouteDescriptions" clearable
             >
               <el-option
                 v-for="item in mListaRutasIndicadoresCalidad"
@@ -110,7 +103,8 @@
           </div>
         </card> -->
 
-        <card class="no-border-card" body-classes= "card_body_0_01rem" style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
+        <card class="no-border-card" body-classes="card_body_0_01rem"
+          style="margin-bottom: 0px; width: 100%; height: calc(100vh - 13rem)">
           <embed id="iframeContainerIndicadoresCalidad" :src="oBase64IndicadoresCalidad" type="application/pdf"
             width="100%" height="100%" />
         </card>
@@ -175,6 +169,7 @@ export default {
       tableDataRPagosVEhiculoProduccionRecibo: [],
       itemUnidadProduccionRPagoVehiculorecibo: [],
       itemRutasIndicadoresCalidad: [],
+      selectedRouteDescriptions: [],
       token: this.$cookies.get("token"),
       fechaInicialIndicadorCalidad: "",
       fechaFinalIndicadorCalidad: "",
@@ -189,6 +184,20 @@ export default {
       oBase64IndicadoresCalidad: "",
       mListaRutasIndicadoresCalidad: [],
       oAgrupacionDM: false,
+      mListaIndicadoresCalidad: [],
+      oWorkSheetRIndicadoresCalidad: "",
+      oFileNameRIndicadoresCalidad: "",
+      oHeaderRIndicadoresCalidad: "",
+      oJSONFieldsRIndicadoresCalidad: {
+        " ": "Col1",
+        "  ": "Col2",
+        "   ": "Col3",
+        "    ": "Col4",
+        "     ": "Col5",
+        "      ": "Col6",
+        "       ": "Col7",
+        "        ": "Col8",
+      },
     };
   },
   methods: {
@@ -227,8 +236,6 @@ export default {
         token: this.token,
       });
 
-      console.log(datos.data);
-
       if (datos.data.status_code == 200) {
         for (var i = 0; i < datos.data.data.length; i++) {
           var obj = datos.data.data[i];
@@ -249,9 +256,9 @@ export default {
         this.mListaRutasIndicadoresCalidad.push(...datos.data.data);
       }
     },
-    async readAllIndicadoresCalidad() 
-    {
-      this.mListaRutasIndicadoresCalidad = [];
+    async readAllIndicadoresCalidad() {
+     
+      this.mListaIndicadoresCalidad = [];
 
       let iframe = document.getElementById("iframeContainerIndicadoresCalidad");
       iframe.src = "";
@@ -321,12 +328,12 @@ export default {
           }
         );
 
-        console.log("Datos .==================..", datos);
 
         if (datos.data.status_code == 200) {
           //this.oBase64IndicadoresCalidad = "data:application/pdf;base64," + datos.data.datos
           console.log("Agrego indicadores Calidad .........");
           this.genratePdf(datos.data.datos);
+          this.generateExcel(datos.data.datos);
         }
         else {
           Notification.warning({
@@ -344,6 +351,11 @@ export default {
       }
 
       swal.close();
+    },
+
+    updateSelectedRouteDescriptions(selectedRoute) {
+      const route = this.mListaRutasIndicadoresCalidad.find(route => route.idRuta === selectedRoute);
+      this.selectedRouteDescription = route ? route.DescRuta : '';
     },
     genratePdf(datos) {
       const componenteResultado = (acu, acuNo) => {
@@ -444,7 +456,7 @@ export default {
               text:
                 this.itemRutasIndicadoresCalidad.length == 0
                   ? "TODAS LAS RUTAS"
-                  : this.itemRutasIndicadoresCalidad.toString(),
+                  : this.selectedRouteDescription.toString(),
             },
           ],
           colSpan: 2,
@@ -644,9 +656,9 @@ export default {
             style: ["textGreen"],
           });
         } else {
-          console.log(datos.cihp[contEICIHP].Llegada_DATE +" < "+ datos.cihp[contEI2CIHP].Llegada_DATE)
+          console.log(datos.cihp[contEICIHP].Llegada_DATE + " < " + datos.cihp[contEI2CIHP].Llegada_DATE)
           if (
-            datos.cihp[contEI2CIHP].Llegada_DATE != undefined && 
+            datos.cihp[contEI2CIHP].Llegada_DATE != undefined &&
             datos.cihp[contEI2CIHP].Llegada_DATE != null &&
             (datos.cihp[contEICIHP].Llegada_DATE < datos.cihp[contEI2CIHP].Llegada_DATE)
           ) {
@@ -669,57 +681,57 @@ export default {
             });
 
             if (contEICIHP < datos.cihp.length) {
-            contEICIHP = contEICIHP + 1;
-          }
-          if (contEI2CIHP <= datos.cihp.length) {
-            contEI2CIHP = contEI2CIHP + 1;
-          }
-          
+              contEICIHP = contEICIHP + 1;
+            }
+            if (contEI2CIHP <= datos.cihp.length) {
+              contEI2CIHP = contEI2CIHP + 1;
+            }
+
           } else {
             var hora1 = datos.cihp[contEICIHP].Llegada.split(":");
-          var hora2 = datos.cihp[contEI2CIHP].Llegada.split(":");
-          var t1 = new Date();
-          var t2 = new Date();
-          t1.setHours(hora1[0], hora1[1], hora1[2]);
-          t2.setHours(hora2[0], hora2[1], hora2[2]);
-          var ejecutado = (t2 - t1) / 60 / 1000;
-          var estado = "";
-          var indicador = 0;
-          if (contEICIHP < datos.cihp.length) {
-            contEICIHP = contEICIHP + 1;
-          }
-          if (contEI2CIHP <= datos.cihp.length) {
-            contEI2CIHP = contEI2CIHP + 1;
-          }
-          if (ejecutado - datos.cihp[i].Programado < 2) {
-            estado = "Cumple";
-            acuCumpleihp = acuCumpleihp + 1;
-          } else {
-            estado = "No Cumple";
-            acuNoCumpleihp = acuNoCumpleihp + 1;
-          }
-          indicador =
-            ((ejecutado - datos.cihp[i].Programado) /
-              datos.cihp[i].Programado) *
-            100;
+            var hora2 = datos.cihp[contEI2CIHP].Llegada.split(":");
+            var t1 = new Date();
+            var t2 = new Date();
+            t1.setHours(hora1[0], hora1[1], hora1[2]);
+            t2.setHours(hora2[0], hora2[1], hora2[2]);
+            var ejecutado = (t2 - t1) / 60 / 1000;
+            var estado = "";
+            var indicador = 0;
+            if (contEICIHP < datos.cihp.length) {
+              contEICIHP = contEICIHP + 1;
+            }
+            if (contEI2CIHP <= datos.cihp.length) {
+              contEI2CIHP = contEI2CIHP + 1;
+            }
+            if (ejecutado - datos.cihp[i].Programado < 2) {
+              estado = "Cumple";
+              acuCumpleihp = acuCumpleihp + 1;
+            } else {
+              estado = "No Cumple";
+              acuNoCumpleihp = acuNoCumpleihp + 1;
+            }
+            indicador =
+              ((ejecutado - datos.cihp[i].Programado) /
+                datos.cihp[i].Programado) *
+              100;
 
-          arrys.push({
-            text: ejecutado.toFixed(0),
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: indicador.toFixed(2),
-            fontSize: 8.5,
-            alignment: "center",
-          });
-          arrys.push({
-            text: estado,
-            fontSize: 8.5,
-            alignment: "center",
-            bold: true,
-            style: [estado === "Cumple" ? "textGreen" : "textRed"],
-          });
+            arrys.push({
+              text: ejecutado.toFixed(0),
+              fontSize: 8.5,
+              alignment: "center",
+            });
+            arrys.push({
+              text: indicador.toFixed(2),
+              fontSize: 8.5,
+              alignment: "center",
+            });
+            arrys.push({
+              text: estado,
+              fontSize: 8.5,
+              alignment: "center",
+              bold: true,
+              style: [estado === "Cumple" ? "textGreen" : "textRed"],
+            });
           }
         }
         resultadoStringihp.push(arrys);
@@ -1600,6 +1612,386 @@ export default {
         iframe.src = pdfUrl;
       });
     },
+
+    generateExcel(datos) {
+      // Definir nombre del archivo y nombre de la hoja
+      this.oWorkSheetRIndicadoresCalidad = "Indicadores_Calidad";
+      this.oFileNameRIndicadoresCalidad = "Reporte_Indicadores_Calidad_" + Date.now() + ".xls";
+      // Inicializar contadores de cumple/no cumple
+      var acuCumpleihp = 0;
+      var acuNoCumpleihp = 0;
+      var acuCumpleihv = 0;
+      var acuNoCumpleihv = 0;
+      var contEICIHV = 0;
+      var contEI2CIHV = 1;
+
+
+      // Encabezado general para todo el reporte
+      this.oHeaderRIndicadoresCalidad = [
+        "Reporte Indicadores de Calidad (Mensual)",
+        "Fechas: " + this.fechaInicialIndicadorCalidad + " hasta " + this.fechaFinalIndicadorCalidad,
+        "Operadora: " + this.$cookies.get("nameEmpresa"),
+        "Unidades: " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadProduccionRPagoVehiculorecibo),
+        "Rutas: " + (this.mListaRutasIndicadoresCalidad.toString().length <= 0 ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
+      ];
+
+      // Verificar que los datos recibidos sean arrays
+      const tvhpData = Array.isArray(datos.tvhp) ? datos.tvhp : [];
+      const tvhvData = Array.isArray(datos.tvhv) ? datos.tvhv : [];
+      const cihpData = Array.isArray(datos.cihp) ? datos.cihp : [];
+      const cihvData = Array.isArray(datos.cihv) ? datos.cihv : [];
+      const ivhpData = Array.isArray(datos.ivhp) ? datos.ivhp : [];
+      const ivhvData = Array.isArray(datos.ivhv) ? datos.ivhv : [];
+      const pphpData = Array.isArray(datos.pphp) ? datos.pphp : [];
+      const pphvData = Array.isArray(datos.pphv) ? datos.pphv : [];
+      const ioData = Array.isArray(datos.io) ? datos.io : [];
+      const coData = Array.isArray(datos.co) ? datos.co : [];
+      const oerData = Array.isArray(datos.oer) ? datos.oer : [];
+
+      // Crear encabezados manualmente
+      const headersTVHP_TVHV = {
+        "Col1": "Unidad",
+        "Col2": "Fecha",
+        "Col3": "Programado",
+        "Col4": "Ejecutado",
+        "Col5": "Indicador",
+        "Col6": "Estado",
+      };
+
+      const headersCIHP_CIHV = {
+        "Col1": "Unidad",
+        "Col2": "Tarjeta",
+        "Col3": "Salida",
+        "Col4": "Llegada",
+        "Col5": "Programado",
+        "Col6": "Ejecutado",
+        "Col7": "Indicador",
+        "Col8": "Estado",
+      };
+
+      const headersPPHP_PPHV = {
+        "Col1": "Salidas",
+        "Col2": "Fecha",
+        "Col3": "Parada",
+        "Col4": "Tiempo",
+        "Col5": "Indicador",
+        "Col6": "Estado",
+      };
+
+      const headersIO_CO = {
+        "Col1": "Dia",
+        "Col2": "Fecha",
+        "Col3": "Programado",
+        "Col4": "Ejecutado",
+        "Col5": "Estado",
+      };
+
+      const headersOER = {
+        "Col1": "Unidad",
+        "Col2": "Incidencia",
+        "Col3": "Efectuada",
+        "Col4": "Indicador",
+        "Col5": "Estado",
+      };
+
+
+      // Función para generar las filas del resultado final en formato Excel
+      const componenteResultadoExcel = (acu, acuNo) => {
+        const porce = (100 * acu) / (acu + acuNo);
+        return [
+          { "Col1": "", "Col2": "", "Col3": "", "Col4": "" },
+          { "Col1": "Total viajes considerados", "Col2": acu + acuNo, "Col3": "", "Col4": "" },
+          { "Col1": "Número que no cumplen", "Col2": acuNo, "Col3": "", "Col4": "" },
+          { "Col1": "Número que cumplen", "Col2": acu, "Col3": "", "Col4": "" },
+          { "Col1": "Total: ", "Col2": porce.toFixed(2) + " %", "Col3": "", "Col4": "" },
+          { "Col1": porce.toFixed(2) >= 80 ? "CUMPLE" : "NO CUMPLE", "Col2": "", "Col3": "", "Col4": "" },
+        ];
+      };
+
+
+
+      // Inicializar la lista combinada
+      const combinedData = [
+        { "Col1": "TIEMPO DE VIAJE HORA PICO (TVHP)" },
+        headersTVHP_TVHV, // Encabezados TVHP y TVHV 
+        ...tvhpData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Fecha || "N/A",
+          "Col3": item.Programado || "N/A",
+          "Col4": item.Ejecutado || "N/A",
+          "Col5": item.Indicador || "N/A",
+          "Col6": item.Estado || "N/A"
+        })),
+
+        // Agregar resultados para TVHP
+        ...componenteResultadoExcel(tvhpData.filter(item => item.Estado === "Cumple").length, tvhpData.filter(item => item.Estado === "No Cumple").length),
+
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "TIEMPO DE VIAJE HORA VALLE Y COLATERAL (TVHV)" },
+        headersTVHP_TVHV, // Encabezados TVHV
+        ...tvhvData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Fecha || "N/A",
+          "Col3": item.Programado || "N/A",
+          "Col4": item.Ejecutado || "N/A",
+          "Col5": item.Indicador || "N/A",
+          "Col6": item.Estado || "N/A"
+        })),
+
+        // Agregar resultados para TVHV
+        ...componenteResultadoExcel(tvhvData.filter(item => item.Estado === "Cumple").length, tvhvData.filter(item => item.Estado === "No Cumple").length),
+
+        // Sección para CIHP
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "CUMPLIMIENTO DE INTERVALO EN HORA PICO (IHP)" }, // Título de la sección
+        headersCIHP_CIHV, // Encabezados CIHP
+        ...cihpData.map((item, i) => {
+          let ejecutado, indicador = 0; // Inicializar como número
+          let estado;
+
+          if (i == 0) {
+            ejecutado = "0";
+            estado = "Cumple"; // Por defecto para el primer item
+            acuCumpleihp += 1; // Contador de cumple
+          } else {
+            // Comparación de las fechas de llegada
+            if (
+              datos.cihp[i - 1].Llegada_DATE != undefined &&
+              datos.cihp[i - 1].Llegada_DATE != null &&
+              (datos.cihp[i - 1].Llegada_DATE < datos.cihp[i].Llegada_DATE)
+            ) {
+              ejecutado = "0";
+              estado = "Cumple";
+              acuCumpleihp += 1; // Contador de cumple
+            } else {
+              // Cálculo de tiempos
+              const hora1 = datos.cihp[i - 1].Llegada.split(":");
+              const hora2 = datos.cihp[i].Llegada.split(":");
+              const t1 = new Date();
+              const t2 = new Date();
+              t1.setHours(hora1[0], hora1[1], hora1[2]);
+              t2.setHours(hora2[0], hora2[1], hora2[2]);
+              const diferencia = (t2 - t1) / 60000; // Diferencia en minutos
+
+              if (diferencia - item.Programado < 2) {
+                estado = "Cumple";
+                acuCumpleihp += 1; // Contador de cumple
+              } else {
+                estado = "No Cumple";
+                acuNoCumpleihp += 1; // Contador de no cumple
+              }
+              indicador = ((diferencia - item.Programado) / item.Programado) * 100; // Asegúrate de que `item.Programado` sea un número
+              ejecutado = diferencia.toFixed(0);
+            }
+          }
+
+          return {
+            "Col1": item.Unidad || "N/A",
+            "Col2": item.NumeroTarjeta || "N/A",
+            "Col3": item.Salida || "N/A",
+            "Col4": item.Llegada || "N/A",
+            "Col5": item.Programado || "N/A",
+            "Col6": ejecutado,
+            "Col7": indicador.toFixed(2), // Aquí convertimos a string
+            "Col8": estado,
+          };
+        }),
+        ...componenteResultadoExcel(acuCumpleihp, acuNoCumpleihp),
+
+
+        // Sección para CIHV
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "CUMPLIMIENTO DE INTERVALO EN HORA VALLE (IHV)" }, // Título de la sección
+        headersCIHP_CIHV, // Encabezados CIHV
+        ...cihvData.map((item, i) => {
+          let ejecutado = 0; // Inicializar como número
+          let indicador = 0;
+          let estado;
+
+          if (i === 0) {
+            ejecutado = 0;
+            estado = "Cumple"; // Por defecto para el primer item
+            acuCumpleihv += 1; // Contador de cumple
+
+            return {
+              "Col1": "0", // Espacio para el primer item
+              "Col2": "0", // Espacio para el segundo item
+              "Col3": estado, // Estado "Cumple"
+              "Col4": "", // Columna vacía
+              "Col5": "", // Columna vacía
+              "Col6": "", // Columna vacía
+              "Col7": "", // Columna vacía
+              "Col8": "", // Columna vacía
+            };
+          } else {
+            const hora1 = datos.cihv[contEICIHV].Llegada.split(":");
+            const hora2 = datos.cihv[contEI2CIHV].Llegada.split(":");
+            const t1 = new Date();
+            const t2 = new Date();
+            t1.setHours(hora1[0], hora1[1], hora1[2]);
+            t2.setHours(hora2[0], hora2[1], hora2[2]);
+            ejecutado = (t2 - t1) / 60 / 1000; // Diferencia en minutos
+
+            // Incrementar contadores
+            if (contEICIHV < datos.cihv.length) {
+              contEICIHV += 1;
+            }
+            if (contEI2CIHV < datos.cihv.length) {
+              contEI2CIHV += 1;
+            }
+
+            // Determinar el estado de cumplimiento
+            if (ejecutado - item.Programado < 2) {
+              estado = "Cumple";
+              acuCumpleihv += 1; // Contador de cumple
+            } else {
+              estado = "No Cumple";
+              acuNoCumpleihv += 1; // Contador de no cumple
+            }
+
+            indicador = ((ejecutado - item.Programado) / item.Programado) * 100; // Cálculo del indicador
+
+            return {
+              "Col1": item.Unidad || "N/A",
+              "Col2": item.NumeroTarjeta || "N/A",
+              "Col3": item.Salida || "N/A",
+              "Col4": item.Llegada || "N/A",
+              "Col5": item.Programado || "N/A",
+              "Col6": ejecutado.toFixed(0),
+              "Col7": indicador.toFixed(2), // Convertir a string
+              "Col8": estado,
+            };
+          }
+        }),
+        ...componenteResultadoExcel(acuCumpleihv, acuNoCumpleihv),
+
+
+        // Sección para IVHP
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Índice Velocidad planificada vs Operacional en hora pico (IVP)" },
+        headersTVHP_TVHV,
+        ...ivhpData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Fecha || "N/A",
+          "Col3": item.Programado || "N/A",
+          "Col4": item.Promedio || "N/A",
+          "Col5": item.Indicador || "N/A",
+          "Col6": item.Estado || "N/A"
+        })),
+
+        ...componenteResultadoExcel(ivhpData.filter(item => item.Estado === "Cumple").length, ivhpData.filter(item => item.Estado === "No Cumple").length),
+
+        // Sección para IVHV
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Índice Velocidad planificada vs Operacional en hora valle y colateral (IVV)" },
+        headersTVHP_TVHV,
+        ...ivhvData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Fecha || "N/A",
+          "Col3": item.Programado || "N/A",
+          "Col4": item.Promedio || "N/A",
+          "Col5": item.Indicador || "N/A",
+          "Col6": item.Estado || "N/A"
+        })),
+
+        ...componenteResultadoExcel(ivhvData.filter(item => item.Estado === "Cumple").length, ivhvData.filter(item => item.Estado === "No Cumple").length),
+
+        // Sección para PPHP
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Tiempo de permanencia del autobús en paradas en hora pico (TAP)" },
+        headersPPHP_PPHV,
+        ...pphpData.map(item => ({
+          "Col1": item.Salidas || "N/A",
+          "Col2": item.Fecha || "N/A",
+          "Col3": item.Parada || "N/A",
+          "Col4": item.Tiempo || "N/A",
+          "Col5": item.Indicador || "N/A",
+          "Col6": item.Estado || "N/A"
+        })),
+
+        ...componenteResultadoExcel(pphpData.filter(item => item.Estado === "Cumple").length, pphpData.filter(item => item.Estado === "No Cumple").length),
+
+        // Sección para PPHV
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Tiempo de permanencia del autobús en paradas en hora valle (TAV)" },
+        headersPPHP_PPHV,
+        ...pphvData.map(item => ({
+          "Col1": item.Salidas || "N/A",
+          "Col2": item.Fecha || "N/A",
+          "Col3": item.Parada || "N/A",
+          "Col4": item.Tiempo || "N/A",
+          "Col5": item.Indicador || "N/A",
+          "Col6": item.Estado || "N/A"
+        })),
+
+        ...componenteResultadoExcel(pphvData.filter(item => item.Estado === "Cumple").length, pphvData.filter(item => item.Estado === "No Cumple").length),
+
+        // Sección para IO
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Cumplimiento de horarios de inicio de operación (HIO)" },
+        headersIO_CO,
+        ...ioData.map(item => ({
+          "Col1": item.Tipo || "N/A",
+          "Col2": item.Fecha || "N/A",
+          "Col3": item.Programado || "N/A",
+          "Col4": item.Ejecutado || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(ioData.filter(item => item.Estado === "Cumple").length, ioData.filter(item => item.Estado === "No Cumple").length),
+
+
+        // Sección para CO
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Cumplimiento de horarios de cierre de operación (HCO)" },
+        headersIO_CO,
+        ...coData.map(item => ({
+          "Col1": item.Tipo || "N/A",
+          "Col2": item.Fecha || "N/A",
+          "Col3": item.Programado || "N/A",
+          "Col4": item.Ejecutado || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(coData.filter(item => item.Estado === "Cumple").length, coData.filter(item => item.Estado === "No Cumple").length),
+
+        // Sección para OER
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Datos OER" },
+        headersOER,
+        ...oerData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Incidencia !== undefined ? item.Incidencia : "N/A", // Manejar el valor de 0 correctamente
+          "Col3": item.Efectuada || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(oerData.filter(item => item.Estado === "Cumple").length, oerData.filter(item => item.Estado === "No Cumple").length),
+
+
+      ];
+
+      // Asignar los datos combinados a la lista de Excel
+      this.mListaIndicadoresCalidad.push(...combinedData);
+
+    },
+
+    getNombresRutasRDespachosGenerados() {
+      var mlist = [];
+      for (var j = 0; j < this.itemRutasIndicadoresCalidad.length; j++) {
+        for (var i = 0; i < this.mListaRutasIndicadoresCalidad.length; i++) {
+          if (
+            this.itemRutasIndicadoresCalidad[j] ==
+            this.mListaRutasIndicadoresCalidad[i].LetrRuta
+          ) {
+            mlist.push(this.mListaRutasIndicadoresCalidad[i].DescRuta);
+          }
+        }
+      }
+      return mlist;
+    },
+
   },
   mounted() {
     this.readAllRutasIndicadoresCalidad();
@@ -1618,6 +2010,7 @@ export default {
 .card_body_0_01rem {
   padding: 0.5rem !important;
 }
+
 .card-bodyRPagosVehiculoReciboProduccion::-webkit-scrollbar {
   display: none;
 }

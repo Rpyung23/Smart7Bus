@@ -19,9 +19,22 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button icon type="primary" @click="readAllIndicadoresCalidad" size="sm">
-              <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
-            </base-button>
+            <div class="buttonCenterEndDerecha">
+              <base-button icon type="primary" @click="readAllIndicadoresCalidad" size="sm">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              </base-button>
+
+              <download-excel v-if="mListaIndicadoresCalidad.length > 0" class="btn btn-icon btn-fab btn-success btn-sm"
+                title="Exportar a Excel" :header="oHeaderRIndicadoresCalidad" :data="mListaIndicadoresCalidad"
+                :fields="oJSONFieldsRIndicadoresCalidad" :worksheet="oWorkSheetRIndicadoresCalidad"
+                :name="oFileNameRIndicadoresCalidad">
+                <span class="btn-inner--icon">
+                  <i class="ni ni-collection"></i>
+                </span>
+              </download-excel>
+            </div>
+
+
           </div>
         </card>
         <card class="no-border-card col" style="margin-bottom: 0.5rem"
@@ -30,8 +43,9 @@
           <div class="cardSelectAgrupacionRIcalidad">
 
 
-            <el-select v-model="modelTiposEvento" collapse-tags  :multiple-limit="1" style="margin-right: 0.5rem" placeholder="Rutas"
-              :loading="loadingTableUnidadesSalidasPanelBusquedaloading" @change="updateSelectedRouteDescriptions" clearable>
+            <el-select v-model="modelTiposEvento" collapse-tags :multiple-limit="1" style="margin-right: 0.5rem"
+              placeholder="Rutas" :loading="loadingTableUnidadesSalidasPanelBusquedaloading"
+              @change="updateSelectedRouteDescriptions" clearable>
               <el-option v-for="item in mListaRutasSalidasSemanales" :key="item.LetrRuta" :label="item.DescRuta"
                 :value="item.idRuta">
               </el-option>
@@ -54,7 +68,7 @@
 <script>
 import flatPicker from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
-import { getFecha_dd_mm_yyyy,validaRangoFechaNoMas30Dias } from "../../util/fechas";
+import { getFecha_dd_mm_yyyy, validaRangoFechaNoMas30Dias } from "../../util/fechas";
 
 import {
   Table,
@@ -123,6 +137,18 @@ export default {
       baseURlPDFPanelDetalleRecibo: "",
       oBase64IndicadoresCalidad: "",
       oAgrupacionDM: false,
+      mListaIndicadoresCalidad: [],
+      oWorkSheetRIndicadoresCalidad: "",
+      oFileNameRIndicadoresCalidad: "",
+      oHeaderRIndicadoresCalidad: "",
+      oJSONFieldsRIndicadoresCalidad: {
+        " ": "Col1",
+        "  ": "Col2",
+        "   ": "Col3",
+        "    ": "Col4",
+        "     ": "Col5",
+        "      ": "Col6",
+      },
     };
   },
   methods: {
@@ -182,22 +208,19 @@ export default {
       }
     },
 
-
     updateSelectedRouteDescriptions(selectedRoute) {
       const route = this.mListaRutasSalidasSemanales.find(route => route.idRuta === selectedRoute);
       this.selectedRouteDescription = route ? route.DescRuta : '';
     },
 
-
-
-
     async readAllIndicadoresCalidad() {
 
       this.mListaRutasIndicadoresCalidad = [];
+      this.mListaIndicadoresCalidad = [];
 
-      if(!validaRangoFechaNoMas30Dias(getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
-      getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad)))
-      {
+
+      if (!validaRangoFechaNoMas30Dias(getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad),
+        getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad))) {
         Notification.warning({
           title: "RAGO MAXIMO 31 DIAS",
           message: 'SOLO SE PERMITE UN MAXIMO DE 31 DIAS',
@@ -240,19 +263,26 @@ export default {
             usuarioName: this.$cookies.get("namesUsuario"),
           },
           {
-            headers:{"Content-Type": "application/json"},
-            timeout:300000
+            headers: { "Content-Type": "application/json" },
+            timeout: 300000
           }
         );
 
         if (datos.data.status_code == 200) {
           console.log("Agrego indicadores Calidad .........");
           this.genratePdf(datos.data.datos);
+          this.generateExcel(datos.data.datos);
+        }
+        else {
+          Notification.warning({
+            title: "Reporte de Indicadores de Calidad Consolidado",
+            message: datos.data.msm,
+          });
         }
       } catch (error) {
         console.log(error);
         Notification.error({
-          title: "ERROR",
+          title: "Reporte de Indicadores de Calidad Consolidado",
           message: error.toString(),
           duration: 2500,
         });
@@ -1328,6 +1358,252 @@ export default {
         iframe.src = pdfUrl;
       });
     },
+
+    generateExcel(datos) {
+      // Definir nombre del archivo y nombre de la hoja
+      this.oWorkSheetRIndicadoresCalidad = "Indicadores_Calidad";
+      this.oFileNameRIndicadoresCalidad = "Reporte_Indicadores_Calidad_" + Date.now() + ".xls";
+
+
+      // Encabezado general para todo el reporte
+      this.oHeaderRIndicadoresCalidad = [
+        "Reporte Indicadores de Calidad (Diario)",
+        "Fechas: " + getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad) + " hasta " + getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
+        "Operadora: " + this.$cookies.get("nameEmpresa"),
+        "Unidades: " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadProduccionRPagoVehiculorecibo),
+        "Rutas: " + (this.mListaRutasSalidasSemanales.toString().length <= 0 ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
+      ];
+
+      // Verificar que los datos recibidos sean arrays
+      const tvhpData = Array.isArray(datos.tvhp) ? datos.tvhp : [];
+      const tvhvData = Array.isArray(datos.tvhv) ? datos.tvhv : [];
+      const cihpData = Array.isArray(datos.ihp) ? datos.ihp : [];
+      const cihvData = Array.isArray(datos.ihv) ? datos.ihv : [];
+      const ivhpData = Array.isArray(datos.ivp) ? datos.ivp : [];
+      const ivhvData = Array.isArray(datos.ivv) ? datos.ivv : [];
+      const pphpData = Array.isArray(datos.tap) ? datos.tap : [];
+      const pphvData = Array.isArray(datos.tav) ? datos.tav : [];
+      const ioData = Array.isArray(datos.hio) ? datos.hio : [];
+      const coData = Array.isArray(datos.hco) ? datos.hco : [];
+      const oerData = Array.isArray(datos.ora) ? datos.ora : [];
+
+
+      // Crear encabezados manualmente
+      const headers = {
+        "Col1": "Unidad",
+        "Col2": "Placa",
+        "Col3": "Ruta",
+        "Col4": "Indicador",
+        "Col5": "Estado",
+      };
+
+
+      const headersIO_CO = {
+        "Col1": "Fecha",
+        "Col2": "Ruta",
+        "Col3": "Programado",
+        "Col4": "Ejecutado",
+        "Col5": "Estado",
+      };
+
+
+      // Función para generar las filas del resultado final en formato Excel
+      const componenteResultadoExcel = (acu, acuNo) => {
+        const porce = (100 * acu) / (acu + acuNo);
+        return [
+          { "Col1": "", "Col2": "", "Col3": "", "Col4": "" },
+          { "Col1": "Total viajes considerados", "Col2": acu + acuNo, "Col3": "", "Col4": "" },
+          { "Col1": "Número que no cumplen", "Col2": acuNo, "Col3": "", "Col4": "" },
+          { "Col1": "Número que cumplen", "Col2": acu, "Col3": "", "Col4": "" },
+          { "Col1": "Total: ", "Col2": porce.toFixed(2) + " %", "Col3": "", "Col4": "" },
+          { "Col1": porce.toFixed(2) >= 80 ? "CUMPLE" : "NO CUMPLE", "Col2": "", "Col3": "", "Col4": "" },
+        ];
+      };
+
+
+
+      // Inicializar la lista combinada
+      const combinedData = [
+        { "Col1": "TIEMPO DE VIAJE HORA PICO (TVHP)" },
+        headers, // Encabezados TVHP y TVHV 
+        ...tvhpData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Placa || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        // Agregar resultados para TVHP
+        ...componenteResultadoExcel(tvhpData.filter(item => item.Estado === "Cumple").length, tvhpData.filter(item => item.Estado === "No cumple").length),
+
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "TIEMPO DE VIAJE HORA VALLE Y COLATERAL (TVHV)" },
+        headers, // Encabezados TVHV
+        ...tvhvData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Placa || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        // Agregar resultados para TVHV
+        ...componenteResultadoExcel(tvhvData.filter(item => item.Estado === "Cumple").length, tvhvData.filter(item => item.Estado === "No cumple").length),
+
+        // Sección para CIHP
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "CUMPLIMIENTO DE INTERVALO EN HORA PICO (IHP)" }, // Título de la sección
+        headers, // Encabezados CIHP
+        ...cihpData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Placa || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+        ...componenteResultadoExcel(cihpData.filter(item => item.Estado === "Cumple").length, cihpData.filter(item => item.Estado === "No cumple").length),
+
+
+        // Sección para CIHV
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "CUMPLIMIENTO DE INTERVALO EN HORA VALLE (IHV)" }, // Título de la sección
+        headers, // Encabezados CIHP
+        ...cihvData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Placa || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+        ...componenteResultadoExcel(cihvData.filter(item => item.Estado === "Cumple").length, cihvData.filter(item => item.Estado === "No cumple").length),
+
+
+        // Sección para IVHP
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Índice Velocidad planificada vs Operacional en hora pico (IVP)" },
+        headers,
+        ...ivhpData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Placa || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(ivhpData.filter(item => item.Estado === "Cumple").length, ivhpData.filter(item => item.Estado === "No cumple").length),
+
+        // Sección para IVHV
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Índice Velocidad planificada vs Operacional en hora valle y colateral (IVV)" },
+        headers,
+        ...ivhvData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Placa || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(ivhvData.filter(item => item.Estado === "Cumple").length, ivhvData.filter(item => item.Estado === "No cumple").length),
+
+        // Sección para PPHP
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Tiempo de permanencia del autobús en paradas en hora pico (TAP)" },
+        headers,
+        ...pphpData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Placa || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(pphpData.filter(item => item.Estado === "Cumple").length, pphpData.filter(item => item.Estado === "No cumple").length),
+
+        // Sección para PPHV
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Tiempo de permanencia del autobús en paradas en hora valle (TAV)" },
+        headers,
+        ...pphvData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Placa || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(pphvData.filter(item => item.Estado === "Cumple").length, pphvData.filter(item => item.Estado === "No cumple").length),
+
+        // Sección para IO
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Cumplimiento de horarios de inicio de operación (HIO)" },
+        headersIO_CO,
+        ...ioData.map(item => ({
+          "Col1": item.Fecha || "N/A",
+          "Col2": item.DescripcionRuta || "N/A",
+          "Col3": item.Programado || "N/A",
+          "Col4": item.Ejecutado || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(ioData.filter(item => item.Estado === "Cumple").length, ioData.filter(item => item.Estado === "No Cumple").length),
+
+
+        // Sección para CO
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Cumplimiento de horarios de cierre de operación (HCO)" },
+        headersIO_CO,
+        ...coData.map(item => ({
+          "Col1": item.Fecha || "N/A",
+          "Col2": item.DescripcionRuta || "N/A",
+          "Col3": item.Programado || "N/A",
+          "Col4": item.Ejecutado || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(coData.filter(item => item.Estado === "Cumple").length, coData.filter(item => item.Estado === "No Cumple").length),
+
+        // Sección para OER
+        { "Col1": " " }, // Espacio vacío para separar secciones
+        { "Col1": "Datos OER" },
+        headers,
+        ...oerData.map(item => ({
+          "Col1": item.Unidad || "N/A",
+          "Col2": item.Placa || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Indicador || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+        ...componenteResultadoExcel(oerData.filter(item => item.Estado === "Cumple").length, oerData.filter(item => item.Estado === "No cumple").length),
+
+
+      ];
+
+      // Asignar los datos combinados a la lista de Excel
+      this.mListaIndicadoresCalidad.push(...combinedData);
+
+    },
+
+
+    getNombresRutasRDespachosGenerados() {
+      var mlist = [];
+      for (var j = 0; j < this.itemRutasRSalidasSemanales.length; j++) {
+        for (var i = 0; i < this.mListaRutasSalidasSemanales.length; i++) {
+          if (
+            this.itemRutasRSalidasSemanales[j] ==
+            this.mListaRutasSalidasSemanales[i].LetrRuta
+          ) {
+            mlist.push(this.mListaRutasSalidasSemanales[i].DescRuta);
+          }
+        }
+      }
+      return mlist;
+    },
+
+
+
   },
   mounted() {
     this.initFechaActualProduccionRPAgosVehiculoRecibo();

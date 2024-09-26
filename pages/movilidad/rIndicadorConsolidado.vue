@@ -29,16 +29,20 @@
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer">
-            <base-button
-              icon
-              type="primary"
-              @click="readAllIndicadoresCalidad"
-              size="sm"
-            >
-              <span class="btn-inner--icon"
-                ><i class="el-icon-search"></i
-              ></span>
-            </base-button>
+            <div class="buttonCenterEndDerecha">
+              <base-button icon type="primary" @click="readAllIndicadoresCalidad" size="sm">
+                <span class="btn-inner--icon"><i class="el-icon-search"></i></span>
+              </base-button>
+
+              <download-excel v-if="mListaIndicadoresCalidad.length > 0" class="btn btn-icon btn-fab btn-success btn-sm"
+                title="Exportar a Excel" :header="oHeaderRIndicadoresCalidad" :data="mListaIndicadoresCalidad"
+                :fields="oJSONFieldsRIndicadoresCalidad" :worksheet="oWorkSheetRIndicadoresCalidad"
+                :name="oFileNameRIndicadoresCalidad">
+                <span class="btn-inner--icon">
+                  <i class="ni ni-collection"></i>
+                </span>
+              </download-excel>
+            </div>
           </div>
         </card>
         <card
@@ -160,6 +164,18 @@ export default {
       baseURlPDFPanelDetalleRecibo: "",
       oBase64IndicadoresCalidad: "",
       oAgrupacionDM: false,
+      mListaIndicadoresCalidad: [],
+      oWorkSheetRIndicadoresCalidad: "",
+      oFileNameRIndicadoresCalidad: "",
+      oHeaderRIndicadoresCalidad: "",
+      oJSONFieldsRIndicadoresCalidad: {
+        " ": "Col1",
+        "  ": "Col2",
+        "   ": "Col3",
+        "    ": "Col4",
+        "     ": "Col5",
+      },
+    
     };
   },
   methods: {
@@ -224,7 +240,6 @@ export default {
       this.selectedRouteDescription = route ? route.DescRuta : '';
     },
 
-
     async readAllIndicadoresCalidad() {
       if (
         !validaRangoFechaNoMas30Dias(
@@ -283,6 +298,7 @@ export default {
         if (datos.data.status_code == 200) {
           console.log("Agrego indicadores Calidad Totales.........");
           this.genratePdf(datos.data.datos);
+          this.generateExcel(datos.data.datos);
         }else {
           Notification.info({
             title: "Reporte de Indicadores Consolidado de Calidad (Total)",
@@ -300,6 +316,7 @@ export default {
 
       swal.close();
     },
+
     genratePdf(datos) {
       var fechaHora = new Date();
       var dia = fechaHora.getDate();
@@ -539,6 +556,71 @@ export default {
         iframe.src = pdfUrl;
       });
     },
+    
+    generateExcel(datos) {
+      // Definir nombre del archivo y nombre de la hoja
+      this.oWorkSheetRIndicadoresCalidad = "Indicadores_Calidad";
+      this.oFileNameRIndicadoresCalidad = "Reporte_Indicadores_Calidad_" + Date.now() + ".xls";
+
+
+      // Encabezado general para todo el reporte
+      this.oHeaderRIndicadoresCalidad = [
+        "Reporte Indicadores de Calidad Total",
+        "Fechas: " + getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad) + " hasta " + getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
+        "Operadora: " + this.$cookies.get("nameEmpresa"),
+        "Unidades: " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadProduccionRPagoVehiculorecibo),
+        "Rutas: " + (this.mListaRutasSalidasSemanales.toString().length <= 0 ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
+      ];
+
+      // Verificar que los datos recibidos sean arrays
+      const consolidadoData = Array.isArray(datos.datos) ? datos.datos : [];
+
+
+      // Crear encabezados manualmente
+      const headers = {
+        "Col1": "Numero",
+        "Col2": "Indicador",
+        "Col3": "Ruta",
+        "Col4": "Porcentaje",
+        "Col5": "Estado",
+      };
+
+
+      // Inicializar la lista combinada
+      const combinedData = [
+        { "Col1": "Indicador de Consolidado Total" },
+        headers, 
+        ...consolidadoData.map(item => ({
+          "Col1": item.Numero || "N/A",
+          "Col2": item.Indicador || "N/A",
+          "Col3": item.DescripcionRuta || "N/A",
+          "Col4": item.Porcentaje || "N/A",
+          "Col5": item.Estado || "N/A",
+        })),
+
+      ];
+
+      // Asignar los datos combinados a la lista de Excel
+      this.mListaIndicadoresCalidad.push(...combinedData);
+
+    },
+
+    getNombresRutasRDespachosGenerados() {
+      var mlist = [];
+      for (var j = 0; j < this.itemRutasRSalidasSemanales.length; j++) {
+        for (var i = 0; i < this.mListaRutasSalidasSemanales.length; i++) {
+          if (
+            this.itemRutasRSalidasSemanales[j] ==
+            this.mListaRutasSalidasSemanales[i].LetrRuta
+          ) {
+            mlist.push(this.mListaRutasSalidasSemanales[i].DescRuta);
+          }
+        }
+      }
+      return mlist;
+    },
+
+
   },
   mounted() {
     this.initFechaActualProduccionRPAgosVehiculoRecibo();
