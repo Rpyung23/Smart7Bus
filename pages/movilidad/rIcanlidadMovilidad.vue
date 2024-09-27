@@ -1805,14 +1805,14 @@ export default {
             acuCumpleihv += 1; // Contador de cumple
 
             return {
-              "Col1": "0", // Espacio para el primer item
-              "Col2": "0", // Espacio para el segundo item
-              "Col3": estado, // Estado "Cumple"
-              "Col4": "", // Columna vacía
-              "Col5": "", // Columna vacía
-              "Col6": "", // Columna vacía
-              "Col7": "", // Columna vacía
-              "Col8": "", // Columna vacía
+              "Col1": item.Unidad || "N/A",
+              "Col2": item.NumeroTarjeta || "N/A",
+              "Col3": item.Salida || "N/A",
+              "Col4": item.Llegada || "N/A",
+              "Col5": item.Programado || "N/A",
+              "Col6": "0",
+              "Col7": "0",
+              "Col8": estado,
             };
           } else {
             const hora1 = datos.cihv[contEICIHV].Llegada.split(":");

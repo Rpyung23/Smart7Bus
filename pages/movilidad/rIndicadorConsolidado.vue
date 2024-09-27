@@ -530,20 +530,27 @@ export default {
       this.oWorkSheetRIndicadoresCalidad = "Indicadores_Calidad";
       this.oFileNameRIndicadoresCalidad = "Reporte_Indicadores_Calidad_" + Date.now() + ".xls";
 
-
       // Encabezado general para todo el reporte
       this.oHeaderRIndicadoresCalidad = [
         "Reporte Indicadores de Calidad Total",
         "Fechas: " + getFecha_dd_mm_yyyy(this.fechaInicialIndicadorCalidad) + " hasta " + getFecha_dd_mm_yyyy(this.fechaFinalIndicadorCalidad),
         "Operadora: " + this.$cookies.get("nameEmpresa"),
         "Unidades: " + (this.itemUnidadProduccionRPagoVehiculorecibo.length <= 0 ? "TODAS LAS UNIDADES" : this.itemUnidadProduccionRPagoVehiculorecibo),
-        "Rutas: " + (this.modelTiposEvento.length === 0
-          ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
+        "Rutas: " + (this.modelTiposEvento.length === 0 ? "TODAS LAS RUTAS" : this.selectedRouteDescription.toString()),
       ];
+
+      // Limpiar la lista antes de añadir nuevos datos
+      this.mListaIndicadoresCalidad = [];
 
       // Verificar que los datos recibidos sean arrays
       const consolidadoData = Array.isArray(datos.datos) ? datos.datos : [];
 
+      console.log("Ruta seleccionada:", this.selectedRouteDescription);
+
+      // Filtrar los datos basados en la ruta seleccionada
+      const filteredData = this.modelTiposEvento.length === 0
+        ? consolidadoData  // Mostrar todos los datos si no se selecciona ninguna ruta
+        : consolidadoData.filter(item => item.DescripcionRuta === this.selectedRouteDescription);  // Filtrar por ruta seleccionada
 
       // Crear encabezados manualmente
       const headers = {
@@ -554,25 +561,24 @@ export default {
         "Col5": "Estado",
       };
 
-
       // Inicializar la lista combinada
       const combinedData = [
         { "Col1": "Indicador de Consolidado Total" },
         headers,
-        ...consolidadoData.map(item => ({
+        ...filteredData.map(item => ({
           "Col1": item.Numero || "N/A",
           "Col2": item.Indicador || "N/A",
           "Col3": item.DescripcionRuta || "N/A",
           "Col4": item.Porcentaje || "N/A",
           "Col5": item.Estado || "N/A",
         })),
-
       ];
 
       // Asignar los datos combinados a la lista de Excel
       this.mListaIndicadoresCalidad.push(...combinedData);
-
     },
+
+
 
     getNombresRutasRDespachosGenerados() {
       var mlist = [];
