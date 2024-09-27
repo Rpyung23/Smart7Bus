@@ -527,7 +527,7 @@ export default {
 
     generateExcel(datos) {
       // Definir nombre del archivo y nombre de la hoja
-      this.oWorkSheetRIndicadoresCalidad = "Indicadores_Calidad";
+      this.oWorkSheetRIndicadoresCalidad = "Indicadores_Calidad_Consolidado_Total";
       this.oFileNameRIndicadoresCalidad = "Reporte_Indicadores_Calidad_" + Date.now() + ".xls";
 
       // Encabezado general para todo el reporte
