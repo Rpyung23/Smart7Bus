@@ -136,6 +136,17 @@
               class="tablePanelControlProduccion"
               header-row-class-name="thead-dark"
             >
+
+            <el-table-column v-if="permisos && permisos.recaudo && permisos.recaudo.VerConteoModalVuelta"
+                label="Acciones"
+                :minWidth="'150'"
+                >
+                <template slot-scope="scope">
+                  <base-button size="sm" @click="showVisibleModalCounting(scope.row)" title="Ver Conteo" type="primary">
+                    Ver
+                  </base-button>
+                </template>
+              </el-table-column>
               <el-table-column prop="unidad" label="Unidad" minWidth="110">
               </el-table-column>
               
@@ -315,7 +326,13 @@ export default {
         "IPK": "ipk",
         "Dinero Recaudado": "dinero",
       },
-      permisos: null
+      permisos: null,
+      isCardCounting: false,
+      contador: {
+        nombre: "Contador de Ventas",
+        valor: 150,
+        progreso: 75, // Porcentaje de progreso
+      },
     };
   },
   methods: {
@@ -841,6 +858,23 @@ export default {
       };
 
       pdfMake.createPdf(docDefinition).download("RCPV_" + Date.now());
+    },
+    async showVisibleModalCounting(item) {
+      this.isCardCounting = true;
+      /*this.isCardCounting == true ? false : true;*/
+      if (this.isCardCounting == true) {
+        console.log("abrir modal");
+      }
+
+
+    },
+    closeModal() {
+      this.isCardCounting = false; // Cerrar el modal
+    },
+    confirmarAccion() {
+      // Lógica para confirmar la acción
+      console.log("Acción confirmada");
+      this.closeModal(); // Cerrar el modal después de confirmar
     },
   },
   mounted() {

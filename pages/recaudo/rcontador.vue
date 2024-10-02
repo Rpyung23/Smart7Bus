@@ -93,6 +93,17 @@
             <el-table v-loading="loadingUnidadesContadorPasajerosPasajeros" element-loading-text="Cargando Datos..."
               :data="tableDataRecaudoContadorPasajeros" highlight-current-row row-key="id" height="calc(100vh - 13rem)"
               style="width: 100%" class="tablePanelControlProduccion" header-row-class-name="thead-dark">
+              <el-table-column v-if="permisos && permisos.recaudo && permisos.recaudo.VerConteoModalDiario"
+                label="Acciones"
+                :minWidth="'150'"
+                >
+                <template slot-scope="scope">
+                  <base-button size="sm" @click="showVisibleModalCounting(scope.row)" title="Ver Conteo" type="primary">
+                    Ver
+                  </base-button>
+                </template>
+              </el-table-column>
+
               <el-table-column prop="unidad" label="Unidad" minWidth="110">
               </el-table-column>
 
@@ -108,24 +119,7 @@
               </el-table-column>
               <el-table-column prop="subida3" label="Puerta 3" minWidth="130">
               </el-table-column>
-              <!--<el-table-column
-                prop="bajada1"
-                label="Puerta 1 (B)"
-                minWidth="160"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="bajada2"
-                label="Puerta 2 (B)"
-                minWidth="160"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="bajada3"
-                label="Puerta 3 (B)"
-                minWidth="160"
-              >
-              </el-table-column>-->
+
               <el-table-column prop="totalSubidas" label="T. Subidas" minWidth="140">
               </el-table-column>
 
@@ -145,12 +139,43 @@
               </el-table-column>
 
               <div slot="empty"></div>
+
             </el-table>
           </div>
         </card>
+
+
+
       </div>
     </base-header>
+    <div>
+      <!--Classic modal-->
+      <modal :show.sync="isCardCounting" style="z-index: 3000 !important" size="xl">
+        <template header>
+          <h3 style="margin: 0; color: #fff; background-color: #2dce89">Detalles del Contador</h3>
+        </template>
+
+        <div style="padding: 20px;">
+          <p><strong>Nombre del Contador:</strong> {{ contador.nombre }}</p>
+          <p><strong>Valor Actual:</strong> {{ contador.valor }}</p>
+          <p><strong>Descripción:</strong> Este es un contador que permite realizar seguimientos de valores.</p>
+
+          <el-progress :percentage="contador.progreso" status="success" style="margin-top: 10px;">
+            Progreso del contador
+          </el-progress>
+        </div>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="closeModal" type="default">Cancelar</el-button>
+          <el-button type="primary" @click="confirmarAccion">Aceptar</el-button>
+        </span>
+
+
+      </modal>
+    </div>
+
   </div>
+
 </template>
 <script>
 import flatPicker from "vue-flatpickr-component";
@@ -178,6 +203,7 @@ import TabPane from "@/components/argon-core/Tabs/Tab";
 import pdfMake from "pdfmake/build/pdfmake.js";
 import pdfFonts from "pdfmake/build/vfs_fonts.js";
 import { getBase64LogoReportes } from "../../util/logoReport";
+import { Modal } from "bootstrap";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -232,7 +258,13 @@ export default {
         IPK: "ipk",
         "Dinero Recaudado": "dinero",
       },
-      permisos: null
+      permisos: null,
+      isCardCounting: false,
+      contador: {
+        nombre: "Contador de Ventas",
+        valor: 150,
+        progreso: 75, // Porcentaje de progreso
+      },
     };
   },
   methods: {
@@ -693,6 +725,23 @@ export default {
       };
 
       pdfMake.createPdf(docDefinition).download("RCP_" + Date.now());
+    },
+    async showVisibleModalCounting(item) {
+      this.isCardCounting = true;
+      /*this.isCardCounting == true ? false : true;*/
+      if (this.isCardCounting == true) {
+        console.log("abrir modal");
+      }
+
+
+    },
+    closeModal() {
+      this.isCardCounting = false; // Cerrar el modal
+    },
+    confirmarAccion() {
+      // Lógica para confirmar la acción
+      console.log("Acción confirmada");
+      this.closeModal(); // Cerrar el modal después de confirmar
     },
   },
   mounted() {
