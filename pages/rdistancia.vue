@@ -304,9 +304,7 @@ export default {
         });
         console.log("respuesta de rdistancia")
         console.log(datos.data.status_code)
-        console.log(this.fechaInicialSalidasPanelBusqueda)
-        console.log(this.fechaFinalSalidasPanelBusqueda)
-        console.log(this.mSelectRutaSalidaPanelBusqueda)
+        
         if (datos.data.status_code == 200) {
           this.mListaRVelocidades.push(...datos.data.datos)
         } else {
