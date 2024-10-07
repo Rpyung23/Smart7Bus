@@ -20,11 +20,11 @@
               </flat-picker>
             </base-input>
 
-            <base-input addon-left-icon="ni ni-calendar-grid-58">
+         <!--    <base-input addon-left-icon="ni ni-calendar-grid-58">
               <flat-picker slot-scope="{ focus, blur }" @on-open="focus" @on-close="blur" :config="{ allowInput: true }"
                 class="form-controlPersonal datepicker" v-model="fechaFinalSalidasPanelBusqueda">
               </flat-picker>
-            </base-input>
+            </base-input> -->
           </div>
 
           <div class="cardSelectRubrosEstadosPagosVehiculoProduccionContainer" size="sm">
@@ -297,14 +297,16 @@ export default {
           token: this.token,
           "unidades": this.itemUnidadSalidasPanelBusqueda.length > 0 ? this.itemUnidadSalidasPanelBusqueda : "*",
           fechaI: this.fechaInicialSalidasPanelBusqueda,
-          fechaF: this.fechaFinalSalidasPanelBusqueda,
+          fechaF: this.fechaInicialSalidasPanelBusqueda,
           rutas: this.mSelectRutaSalidaPanelBusqueda.length > 0 ? this.mSelectRutaSalidaPanelBusqueda : "*"
         }, {
           timeout: 600000,
         });
         console.log("respuesta de rdistancia")
         console.log(datos.data.status_code)
-
+        console.log(this.fechaInicialSalidasPanelBusqueda)
+        console.log(this.fechaFinalSalidasPanelBusqueda)
+        console.log(this.mSelectRutaSalidaPanelBusqueda)
         if (datos.data.status_code == 200) {
           this.mListaRVelocidades.push(...datos.data.datos)
         } else {
