@@ -377,6 +377,9 @@ export default {
 .titleNavbar {
   font-weight: 700;
   font-size: 1.45rem;
+      white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
