@@ -273,7 +273,7 @@ export default {
       this.FileNameExcelRPagosVehiculoResumidoProduccion = "RPV_RD_"+this.itemUnidadSalidasPanelBusqueda+"_"+Date.now()+".xls"
 
       if(!validaRangoFechaNoMas30Dias(getFecha_dd_mm_yyyy(this.fechaInicialSalidasPanelBusqueda),
-      getFecha_dd_mm_yyyy(this.fechaFinalSalidasPanelBusqueda)))
+      getFecha_dd_mm_yyyy(this.fechaInicialSalidasPanelBusqueda)))
       {
         Notification.warning({
           title: "RAGO MAXIMO 31 DIAS",
